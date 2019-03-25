@@ -20,3 +20,5 @@ static-html
 accounts-password
 session
 fourseven:scss@3.13.0
+practicalmeteor:mocha
+react-meteor-data

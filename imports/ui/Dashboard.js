@@ -1,13 +1,14 @@
 import React from "react";
 
 import PrivateHeader from "./PrivateHeader.js";
+import NoteList from './NoteList';
 
-export default props => {
+export default () => {
   return (
     <div>
       <PrivateHeader title="Dashboard" />
       <div className="page-content">
-        Dashboard page content.
+        <NoteList />
       </div>
     </div>
   );
