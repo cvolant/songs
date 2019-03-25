@@ -23,7 +23,7 @@ const onEnterPrivatePage = () => {
 };
 const onEnterNotePage = (nextState) => {
   if (!Meteor.userId()) browserHistory.replace('/');
-  else Session.set('selectedNodeValue', nextState.params.id);
+  else Session.set('selectedNodeId', nextState.params.id);
 };
 
 export const routes = (

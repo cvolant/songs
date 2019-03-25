@@ -7,8 +7,8 @@ import { Session } from 'meteor/session';
 
 export const NoteListItem = (props) => {
     return (
-        <div className={props.selectedNodeValue === props.note._id ? 'selected' : ''} onClick={() => {
-            props.Session.set('selectedNodeValue', props.note._id);
+        <div className={props.selectedNodeId === props.note._id ? 'item--selected' : ''} onClick={() => {
+            props.Session.set('selectedNodeId', props.note._id);
         }}>
             <h5>{props.note.title ? props.note.title : 'Untitled note'}</h5>
             <p>Last update : {moment(props.note.updatedAt).format('DD/MM/YYYY')}</p>
@@ -27,6 +27,6 @@ export default createContainer(() => {
     return {
         meteorCall: Meteor.call,
         Session,
-        selectedNodeValue: Session.get('selectedNodeValue')
+        selectedNodeId: Session.get('selectedNodeId')
     };
 }, NoteListItem);

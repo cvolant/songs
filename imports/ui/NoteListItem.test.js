@@ -33,7 +33,7 @@ if (Meteor.isClient) {
         it('should call set on click', function () {
             const wrapper = mount(<NoteListItem meteorCall={() => {}} Session={Session} note={notes[0]} />);
             wrapper.find('div').simulate('click');
-            expect(Session.set).toHaveBeenCalledWith('selectedNodeValue', notes[0]._id);
+            expect(Session.set).toHaveBeenCalledWith('selectedNodeId', notes[0]._id);
         });
     });
 }
