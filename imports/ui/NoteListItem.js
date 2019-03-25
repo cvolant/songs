@@ -7,7 +7,7 @@ import { Session } from 'meteor/session';
 
 export const NoteListItem = (props) => {
     return (
-        <div onClick={() => {
+        <div className={props.selectedNodeValue === props.note._id ? 'selected' : ''} onClick={() => {
             props.Session.set('selectedNodeValue', props.note._id);
         }}>
             <h5>{props.note.title ? props.note.title : 'Untitled note'}</h5>
@@ -26,6 +26,7 @@ NoteListItem.propTypes = {
 export default createContainer(() => {
     return {
         meteorCall: Meteor.call,
-        Session
+        Session,
+        selectedNodeValue: Session.get('selectedNodeValue')
     };
 }, NoteListItem);
