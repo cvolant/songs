@@ -14,21 +14,21 @@ export class Editor extends React.Component {
         };
     };
 
-    handleDelete (e) {
+    handleDelete(e) {
         this.props.meteorCall('notes.remove', this.props.note._id);
         this.props.setSelectedNodeId(undefined);
     }
-    handleBodyChange (e) {
+    handleBodyChange(e) {
         const body = e.target.value;
-        this.setState({body })
-        this.props.meteorCall('notes.update', this.props.note._id, {body});
+        this.setState({ body });
+        this.props.meteorCall('notes.update', this.props.note._id, { body });
     }
-    handleTitleChange (e) {
+    handleTitleChange(e) {
         const title = e.target.value;
-        this.setState({title })
-        this.props.meteorCall('notes.update', this.props.note._id, {title});
+        this.setState({ title });
+        this.props.meteorCall('notes.update', this.props.note._id, { title });
     }
-    componentDidUpdate (prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
         const currentNoteId = this.props.note ? this.props.note._id : undefined;
         const prevNodeId = prevProps.note ? prevProps.note._id : undefined;
 
@@ -50,7 +50,7 @@ export class Editor extends React.Component {
             );
         } else {
             return (
-                (this.props.selectedNodeId) ? <p>Note note found.</p> : <p>Pick or create a note to get started.</p>
+                (this.props.selectedNodeId) ? <p>Note not found.</p> : <p>Pick or create a note to get started.</p>
             );
         }
     }
