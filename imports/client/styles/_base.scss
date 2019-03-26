@@ -11,7 +11,7 @@ html {
 body {
   background: $body-background-color;
   color: $body-default-color;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: $body-default-font-family;
   font-size: $base-font-size;
 }
 
@@ -32,15 +32,14 @@ a {
   color: $body-default-color;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input[type="text"], input[type="textarea"], input[type="email"], input[type="password"] {
+  color: $body-default-color;
+  background-color: $input-background;
+  border: 1px solid $input-border;
   font-size: $base-font-size;
+  font-family: $body-default-font-family;
   margin-bottom: $space;
   padding: $input-spacing;
-  border: 1px solid $input-border;
-  background-color: $input-background;
-  color: $input-text-color;
 }
 ::placeholder {
   color: $input-placeholder-color;
