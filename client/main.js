@@ -17,6 +17,8 @@ Tracker.autorun(() => {
   const selectedNodeId = Session.get('selectedNodeId');
   if (selectedNodeId) {
     browserHistory.replace(`/dashboard/${selectedNodeId}`);
+  } else {
+    browserHistory.replace(`/dashboard`);
   }
 });
 Meteor.startup(() => {
