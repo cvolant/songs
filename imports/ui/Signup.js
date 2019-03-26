@@ -57,6 +57,8 @@ Signup.propTypes = {
   handleCreateUser: PropTypes.func.isRequired
 }
 
-export default createContainer({
-  handleCreateUser: Accounts.createUser
+export default createContainer(() => {
+  return {
+    handleCreateUser: Accounts.createUser
+  };
 }, Signup);
