@@ -25,6 +25,6 @@ export default createContainer(() => {
     Meteor.subscribe('notes');
 
     return {
-        notes: Notes.find().fetch()
+        notes: Notes.find({}, {sort: { updatedAt : -1 }}).fetch()
     };
 }, NoteList);
