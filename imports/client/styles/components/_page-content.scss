@@ -17,6 +17,7 @@
     left: -110vw;
   transition: left .3s ease;
   width: 100vw;
+  z-index: 1;  // Fix bug: text areas that shows on the top
 
   @include desktop {
     padding-right: $large-space;

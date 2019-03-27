@@ -4,6 +4,7 @@
     border: 1px solid $lightgrey;
     flex-grow: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .item-list__header {
     display: flex;
