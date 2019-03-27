@@ -2,7 +2,7 @@
 .item-list {
     background-color: white;
     border: 1px solid $lightgrey;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .item-list__header {
     display: flex;

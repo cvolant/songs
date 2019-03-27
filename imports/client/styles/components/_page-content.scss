@@ -1,18 +1,29 @@
 .page-content {
-    display: flex;
-    height: $page-content-height;
-    margin: 0 auto;
-    max-width: $site-max-width;
+  display: flex;
+  height: $page-content-height;
+  margin: 0 auto;
+  max-width: $site-max-width;
+
+  @include desktop {
     padding: $large-space $space;
+  }
 }
 
 .page-content__sidebar {
+  display: none;
+  padding-right: $large-space;
+  width: $page-content-sidebar-width;
+
+  @include desktop {
     display: flex;
-    padding-right: $large-space;
-    width: $page-content-sidebar-width;
+  }
 }
 
 .page-content__main {
+  display: flex;
+  width: 100%;
+
+  @include desktop {
     width: $page-content-main-width;
-    display: flex;
+  }
 }
