@@ -4,25 +4,45 @@
     border: 1px solid $lightgrey;
     overflow-y: scroll;
 }
-
-// Item
-.item {
-    background: $item-bg;
-    border: 1px solid $item-border;
-    margin-bottom: $space;
+.item-list__header {
+    display: flex;
+    flex-direction: column;
     padding: $space;
 }
 
-.item__message {
-    color: $item-text-color;
+// Item
+.item {
+    cursor: pointer;
+    padding: $space;
+    border-left: $item-border-width solid transparent;
+    transition: background-color .3s ease;
+    transition: border-left .3s ease;
 }
-
-.item__status-message {
-    color: $item-text-color;
-    font-style: italic;
-    text-align: center;
+.item:hover {
+    background-color: $lightergrey;
+    border-left: $item-border-width solid $lightgrey;
+}
+.item--selected, .item--selected:hover {
+    background-color: $lightergrey;
+    border-left: $item-border-width solid $main-color;
+}
+.item__title {
+    font-weight: normal;
+    font-size: $base-font-size;
+    margin-bottom: .4rem;
+}
+.item--selected .item__title {
+    font-weight: bold;
+}
+.item__subtitle {
+    color: $darkgrey;
     margin: 0;
 }
-.item--selected {
-    border: 1px solid black;
+
+
+// Empty item
+.empty-item {
+    font-style: italic;
+    padding: $space;
+    text-align: center;
 }

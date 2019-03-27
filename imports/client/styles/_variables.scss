@@ -47,9 +47,7 @@ $head-bar-title-color: white;
 $header-height: 6rem;
 
 // Item
-$item-bg: $lightergrey;
-$item-border: darken($lightergrey, 8%);
-$item-text-color: $darkgrey;
+$item-border-width: 4px;
 
 // Page content
 $page-content-height: calc(100vh - #{$header-height});
