@@ -15,13 +15,21 @@ Tracker.autorun(() => {
 
 Tracker.autorun(() => {
   const selectedNodeId = Session.get('selectedNodeId');
+  Session.set('isNavOpen', false);
   if (selectedNodeId) {
     browserHistory.replace(`/dashboard/${selectedNodeId}`);
   } else {
     browserHistory.replace(`/dashboard`);
   }
 });
+
+Tracker.autorun(() => {
+  const isNavOpen = Session.get('isNavOpen');
+  document.body.classList.toggle('is-nav-open', isNavOpen);
+});
+
 Meteor.startup(() => {
   Session.set('selectedNodeId', undefined);
+  Session.set('isNavOpen', false);
   ReactDOM.render(routes, document.getElementById("app"));
 });

@@ -2,6 +2,7 @@
 .item-list {
     background-color: white;
     border: 1px solid $lightgrey;
+    flex-grow: 1;
     overflow-y: auto;
 }
 .item-list__header {
