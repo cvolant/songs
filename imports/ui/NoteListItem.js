@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import moment from 'moment';
 import { PropTypes } from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { Session } from 'meteor/session';
 
 export const NoteListItem = (props) => {
@@ -23,10 +23,10 @@ NoteListItem.propTypes = {
     meteorCall: PropTypes.func.isRequired
 };
 
-export default createContainer(() => {
+export default withTracker(props => {
     return {
         meteorCall: Meteor.call,
         Session,
         selectedNodeId: Session.get('selectedNodeId')
     };
-}, NoteListItem);
+})(NoteListItem);

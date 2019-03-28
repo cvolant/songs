@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from "prop-types";
 
 export class Login extends React.Component {
@@ -51,8 +51,8 @@ Login.propTypes = {
   handleLogin: PropTypes.func.isRequired
 }
 
-export default createContainer(() => {
+export default withTracker(props => {
   return {
     handleLogin: Meteor.loginWithPassword
   };
-}, Login);
+})(Login);

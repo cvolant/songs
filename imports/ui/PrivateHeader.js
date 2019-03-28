@@ -1,6 +1,6 @@
 import React from "react";
 import { Accounts } from "meteor/accounts-base";
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from "prop-types";
 import { Session } from "meteor/session";
 
@@ -25,10 +25,10 @@ PrivateHeader.propTypes = {
   toggleNav: PropTypes.func.isRequired
 };
 
-export default createContainer(() => {
+export default withTracker(props => {
   return {
     handleLogout: () => Accounts.logout(),
     isNavOpen: Session.get('isNavOpen'),
     toggleNav: () => Session.set('isNavOpen', !Session.get('isNavOpen'))
   };
-}, PrivateHeader);
+})(PrivateHeader);

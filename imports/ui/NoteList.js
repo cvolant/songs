@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { Notes } from '../api/notes';
 import NoteListItem from './NoteListItem';
 import NoteListHeader from './NoteListHeader';
@@ -20,10 +20,10 @@ NoteList.propTypes = {
     notes: PropTypes.array.isRequired
 };
 
-export default createContainer(() => {
+export default withTracker(props => {
     Meteor.subscribe('notes');
 
     return {
         notes: Notes.find({}, {sort: { updatedAt : -1 }}).fetch()
     };
-}, NoteList);
+})(NoteList);

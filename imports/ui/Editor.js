@@ -1,7 +1,7 @@
 import React from 'react';
 import { Session } from 'meteor/session';
 import { PropTypes } from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import { Notes } from '../api/notes';
 import { Meteor } from 'meteor/meteor';
 
@@ -67,7 +67,7 @@ Editor.propTypes = {
     note: PropTypes.object
 }
 
-export default createContainer(() => {
+export default withTracker(props => {
     const selectedNodeId = Session.get('selectedNodeId');
     const setSelectedNodeId = (newId) => {
         Session.set('selectedNodeId', newId);
@@ -79,4 +79,4 @@ export default createContainer(() => {
         meteorCall: Meteor.call,
         note: Notes.findOne(selectedNodeId)
     };
-}, Editor);
+})(Editor);
