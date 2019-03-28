@@ -13,6 +13,7 @@ export class Login extends React.Component {
   }
   onSubmit(e) {
     e.preventDefault();
+    console.log(this);
     let email = this.refs.email.value.trim();
     let password = this.refs.password.value.trim();
     this.props.handleLogin({ email }, password, (err) => {
@@ -31,7 +32,11 @@ export class Login extends React.Component {
           <h1>Login</h1>
           {this.state.error ? <p>{this.state.error}</p> : undefined}
           <form className='boxed-view__form' onSubmit={this.onSubmit.bind(this)} noValidate>
-            <input type="email" ref="email" name="email" placeholder="Email" />
+            <input
+              type="email"
+              ref="email"
+              name="email"
+              placeholder="Email" />
             <input
               type="password"
               ref="password"

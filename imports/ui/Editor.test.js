@@ -2,11 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import expect from 'expect';
 import { configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-16';
 
 import { Editor } from './Editor';
 import { notes } from '../fixtures/fixtures';
-import { wrap } from 'module';
 
 configure({ adapter: new Adapter() });
 

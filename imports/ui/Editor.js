@@ -12,8 +12,6 @@ export class Editor extends React.Component {
             title: '',
             body: ''
         };
-        this.titleInput = React.createRef();
-        this.bodyInput = React.createRef();
     };
 
     handleDelete(e) {
@@ -30,6 +28,15 @@ export class Editor extends React.Component {
         this.setState({ title });
         this.props.meteorCall('notes.update', this.props.note._id, { title });
     }
+    componentDidMount() {
+        if (this.refs.title && this.refs.body) {
+            if (this.props.note.title) {
+                this.refs.body.focus();
+            } else {
+                this.refs.title.focus();
+            }
+        }
+    }
     componentDidUpdate(prevProps, prevState) {
         const currentNoteId = this.props.note ? this.props.note._id : undefined;
         const prevNodeId = prevProps.note ? prevProps.note._id : undefined;
@@ -39,6 +46,7 @@ export class Editor extends React.Component {
                 title: this.props.note.title,
                 body: this.props.note.body
             });
+            this.componentDidMount();
         }
     }
     componentWillUnmount() {
@@ -48,8 +56,8 @@ export class Editor extends React.Component {
         if (this.props.note) {
             return (
                 <div className='editor'>
-                    <input className='editor__title' ref={this.titleInput} value={this.state.title} placeholder='Title' onChange={this.handleTitleChange.bind(this)} />
-                    <textarea className='editor__body' ref={this.bodyInput} value={this.state.body} placeholder='Your note here' onChange={this.handleBodyChange.bind(this)}></textarea>
+                    <input className='editor__title' ref='title' value={this.state.title} placeholder='Title' onChange={this.handleTitleChange.bind(this)} autoFocus={true} />
+                    <textarea className='editor__body' ref='body' value={this.state.body} placeholder='Your note here' onChange={this.handleBodyChange.bind(this)}></textarea>
                     <div><button className='button button__secondary' onClick={this.handleDelete.bind(this)}>Delete Note</button></div>
                 </div>
             );
