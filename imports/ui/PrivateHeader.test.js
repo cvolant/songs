@@ -11,20 +11,20 @@ configure({ adapter: new Adapter() });
 if (Meteor.isClient) {
     describe('PrivateHeader', function () {
         it('should set button text to logout', function () {
-            const wrapper = mount(<PrivateHeader title='Test title' handleLogout={() => { }} />);
+            const wrapper = mount(<PrivateHeader title='Test title' handleLogout={() => { }} isNavOpen={true} toggleNav={() => {}} />);
             const buttonText = wrapper.find('.button').text();
             expect(buttonText).toEqual('Logout');
         });
 
         it('should use title prop as h1 text', function () {
-            const wrapper = mount(<PrivateHeader title='Pouet' handleLogout={() => { }} />);
+            const wrapper = mount(<PrivateHeader title='Pouet' handleLogout={() => { }} isNavOpen={true} toggleNav={() => {}} />);
             const h1Text = wrapper.find('h1').text();
             expect(h1Text).toEqual('Pouet');
         });
 
         it('should call handleLogout on click', function () {
             const spy = expect.createSpy();
-            const wrapper = mount(<PrivateHeader title="Title" handleLogout={spy} />);
+            const wrapper = mount(<PrivateHeader title="Title" handleLogout={spy} isNavOpen={true} toggleNav={() => {}} />);
 
             wrapper.find('.button').simulate('click');
             expect(spy).toHaveBeenCalled();

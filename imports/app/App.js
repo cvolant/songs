@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect, Link } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
 import NotFound from "../ui/NotFound";
@@ -8,9 +8,11 @@ import Signup from "../ui/Signup";
 import Dashboard from '../ui/Dashboard';
 import Login from "../ui/Login";
 
-function AuthRoute({ component: Component, auth, redirection, ...rest }) {
+function AuthRoute({ component: Component, auth, redirection, linkChild, ...rest }) {
   return (
     <Route {...rest} render={props => {
+      props.linkChild = linkChild;
+      console.log('props from AuthRoute: ', props);
       if (redirection) {
         console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`)
         Session.set('currentPagePrivacy', !!Meteor.userId() ? 'auth' : 'unauth');
@@ -60,13 +62,15 @@ export class Routes extends React.Component {
 
   render() {
     return (
-      <Switch>
-        <AuthRoute exact path="/" component={Login} auth={false} redirection='/dashboard' />
-        <AuthRoute path="/signup" component={Signup} auth={false} redirection='/dashboard' />
-        <AuthRoute exact path="/dashboard" component={Dashboard} auth={true} redirection='/' />
-        <AuthRoute path="/dashboard/:id" component={Dashboard} auth={true} redirection='/' />
-        <AuthRoute path="/*" component={NotFound} />
-      </Switch>
+      <div>
+        <Switch>
+          <AuthRoute exact path="/" component={Login} auth={false} redirection='/dashboard' linkChild={<Link to='/signup'>Need an account?</Link>} />
+          <AuthRoute path="/signup" component={Signup} auth={false} redirection='/dashboard' linkChild={<Link to='/'>Already have an account?</Link>} />
+          <AuthRoute exact path="/dashboard" component={Dashboard} auth={true} redirection='/' />
+          <AuthRoute path="/dashboard/:id" component={Dashboard} auth={true} redirection='/' />
+          <AuthRoute path="/*" component={NotFound} />
+        </Switch>
+      </div>
     );
   }
 };

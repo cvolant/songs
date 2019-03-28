@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 export class Login extends React.Component {
   constructor(props) {
     super(props);
+
+    console.log(this.props.linkChild);
     this.state = {
       error: ""
     };
@@ -45,7 +47,7 @@ export class Login extends React.Component {
             />
             <button className='button'>Login</button>
           </form>
-          <Link to='/signup'>Need an account ?</Link>
+          {this.props.linkChild}
         </div>
       </div>
     );
