@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from "prop-types";
 

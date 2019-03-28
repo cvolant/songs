@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import React from "react";
-import { Router, Route, browserHistory } from "react-router";
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import history from "./history";
 
 import NotFound from "../ui/NotFound";
 import Signup from "../ui/Signup";
@@ -8,37 +9,45 @@ import Dashboard from '../ui/Dashboard';
 import Login from "../ui/Login";
 import { Session } from 'meteor/session';
 
-const onEnterNotePage = (nextState) => {
-  Session.set('selectedNodeId', nextState.params.id);
-};
-const onLeaveNotePage = () => {
-  Session.set('selectedNodeId', undefined);
-};
-
-
-export const globalOnChange = (prevState, nextState) => {
-  globalOnEnter(nextState);
+function AuthRoute({ component: Component, auth, redirection, ...rest }) {
+  return (
+    <Route {...rest} render={props => {
+      if (redirection) {
+        console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`)
+        Session.set('currentPagePrivacy', !!Meteor.userId() ? 'auth' : 'unauth');
+        if (auth === !!Meteor.userId()) {
+          console.log(`OK, go to location: "${props.location.pathname}" => Component = `, Component);
+          return <Component {...props} />;
+        } else {
+          console.log(`Redirection to: "${redirection}" from location: "${props.location.pathname}" (match: "${props.match.path}")`);
+          return <Redirect to={{
+            pathname: redirection,
+            state: { from: props.location }
+          }} />;
+        }
+      } else {
+        Session.set('currentPagePrivacy', undefined);
+        return <Component {...props} />;
+      }
+    }} />
+  );
 }
-export const globalOnEnter = (nextState) => {
-  const lastRoute = nextState.routes[nextState.routes.length - 1];
-  Session.set('currentPagePrivacy', lastRoute.privacy);
-}
 
-export const routes = (
-  <Router history={browserHistory}>
-    <Route onEnter={globalOnEnter} onChange={globalOnChange}>
-      <Route path="/" component={Login} privacy='unauth' />
-      <Route path="/signup" component={Signup} privacy='unauth' />
-      <Route path="/dashboard" component={Dashboard} privacy='auth' />
-      <Route path="/dashboard/:id" component={Dashboard} privacy='auth' onEnter={onEnterNotePage} onLeave={onLeaveNotePage} />
-      <Route path="/*" component={NotFound} />
-    </Route>
-  </Router>
-);
+export const Routes = () => {
+  return (
+    <Switch>
+      <AuthRoute exact path="/" component={Login} auth={false} redirection='/dashboard' />
+      <AuthRoute path="/signup" component={Signup} auth={false} redirection='/dashboard' />
+      <AuthRoute exact path="/dashboard" component={Dashboard} auth={true} redirection='/' />
+      <AuthRoute path="/dashboard/:id" component={Dashboard} auth={true} redirection='/' />
+      <AuthRoute path="/*" component={NotFound} />
+    </Switch>
+  );
+};
 
 export const onAuthChange = (isAuthenticated, currentPagePrivacy) => {
   const isUnauthenticatedPage = currentPagePrivacy === 'unauth';
   const isAuthenticatedPage = currentPagePrivacy === 'auth';
-  if (isUnauthenticatedPage && isAuthenticated) browserHistory.replace("/dashboard");
-  else if (isAuthenticatedPage && !isAuthenticated) browserHistory.replace("/");
+  if (isUnauthenticatedPage && isAuthenticated) { console.log('history.replace("/dashboard")'); history.replace("/dashboard"); }
+  else if (isAuthenticatedPage && !isAuthenticated) { console.log('history.replace("/")'); history.replace("/"); }
 };

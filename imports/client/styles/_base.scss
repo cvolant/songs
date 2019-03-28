@@ -32,7 +32,7 @@ a {
   color: $body-default-color;
 }
 
-input[type="text"], input[type="textarea"], input[type="email"], input[type="password"] {
+input[type="text"], textarea, input[type="email"], input[type="password"] {
   color: $body-default-color;
   background-color: $input-background;
   border: 1px solid $input-border;

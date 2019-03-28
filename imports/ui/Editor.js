@@ -12,6 +12,8 @@ export class Editor extends React.Component {
             title: '',
             body: ''
         };
+        this.titleInput = React.createRef();
+        this.bodyInput = React.createRef();
     };
 
     handleDelete(e) {
@@ -43,8 +45,8 @@ export class Editor extends React.Component {
         if (this.props.note) {
             return (
                 <div className='editor'>
-                    <input className='editor__title' value={this.state.title} placeholder='Title' onChange={this.handleTitleChange.bind(this)} />
-                    <textarea className='editor__body' value={this.state.body} placeholder='Your note here' onChange={this.handleBodyChange.bind(this)}></textarea>
+                    <input className='editor__title' ref={this.titleInput} value={this.state.title} placeholder='Title' onChange={this.handleTitleChange.bind(this)} />
+                    <textarea className='editor__body' ref={this.bodyInput} value={this.state.body} placeholder='Your note here' onChange={this.handleBodyChange.bind(this)}></textarea>
                     <div><button className='button button__secondary' onClick={this.handleDelete.bind(this)}>Delete Note</button></div>
                 </div>
             );

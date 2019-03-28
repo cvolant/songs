@@ -1,6 +1,6 @@
 import React from "react";
 import { Accounts } from "meteor/accounts-base";
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 
