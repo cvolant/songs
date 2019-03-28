@@ -6,10 +6,10 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Session } from 'meteor/session';
 
 export const NoteListItem = (props) => {
-    const className = (props.selectedNodeId === props.note._id) ? 'item item--selected' : 'item';
+    const className = (props.selectedNoteId === props.note._id) ? 'item item--selected' : 'item';
     return (
         <div className={className} onClick={() => {
-            props.Session.set('selectedNodeId', props.note._id);
+            props.Session.set('selectedNoteId', props.note._id);
         }}>
             <h5 className='item__title'>{props.note.title || 'Untitled note'}</h5>
             <p className='item__subtitle'>Last update : {moment(props.note.updatedAt).format('DD/MM/YYYY')}</p>
@@ -27,6 +27,6 @@ export default withTracker(props => {
     return {
         meteorCall: Meteor.call,
         Session,
-        selectedNodeId: Session.get('selectedNodeId')
+        selectedNoteId: Session.get('selectedNoteId')
     };
 })(NoteListItem);

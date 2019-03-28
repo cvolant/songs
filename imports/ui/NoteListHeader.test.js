@@ -26,7 +26,7 @@ if (Meteor.isClient) {
             wrapper.find('button').simulate('click');
             meteorCall.calls[0].arguments[1](undefined, notes[0]._id);
             expect(meteorCall.calls[0].arguments[0]).toEqual('notes.insert');
-            expect(Session.set).toHaveBeenCalledWith('selectedNodeId', notes[0]._id);
+            expect(Session.set).toHaveBeenCalledWith('selectedNoteId', notes[0]._id);
         });
         it('should not set Session for failed inserts', function () {
             const spy = expect.createSpy();

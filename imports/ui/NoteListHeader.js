@@ -9,7 +9,7 @@ export const NoteListHeader = (props) => {
         <div className='item-list__header'>
             <button className='button' name='addNoteButton' onClick={() => props.meteorCall('notes.insert', (err, res) => {
                 if (res) {
-                    props.Session.set('selectedNodeId', res);
+                    props.Session.set('selectedNoteId', res);
                 }
             })}>Add note</button>
         </div>

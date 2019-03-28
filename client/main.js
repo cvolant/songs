@@ -16,10 +16,10 @@ Tracker.autorun(() => {
 });
 
 Tracker.autorun(() => {
-  const selectedNodeId = Session.get('selectedNodeId');
+  const selectedNoteId = Session.get('selectedNoteId');
   Session.set('isNavOpen', false);
-  if (selectedNodeId) {
-    history.push(`/dashboard/${selectedNodeId}`);
+  if (selectedNoteId) {
+    history.push(`/dashboard/${selectedNoteId}`);
   } else {
     history.push(`/dashboard`);
   }
@@ -38,7 +38,7 @@ Tracker.autorun(() => {
 }); */
 
 Meteor.startup(() => {
-  Session.set('selectedNodeId', undefined);
+  Session.set('selectedNoteId', undefined);
   Session.set('isNavOpen', false);
   ReactDOM.render((
     <Router history={history}>

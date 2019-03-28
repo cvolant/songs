@@ -18,7 +18,7 @@ export class Editor extends React.Component {
 
     handleDelete(e) {
         this.props.meteorCall('notes.remove', this.props.note._id);
-        this.props.setSelectedNodeId(undefined);
+        this.props.setselectedNoteId(undefined);
     }
     handleBodyChange(e) {
         const body = e.target.value;
@@ -42,7 +42,7 @@ export class Editor extends React.Component {
         }
     }
     componentWillUnmount() {
-        Session.set('selectedNodeId', undefined);
+        Session.set('selectedNoteId', undefined);
     }
     render() {
         if (this.props.note) {
@@ -56,7 +56,7 @@ export class Editor extends React.Component {
         } else {
             return (
                 <div className='editor__message'>
-                    {(this.props.selectedNodeId) ? <p>Note not found.</p> : <p>Pick or create a note to get started.</p>}
+                    {(this.props.selectedNoteId) ? <p>Note not found.</p> : <p>Pick or create a note to get started.</p>}
                 </div>
             );
         }
@@ -64,22 +64,22 @@ export class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-    selectedNodeId: PropTypes.string,
-    setSelectedNodeId: PropTypes.func.isRequired,
+    selectedNoteId: PropTypes.string,
+    setselectedNoteId: PropTypes.func.isRequired,
     meteorCall: PropTypes.func.isRequired,
     note: PropTypes.object
 }
 
 export default withTracker(props => {
-    const selectedNodeId = Session.get('selectedNodeId');
-    const setSelectedNodeId = (newId) => {
-        Session.set('selectedNodeId', newId);
+    const selectedNoteId = Session.get('selectedNoteId');
+    const setselectedNoteId = (newId) => {
+        Session.set('selectedNoteId', newId);
     };
 
     return {
-        selectedNodeId,
-        setSelectedNodeId,
+        selectedNoteId,
+        setselectedNoteId,
         meteorCall: Meteor.call,
-        note: Notes.findOne(selectedNodeId)
+        note: Notes.findOne(selectedNoteId)
     };
 })(Editor);
