@@ -41,6 +41,9 @@ export class Editor extends React.Component {
             });
         }
     }
+    componentWillUnmount() {
+        Session.set('selectedNodeId', undefined);
+    }
     render() {
         if (this.props.note) {
             return (
