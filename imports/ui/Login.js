@@ -7,15 +7,12 @@ import PropTypes from "prop-types";
 export class Login extends React.Component {
   constructor(props) {
     super(props);
-
-    console.log(this.props.linkChild);
     this.state = {
       error: ""
     };
   }
   onSubmit(e) {
     e.preventDefault();
-    console.log(this);
     let email = this.refs.email.value.trim();
     let password = this.refs.password.value.trim();
     this.props.handleLogin({ email }, password, (err) => {
