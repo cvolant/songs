@@ -3,11 +3,12 @@ import React from "react";
 import PrivateHeader from "./PrivateHeader.js";
 import NoteList from './NoteList';
 import Editor from "./Editor.js";
+import ButtonAppBar from "./ButtonAppBar.js";
 
 export default () => {
   return (
     <div>
-      <PrivateHeader title="Notes" />
+      <ButtonAppBar title="Notes" />
       <div className="page-content">
         <div className='page-content__sidebar'>
           <NoteList />

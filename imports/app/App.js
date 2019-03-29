@@ -1,13 +1,13 @@
 import { Meteor } from "meteor/meteor";
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Redirect, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Link } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
 import AuthRoute from './AuthRoute';
 import NotFound from "../ui/NotFound";
-import Signup from "../ui/Signup";
-import Dashboard from '../ui/Dashboard';
-import Login from "../ui/Login";
+import Dashboard from '../ui/Dashboard'; 
+import SignUp from "../ui/SignUp";
+import SignIn from "../ui/SignIn";
 
 export class App extends React.Component {
   constructor(props) {
@@ -43,43 +43,38 @@ export class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Switch>
-          <AuthRoute
-            exact path="/"
-            component={Login}
-            auth={false}
-            redirection='/dashboard'
-            linkChild={<Link to='/signup'>Need an account?</Link>}
-          />
-          <AuthRoute
-            path="/signup"
-            component={Signup}
-            auth={false}
-            redirection='/dashboard'
-            linkChild={<Link to='/'>Already have an account?</Link>}
-          />
-          <AuthRoute
-            exact path="/dashboard"
-            component={Dashboard}
-            auth={true}
-            redirection='/'
-          />
-          <AuthRoute
-            path="/dashboard/:id"
-            component={Dashboard}
-            auth={true}
-            redirection='/'
-          />
-          <AuthRoute
-            path="/*"
-            component={NotFound}
-          />
-        </Switch>
-      </div>
+      <Switch>
+        <AuthRoute
+          exact path="/"
+          component={SignIn}
+          auth={false}
+          redirection='/dashboard'
+          linkChild={<Link to='/signup'>Need an account?</Link>}
+        />
+        <AuthRoute
+          path="/signup"
+          component={SignUp}
+          auth={false}
+          redirection='/dashboard'
+          linkChild={<Link to='/'>Already have an account?</Link>}
+        />
+        <AuthRoute
+          exact path="/dashboard"
+          component={Dashboard}
+          auth={true}
+          redirection='/'
+        />
+        <AuthRoute
+          path="/dashboard/:id"
+          component={Dashboard}
+          auth={true}
+          redirection='/'
+        />
+        <AuthRoute
+          path="/*"
+          component={NotFound}
+        />
+      </Switch>
     );
   }
-};
-
-export const onAuthChange = (history, isAuthenticated, currentPagePrivacy) => {
 };
