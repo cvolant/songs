@@ -18,11 +18,7 @@
 }
 
 .head-bar__nav-toggle {
-  cursor: pointer;
-  height: 2rem;
-  width: 2rem;
-
   @include desktop {
-    display: none;
+    display: none !important;
   }
 }

@@ -1,21 +1,40 @@
 import React from "react";
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+
+import Paper from '@material-ui/core/Paper';
 
 import NoteList from './NoteList';
 import Editor from "./Editor.js";
 import ButtonAppBar from "./ButtonAppBar.js";
 
-export default () => {
+const styles = theme => ({
+  root: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+  },
+});
+
+export const Dashboard = props => {
+  const { classes } = props;
   return (
     <div>
       <ButtonAppBar title="Notes" />
       <div className="page-content">
-        <div className='page-content__sidebar'>
+        <Paper className={'page-content__sidebar ' + classes.root} elevation={1}>
           <NoteList />
-        </div>
-        <div className='page-content__main'>
+        </Paper>
+        <Paper className={'page-content__main ' + classes.root} elevation={1}>
           <Editor />
-        </div>
+        </Paper>
       </div>
     </div>
   );
 };
+
+Dashboard.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Dashboard);

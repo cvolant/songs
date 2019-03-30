@@ -4,6 +4,29 @@ import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Notes } from '../api/notes';
 import { Meteor } from 'meteor/meteor';
+import { withStyles } from '@material-ui/core/styles';
+
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import classNames from 'classnames';
+
+const styles = theme => ({
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    button: {
+      margin: theme.spacing.unit,
+    },
+    extendedIcon: {
+        marginRight: theme.spacing.unit,
+    },
+});
 
 export class Editor extends React.Component {
     constructor(props) {
@@ -31,9 +54,9 @@ export class Editor extends React.Component {
     componentDidMount() {
         if (this.refs.title && this.refs.body) {
             if (this.props.note.title) {
-                this.refs.body.focus();
+                //                this.refs.body.focus();
             } else {
-                this.refs.title.focus();
+                //                this.refs.title.focus();
             }
         }
     }
@@ -53,12 +76,36 @@ export class Editor extends React.Component {
         Session.set('selectedNoteId', undefined);
     }
     render() {
+        const { classes } = this.props;
         if (this.props.note) {
             return (
-                <div className='editor'>
-                    <input className='editor__title' ref='title' value={this.state.title} placeholder='Title' onChange={this.handleTitleChange.bind(this)} autoFocus={true} />
-                    <textarea className='editor__body' ref='body' value={this.state.body} placeholder='Your note here' onChange={this.handleBodyChange.bind(this)}></textarea>
-                    <div><button className='button button__secondary' onClick={this.handleDelete.bind(this)}>Delete Note</button></div>
+                <div className={`editor ${classes.container}`}>
+                    <TextField
+                        label="Title"
+                        ref='title'
+                        multiline
+                        rowsMax="2"
+                        className={classes.textField}
+                        margin="normal"
+                        variant="outlined"
+                        value={this.state.title}
+                        onChange={this.handleTitleChange.bind(this)}
+                        autoFocus={true}
+                    />
+                    <TextField
+                        label="Your note here"
+                        multiline
+                        //                        rows="4"
+                        className={classes.textField}
+                        margin="normal"
+                        variant="outlined"
+                        value={this.state.body}
+                        onChange={this.handleBodyChange.bind(this)}
+                    />
+                    <Button variant="outlined" color="secondary" className={classes.button} onClick={this.handleDelete.bind(this)}>
+                        <DeleteIcon />
+                        Delete note
+                    </Button>
                 </div>
             );
         } else {
@@ -72,6 +119,7 @@ export class Editor extends React.Component {
 }
 
 Editor.propTypes = {
+    classes: PropTypes.object.isRequired,
     selectedNoteId: PropTypes.string,
     setselectedNoteId: PropTypes.func.isRequired,
     meteorCall: PropTypes.func.isRequired,
@@ -90,4 +138,4 @@ export default withTracker(props => {
         meteorCall: Meteor.call,
         note: Notes.findOne(selectedNoteId)
     };
-})(Editor);
+})(withStyles(styles)(Editor));

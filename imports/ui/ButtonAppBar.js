@@ -32,7 +32,7 @@ function ButtonAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={props.toggleNav}>
+          <IconButton className={'head-bar__nav-toggle ' + classes.menuButton} color="inherit" aria-label="Menu" onClick={props.toggleNav}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>

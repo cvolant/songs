@@ -1,17 +1,29 @@
-import {Meteor} from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import {PropTypes} from 'prop-types';
-import { withTracker } from 'meteor/react-meteor-data';
+import { PropTypes } from 'prop-types';
 import { Session } from 'meteor/session';
+import { withTracker } from 'meteor/react-meteor-data';
+import { withStyles } from '@material-ui/core/styles';
+
+import Button from '@material-ui/core/Button';
+
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
 
 export const NoteListHeader = props => {
+    const { classes } = props;
     return (
         <div className='item-list__header'>
-            <button className='button' name='addNoteButton' onClick={() => props.meteorCall('notes.insert', (err, res) => {
+            <Button variant="contained" name='addNoteButton' color="primary" className={classes.button} onClick={() => props.meteorCall('notes.insert', (err, res) => {
                 if (res) {
                     props.Session.set('selectedNoteId', res);
                 }
-            })}>Add note</button>
+            })}>
+                Add note
+            </Button>
         </div>
     );
 };
@@ -26,4 +38,4 @@ export default withTracker(props => {
         meteorCall: Meteor.call,
         Session
     };
-})(NoteListHeader);
+})(withStyles(styles)(NoteListHeader));
