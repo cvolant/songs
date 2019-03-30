@@ -26,8 +26,8 @@ const styles = {
 };
 
 function ButtonAppBar(props) {
-    const navImageSrc = props.isNavOpen ? '/images/x.svg' : '/images/bars.svg';
-    const { classes } = props;
+  const navImageSrc = props.isNavOpen ? '/images/x.svg' : '/images/bars.svg';
+  const { classes } = props;
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -53,13 +53,10 @@ ButtonAppBar.propTypes = {
   toggleNav: PropTypes.func.isRequired
 };
 
-ButtonAppBar.propTypes = {
+export default withTracker(props => {
+  return {
+    handleLogout: () => Accounts.logout(),
+    isNavOpen: Session.get('isNavOpen'),
+    toggleNav: () => Session.set('isNavOpen', !Session.get('isNavOpen'))
   };
-  
-  export default withTracker(props => {
-    return {
-      handleLogout: () => Accounts.logout(),
-      isNavOpen: Session.get('isNavOpen'),
-      toggleNav: () => Session.set('isNavOpen', !Session.get('isNavOpen'))
-    };
-  })(withStyles(styles)(ButtonAppBar));
+})(withStyles(styles)(ButtonAppBar));

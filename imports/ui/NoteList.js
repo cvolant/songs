@@ -7,7 +7,7 @@ import NoteListItem from './NoteListItem';
 import NoteListHeader from './NoteListHeader';
 import NoteListEmptyItem from './NoteListEmptyItem';
 
-export const NoteList = (props) => {
+export const NoteList = props => {
     return (
         <div className='item-list'>
             <NoteListHeader />

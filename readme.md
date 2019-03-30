@@ -1,6 +1,6 @@
 # Notes App
 
-Built on Meteor and React - learning app.
+
 
 ## Getting Started
 

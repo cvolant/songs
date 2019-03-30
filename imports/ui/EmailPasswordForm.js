@@ -28,19 +28,33 @@ export class EmailPasswordForm extends React.Component {
         this.state = {
             error: ""
         };
-    }
+    };
     onSubmit(e) {
         e.preventDefault();
         let email = this.email.value.trim();
         let password = this.password.value.trim();
-        this.props.handleLogin({ email }, password, (err) => {
-            if (err) {
+        if (this.props.alreadySignedUp) {
+            this.props.handleLogin({ email }, password, (err) => {
+                if (err) {
+                    this.setState({ error: err.reason });
+                }
+                else {
+                    this.setState({ error: '' });
+                }
+            });
+        } else {
+            if (password.length < 6)
+              return this.setState({
+                error: "Password must be at least 6 characters long"
+              });
+            this.props.handleCreateUser({ email, password }, err => {
+              if (err) {
                 this.setState({ error: err.reason });
-            }
-            else {
-                this.setState({ error: '' });
-            }
-        });
+              } else {
+                this.setState({ error: "" });
+              }
+            });
+        }
     }
     render() {
         const { classes } = this.props;
@@ -49,10 +63,10 @@ export class EmailPasswordForm extends React.Component {
             <div>
                 {(this.state.error) ? (<Typography component="p">{this.state.error}</Typography>) : undefined}
 
-                <form className={classes.form} onSubmit={this.onSubmit.bind(this)} noValidate>
+                <form className={'formulaire ' + classes.form} onSubmit={this.onSubmit.bind(this)} noValidate>
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="email">Email Address</InputLabel>
-                        <Input inputRef={x => this.email = x} name="email" autoComplete="email" autoFocus />
+                        <Input inputRef={x => this.email = x} ref='email' name="email" autoComplete="email" autoFocus />
                     </FormControl>
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>

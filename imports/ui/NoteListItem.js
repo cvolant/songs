@@ -5,7 +5,7 @@ import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Session } from 'meteor/session';
 
-export const NoteListItem = (props) => {
+export const NoteListItem = props => {
     const className = (props.selectedNoteId === props.note._id) ? 'item item--selected' : 'item';
     return (
         <div className={className} onClick={() => {

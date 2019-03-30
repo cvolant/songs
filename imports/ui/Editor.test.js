@@ -15,22 +15,22 @@ if (Meteor.isClient) {
         const setselectedNoteId = expect.createSpy();
 
         it('should render pick note message', function () {
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
             expect(wrapper.find('p').text()).toEqual('Pick or create a note to get started.');
         });
         it('should render no note message', function () {
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} />);
             expect(wrapper.find('p').text()).toEqual('Note not found.');
         });
         it('should remove note', function () {
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
             wrapper.find('button').simulate('click');
             expect(meteorCall).toHaveBeenCalledWith('notes.remove', notes[0]._id);
             expect(setselectedNoteId).toHaveBeenCalledWith(undefined);
         });
         it('should update state and note body on body edit', function () {
             const newBody = 'This is the new body text';
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
             wrapper.find('textarea').simulate('change', {
                 target: {
                     value: newBody
@@ -41,7 +41,7 @@ if (Meteor.isClient) {
         });
         it('should update state and note title on title edit', function () {
             const newTitle = 'This is the new title text';
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} selectedNoteId={notes[0]._id} note={notes[0]} />);
             wrapper.find('input').simulate('change', {
                 target: {
                     value: newTitle
@@ -56,7 +56,7 @@ if (Meteor.isClient) {
             expect(wrapper.find('textarea').getElements()[0].props.value).toEqual(notes[0].body);
         }); */
         it('should set state for new note', function () {
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
             wrapper.setProps({
                 selectedNoteId: notes[0]._id,
                 note: notes[0]
@@ -65,7 +65,7 @@ if (Meteor.isClient) {
             expect(wrapper.state('body')).toEqual(notes[0].body);
         });
         it('should not set state if note props not provided', function () {
-            wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
+            const wrapper = mount(<Editor meteorCall={meteorCall} setselectedNoteId={setselectedNoteId} />);
             wrapper.setProps({
                 selectedNoteId: notes[0]._id,
             });
