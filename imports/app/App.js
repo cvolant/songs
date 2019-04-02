@@ -5,7 +5,7 @@ import { Session } from 'meteor/session';
 
 import AuthRoute from './AuthRoute';
 import NotFound from "../ui/NotFound";
-import Dashboard from '../ui/Dashboard'; 
+import Dashboard from '../ui/Dashboard';
 import SignUp from "../ui/SignUp";
 import SignIn from "../ui/SignIn";
 
@@ -66,7 +66,10 @@ export class App extends React.Component {
         />
         <AuthRoute
           path="/dashboard/:id"
-          component={Dashboard}
+          render={props => {
+            Session.set("selectedNoteId", props.match.params.id);
+            return <Dashboard {...props} />;
+          }}
           auth={true}
           redirection='/'
         />

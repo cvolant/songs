@@ -29,13 +29,13 @@ function ButtonAppBar(props) {
   const navImageSrc = props.isNavOpen ? '/images/x.svg' : '/images/bars.svg';
   const { classes } = props;
   return (
-    <div className={classes.root}>
+    <div className={'head-bar ' + classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className='head-bar__content'>
           <IconButton className={'head-bar__nav-toggle ' + classes.menuButton} color="inherit" aria-label="Menu" onClick={props.toggleNav}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
+          <Typography variant="h5" color="inherit" className={classes.grow}>
             {props.title}
           </Typography>
           <Button color="inherit" onClick={() => props.handleLogout()}>Logout</Button>

@@ -10,7 +10,6 @@ configure({ adapter: new Adapter() });
 
 if (Meteor.isClient) {
     describe('EmailPasswordForm', () => {
-        let wrapper;
         let handleCreateUser;
         let handleLogin;
         const email = 'some@email.address';

@@ -4,20 +4,28 @@ import { Route, Redirect } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
 export default AuthRoute = (
-  { component: Component, auth, redirection, linkChild, ...rest }
+  { component: Component, render: originalRender, auth, redirection, linkChild, ...rest }
 ) => {
 
   return (
     <Route {...rest} render={props => {
+      let goal;
 
       props.linkChild = linkChild;
+      if (originalRender) {
+        goal = originalRender(props);
+      } else if (Component) {
+        goal = <Component {...props} />;
+      } else {
+        throw new Meteor.Error('goal-needed', 'A component or a render function must be provided to the AuthRoute');
+      }
 
       if (redirection) {
         console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`)
         Session.set('currentPagePrivacy', !!Meteor.userId() ? 'auth' : 'unauth');
         if (auth === !!Meteor.userId()) {
           console.log(`OK, go to location: "${props.location.pathname}"`);
-          return <Component {...props} />;
+          return goal;
         } else {
           console.log(`Redirection to: "${redirection}" from location: "${props.location.pathname}" (match: "${props.match.path}")`);
           return <Redirect to={{
@@ -27,9 +35,8 @@ export default AuthRoute = (
         }
       } else {
         Session.set('currentPagePrivacy', undefined);
-        return <Component {...props} />;
+        return goal;
       }
-
     }} />
   );
 }

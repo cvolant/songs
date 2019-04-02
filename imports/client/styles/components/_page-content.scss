@@ -3,6 +3,8 @@
   height: $page-content-height;
   margin: 0 auto;
   max-width: $site-max-width;
+  position: relative;
+  z-index: 1;
 
   @include desktop {
     padding: $space;
@@ -17,7 +19,7 @@
     left: -110vw;
   transition: left .3s ease;
   width: 100vw;
-  z-index: 1;  // Fix bug: text areas that shows on the top
+  z-index: 9;  // Fix bug: text areas that shows on the top
 
   @include desktop {
     position: static;

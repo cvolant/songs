@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -15,37 +15,50 @@ const styles = theme => ({
     root: {
         width: '100%',
         maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.secondary.light,
     },
 });
 
 export const NoteList = props => {
     const { classes } = props;
+    const [searchEntry, setSearchEntry] = useState('');
+
+    const handleSearch = (e) => {
+        setSearchEntry(e.target.value);
+    }
+    
     return (
-        <List component="nav" className='item-list'>
-            <NoteListHeader />
-            {props.notes.length === 0 ?
-                <NoteListEmptyItem />
-                :
-                props.notes.map(note => {
-                    return (
-                        <NoteListItem key={note._id} note={note} />
-                    );
-                })
-            }
-        </List>
+        <div className='item-list__container'>
+            <NoteListHeader handleSearch={handleSearch} searchEntry={searchEntry} />
+            <List component="nav" className='item-list'>
+                {props.notesTriees.length === 0 ?
+                    <NoteListEmptyItem />
+                    :
+                    props.notesTriees(searchEntry).map(note => {
+                        return (
+                            <NoteListItem key={note._id} note={note} />
+                        );
+                    })
+                }
+            </List>
+        </div>
     );
 };
 
 NoteList.propTypes = {
-    notes: PropTypes.array.isRequired,
+    notesTriees: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
 };
 
 export default withTracker(props => {
     Meteor.subscribe('notes');
-
+    const notes = Notes.find({}, { sort: { updatedAt: -1 } }).fetch();
+    const notesTriees = searchEntry => {
+        const regex = searchEntry ? searchEntry : '';
+        const notes = Notes.find({ $or: [ { title: { $regex : regex, $options: 'i' } }, { body: { $regex : regex, $options: 'i' } } ] }, { sort: { updatedAt: -1 } }).fetch();
+        return notes;
+    }
     return {
-        notes: Notes.find({}, { sort: { updatedAt: -1 } }).fetch()
+        notesTriees
     };
 })(withStyles(styles)(NoteList));

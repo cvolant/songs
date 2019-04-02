@@ -1,4 +1,8 @@
 // Item List
+.item-list__container {
+    display: flex;
+    flex-direction: column;
+}
 .item-list {
     background-color: white;
     flex-grow: 1;
