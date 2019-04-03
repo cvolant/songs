@@ -17,6 +17,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-flip-move": "^3.0.3",
     "react-router-dom": "^5.0.0",
     "simpl-schema": "^1.5.5"
   },

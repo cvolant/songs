@@ -21,7 +21,7 @@ export default AuthRoute = (
       }
 
       if (redirection) {
-        console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`)
+        console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`);
         Session.set('currentPagePrivacy', !!Meteor.userId() ? 'auth' : 'unauth');
         if (auth === !!Meteor.userId()) {
           console.log(`OK, go to location: "${props.location.pathname}"`);

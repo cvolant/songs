@@ -1,17 +1,19 @@
 import { Meteor } from "meteor/meteor";
-import React from "react";
-import { BrowserRouter as Router, Switch, Link } from 'react-router-dom';
+import React from 'react';
 import { Session } from 'meteor/session';
-
-import AuthRoute from './AuthRoute';
-import NotFound from "../ui/NotFound";
-import Dashboard from '../ui/Dashboard';
-import SignUp from "../ui/SignUp";
-import SignIn from "../ui/SignIn";
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Routes from "./Routes";
+import theme from '../client/styles/theme.js';
+import '../startup/simple-schema-configuration.js';
 
 export class App extends React.Component {
   constructor(props) {
     super(props);
+
+    console.log(theme);
+    Session.set('selectedNoteId', undefined);
+    Session.set('isNavOpen', false);
 
     Tracker.autorun(() => {
       const isNavOpen = Session.get('isNavOpen');
@@ -43,41 +45,14 @@ export class App extends React.Component {
 
   render() {
     return (
-      <Switch>
-        <AuthRoute
-          exact path="/"
-          component={SignIn}
-          auth={false}
-          redirection='/dashboard'
-          linkChild={<Link to='/signup'>Need an account?</Link>}
-        />
-        <AuthRoute
-          path="/signup"
-          component={SignUp}
-          auth={false}
-          redirection='/dashboard'
-          linkChild={<Link to='/'>Already have an account?</Link>}
-        />
-        <AuthRoute
-          exact path="/dashboard"
-          component={Dashboard}
-          auth={true}
-          redirection='/'
-        />
-        <AuthRoute
-          path="/dashboard/:id"
-          render={props => {
-            Session.set("selectedNoteId", props.match.params.id);
-            return <Dashboard {...props} />;
-          }}
-          auth={true}
-          redirection='/'
-        />
-        <AuthRoute
-          path="/*"
-          component={NotFound}
-        />
-      </Switch>
+      <div>
+        <CssBaseline />
+        <MuiThemeProvider theme={theme}>
+          <Routes />
+        </MuiThemeProvider>
+      </div>
     );
   }
 };
+
+export default App;

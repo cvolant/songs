@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
+import FlipMove from 'react-flip-move';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -26,7 +27,7 @@ export const NoteList = props => {
     const handleSearch = (e) => {
         setSearchEntry(e.target.value);
     }
-    
+
     return (
         <div className='item-list__container'>
             <NoteListHeader handleSearch={handleSearch} searchEntry={searchEntry} />
@@ -34,11 +35,13 @@ export const NoteList = props => {
                 {props.notesTriees.length === 0 ?
                     <NoteListEmptyItem />
                     :
-                    props.notesTriees(searchEntry).map(note => {
-                        return (
-                            <NoteListItem key={note._id} note={note} />
-                        );
-                    })
+                    <FlipMove maintainContainerHeight={true}>
+                        {props.notesTriees(searchEntry).map(note => {
+                            return (
+                                <NoteListItem key={note._id} note={note} />
+                            );
+                        })}
+                    </FlipMove>
                 }
             </List>
         </div>
@@ -55,7 +58,7 @@ export default withTracker(props => {
     const notes = Notes.find({}, { sort: { updatedAt: -1 } }).fetch();
     const notesTriees = searchEntry => {
         const regex = searchEntry ? searchEntry : '';
-        const notes = Notes.find({ $or: [ { title: { $regex : regex, $options: 'i' } }, { body: { $regex : regex, $options: 'i' } } ] }, { sort: { updatedAt: -1 } }).fetch();
+        const notes = Notes.find({ $or: [{ title: { $regex: regex, $options: 'i' } }, { body: { $regex: regex, $options: 'i' } }] }, { sort: { updatedAt: -1 } }).fetch();
         return notes;
     }
     return {
