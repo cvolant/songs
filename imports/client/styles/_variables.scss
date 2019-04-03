@@ -51,5 +51,7 @@ $item-border-width: 4px;
 
 // Page content
 $page-content-height: calc(100vh - #{$header-height} - #{$space});
-$page-content-sidebar-width: 40rem;
+$page-content-sidebar-width: 50rem;
 $page-content-main-width: calc(#{$site-max-width} - #{$page-content-sidebar-width});
+$page-content-sidebar-width-extended: 80rem;
+$page-content-sidebar-width-shrinked: calc(#{$site-max-width} - #{$page-content-sidebar-width-extended});

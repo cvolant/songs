@@ -42,7 +42,16 @@
     color: $darkgrey;
     margin: 0;
 }
-
+.item__extract {
+    display: inline-block;
+    opacity: 0;
+    white-space: nowrap;
+    position: absolute;
+    transition: opacity 0.5s ease;
+}
+.item__extract--visible {
+    opacity: 1;
+}
 
 // Empty item
 .empty-item {

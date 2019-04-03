@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import { Session } from 'meteor/session';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
@@ -22,7 +24,7 @@ export const Dashboard = props => {
     <div>
       <ButtonAppBar title="Notes" />
       <div className="page-content">
-        <Paper className={'page-content__sidebar ' + classes.root} elevation={1}>
+        <Paper className={(props.searchFocus ? 'page-content__sidebar page-content__sidebar--extended ' : 'page-content__sidebar ') + classes.root} elevation={1}>
           <NoteList />
         </Paper>
         <Paper className={'page-content__main ' + classes.root} elevation={1}>
@@ -35,6 +37,11 @@ export const Dashboard = props => {
 
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
+  searchFocus: PropTypes.bool
 };
 
-export default withStyles(styles)(Dashboard);
+export default withTracker(props => {
+  return {
+      searchFocus: Session.get('searchFocus')
+  };
+})(withStyles(styles)(Dashboard));

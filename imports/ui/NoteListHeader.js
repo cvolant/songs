@@ -35,7 +35,7 @@ const styles = theme => ({
         },
     },
     searchIcon: {
-        width: theme.spacing.unit * 9,
+        width: theme.spacing.unit * 8,
         height: '100%',
         position: 'absolute',
         pointerEvents: 'none',
@@ -51,7 +51,7 @@ const styles = theme => ({
         paddingTop: theme.spacing.unit,
         paddingRight: theme.spacing.unit,
         paddingBottom: theme.spacing.unit,
-        paddingLeft: theme.spacing.unit * 9,
+        paddingLeft: theme.spacing.unit * 7,
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('sm')]: {
@@ -72,6 +72,15 @@ const styles = theme => ({
 
 export const NoteListHeader = props => {
     const { classes } = props;
+    const handleFocus = () => {
+        console.log('handleFocus!');
+        Session.set('searchFocus', true);
+    };
+    const handleFocusOut = () => {
+        console.log('handleFocusOut!');
+        Session.set('searchFocus', false);
+    };
+
     return (
         <div className='item-list__header'>
             <AppBar className='MuiPaper-rounded-15' color='secondary' position="static">
@@ -89,6 +98,8 @@ export const NoteListHeader = props => {
                             }}
                             value={props.searchEntry}
                             onChange={props.handleSearch.bind(this)}
+                            onFocus={handleFocus}
+                            onBlur={handleFocusOut}
                         />
                     </div>
                     <div>

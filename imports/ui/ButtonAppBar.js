@@ -25,7 +25,7 @@ const styles = {
   },
 };
 
-function ButtonAppBar(props) {
+export const ButtonAppBar = props => {
   const navImageSrc = props.isNavOpen ? '/images/x.svg' : '/images/bars.svg';
   const { classes } = props;
   return (
@@ -43,7 +43,7 @@ function ButtonAppBar(props) {
       </AppBar>
     </div>
   );
-}
+};
 
 ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,

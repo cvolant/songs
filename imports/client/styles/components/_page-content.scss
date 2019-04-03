@@ -18,6 +18,7 @@
     top: $header-height;
     left: -110vw;
   transition: left .3s ease;
+  transition: width .3s ease;
   width: 100vw;
   z-index: 9;  // Fix bug: text areas that shows on the top
 
@@ -25,6 +26,11 @@
     position: static;
     top: 0;
     width: $page-content-sidebar-width;
+  }
+}
+.page-content__sidebar--extended {
+  @include desktop {
+    width: $page-content-sidebar-width-extended;
   }
 }
 
@@ -37,7 +43,6 @@
   width: 100%;
 
   @include desktop {
-    width: $page-content-main-width;
     margin-left: $space;
   }
 }
