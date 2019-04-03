@@ -36,7 +36,7 @@ export const NoteListItem = props => {
             </ListItemIcon>
             <ListItemText
                 primary={props.note.title || 'Untitled note'}
-                secondary={<span>{moment(props.note.updatedAt).format('DD/MM/YYYY')}<span className={props.searchFocus ? 'item__extract item__extract--visible' : 'item__extract'}>{bodyExtract}</span></span>}
+                secondary={<span>{moment(props.note.updatedAt).format('DD/MM/YYYY')}<span className={props.searchFocus ? 'item__extract item__extract--visible' : 'item__extract'}>&nbsp;{bodyExtract}</span></span>}
             />
         </ListItem>
     );

@@ -27,8 +27,10 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
+        padding: theme.spacing.unit,
     },
-    extendedIcon: {
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
     },
 });

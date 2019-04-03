@@ -4,6 +4,7 @@
   margin: 0 auto;
   max-width: $site-max-width;
   position: relative;
+  top: 7rem;
   z-index: 1;
 
   @include desktop {
@@ -17,8 +18,7 @@
     bottom: 0;
     top: $header-height;
     left: -110vw;
-  transition: left .3s ease;
-  transition: width .3s ease;
+  transition: left .3s ease, width .3s ease;
   width: 100vw;
   z-index: 9;  // Fix bug: text areas that shows on the top
 

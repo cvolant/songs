@@ -73,11 +73,9 @@ const styles = theme => ({
 export const NoteListHeader = props => {
     const { classes } = props;
     const handleFocus = () => {
-        console.log('handleFocus!');
         Session.set('searchFocus', true);
     };
     const handleFocusOut = () => {
-        console.log('handleFocusOut!');
         Session.set('searchFocus', false);
     };
 
