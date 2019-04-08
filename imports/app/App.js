@@ -14,6 +14,7 @@ export class App extends React.Component {
     console.log(theme);
     Session.set('selectedNoteId', undefined);
     Session.set('isNavOpen', false);
+    Session.set('search', '');
 
     Tracker.autorun(() => {
       const isNavOpen = Session.get('isNavOpen');

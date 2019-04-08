@@ -6,8 +6,58 @@ import moment from 'moment';
 export const Notes = new Mongo.Collection('notes');
 
 if (Meteor.isServer) {
-    Meteor.publish('notes', function () {
-        return Notes.find({userId: this.userId});
+    Meteor.publish('notes', function ({ globalQuery, specificQueries }) {
+
+        const defaultFields = ['title', 'body'];
+        
+        console.log('\n-----------------------');
+        console.log('\nFrom publish notes, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
+
+        let foundNotes;
+        const isThereSpecificQueries = specificQueries ? Object.keys(specificQueries).length > 0 : false;
+
+        if (!globalQuery && !isThereSpecificQueries) {
+            console.log('=> no globalQuery, no specificQueries...');
+            foundNotes = Notes.find({ userId: this.userId });
+        } else if (isThereSpecificQueries) {
+            console.log('=> specificQueries...');
+            
+            let queries = [specificQueries];
+
+            if(globalQuery) {
+                const orQueries = defaultFields.map(defaultField => {
+                    const orQuery = {};
+                    orQuery[defaultField] = new RegExp(globalQuery, 'i');
+                    return orQuery;
+                });
+                queries.push({ '$or': orQueries });
+            }
+
+            foundNotes = Notes.find({
+                userId: this.userId,
+                '$and': queries
+            });
+
+        } else {
+            console.log('=> globalQuery without specificQueries...');
+            foundNotes = Notes.find(
+                {
+                    userId: this.userId,
+                    $text: {
+                        $search: globalQuery,
+                    },
+                },
+                {
+                    fields: {
+                        score: { $meta: "textScore" },
+                    },
+                    sort: {
+                        score: { $meta: "textScore" },
+                    },
+                }
+            );
+        }
+        return foundNotes;
     });
 }
 
@@ -73,12 +123,17 @@ Meteor.methods({
             throw new Meteor.Error('must be the owner to update');
         }
 
-        Notes.update({_id, userId: this.userId}, {
+        Notes.update({ _id, userId: this.userId }, {
             $set: {
                 updatedAt: moment().valueOf(),
                 ...updates
             }
         });
 
+    },
+
+    'notes.filtre'(search) {
+        searchQuery = search;
+        console.log('From notes.filtre, searchQuery =', searchQuery);
     }
 });

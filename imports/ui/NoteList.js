@@ -23,20 +23,49 @@ const styles = theme => ({
 export const NoteList = props => {
     const { classes } = props;
     const [searchEntry, setSearchEntry] = useState('');
+    const [delay, setDelay] = useState(undefined);
 
     const handleSearch = (e) => {
-        setSearchEntry(e.target.value);
-    }
+        const newEntry = e.target.value;
+        setSearchEntry(newEntry);
 
+        const specificEntries = newEntry.match(/\$\w+\[.*?(\]|\$|$)/g) || [];
+        console.log('specificEntries:', specificEntries);
+
+        let specificQueries = {};
+
+        if (specificEntries.length > 0) {
+            specificEntries.map(specificEntry => {
+                const queryFirstChar = specificEntry.indexOf('[') + 1;
+                const queryLastChar = specificEntry[specificEntry.length - 1] == ']' ? specificEntry.length - 1 : specificEntry.length;
+                const field = specificEntry.substring(1, queryFirstChar - 1);
+                const query = new RegExp(specificEntry.substring(queryFirstChar, queryLastChar), 'i');
+                specificQueries[field] = query;
+            });
+            console.log('specificQueries:', specificQueries);
+        }
+
+        const globalQuery = newEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
+        
+        ////////// Differer la recherche de qq secondes ////////////
+        clearTimeout(delay);
+        setDelay(setTimeout(() => {
+            console.log('Time out');
+            if(specificQueries === {}) Session.set('search', { globalQuery, specificQueries: '' });
+            else Session.set('search', { globalQuery, specificQueries });
+            props.filtre();
+        }, 700));
+    }
+    
     return (
         <div className='item-list__container'>
             <NoteListHeader handleSearch={handleSearch} searchEntry={searchEntry} />
             <List component="nav" className='item-list'>
-                {props.notesTriees.length === 0 ?
+                {props.notes.length === 0 ?
                     <NoteListEmptyItem />
                     :
                     <FlipMove maintainContainerHeight={true}>
-                        {props.notesTriees(searchEntry).map(note => {
+                        {props.notes.map(note => {
                             return (
                                 <NoteListItem key={note._id} note={note} />
                             );
@@ -49,19 +78,22 @@ export const NoteList = props => {
 };
 
 NoteList.propTypes = {
-    notesTriees: PropTypes.func.isRequired,
+    notes: PropTypes.array.isRequired,
+    filtre: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
 };
 
 export default withTracker(props => {
-    Meteor.subscribe('notes');
-    const notes = Notes.find({}, { sort: { updatedAt: -1 } }).fetch();
-    const notesTriees = searchEntry => {
-        const regex = searchEntry ? searchEntry : '';
-        const notes = Notes.find({ $or: [{ title: { $regex: regex, $options: 'i' } }, { body: { $regex: regex, $options: 'i' } }] }, { sort: { updatedAt: -1 } }).fetch();
-        return notes;
+
+    let subscription;
+    subscription = Meteor.subscribe('notes', Session.get('search'));
+
+    const filtre = () => {
+        if (subscription) subscription.stop();
     }
+
     return {
-        notesTriees
+        notes: Notes.find({}, { sort: { updatedAt: -1 } }).fetch(),
+        filtre
     };
 })(withStyles(styles)(NoteList));

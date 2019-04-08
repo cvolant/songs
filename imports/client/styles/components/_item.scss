@@ -2,6 +2,7 @@
 .item-list__container {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .item-list {
     background-color: white;
@@ -45,13 +46,17 @@
 }
 .item__extract {
     display: inline-block;
-    opacity: 0;
     white-space: nowrap;
     position: absolute;
     transition: opacity 0.5s ease;
+    @include desktop {
+        opacity: 0;
+    }
 }
 .item__extract--visible {
-    opacity: 1;
+    @include desktop {
+        opacity: 1;
+    }
 }
 
 // Empty item

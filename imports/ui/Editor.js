@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
-import { CssBaseline } from '@material-ui/core';
 
 const styles = theme => ({
     container: {
@@ -102,7 +101,7 @@ export class Editor extends React.Component {
                         variant="outlined"
                         value={this.state.title}
                         onChange={this.handleTitleChange.bind(this)}
-                        autoFocus={true}
+                        autoFocus={false}
                     />
                     <TextField
                         label="Your note here"
