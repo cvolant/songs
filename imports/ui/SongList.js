@@ -5,12 +5,15 @@ import FlipMove from 'react-flip-move';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
-import List from '@material-ui/core/List';
+import {
+    LinearProgress,
+    List
+} from '@material-ui/core';
 
-import { Notes } from '../api/notes';
-import NoteListItem from './NoteListItem';
-import NoteListHeader from './NoteListHeader';
-import NoteListEmptyItem from './NoteListEmptyItem';
+import { Songs } from '../api/songs';
+import SongListItem from './SongListItem';
+import SongListHeader from './SongListHeader';
+import SongListEmptyItem from './SongListEmptyItem';
 
 const styles = theme => ({
     root: {
@@ -20,7 +23,7 @@ const styles = theme => ({
     },
 });
 
-export const NoteList = props => {
+export const SongList = props => {
     const { classes } = props;
     const [searchEntry, setSearchEntry] = useState('');
     const [delay, setDelay] = useState(undefined);
@@ -46,28 +49,31 @@ export const NoteList = props => {
         }
 
         const globalQuery = newEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
-        
-        ////////// Differer la recherche de qq secondes ////////////
+
         clearTimeout(delay);
         setDelay(setTimeout(() => {
             console.log('Time out');
-            if(specificQueries === {}) Session.set('search', { globalQuery, specificQueries: '' });
+            if (specificQueries === {}) Session.set('search', { globalQuery, specificQueries: '' });
             else Session.set('search', { globalQuery, specificQueries });
-            props.filtre();
+            props.stopSubscription();
         }, 700));
     }
-    
+
     return (
         <div className='item-list__container'>
-            <NoteListHeader handleSearch={handleSearch} searchEntry={searchEntry} />
+            <SongListHeader
+                handleSearch={handleSearch}
+                searchEntry={searchEntry}
+            />
             <List component="nav" className='item-list'>
-                {props.notes.length === 0 ?
-                    <NoteListEmptyItem />
+                {props.loading ? <LinearProgress /> : ''}
+                {props.songs.length === 0 ?
+                    <SongListEmptyItem />
                     :
                     <FlipMove maintainContainerHeight={true}>
-                        {props.notes.map(note => {
+                        {props.songs.map(song => {
                             return (
-                                <NoteListItem key={note._id} note={note} />
+                                <SongListItem key={song._id} song={song} />
                             );
                         })}
                     </FlipMove>
@@ -77,23 +83,25 @@ export const NoteList = props => {
     );
 };
 
-NoteList.propTypes = {
-    notes: PropTypes.array.isRequired,
-    filtre: PropTypes.func.isRequired,
+SongList.propTypes = {
+    songs: PropTypes.array.isRequired,
+    stopSubscription: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
 };
 
 export default withTracker(props => {
 
-    let subscription;
-    subscription = Meteor.subscribe('notes', Session.get('search'));
+    const subscription = Meteor.subscribe('songs', Session.get('search'));
+    const loading = !subscription.ready();
 
-    const filtre = () => {
+    const stopSubscription = () => {
         if (subscription) subscription.stop();
     }
 
     return {
-        notes: Notes.find({}, { sort: { updatedAt: -1 } }).fetch(),
-        filtre
+        songs: Songs.find({}, { sort: { annee: -1 }, limit: 20 }).fetch(),
+        stopSubscription,
+        loading
     };
-})(withStyles(styles)(NoteList));
+})(withStyles(styles)(SongList));

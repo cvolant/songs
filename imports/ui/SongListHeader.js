@@ -6,7 +6,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import SyncIcon from '@material-ui/icons/Sync';
+import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import InputBase from '@material-ui/core/InputBase';
@@ -17,9 +18,6 @@ const styles = theme => ({
     root: {
         width: '100%',
     },
-    grow: {
-        flexGrow: 1,
-    },
     search: {
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
@@ -29,29 +27,32 @@ const styles = theme => ({
         },
         marginLeft: 0,
         width: '100%',
+        /* 
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing.unit,
+            marginLeft: theme.spacing(1),
             width: 'auto',
         },
+        */
     },
     searchIcon: {
-        width: theme.spacing.unit * 8,
+        width: theme.spacing(8),
         height: '100%',
         position: 'absolute',
         pointerEvents: 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        color: '#555',
     },
     inputRoot: {
         color: 'inherit',
         width: '100%',
     },
     inputInput: {
-        paddingTop: theme.spacing.unit,
-        paddingRight: theme.spacing.unit,
-        paddingBottom: theme.spacing.unit,
-        paddingLeft: theme.spacing.unit * 7,
+        paddingTop: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
+        paddingLeft: theme.spacing(7),
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('sm')]: {
@@ -62,15 +63,9 @@ const styles = theme => ({
             }, */
         },
     },
-    fab: {
-        margin: theme.spacing.unit,
-        position: 'relative',
-        top: '36px',
-        marginLeft: '2.5rem'
-    },
 });
 
-export const NoteListHeader = props => {
+export const SongListHeader = props => {
     const { classes } = props;
     const handleFocus = () => {
         Session.set('searchFocus', true);
@@ -83,7 +78,6 @@ export const NoteListHeader = props => {
         <div className='item-list__header'>
             <AppBar className='MuiPaper-rounded-15' color='secondary' position="static">
                 <Toolbar>
-                    <div className={classes.grow} />
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -100,28 +94,13 @@ export const NoteListHeader = props => {
                             onBlur={handleFocusOut}
                         />
                     </div>
-                    <div>
-                        <Fab
-                            name='addNoteButton'
-                            color="primary"
-                            aria-label="Add"
-                            className={classes.fab}
-                            onClick={() => props.meteorCall('notes.insert', (err, res) => {
-                                if (res) {
-                                    props.Session.set('selectedNoteId', res);
-                                }
-                            })}
-                        >
-                            <AddIcon />
-                        </Fab>
-                    </div>
                 </Toolbar>
             </AppBar>
         </div>
     );
 };
 
-NoteListHeader.propTypes = {
+SongListHeader.propTypes = {
     meteorCall: PropTypes.func.isRequired,
     Session: PropTypes.object.isRequired,
     handleSearch: PropTypes.func.isRequired,
@@ -133,4 +112,4 @@ export default withTracker(props => {
         meteorCall: Meteor.call,
         Session
     };
-})(withStyles(styles)(NoteListHeader));
+})(withStyles(styles)(SongListHeader));

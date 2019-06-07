@@ -1,23 +1,23 @@
-export const notes = [
+export const songs = [
     {
-        _id: 'note1Id',
-        title: 'note1Title',
-        body: 'note1Body',
+        _id: 'song1Id',
+        title: 'song1Title',
+        body: 'song1Body',
         updatedAt: 1486137505429,
-        userId: 'note1UserId'
+        userId: 'song1UserId'
     },
     {
-        _id: 'note2Id',
-        title: 'note2Title',
-        body: 'note2Body',
+        _id: 'song2Id',
+        title: 'song2Title',
+        body: 'song2Body',
         updatedAt: 0,
-        userId: 'note2UserId'
+        userId: 'song2UserId'
     },
     {
-        _id: 'note3Id',
+        _id: 'song3Id',
         title: '',
         body: '',
         updatedAt: 0,
-        userId: 'note3UserId'
+        userId: 'song3UserId'
     }
 ];

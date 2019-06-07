@@ -3,22 +3,23 @@ import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 import moment from 'moment';
 
-export const Notes = new Mongo.Collection('notes');
+export const Songs = new Mongo.Collection('songs');
 
 if (Meteor.isServer) {
-    Meteor.publish('notes', function ({ globalQuery, specificQueries }) {
+    Meteor.publish('songs', function ({ globalQuery, specificQueries }) {
 
         const defaultFields = ['title', 'body'];
         
-        console.log('\n-----------------------');
-        console.log('\nFrom publish notes, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
+        console.log('\n------------------------');
+        console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
 
-        let foundNotes;
+        let foundSongs;
         const isThereSpecificQueries = specificQueries ? Object.keys(specificQueries).length > 0 : false;
 
         if (!globalQuery && !isThereSpecificQueries) {
             console.log('=> no globalQuery, no specificQueries...');
-            foundNotes = Notes.find({ userId: this.userId });
+            foundSongs = Songs.find({}, { sort: { annee: -1 }, limit: 50 });
+            debugger;
         } else if (isThereSpecificQueries) {
             console.log('=> specificQueries...');
             
@@ -33,14 +34,11 @@ if (Meteor.isServer) {
                 queries.push({ '$or': orQueries });
             }
 
-            foundNotes = Notes.find({
-                userId: this.userId,
-                '$and': queries
-            });
+            foundSongs = Songs.find({ '$and': queries }, { sort: { annee: -1 }, limit: 50 });
 
         } else {
             console.log('=> globalQuery without specificQueries...');
-            foundNotes = Notes.find(
+            foundSongs = Songs.find(
                 {
                     userId: this.userId,
                     $text: {
@@ -53,21 +51,23 @@ if (Meteor.isServer) {
                     },
                     sort: {
                         score: { $meta: "textScore" },
+                        annee: -1,
                     },
+                    limit: 50
                 }
             );
         }
-        return foundNotes;
+        return foundSongs;
     });
 }
 
 Meteor.methods({
-    'notes.insert'() {
+    'songs.insert'() {
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
 
-        return Notes.insert({
+        return Songs.insert({
             title: '',
             body: '',
             userId: this.userId,
@@ -75,11 +75,12 @@ Meteor.methods({
         });
     },
 
-    'notes.remove'(_id) {
+    'songs.remove'(_id) {
+        /* 
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
-
+        */
         new SimpleSchema({
             _id: {
                 type: String,
@@ -87,43 +88,32 @@ Meteor.methods({
             }
         }).validate({ _id });
 
-        const removal = Notes.remove({ _id, userId: this.userId });
-        if (!removal) throw new Meteor.Error(`no note of _id=${_id} found to remove`);
+        const removal = Songs.remove({ _id: new Meteor.Collection.ObjectID(_id) /* , userId: this.userId */ });
+        if (!removal) throw new Meteor.Error(`no song of _id=${_id} found to remove`);
     },
 
-    'notes.update'(_id, updates) {
+    'songs.update'(_id, updates) {
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
+        console.log('From song.update. updates:', updates);
 
         new SimpleSchema({
             _id: {
                 type: String,
                 min: 1
-            },
-            title: {
-                type: String,
-                optional: true
-            },
-            body: {
-                type: String,
-                optional: true
             }
         }).validate({
-            _id,
-            ...updates
+            _id
         });
 
-        noteToUpdate = Notes.findOne(_id);
-
-        if (!noteToUpdate) {
-            throw new Meteor.Error(`no note of _id=${_id} found to update`);
-        }
-        else if (noteToUpdate.userId !== this.userId) {
-            throw new Meteor.Error('must be the owner to update');
+        songToUpdate = Songs.findOne(new Meteor.Collection.ObjectID(_id));
+        console.log('From song.update. songToUpdate:', songToUpdate);
+        if (!songToUpdate) {
+            throw new Meteor.Error(`no song of _id=${_id} found to update`);
         }
 
-        Notes.update({ _id, userId: this.userId }, {
+        Songs.update({ _id: songToUpdate._id }, {
             $set: {
                 updatedAt: moment().valueOf(),
                 ...updates
@@ -131,9 +121,4 @@ Meteor.methods({
         });
 
     },
-
-    'notes.filtre'(search) {
-        searchQuery = search;
-        console.log('From notes.filtre, searchQuery =', searchQuery);
-    }
 });

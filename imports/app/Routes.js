@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Link } from 'react-router-dom';
+import { Route, Switch, Link } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
 import AuthRoute from './AuthRoute';
@@ -34,13 +34,13 @@ export default Routes = () => {
         <AuthRoute
           path="/dashboard/:id"
           render={props => {
-            Session.set("selectedNoteId", props.match.params.id);
+            Session.set("selectedSongId", props.match.params.id);
             return <Dashboard {...props} />;
           }}
           auth={true}
           redirection='/'
         />
-        <AuthRoute
+        <Route
           path="/*"
           component={NotFound}
         />

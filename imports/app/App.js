@@ -1,10 +1,15 @@
 import { Meteor } from "meteor/meteor";
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { Session } from 'meteor/session';
+import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Routes from "./Routes";
+
+import 'normalize.css';
 import theme from '../client/styles/theme.js';
+
 import '../startup/simple-schema-configuration.js';
 
 export class App extends React.Component {
@@ -12,9 +17,17 @@ export class App extends React.Component {
     super(props);
 
     console.log(theme);
-    Session.set('selectedNoteId', undefined);
+    Session.set('selectedSongId', undefined);
     Session.set('isNavOpen', false);
     Session.set('search', '');
+    
+    localStorage.setItem('zoom', localStorage.getItem('zoom') || (
+      this.props.width == 'xs' ? 0.7
+        : this.props.width == 'sm' ? 0.8
+          : this.props.width == 'md' ? 0.9
+            : this.props.width == 'lg' ? 1
+              : 1.1
+    ));
 
     Tracker.autorun(() => {
       const isNavOpen = Session.get('isNavOpen');
@@ -34,10 +47,10 @@ export class App extends React.Component {
     });
 
     Tracker.autorun(() => {
-      const selectedNoteId = Session.get('selectedNoteId');
+      const selectedSongId = Session.get('selectedSongId');
       Session.set('isNavOpen', false);
-      if (selectedNoteId) {
-        props.history.push(`/dashboard/${selectedNoteId}`);
+      if (selectedSongId) {
+        props.history.push(`/dashboard/${selectedSongId}`);
       } else {
         props.history.push(`/dashboard`);
       }
@@ -56,4 +69,8 @@ export class App extends React.Component {
   }
 };
 
-export default App;
+App.propTypes = {
+  width: PropTypes.string.isRequired,
+};
+
+export default withWidth()(App);

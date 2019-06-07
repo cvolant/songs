@@ -20,7 +20,7 @@ export default theme = createMuiTheme({
         htmlFontSize: 10,
         useNextVariants: true,
         // Use the system font instead of the default Roboto font.
-/*         fontFamily: [
+         fontFamily: [
             '-apple-system',
             'BlinkMacSystemFont',
             '"Segoe UI"',
@@ -31,18 +31,18 @@ export default theme = createMuiTheme({
             '"Apple Color Emoji"',
             '"Segoe UI Emoji"',
             '"Segoe UI Symbol"',
-        ].join(','), */
-/*         h1: {
-            fontSize: '1.8rem',
+        ].join(','),
+        h1: {
+            fontSize: '5rem',
         },
         h2: {
-            fontSize: '1.6rem',
+            fontSize: '3.5rem',
         },
         h3: {
-            fontSize: '1.4rem',
+            fontSize: '2.5rem',
         },
         h4: {
-            fontSize: '1.2rem',
-        }, */
+            fontSize: '1.5rem',
+        },
     },
 });

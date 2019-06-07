@@ -19,35 +19,42 @@ const styles = theme => ({
     },
 });
 
-export const NoteListItem = props => {
+export const SongListItem = props => {
     const { classes } = props;
     const extractLength = 20;
-    const bodyExtract = props.note.body ? (' - ' + props.note.body.substring(0, extractLength) + (props.note.body.length > extractLength ? '...' : '')) : '';
+    const bodyExtract = props.song.pg && props.song.pg[0] && props.song.pg[0].pg ? (' - ' + props.song.pg[0].pg.substring(0, extractLength) + (props.song.pg[0].pg.length > extractLength ? '...' : '')) : '';
     return (
         <ListItem
-        button
-        selected={props.selectedNoteId === props.note._id}
-        onClick={() => {
-            props.Session.set('selectedNoteId', props.note._id);
-        }}
+            button
+            selected={props.selectedSongId === props.song._id}
+            onClick={() => {
+                console.log(props.song._id);
+                props.Session.set('selectedSongId', props.song._id._str);
+            }}
         >
             <ListItemIcon>
                 <NoteIcon />
             </ListItemIcon>
             <ListItemText
-                primary={props.note.title || 'Untitled note'}
-                secondary={<span>{moment(props.note.updatedAt).format('DD/MM/YYYY')}<span className={props.searchFocus ? 'item__extract item__extract--visible' : 'item__extract'}>&nbsp;{bodyExtract}</span></span>}
+                primary={props.song.titre || 'Untitled song'}
+                secondary={
+                    <span>{props.song.annee}
+                        <span className={props.searchFocus ? 'item__extract item__extract--visible' : 'item__extract'}>
+                            &nbsp;{bodyExtract}
+                        </span>
+                    </span>
+                }
             />
         </ListItem>
     );
 };
 
-NoteListItem.propTypes = {
-    note: PropTypes.object.isRequired,
+SongListItem.propTypes = {
+    song: PropTypes.object.isRequired,
     Session: PropTypes.object.isRequired,
     meteorCall: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
-    selectedNoteId: PropTypes.string,
+    selectedSongId: PropTypes.string,
     searchFocus: PropTypes.bool
 };
 
@@ -55,7 +62,7 @@ export default withTracker(props => {
     return {
         meteorCall: Meteor.call,
         Session,
-        selectedNoteId: Session.get('selectedNoteId'),
+        selectedSongId: Session.get('selectedSongId'),
         searchFocus: Session.get('searchFocus')
     };
-})(withStyles(styles)(NoteListItem));
+})(withStyles(styles)(SongListItem));

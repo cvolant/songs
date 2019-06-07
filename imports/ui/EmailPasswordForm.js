@@ -14,10 +14,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 const styles = theme => ({
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
+        marginTop: theme.spacing(1),
     },
     submit: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
     },
 });
 

@@ -4,8 +4,6 @@
   margin: 0 auto;
   max-width: $site-max-width;
   position: relative;
-  top: 7rem;
-  z-index: 1;
 
   @include desktop {
     padding: $space;
@@ -40,6 +38,7 @@
 
 .page-content__main {
   display: flex;
+  flex-direction: column;
   width: 100%;
 
   @include desktop {
