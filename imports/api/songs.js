@@ -8,7 +8,7 @@ export const Songs = new Mongo.Collection('songs');
 if (Meteor.isServer) {
     Meteor.publish('songs', function ({ globalQuery, specificQueries }) {
 
-        const defaultFields = ['title', 'body'];
+        const defaultFields = ['titre', 'sousTitre', 'auteur', 'compositeur', 'editeur', 'numero', 'cote', 'nouvelleCote'];
         
         console.log('\n------------------------');
         console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);

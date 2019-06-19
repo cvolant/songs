@@ -8,7 +8,6 @@ export default AuthRoute = ({
   render: originalRender,
   auth,
   redirection,
-  linkChild,
   ...rest
 }) => (
     <Route
@@ -17,7 +16,6 @@ export default AuthRoute = ({
         console.log('From AuthRoute. props:', props);
         let goal;
 
-        props.linkChild = linkChild;
         if (originalRender) {
           goal = originalRender(props);
         } else if (Component) {
@@ -40,6 +38,7 @@ export default AuthRoute = ({
             }} />;
           }
         } else {
+          console.log('No redirection, go to goal. goal:', goal);
           Session.set('currentPagePrivacy', undefined);
           return goal;
         }

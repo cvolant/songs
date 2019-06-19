@@ -8,7 +8,7 @@ import App from "../imports/app/App";
 Meteor.startup(() => {
   ReactDOM.render((
     <Router>
-        <Route path="/" component={App} />
+      <Route path="/" component={App} />
     </Router>
   ), document.getElementById("app"));
 });

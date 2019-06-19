@@ -4,7 +4,7 @@ import expect from 'expect';
 import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { SongList } from './SongList';
+import { SongList } from '.';
 import SongListItem from './SongListItem';
 import SongListEmptyItem from './SongListEmptyItem';
 import { songs } from '../fixtures/fixtures';

@@ -8,8 +8,8 @@ import Card from '@material-ui/core/Card';
 
 import LogoMenu from './LogoMenu';
 import SongList from './SongList';
-import Editor from "./Editor.js";
-import ButtonAppBar from "./ButtonAppBar.js";
+import Editor from "./Editor";
+import ButtonAppBar from "./formerComponents/ButtonAppBar.js";
 
 const styles = theme => ({
   root: {

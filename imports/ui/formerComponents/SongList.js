@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
-import FlipMove from 'react-flip-move';
+import clsx from 'clsx';
+/* import FlipMove from 'react-flip-move'; */
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -10,29 +11,36 @@ import {
     List
 } from '@material-ui/core';
 
-import { Songs } from '../api/songs';
+import { Songs } from '../../api/songs';
 import SongListItem from './SongListItem';
 import SongListHeader from './SongListHeader';
 import SongListEmptyItem from './SongListEmptyItem';
 
 const styles = theme => ({
     root: {
-        width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.secondary.light,
+        background: 'transparent',
+        overflowY: 'auto',
     },
+    list: {
+        paddingRight: theme.spacing(4),
+        marginTop: theme.spacing(4),
+    }
 });
 
 export const SongList = props => {
     const { classes } = props;
+    let searchEntry, setSearchEntry;
     const [searchEntry, setSearchEntry] = useState('');
     const [delay, setDelay] = useState(undefined);
 
-    const handleSearch = (e) => {
+    const handleSearchChange = (e) => {
         const newEntry = e.target.value;
         setSearchEntry(newEntry);
+        handleSearch();
+    };
 
-        const specificEntries = newEntry.match(/\$\w+\[.*?(\]|\$|$)/g) || [];
+    const handleSearch = () => {
+            const specificEntries = searchEntry.match(/\$\w+\[.*?(\]|\$|$)/g) || [];
         console.log('specificEntries:', specificEntries);
 
         let specificQueries = {};
@@ -48,7 +56,7 @@ export const SongList = props => {
             console.log('specificQueries:', specificQueries);
         }
 
-        const globalQuery = newEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
+        const globalQuery = searchEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
 
         clearTimeout(delay);
         setDelay(setTimeout(() => {
@@ -60,23 +68,25 @@ export const SongList = props => {
     }
 
     return (
-        <div className='item-list__container'>
+        <div className={clsx(classes.root, 'item-list__container')}>
             <SongListHeader
-                handleSearch={handleSearch}
+                handleSearch={handleSearchChange}
                 searchEntry={searchEntry}
             />
-            <List component="nav" className='item-list'>
+            <List component="nav" className={clsx(classes.list, 'item-list')}>
                 {props.loading ? <LinearProgress /> : ''}
                 {props.songs.length === 0 ?
                     <SongListEmptyItem />
                     :
-                    <FlipMove maintainContainerHeight={true}>
+                    <div>
+                    {/* <FlipMove maintainContainerHeight={true}> */}
                         {props.songs.map(song => {
                             return (
                                 <SongListItem key={song._id} song={song} />
                             );
                         })}
-                    </FlipMove>
+                    {/* </FlipMove> */}
+                    </div>
                 }
             </List>
         </div>

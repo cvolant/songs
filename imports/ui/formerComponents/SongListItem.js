@@ -14,8 +14,7 @@ import NoteIcon from '@material-ui/icons/Note';
 const styles = theme => ({
     root: {
         width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
+        borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
     },
 });
 
@@ -26,6 +25,7 @@ export const SongListItem = props => {
     return (
         <ListItem
             button
+            className={classes.root}
             selected={props.selectedSongId === props.song._id}
             onClick={() => {
                 console.log(props.song._id);

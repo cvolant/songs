@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types';
+import { Accounts } from "meteor/accounts-base";
+import { Session } from "meteor/session";
+import { withTracker } from 'meteor/react-meteor-data';
 import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
 import { ButtonBase } from '@material-ui/core';
@@ -15,6 +19,7 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     right: 0,
     overflow: 'hidden',
+    zIndex: 2,
   },
 
   logo: {
@@ -102,34 +107,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const LogoMenu = props => {
-  const [scale, setScale] = useState(1);
-  const classes = useStyles({ scale });
-
-  const handleToggleTabs = () => {
-    if (scale == 1) setScale(0.65);
-    else setScale(1);
-  }
+export const LogoMenu = ({ handleLogout, handleToggleNav, isNavOpen, handleToggle, isDeployed }) => {
+  const classes = useStyles({ scale: isDeployed ? 1 : 0.65 });
 
   return (
     <div className={classes.root}>
 
       <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
-      <ButtonBase component='div' className={clsx(classes.tabShape, classes.tab, classes.tab1)}>
+      <ButtonBase
+        aria-label='Head home'
+        className={clsx(classes.tabShape, classes.tab, classes.tab1)}
+        component='div'
+      >
         <div className={clsx(classes.tabIcon, classes.tabIcon1)}>
           <Home />
         </div>
       </ButtonBase>
 
       <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
-      <ButtonBase component='div' className={clsx(classes.tabShape, classes.tab, classes.tab2)}>
+      <ButtonBase
+        aria-label='Toggle menu'
+        className={clsx(classes.tabShape, classes.tab, classes.tab2)}
+        component='div'
+        onClick={handleToggleNav}
+      >
         <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-          <Menu />
+          {isNavOpen ? <Menu /> : <Clear />}
         </div>
       </ButtonBase >
 
       <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
-      <ButtonBase component='div' className={clsx(classes.tabShape, classes.tab, classes.tab3)}>
+      <ButtonBase
+        aria-label='Log in, log out'
+        className={clsx(classes.tabShape, classes.tab, classes.tab3)}
+        component='div'
+        onClick={() => handleLogout()}
+      >
         <div className={clsx(classes.tabIcon, classes.tabIcon3)}>
           <Person />
         </div>
@@ -138,7 +151,7 @@ export const LogoMenu = props => {
       <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
       <ButtonBase
         component='div'
-        onClick={handleToggleTabs}
+        onClick={handleToggle}
         className={clsx(classes.logoAreaShape, classes.logoArea)}
       >
         <Logo className={classes.logo} fill={theme.palette.secondary.main} />
@@ -147,4 +160,18 @@ export const LogoMenu = props => {
   );
 }
 
-export default LogoMenu;
+LogoMenu.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
+  handleToggleNav: PropTypes.func.isRequired,
+  isNavOpen: PropTypes.bool.isRequired,
+  handleToggle: PropTypes.func.isRequired,
+  isDeployed: PropTypes.bool.isRequired,
+};
+
+export default withTracker(props => {
+  return {
+    handleLogout: () => Accounts.logout(),
+    isNavOpen: Session.get('isNavOpen'),
+    handleToggleNav: () => Session.set('isNavOpen', !Session.get('isNavOpen'))
+  };
+})(LogoMenu);

@@ -4,12 +4,13 @@ import { Session } from 'meteor/session';
 import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
-import { Songs } from '../api/songs';
 
-import PrintSong from './PrintSong';
-import Paragraph from './editorComponents/Paragraph';
-import Screen from './Screen';
-import Title from './editorComponents/Title';
+import { Songs } from '../../api/songs';
+
+import PrintSong from '../PrintSong';
+import Paragraph from './Paragraph';
+import Screen from '../Screen';
+import Title from './Title';
 import {
     Button,
     CardActions,
