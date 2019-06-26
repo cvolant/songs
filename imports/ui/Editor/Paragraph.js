@@ -6,6 +6,7 @@ import {
   Card,
   CardActions,
   CardHeader,
+  Grid,
   IconButton,
   MenuItem,
   TextField,
@@ -20,20 +21,23 @@ import {
 
 const styles = theme => ({
   card: {
+    height: '100%',
     margin: theme.spacing(1),
     transition: 'height 0.5s',
-    border: '2px solid transparent',
-
+    width: '100%',
   },
   hoverableCard: {
     '&:hover': {
-      backgroundColor: '#ccc',
+      backgroundColor: '#ddd',
       transition: 'background-color 0.3s'
     }
   },
   selectedCard: {
-    borderColor: '#888',
-    backgroundColor: '#ddd',
+    background: `radial-gradient(circle,
+      rgba(100,80,50,0.1) 0%,
+      rgba(100,80,50,0.2) 80%,
+      rgba(100,80,50,0.3) 100%
+      )`,
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -89,100 +93,102 @@ const Paragraph = (props) => {
   ];
 
   return (
-    <Card
-      raised
-      className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
-      onClick={edit ? () => { } : handleSelect}
-    >
-      <CardHeader
-        action={
-          editGlobal ?
-            <div className={classes.actionButtonColumn} >
-              <IconButton
-                color={edit ? "primary" : "default"}
-                onClick={handleEditPg}
-              >
-                <Edit />
-              </IconButton>
-              {edit ?
-                <IconButton onClick={handlePgCancel}>
-                  <Cancel />
+    <Grid item xs={12} md={6} xl={4}>
+      <Card
+        className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
+        onClick={edit ? () => {} : handleSelect}
+        raised
+      >
+        <CardHeader
+          action={
+            editGlobal ?
+              <div className={classes.actionButtonColumn} >
+                <IconButton
+                  color={edit ? "primary" : "default"}
+                  onClick={handleEditPg}
+                >
+                  <Edit />
                 </IconButton>
-                : undefined}
-            </div>
+                {edit ?
+                  <IconButton onClick={handlePgCancel}>
+                    <Cancel />
+                  </IconButton>
+                  : undefined}
+              </div>
+              :
+              undefined
+          }
+          title={edit ?
+            <TextField
+              select
+              label={'Type'}
+              defaultValue='paragraph'
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              value={paragraph.label}
+              onChange={handleLabelChange}
+            >
+              {types.map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
             :
-            undefined
-        }
-        title={edit ?
-          <TextField
-            select
-            label={'Type'}
-            defaultValue='paragraph'
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-            value={paragraph.label}
-            onChange={handleLabelChange}
-          >
-            {types.map(option => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          :
-          paragraph.label === 'paragraphe' ? undefined : paragraph.label
-        }
-        titleTypographyProps={edit ?
-          {
-            variant: 'body1',
-            color: 'textSecondary'
+            paragraph.label === 'paragraphe' ? undefined : paragraph.label
           }
-          :
-          {
-            variant: 'overline',
-            color: 'textSecondary'
+          titleTypographyProps={edit ?
+            {
+              variant: 'body1',
+              color: 'textSecondary'
+            }
+            :
+            {
+              variant: 'overline',
+              color: 'textSecondary'
+            }
           }
-        }
-        subheader={edit ?
-          <TextField
-            label='Contenu'
-            multiline
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-            value={paragraph.pg}
-            onChange={handlePgChange}
-            autoFocus={true}
-          />
-          :
-          paragraph.pg
-        }
-        subheaderTypographyProps={edit ? {} :
-          {
-            color: 'textPrimary',
-            style: {                      // FIXME: Must find a solution to put this as a class.
-              whiteSpace: 'pre-line',
-              flexGrow: 1,
-              margin: theme.spacing(1),
-            },
+          subheader={edit ?
+            <TextField
+              label='Contenu'
+              multiline
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              value={paragraph.pg.replace(/<br\/>/g, '')}
+              onChange={handlePgChange}
+              autoFocus={true}
+            />
+            :
+            paragraph.pg.replace(/<br\/>/g, '')
           }
-        }
-      />
-      <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
-        <div>
-          <IconButton color='primary' onClick={handleMoveUp}>
-            <ArrowUpward />
+          subheaderTypographyProps={edit ? {} :
+            {
+              color: 'textPrimary',
+              style: {                      // FIXME: Must find a solution to put this as a class.
+                whiteSpace: 'pre-line',
+                flexGrow: 1,
+                margin: theme.spacing(1),
+              },
+            }
+          }
+        />
+        <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
+          <div>
+            <IconButton color='primary' onClick={handleMoveUp}>
+              <ArrowUpward />
+            </IconButton>
+            <IconButton color='primary' onClick={handleMoveDown}>
+              <ArrowDownward />
+            </IconButton>
+          </div>
+          <IconButton className={classes.delete} onClick={handleDeletePg}>
+            <Delete />
           </IconButton>
-          <IconButton color='primary' onClick={handleMoveDown}>
-            <ArrowDownward />
-          </IconButton>
-        </div>
-        <IconButton className={classes.delete} onClick={handleDeletePg}>
-          <Delete />
-        </IconButton>
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
+    </Grid>
   );
 }
 

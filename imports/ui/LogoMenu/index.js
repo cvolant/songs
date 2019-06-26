@@ -1,25 +1,32 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { Accounts } from "meteor/accounts-base";
-import { Session } from "meteor/session";
 import { withTracker } from 'meteor/react-meteor-data';
 import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
 import { ButtonBase } from '@material-ui/core';
-import { Clear, Home, Menu, Person } from '@material-ui/icons';
+import { ExpandLess, Help, Menu, Person } from '@material-ui/icons';
 
 import Logo from './Logo';
+import TopMenuLarge from './TopMenuLarge';
+import TopMenuSmall from './TopMenuSmall';
+import TopMenuContent from './TopMenuContent';
 
 const useStyles = makeStyles(theme => ({
   root: {
     margin: '0 auto',
-    width: '15rem',
-    height: '15rem',
+    width: theme.sizes.menuItem,
+    height: theme.sizes.menuItem,
     position: 'fixed',
     top: 0,
     right: 0,
-    overflow: 'hidden',
-    zIndex: 2,
+    zIndex: 2000,
+  },
+
+  drawerPaper: {
+    background: theme.palette.primary.main,
+    color: 'white',
+    padding: theme.spacing(0, 1),
   },
 
   logo: {
@@ -36,8 +43,8 @@ const useStyles = makeStyles(theme => ({
 
   logoAreaShape: {
     margin: '0 auto',
-    width: '50%',
-    height: '50%',
+    width: '100%',
+    height: '100%',
     position: 'absolute',
     right: '0',
 
@@ -94,11 +101,11 @@ const useStyles = makeStyles(theme => ({
 
   tabShape: {
     color: 'black',
-    height: '85%',
+    height: '175%',
     margin: '0 auto',
     position: 'absolute',
     right: '0',
-    width: '85%',
+    width: '175%',
     transition: 'all 0.3s ease',
 
     /* border-radius */
@@ -107,71 +114,105 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const LogoMenu = ({ handleLogout, handleToggleNav, isNavOpen, handleToggle, isDeployed }) => {
-  const classes = useStyles({ scale: isDeployed ? 1 : 0.65 });
+export const LogoMenu = ({ handleLogout, handleToggleLogoMenu, logoMenuDeployed, smallDevice }) => {
+  const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
+  const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
+
+  const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
+
+  const handleToggleTopMenu = oc => event => {
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      console.log('From LogoMenu, handleToggleTopMenu. aborted. event.type:', event.type, 'event.key:', event.key);
+      return;
+    }
+    console.log('From LogoMenu, handleToggleTopMenu. performed. oc (should be a bool):', oc, 'former topMenuIsOpen:', topMenuIsOpen);
+    setTopMenuIsOpen(typeof oc == 'undefined' ? !topMenuIsOpen : !!oc);
+  }
 
   return (
-    <div className={classes.root}>
-
-      <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
-      <ButtonBase
-        aria-label='Head home'
-        className={clsx(classes.tabShape, classes.tab, classes.tab1)}
-        component='div'
+    <React.Fragment>
+      {
+      smallDevice ?
+      <TopMenuSmall
+      PaperProps={PaperProps}
+        handleToggleTopMenu={handleToggleTopMenu}
+        topMenuIsOpen={topMenuIsOpen}
       >
-        <div className={clsx(classes.tabIcon, classes.tabIcon1)}>
-          <Home />
-        </div>
-      </ButtonBase>
-
-      <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
-      <ButtonBase
-        aria-label='Toggle menu'
-        className={clsx(classes.tabShape, classes.tab, classes.tab2)}
-        component='div'
-        onClick={handleToggleNav}
+        <TopMenuContent
+          handleToggleTopMenu={handleToggleTopMenu}
+          smallDevice={smallDevice}
+        />
+      </TopMenuSmall>
+      :
+      <TopMenuLarge
+        PaperProps={PaperProps}
+        topMenuIsOpen={topMenuIsOpen}
+        smallDevice={smallDevice}
       >
-        <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-          {isNavOpen ? <Menu /> : <Clear />}
-        </div>
-      </ButtonBase >
+        <TopMenuContent
+          handleToggleTopMenu={handleToggleTopMenu}
+          smallDevice={smallDevice}
+        />
+      </TopMenuLarge>
+    }
+      <div className={classes.root}>
+        <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
+        <ButtonBase
+          aria-label='Help'
+          className={clsx(classes.tabShape, classes.tab, classes.tab1)}
+          component='div'
+        >
+          <div className={clsx(classes.tabIcon, classes.tabIcon1)}>
+            <Help />
+          </div>
+        </ButtonBase>
 
-      <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
-      <ButtonBase
-        aria-label='Log in, log out'
-        className={clsx(classes.tabShape, classes.tab, classes.tab3)}
-        component='div'
-        onClick={() => handleLogout()}
-      >
-        <div className={clsx(classes.tabIcon, classes.tabIcon3)}>
-          <Person />
-        </div>
-      </ButtonBase >
+        <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
+        <ButtonBase
+          aria-label='Log in, log out'
+          className={clsx(classes.tabShape, classes.tab, classes.tab2)}
+          component='div'
+          onClick={handleLogout}
+        >
+          <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
+            <Person />
+          </div>
+        </ButtonBase >
 
-      <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
-      <ButtonBase
-        component='div'
-        onClick={handleToggle}
-        className={clsx(classes.logoAreaShape, classes.logoArea)}
-      >
-        <Logo className={classes.logo} fill={theme.palette.secondary.main} />
-      </ButtonBase>
-    </div>
+        <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
+        <ButtonBase
+          aria-label='Toggle menu'
+          className={clsx(classes.tabShape, classes.tab, classes.tab3)}
+          component='div'
+          onClick={handleToggleTopMenu()}
+        >
+          <div className={clsx(classes.tabIcon, classes.tabIcon3)}>
+            {topMenuIsOpen ? <ExpandLess /> : <Menu />}
+          </div>
+        </ButtonBase >
+
+        <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
+        <ButtonBase
+          component='div'
+          onClick={handleToggleLogoMenu()}
+          className={clsx(classes.logoAreaShape, classes.logoArea)}
+        >
+          <Logo className={classes.logo} fill={theme.palette.secondary.main} />
+        </ButtonBase>
+      </div>
+    </React.Fragment>
   );
 }
 
 LogoMenu.propTypes = {
   handleLogout: PropTypes.func.isRequired,
-  handleToggleNav: PropTypes.func.isRequired,
-  isNavOpen: PropTypes.bool.isRequired,
-  handleToggle: PropTypes.func.isRequired,
-  isDeployed: PropTypes.bool.isRequired,
+  handleToggleLogoMenu: PropTypes.func.isRequired,
+  logoMenuDeployed: PropTypes.bool.isRequired,
+  smallDevice: PropTypes.bool.isRequired,
 };
 
 export default withTracker(props => {
   return {
     handleLogout: () => Accounts.logout(),
-    isNavOpen: Session.get('isNavOpen'),
-    handleToggleNav: () => Session.set('isNavOpen', !Session.get('isNavOpen'))
   };
 })(LogoMenu);

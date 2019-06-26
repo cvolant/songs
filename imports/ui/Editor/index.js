@@ -13,18 +13,43 @@ import Screen from '../Screen';
 import Title from './Title';
 import {
     Button,
+    Card,
     CardActions,
     CardContent,
     Fab,
+    Grid,
     IconButton,
     Typography
 } from '@material-ui/core';
-import { Add, Check, Edit, Delete } from '@material-ui/icons';
+import { Add, ArrowBackIos, Check, Edit, Delete } from '@material-ui/icons';
 
 const styles = theme => ({
     actions: {
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
+        position: 'relative',
+    },
+    bottomFab: {
+        margin: theme.spacing(1),
+    },
+    bottomFabs: {
+        '& div': {
+            display: 'flex',
+        },
+        [theme.breakpoints.down('sm')]: {
+            position: 'absolute',
+            right: 0,
+            top: '-2rem',
+            verticalAlign: 'bottom',
+            width: '100%',
+            
+            '& > div': {
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                flexWrap: 'wrap',
+                justifyContent: 'flex-end',
+            },
+        },
     },
     button: {
         margin: theme.spacing(1),
@@ -32,6 +57,11 @@ const styles = theme => ({
     },
     card: {
         margin: theme.spacing(1),
+    },
+    choiceFabs: {
+        flexWrap: 'wrap-reverse',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     container: {
         backgroundColor: 'white',
@@ -42,16 +72,14 @@ const styles = theme => ({
         borderImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), gray, rgba(0, 0, 0, 0)) 100% 0%',
     },
     content: {
-        padding: '0',
         display: 'flex',
         flexDirection: 'column',
         flexWrap: 'nowrap!important',
+        overflowX: 'hidden',
+        padding: '0',
     },
     displayNone: {
         display: 'none',
-    },
-    bottomFab: {
-        margin: theme.spacing(1),
     },
     fag: {
         position: 'absolute',
@@ -60,6 +88,18 @@ const styles = theme => ({
     },
     grow: {
         flexGrow: 1,
+    },
+    instructions: {
+        flexGrow: 1,
+        textAlign: 'center',
+    },
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: theme.spacing(2),
+        [theme.breakpoints.down('sm')]: {
+            margin: theme.spacing(-2),
+        },
     },
     textField: {
         marginLeft: theme.spacing(1),
@@ -78,20 +118,22 @@ export class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            edit: false,
+            editorVisible: false,
             editTitle: false,
             printSong: false,
             screenOpacity: 0,
             details: {},
+            edit: false,
             pg: [],
             pgStates: [],
-            subtitle: '',
             title: '',
+            subtitle: '',
+            ...this.initSong(this.props.song),
         };
-        this.componentDidUpdate();
     };
 
     componentDidMount() {
+        this.setState({ editorVisible: true });
         if (this.refs.title && this.refs.body) {
             if (this.props.song.title) {
                 //                this.refs.body.focus();
@@ -105,7 +147,7 @@ export class Editor extends React.Component {
         const prevNodeId = prevProps && prevProps.song ? prevProps.song._id._str : undefined;
 
         if (currentSongId && currentSongId !== prevNodeId) {
-            this.initSong(this.props.song);
+            this.setState(this.initSong(this.props.song));
         }
     }
     componentWillUnmount() {
@@ -133,6 +175,7 @@ export class Editor extends React.Component {
 
 
     initSong(song) {
+        if (!song || !song.pg) return;
         console.log('From Editor, initSong. song:', song);
         const pg = JSON.parse(JSON.stringify(song.pg));
 
@@ -197,7 +240,7 @@ export class Editor extends React.Component {
             },
         };
         console.log('From Editor, initSong. details:', details);
-        this.setState({
+        return ({
             details,
             edit: false,
             pg,
@@ -205,7 +248,6 @@ export class Editor extends React.Component {
             title: song.titre,
             subtitle: song.sousTitre,
         });
-        this.componentDidMount();
     }
 
 
@@ -395,7 +437,7 @@ export class Editor extends React.Component {
         const { classes } = this.props;
         if (this.props.song) {
             return (
-                <React.Fragment>
+                <Card className={classes.root /* this.props.editorClassName */}>
                     <div className={classes.container}>
                         <CardContent className={classes.content}>
                             <Title
@@ -410,20 +452,22 @@ export class Editor extends React.Component {
                                 handleDetailChange={this.handleDetailChange.bind(this)}
                                 handleTitleCancel={this.handleTitleCancel.bind(this)}
                             />
-                            {this.state.pg.length > 0 ?
-                                this.state.pgStates.map(
-                                    pgState => (
-                                        <Paragraph
-                                            key={pgState.pgIndex}
-                                            paragraph={this.state.pg[pgState.pgIndex]}
-                                            editGlobal={this.state.edit}
-                                            {...pgState}
-                                        />
+                            <Grid container spacing={1}>
+                                {this.state.pg.length > 0 ?
+                                    this.state.pgStates.map(
+                                        pgState => (
+                                            <Paragraph
+                                                key={pgState.pgIndex}
+                                                paragraph={this.state.pg[pgState.pgIndex]}
+                                                editGlobal={this.state.edit}
+                                                {...pgState}
+                                            />
+                                        )
                                     )
-                                )
-                                :
-                                <p>No lyrics</p>
-                            }
+                                    :
+                                    <p>No lyrics</p>
+                                }
+                            </Grid>
                             <Button
                                 variant='contained'
                                 className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
@@ -461,36 +505,52 @@ export class Editor extends React.Component {
                             </React.Fragment>
                             :
                             <React.Fragment>
-                                <Typography variant="body1" className={classes.grow}>
+                                <Button
+                                    color='primary'
+                                    onClick={() => this.props.goBack()}
+                                    size='large'
+                                    variant='outlined'
+                                >
+                                    <ArrowBackIos />
+                                    Return
+                                </Button>
+                                <Typography variant="body1" className={classes.instructions}>
                                     Select the paragraphs you want...
                                 </Typography>
-                                <Fab
-                                    aria-label="Edit"
-                                    className={classes.bottomFab}
-                                    onClick={() => this.setState({ edit: true })}
-                                >
-                                    <Edit />
-                                </Fab>
-                                <Fab
-                                    variant="extended"
-                                    aria-label="Edit"
-                                    className={classes.bottomFab}
-                                    onClick={this.handleToggleSelectAll.bind(this)}
-                                >
-                                    Select / unselect all
-                                    </Fab>
-                                <Fab
-                                    className={classes.bottomFab}
-                                    color='primary'
-                                    disabled={!this.state.pgStates.filter(pgState => pgState.selected).length}
-                                    onClick={this.handleOpenScreen.bind(this)}
-                                >
-                                    <Check />
-                                </Fab>
+                                <div className={classes.bottomFabs}>
+                                    <div>
+                                        <Fab
+                                            aria-label="Edit"
+                                            className={classes.bottomFab}
+                                            onClick={() => this.setState({ edit: true })}
+                                        >
+                                            <Edit />
+                                        </Fab>
+                                        <div className={classes.choiceFabs}>
+                                            <Fab
+                                                aria-label="Select or unselect all"
+                                                className={classes.bottomFab}
+                                                onClick={this.handleToggleSelectAll.bind(this)}
+                                                variant="extended"
+                                            >
+                                                Select / unselect all
+                                            </Fab>
+                                            <Fab
+                                                aria-label="Validate"
+                                                className={classes.bottomFab}
+                                                color='primary'
+                                                disabled={!this.state.pgStates.filter(pgState => pgState.selected).length}
+                                                onClick={this.handleOpenScreen.bind(this)}
+                                            >
+                                                <Check />
+                                            </Fab>
+                                        </div>
+                                    </div>
+                                </div>
                             </React.Fragment>
                         }
                     </CardActions>
-                </React.Fragment>
+                </Card>
             );
         } else {
             return (
@@ -512,21 +572,30 @@ export class Editor extends React.Component {
 
 Editor.propTypes = {
     classes: PropTypes.object.isRequired,
-    setSelectedSongId: PropTypes.func.isRequired,
+    /* editorClassName: PropTypes.object, */
+    goBack: PropTypes.func.isRequired,
     meteorCall: PropTypes.func.isRequired,
-    selectedSongId: PropTypes.string,
+    /* 
+        setSelectedSongId: PropTypes.func.isRequired,
+        selectedSongId: PropTypes.string,
+    */
     song: PropTypes.object,
     viewer: PropTypes.func.isRequired,
 }
 
 export default withTracker(props => {
+    /* 
     const selectedSongId = Session.get('selectedSongId');
     const setSelectedSongId = newId => Session.set('selectedSongId', newId);
-
+ */
     return {
-        selectedSongId,
-        setSelectedSongId,
+        /* 
+                selectedSongId,
+                setSelectedSongId,
+                 */
         meteorCall: Meteor.call,
-        song: Songs.findOne(new Meteor.Collection.ObjectID(selectedSongId))
+        /* 
+                song: Songs.findOne(new Meteor.Collection.ObjectID(selectedSongId))
+                 */
     };
 })(withStyles(styles)(Editor));

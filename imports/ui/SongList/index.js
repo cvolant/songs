@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
     LinearProgress,
@@ -13,70 +13,82 @@ import { Songs } from '../../api/songs';
 import SongListItem from './SongListItem';
 import SongListEmptyItem from './SongListEmptyItem';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
+/* 
+    progressBar: {
+        width: ({ extended }) => `calc(100% - 15rem + ${5 * extended}rem)`,
+        margin: theme.spacing(0, 1),
+    },
+*/
     root: {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
     },
-});
-
-const sameObjects = (object1, object2) => {
-    if (object1.length != object2.length) return false;
-    if (Object.keys(object1).length != Object.keys(object2).length) return false;
-    for (let key in object1) {
-        if (typeof object2[key] != 'undefined') {
-            if (typeof object1[key] == 'object' || typeof object1[key] == 'array') {
-                if (!sameObjects(object1[key], object2[key])) return false;
-            } else {
-                if (object1[key] != object2[key]) return false;
-            }
-        }
-    }
-    return true;
-};
+}));
 
 export const SongList = props => {
-    const { classes, songs, search } = props;
-    const [currentSearch, setCurrentSearch] = useState(search);
-    const [subscription, setSubscription] = useState({}/* Meteor.subscribe('songs', search) */);
+    const { /* extended, */ handleSelectSong, /* loading, */ songs, search, setLoading } = props;
+    const [unfoldedSong, setUnfoldedSong] = useState(undefined);
+    /* const [loading, setLoading] = useState(false); */
+    const classes = useStyles({ /* extended */ });
+    
     console.log('From SongList. render. props:', props);
-    useEffect(() => {
-        console.log('From SongList, useEffect. search:', search, ', currentSearch:', currentSearch);
-        if (!sameObjects(search, currentSearch)) {
-            console.log('From SongList, useEffect. newSearch. search:', search);
-            if (subscription) {
-                console.log('From SongList, useEffect. Stop subscription.');
-                subscription.stop && subscription.stop();
-            }
-            if (search.globalQuery || search.specificQueries.length) setSubscription(Meteor.subscribe('songs', search));
-            setCurrentSearch(search);
-        }
-    });
 
+    useEffect(() => {
+        console.log('From SongList, useEffect. search:', search);
+        if (search && (search.globalQuery || (search.specificQueries && Object.keys(search.specificQueries).length))) {
+            console.log('From SongList, useEffect. search:', search);            
+            setLoading(true);
+            const subscription = Meteor.subscribe('songs', search);
+            console.log('From SongList, useEffect. subscription:', subscription);            
+            return () => {
+                console.log('From SongList, useEffect. Stop subscription.');
+                subscription.stop();
+            };
+        }
+    }, [JSON.stringify(search)]);
+    useEffect(() => {
+        setLoading(false);
+    }, [songs]);
+
+    const handleSelect = song => () => {
+        handleSelectSong(song);
+    };
+
+    const handleUnfold = songId => () => {
+        setUnfoldedSong(songId);
+    };
+    
     return (
-        <div className={classes.root}>
-            <List component="nav" className='item-list'>
-                {subscription.value && !subscription.value.ready() ? <LinearProgress /> : ''}
-                {songs.length === 0 ?
+            <List component="nav" className={classes.root}>
+                {/* loading ? <LinearProgress className={classes.progressBar} /> : '' */}
+                {songs.length === 0 && search ?
                     <SongListEmptyItem search={search} />
                     :
                     songs.map(song => {
                         return (
-                            <SongListItem key={song._id} song={song} />
+                            <SongListItem
+                                key={song._id}
+                                song={song}
+                                handleSelect={handleSelect(song)}
+                                handleUnfold={handleUnfold(song._id)}
+                                unfolded={unfoldedSong == song._id}
+                            />
                         );
                     })
                 }
             </List>
-        </div>
     );
 };
 
 SongList.propTypes = {
+    handleSelectSong: PropTypes.func.isRequired,
+    /* loading: PropTypes.bool, */
     songs: PropTypes.array.isRequired,
-    classes: PropTypes.object.isRequired,
     search: PropTypes.object,
+    setLoading: PropTypes.func.isRequired,
 };
 
 export default withTracker(props => {
@@ -85,7 +97,7 @@ export default withTracker(props => {
     console.log('From SongList, withTracker. search:', search);
 
     return {
-        songs: Songs.find({}, { sort: { annee: -1 }, limit: 20 }).fetch(),
+        songs: Songs.find({}).fetch(),
         search,
     };
-})(withStyles(styles)(SongList));
+})(SongList);

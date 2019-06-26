@@ -8,8 +8,29 @@ export const Songs = new Mongo.Collection('songs');
 if (Meteor.isServer) {
     Meteor.publish('songs', function ({ globalQuery, specificQueries }) {
 
-        const defaultFields = ['titre', 'sousTitre', 'auteur', 'compositeur', 'editeur', 'numero', 'cote', 'nouvelleCote'];
-        
+        const fields = {
+            titles: {
+                names: ['titre', 'sousTitre']
+            },
+            authors: {
+                names: ['auteur', 'compositeur']
+            },
+            editor: {
+                names: ['editeur']
+            },
+            classifications: {
+                names: ['cote', 'nouvelleCote']
+            },
+            before: {
+                names: ['annee'],
+                operator: '$lt'
+            },
+            after: {
+                names: ['annee'],
+                operator: '$gt'
+            },
+        };
+
         console.log('\n------------------------');
         console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
 
@@ -18,44 +39,48 @@ if (Meteor.isServer) {
 
         if (!globalQuery && !isThereSpecificQueries) {
             console.log('=> no globalQuery, no specificQueries...');
-            foundSongs = Songs.find({}, { sort: { annee: -1 }, limit: 50 });
+            foundSongs = Songs.find({}, { sort: { annee: -1 }, limit: 20 });
             debugger;
-        } else if (isThereSpecificQueries) {
-            console.log('=> specificQueries...');
-            
-            let queries = [specificQueries];
+        } else {
+            let queries = [];
+            if (isThereSpecificQueries) {
+                console.log('=> specificQueries...');
 
-            if(globalQuery) {
-                const orQueries = defaultFields.map(defaultField => {
-                    const orQuery = {};
-                    orQuery[defaultField] = new RegExp(globalQuery, 'i');
-                    return orQuery;
+                queries = Object.entries(specificQueries).map(entry => {
+                    const specificQuery = {};
+                    const key = entry[0];
+                    const { names: queryFields, operator } = fields[key];
+                    const expression = operator ?
+                        { [operator]: parseInt(entry[1]) } :
+                        new RegExp(entry[1], 'i');
+
+                    if (queryFields.length == 1) {
+                        specificQuery[queryFields[0]] = expression;
+                    } else if (queryFields.length > 1) {
+                        specificQuery['$or'] = queryFields.map(queryField => ({ [queryField]: expression }));
+                    }
+                    return specificQuery;
                 });
-                queries.push({ '$or': orQueries });
             }
 
-            foundSongs = Songs.find({ '$and': queries }, { sort: { annee: -1 }, limit: 50 });
+            let options = { sort: {}, limit: 20 };
 
-        } else {
-            console.log('=> globalQuery without specificQueries...');
-            foundSongs = Songs.find(
-                {
-                    userId: this.userId,
+            if (globalQuery) {
+                queries.push({
                     $text: {
                         $search: globalQuery,
-                    },
-                },
-                {
-                    fields: {
-                        score: { $meta: "textScore" },
-                    },
-                    sort: {
-                        score: { $meta: "textScore" },
-                        annee: -1,
-                    },
-                    limit: 50
-                }
-            );
+                    }
+                });
+                options.fields = {
+                    score: { $meta: "textScore" },
+                };
+                options.sort.score = { $meta: "textScore" };
+            }
+            options.sort.annee = -1;
+
+            console.log('From songs.\nqueries:', queries, 'options:', options);
+
+            foundSongs = Songs.find({ '$and': queries }, options);
         }
         return foundSongs;
     });

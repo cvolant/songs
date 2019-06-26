@@ -21,6 +21,11 @@ export default Routes = () => {
         component={SearchPage}
       />
       <AuthRoute
+        exact path="/search/:id"
+        component={SearchPage}
+        render={props => <SearchPage songId={props.match.params.id} {...props} />}
+      />
+      <AuthRoute
         exact path="/signin"
         component={SignIn}
         auth={false}

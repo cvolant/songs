@@ -56,7 +56,7 @@ const Title = (props) => {
   const edit = props.edit && editGlobal;
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={0}>
       <CardHeader
         action={
           editGlobal ?

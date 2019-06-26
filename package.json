@@ -13,6 +13,7 @@
     "@material-ui/icons": "latest",
     "@material-ui/styles": "latest",
     "clsx": "^1.0.4",
+    "downshift": "^3.2.10",
     "meteor-node-stubs": "^0.4.1",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
@@ -20,6 +21,7 @@
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-router-dom": "^5.0.0",
+    "react-select": "^3.0.4",
     "simpl-schema": "^1.5.5"
   },
   "engines": {

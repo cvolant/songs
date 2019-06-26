@@ -8,8 +8,11 @@ import {
 import { Search, Settings } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
+    container: {
+        padding: theme.spacing(2),
+    },
     divider: {
-        margin: theme.spacing(2, 0),
+        margin: theme.spacing(2),
     },
     inlineIcons: {
         height: '0.8em',
@@ -28,7 +31,8 @@ const SongListEmptyItem = ({ search }) => {
     return (
         <React.Fragment>
             <Divider className={classes.divider} />
-            {Object.values(search).join('') ?
+            <div className={classes.container}>
+            {search && Object.values(search).join('') ?
                 <span>
                     <Typography className={classes.spacedText}>
                     <Search className={classes.inlineIcons} />
@@ -47,6 +51,7 @@ const SongListEmptyItem = ({ search }) => {
                 </Typography>
             </span>
             }
+            </div>
         </React.Fragment>
     );
 }

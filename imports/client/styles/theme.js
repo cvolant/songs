@@ -14,6 +14,14 @@ export default theme = createMuiTheme({
             dark: '#c56000',
             contrastText: '#000',
         },
+        darken: {
+            subtle: '#0001', 
+            lighter: '#0002', 
+            light: '#0003', 
+            medium: '#0004', 
+            dark: '#0006', 
+            darker: '#0008', 
+        }
     },
     typography: {
         // Tell Material-UI what's the font-size on the html element is.
@@ -45,4 +53,7 @@ export default theme = createMuiTheme({
             fontSize: '1.5rem',
         },
     },
+    sizes: {
+        menuItem: '7rem',
+    }
 });
