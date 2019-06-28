@@ -16,6 +16,7 @@ import {
     Card,
     CardActions,
     CardContent,
+    CircularProgress,
     Fab,
     Grid,
     IconButton,
@@ -41,7 +42,7 @@ const styles = theme => ({
             top: '-2rem',
             verticalAlign: 'bottom',
             width: '100%',
-            
+
             '& > div': {
                 position: 'absolute',
                 bottom: 0,
@@ -63,6 +64,13 @@ const styles = theme => ({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
+    circularProgress: {
+        width: '6rem',
+        height: '6rem',
+        position: 'relative',
+        top: 'calc(50% - 6rem)',
+        left: 'calc(50% - 6rem)',
+    },
     container: {
         backgroundColor: 'white',
         width: '100%',
@@ -77,6 +85,9 @@ const styles = theme => ({
         flexWrap: 'nowrap!important',
         overflowX: 'hidden',
         padding: '0',
+    },
+    waitingContent: {
+        height: '100%',
     },
     displayNone: {
         display: 'none',
@@ -96,6 +107,7 @@ const styles = theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
+        flexGrow: 1,
         padding: theme.spacing(2),
         [theme.breakpoints.down('sm')]: {
             margin: theme.spacing(-2),
@@ -118,7 +130,7 @@ export class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            editorVisible: false,
+            subscription: undefined,
             editTitle: false,
             printSong: false,
             screenOpacity: 0,
@@ -133,14 +145,21 @@ export class Editor extends React.Component {
     };
 
     componentDidMount() {
-        this.setState({ editorVisible: true });
-        if (this.refs.title && this.refs.body) {
-            if (this.props.song.title) {
-                //                this.refs.body.focus();
-            } else {
-                //                this.refs.title.focus();
-            }
-        }
+        const subscription = Meteor.subscribe('song', this.props.song._id, function () {
+            console.log('From Editor, componentDidMount, subscription callback. Songs.findOne(this.props.song._id):', Songs.findOne(this.props.song._id));
+            if (!Songs.findOne(this.props.song._id)) this.props.goBack();
+        }.bind(this));
+        this.setState({ subscription });
+        console.log('From Editor, componentDidMount. subscription:', subscription);
+        /* 
+                if (this.refs.title && this.refs.body) {
+                    if (this.props.song.title) {
+                        this.refs.body.focus();
+                    } else {
+                        this.refs.title.focus();
+                    }
+                }
+         */
     }
     componentDidUpdate(prevProps, prevState) {
         const currentSongId = this.props.song ? this.props.song._id._str : undefined;
@@ -149,9 +168,13 @@ export class Editor extends React.Component {
         if (currentSongId && currentSongId !== prevNodeId) {
             this.setState(this.initSong(this.props.song));
         }
+
+        if (JSON.stringify(prevProps.song) != JSON.stringify(this.props.song)) {
+            this.setState(this.initSong(this.props.song));
+        }
     }
     componentWillUnmount() {
-        Session.set('selectedSongId', undefined);
+        if (this.state.subscription.stop) this.state.subscription.stop();
     }
 
     createPgState(pgIndex, edit = false, selected = false) {
@@ -439,43 +462,49 @@ export class Editor extends React.Component {
             return (
                 <Card className={classes.root /* this.props.editorClassName */}>
                     <div className={classes.container}>
-                        <CardContent className={classes.content}>
-                            <Title
-                                edit={this.state.editTitle}
-                                editGlobal={this.state.edit}
-                                details={this.state.details}
-                                title={this.state.title}
-                                subtitle={this.state.subtitle}
-                                handleEditTitle={this.handleEditTitle.bind(this)}
-                                handleTitleChange={this.handleTitleChange.bind(this)}
-                                handleSubtitleChange={this.handleSubtitleChange.bind(this)}
-                                handleDetailChange={this.handleDetailChange.bind(this)}
-                                handleTitleCancel={this.handleTitleCancel.bind(this)}
-                            />
-                            <Grid container spacing={1}>
-                                {this.state.pg.length > 0 ?
-                                    this.state.pgStates.map(
-                                        pgState => (
-                                            <Paragraph
-                                                key={pgState.pgIndex}
-                                                paragraph={this.state.pg[pgState.pgIndex]}
-                                                editGlobal={this.state.edit}
-                                                {...pgState}
-                                            />
+                        {this.state.title ?
+                            <CardContent className={classes.content}>
+                                <Title
+                                    edit={this.state.editTitle}
+                                    editGlobal={this.state.edit}
+                                    details={this.state.details}
+                                    title={this.state.title}
+                                    subtitle={this.state.subtitle}
+                                    handleEditTitle={this.handleEditTitle.bind(this)}
+                                    handleTitleChange={this.handleTitleChange.bind(this)}
+                                    handleSubtitleChange={this.handleSubtitleChange.bind(this)}
+                                    handleDetailChange={this.handleDetailChange.bind(this)}
+                                    handleTitleCancel={this.handleTitleCancel.bind(this)}
+                                />
+                                <Grid container spacing={1}>
+                                    {this.state.pg.length > 0 ?
+                                        this.state.pgStates.map(
+                                            pgState => (
+                                                <Paragraph
+                                                    key={pgState.pgIndex}
+                                                    paragraph={this.state.pg[pgState.pgIndex]}
+                                                    editGlobal={this.state.edit}
+                                                    {...pgState}
+                                                />
+                                            )
                                         )
-                                    )
-                                    :
-                                    <p>No lyrics</p>
-                                }
-                            </Grid>
-                            <Button
-                                variant='contained'
-                                className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
-                                onClick={this.handleAdd.bind(this)}
-                            >
-                                <Add />
-                            </Button>
-                        </CardContent>
+                                        :
+                                        <p>No lyrics</p>
+                                    }
+                                </Grid>
+                                <Button
+                                    variant='contained'
+                                    className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
+                                    onClick={this.handleAdd.bind(this)}
+                                >
+                                    <Add />
+                                </Button>
+                            </CardContent>
+                            :
+                            <CardContent className={classes.waitingContent}>
+                                <CircularProgress className={classes.circularProgress} />
+                            </CardContent>
+                        }
                     </div>
                     <CardActions className={classes.actions}>
                         {this.state.edit ?
@@ -515,13 +544,16 @@ export class Editor extends React.Component {
                                     Return
                                 </Button>
                                 <Typography variant="body1" className={classes.instructions}>
-                                    Select the paragraphs you want...
+                                    {!this.state.pgStates.length ? '' :
+                                        'Select the paragraphs you want...'
+                                    }
                                 </Typography>
                                 <div className={classes.bottomFabs}>
                                     <div>
                                         <Fab
                                             aria-label="Edit"
                                             className={classes.bottomFab}
+                                            disabled={!this.state.title}
                                             onClick={() => this.setState({ edit: true })}
                                         >
                                             <Edit />
@@ -529,6 +561,7 @@ export class Editor extends React.Component {
                                         <div className={classes.choiceFabs}>
                                             <Fab
                                                 aria-label="Select or unselect all"
+                                                disabled={!this.state.pgStates.length}
                                                 className={classes.bottomFab}
                                                 onClick={this.handleToggleSelectAll.bind(this)}
                                                 variant="extended"
@@ -585,17 +618,15 @@ Editor.propTypes = {
 
 export default withTracker(props => {
     /* 
-    const selectedSongId = Session.get('selectedSongId');
-    const setSelectedSongId = newId => Session.set('selectedSongId', newId);
- */
+        const selectedSongId = Session.get('selectedSongId');
+        const setSelectedSongId = newId => Session.set('selectedSongId', newId);
+    */
     return {
         /* 
-                selectedSongId,
-                setSelectedSongId,
-                 */
+            selectedSongId,
+            setSelectedSongId,
+        */
         meteorCall: Meteor.call,
-        /* 
-                song: Songs.findOne(new Meteor.Collection.ObjectID(selectedSongId))
-                 */
+        song: { ...props.song, ...Songs.findOne(props.song._id) },
     };
 })(withStyles(styles)(Editor));

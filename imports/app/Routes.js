@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Link } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
 import AuthRoute from './AuthRoute';
@@ -29,15 +29,13 @@ export default Routes = () => {
         exact path="/signin"
         component={SignIn}
         auth={false}
-        redirection='/search'
-        linkChild={<Link to='/signup'>Need an account?</Link>}
+        redirection='/dashboard'
       />
       <AuthRoute
         exact path="/signup"
         component={SignUp}
         auth={false}
-        redirection='/search'
-        linkChild={<Link to='/'>Already have an account?</Link>}
+        redirection='/dashboard'
       />
       <AuthRoute
         exact path="/dashboard"

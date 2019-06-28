@@ -1,73 +1,80 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import EmailPasswordForm from './EmailPasswordForm';
+import LogoMenu from '../LogoMenu';
 
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import {
+    Avatar,
+    Container,
+    Grid,
+    Typography
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 
-const styles = theme => ({
-    main: {
-        width: 'auto',
-        display: 'block', // Fix IE 11 issue.
-        marginLeft: theme.spacing(3),
-        marginRight: theme.spacing(3),
-        [theme.breakpoints.up(400 + theme.spacing(3 * 2))]: {
-            width: 400,
-            marginLeft: 'auto',
-            marginRight: 'auto',
+const useStyles = makeStyles(theme => ({
+    '@global': {
+        body: {
+            backgroundColor: theme.palette.common.white,
         },
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+    },
+    links: {
+        justifyContent: 'center',
+        fontSize: '1.6rem',
     },
     paper: {
         marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: theme.spacing(2, 3, 3, 0),
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-});
+}));
 
-export const Door = props => {
-    const { classes } = props;
+export const Door = ({ alreadySignedUp, link, title }) => {
+    const classes = useStyles();
 
     return (
-        <main className={classes.main}>
-            <CssBaseline />
-            <Paper className={classes.paper}>
+        <Container component="main" maxWidth="xs">
+            <LogoMenu />
+            <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
 
                 <Typography component="h1" variant="h5">
-                    {props.title}
+                    {title}
                 </Typography>
 
                 <EmailPasswordForm
-                    handleSubmit={this.onSubmit}
-                    alreadySignedUp={props.alreadySignedUp}
+                    alreadySignedUp={alreadySignedUp}
+                    link={link}
                 />
 
-                <Typography component="p">
-                    {props.linkChild}
-                </Typography>
-            </Paper>
-        </main>
+                <Grid container className={classes.links}>
+                    {/* <Grid item xs>
+                        <Link href="#" variant="body2">
+                            Forgot password?
+                        </Link>
+                    </Grid> */}
+                    <Grid item>
+                        {link ? <Link to={link.path}>{link.text}</Link> : null}
+                    </Grid>
+                </Grid>
+            </div>
+        </Container>
     );
 }
 
 Door.propTypes = {
-    classes: PropTypes.object.isRequired,
-    linkChild: PropTypes.object,
+    alreadySignedUp: PropTypes.bool.isRequired,
+    link: PropTypes.object,
     title: PropTypes.string.isRequired,
-    alreadySignedUp: PropTypes.bool.isRequired
 };
 
-export default withStyles(styles)(Door);
+export default Door;

@@ -1,4 +1,7 @@
 import React, { createRef, useState } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { withRouter } from "react-router";
+import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -13,18 +16,10 @@ import {
   Fab,
   Grid,
   Typography,
-  CircularProgress,
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
-  circularProgress: {
-    width: '6rem',
-    height: '6rem',
-    position: 'relative',
-    top: 'calc(50% - 6rem)',
-    left: 'calc(50% - 6rem)',
-  },
   contentArea: {
     display: 'flex',
     overflow: 'hidden',
@@ -34,21 +29,6 @@ const useStyles = makeStyles(theme => ({
     fill: theme.palette.primary.main,
     borderRadius: '50%',
   },
-  /* 
-  editor: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexShrink: '0',
-    height: '100%',
-    marginLeft: ({ editorVisible }) => (-editorVisible * 100) + '%',
-    padding: '16px',
-    top: '0',
-    transform: 'translateZ()',
-    transition: 'margin 0.5s ease',
-    width: '100%',
-    zIndex: '2',
-  },
- */
   list: {
     scrollbarWidth: 'none',
   },
@@ -83,19 +63,19 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     width: '100vw',
   },
-  searchPannel: {
+  searchPanel: {
     width: '100%',
   },
 }));
 
-export const SearchPage = ({ songId }) => {
+export const SearchPage = ({ songId, history }) => {
   const [loading, setLoading] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [selectedSong, setSelectedSong] = useState(songId ? { _id: songId } : undefined);
-  const [showInfos, setShowInfos] = useState(25);
-  /* const [editorVisible, setEditorVisible] = useState(!!songId); */
+  const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
+  const [showInfos, setShowInfos] = useState(true);
+  const [viewer, setViewer] = useState(null);
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
-  const classes = useStyles({ /* editorVisible */ });
+  const classes = useStyles();
   const contentAreaRef = createRef();
 
   const handleCloseInfos = () => setShowInfos(0);
@@ -105,14 +85,12 @@ export const SearchPage = ({ songId }) => {
     if (showInfos && smallDevice) scrollDown();
   };
 
-  const handleGoBackFromEditor = () => {
-    /* setEditorVisible(false);
-    setTimeout(() => */ setSelectedSong(undefined)/* , 500) */;
-  };
+  const handleGoBackFromEditor = () => setSelectedSong(undefined);
 
   const handleSelectSong = song => {
     setSelectedSong(song);
-    /* setTimeout(() => setEditorVisible(true), 200); */
+    history.push('/search/' + song._id._str);
+    console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id._str:', song._id._str);
   };
 
   const handleToggleLogoMenu = oc => () => {
@@ -132,14 +110,12 @@ export const SearchPage = ({ songId }) => {
       <LogoMenu
         handleToggleLogoMenu={handleToggleLogoMenu}
         logoMenuDeployed={logoMenuDeployed}
-        smallDevice={smallDevice}
       />
       <Grid container spacing={4} className={classes.pageContent}>
         {showInfos ?
           <Grid item sm={12} md={4} lg={3}>
             <InfosSongBySong
               handleCloseInfos={handleCloseInfos}
-              showInfos={showInfos}
             >
               {
                 smallDevice ?
@@ -159,19 +135,29 @@ export const SearchPage = ({ songId }) => {
           </Grid>
           : null}
         <Grid item xs={12} md={showInfos ? 8 : undefined} lg={showInfos ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
-          <div className={selectedSong ? classes.hidden : classes.searchPannel}>
+          <div className={selectedSong ? classes.hidden : classes.searchPanel}>
             <SearchField extended={!logoMenuDeployed} handleFocus={handleFocus} loading={loading} />
-            <SongList /* extended={!logoMenuDeployed} */ handleSelectSong={handleSelectSong} /* loading={loading} */ setLoading={setLoading} />
+            <SongList handleSelectSong={handleSelectSong} setLoading={setLoading} />
           </div>
-          {
-            selectedSong ?
-              selectedSong.titre ? <Editor song={selectedSong} goBack={handleGoBackFromEditor} /* editorClassName={classes.editor} */ /> : <CircularProgress className={classes.circularProgress} />
-              : null
+          {selectedSong ?
+            <Editor
+              song={selectedSong}
+              goBack={handleGoBackFromEditor}
+              viewer={toSendToViewer => setViewer(toSendToViewer)}
+            />
+            :
+            null
           }
         </Grid>
       </Grid>
+      {viewer}
     </div >
   );
-}
+};
 
-export default SearchPage;
+SearchPage.propTypes = {
+  history: PropTypes.object.isRequired,
+  songId: PropTypes.string,
+};
+
+export default withRouter(SearchPage);

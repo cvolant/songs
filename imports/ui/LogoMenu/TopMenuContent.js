@@ -1,16 +1,10 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Home, Loupe, ScreenShare } from '@material-ui/icons';
+import { ButtonBase, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Home, Loupe, Power, PowerOff, ScreenShare } from '@material-ui/icons';
 import ListIcon from '@material-ui/icons/List';
-
-const navLinks = [
-  { name: 'Home', path: '/', Icon: Home },
-  { name: 'Song lists', path: '/song-lists', Icon: ListIcon },
-  { name: 'Shared view', path: '/shared view', Icon: ScreenShare },
-  { name: 'About', path: '/about', Icon: Loupe },
-];
 
 const useStyles = makeStyles(theme => ({
   cushion: {
@@ -44,23 +38,45 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const TopMenuContent = ({ handleToggleTopMenu, smallDevice }) => {
+const NavButton = React.forwardRef(({ nestedProps, ...others }, ref) => <ButtonBase {...others} {...nestedProps} ref={ref} />);
+
+export const TopMenuContent = ({ isAuthenticated, handleLogout, handleToggleTopMenu, smallDevice }) => {
   const classes = useStyles();
+
+  const navLinks = [
+    { name: 'Home', path: '/', Icon: Home },
+    { name: 'Song lists', path: '/song-lists', Icon: ListIcon, disabled: true },
+    { name: 'Shared view', path: '/shared view', Icon: ScreenShare, disabled: true },
+    { name: 'About', path: '/about', Icon: Loupe, disabled: true },
+    { name: 'Logout', onClick: () => handleLogout(), hide: !isAuthenticated, Icon: PowerOff },
+    { name: 'Login', path: '/signin', hide: isAuthenticated, Icon: Power },
+  ];
 
   return (
     <React.Fragment>
       <div
         className={classes.fullList}
         role="presentation"
-        onClick={handleToggleTopMenu(false)}
+        onClick={smallDevice ? handleToggleTopMenu(false) : undefined}
         onKeyDown={handleToggleTopMenu(false)}
       >
         <List className={classes.list}>
           {navLinks.map((navLink, index) => (
-            <ListItem button className={classes.listItem} key={index}>
-              <ListItemIcon className={classes.listItemIcon}><navLink.Icon /></ListItemIcon>
-              <ListItemText primary={navLink.name} />
-            </ListItem>
+            navLink.hide || navLink.path == location.pathname ? null :
+              <ListItem
+                className={classes.listItem}
+                component={NavButton}
+                nestedProps={{
+                  component: navLink.path ? Link : undefined,
+                  disabled: navLink.disabled,
+                  onClick: navLink.onClick,
+                  to: navLink.path,
+                }}
+                key={index}
+              >
+                <ListItemIcon className={classes.listItemIcon}><navLink.Icon /></ListItemIcon>
+                <ListItemText primary={navLink.name} />
+              </ListItem>
           ))}
         </List>
       </div>
@@ -69,7 +85,8 @@ export const TopMenuContent = ({ handleToggleTopMenu, smallDevice }) => {
 }
 
 TopMenuContent.propTypes = {
-  smallDevice: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  handleLogout: PropTypes.func.isRequired,
   handleToggleTopMenu: PropTypes.func.isRequired,
 };
 

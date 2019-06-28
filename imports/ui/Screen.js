@@ -102,7 +102,7 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     transition: 'opacity 0.5s ease',
     width: '100%',
-    zIndex: 10,
+    zIndex: 2000,
   }),
   under: {
     clear: 'both',

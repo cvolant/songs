@@ -41,7 +41,7 @@ const App = props => {
     document.body.classList.toggle('is-nav-open', isNavOpen);
   });
  */
-/* 
+
   Tracker.autorun(() => {
     const isAuthenticated = !!Meteor.userId();
     const currentPagePrivacy = Session.get('currentPagePrivacy');
@@ -53,7 +53,7 @@ const App = props => {
     else if (isAuthenticatedPage && !isAuthenticated)
       props.history.replace("/");
   });
- */
+
 /* 
   Tracker.autorun(() => {
     const selectedSongId = Session.get('selectedSongId');

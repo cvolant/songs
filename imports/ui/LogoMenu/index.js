@@ -1,8 +1,10 @@
+import { Meteor } from 'meteor/meteor';
 import React, { useState } from "react";
-import PropTypes from 'prop-types';
-import { Accounts } from "meteor/accounts-base";
+import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 import { ButtonBase } from '@material-ui/core';
 import { ExpandLess, Help, Menu, Person } from '@material-ui/icons';
@@ -114,9 +116,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const LogoMenu = ({ handleLogout, handleToggleLogoMenu, logoMenuDeployed, smallDevice }) => {
-  const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
+export const LogoMenu = props => {
+  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
+  const [logoMenuDeployed, setLogoMenuDeployed] = props.logoMenuDeployed ?
+    [props.logoMenuDeployed, undefined] :
+    useState(true);
+  const { isAuthenticated, handleLogout } = props;
+  const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
 
@@ -129,32 +136,43 @@ export const LogoMenu = ({ handleLogout, handleToggleLogoMenu, logoMenuDeployed,
     setTopMenuIsOpen(typeof oc == 'undefined' ? !topMenuIsOpen : !!oc);
   }
 
+  const handleToggleLogoMenu = props.handleToggleLogoMenu ?
+    props.handleToggleLogoMenu :
+    oc => () => {
+      console.log('From LogoMenu, handleToggleLogoMenu. oc (should be a bool):', oc);
+      setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
+    };
+
   return (
     <React.Fragment>
       {
-      smallDevice ?
-      <TopMenuSmall
-      PaperProps={PaperProps}
-        handleToggleTopMenu={handleToggleTopMenu}
-        topMenuIsOpen={topMenuIsOpen}
-      >
-        <TopMenuContent
-          handleToggleTopMenu={handleToggleTopMenu}
-          smallDevice={smallDevice}
-        />
-      </TopMenuSmall>
-      :
-      <TopMenuLarge
-        PaperProps={PaperProps}
-        topMenuIsOpen={topMenuIsOpen}
-        smallDevice={smallDevice}
-      >
-        <TopMenuContent
-          handleToggleTopMenu={handleToggleTopMenu}
-          smallDevice={smallDevice}
-        />
-      </TopMenuLarge>
-    }
+        smallDevice ?
+          <TopMenuSmall
+            PaperProps={PaperProps}
+            handleToggleTopMenu={handleToggleTopMenu}
+            topMenuIsOpen={topMenuIsOpen}
+          >
+            <TopMenuContent
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
+              handleToggleTopMenu={handleToggleTopMenu}
+              smallDevice={smallDevice}
+            />
+          </TopMenuSmall>
+          :
+          <TopMenuLarge
+            PaperProps={PaperProps}
+            topMenuIsOpen={topMenuIsOpen}
+            smallDevice={smallDevice}
+          >
+            <TopMenuContent
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
+              handleToggleTopMenu={handleToggleTopMenu}
+              smallDevice={smallDevice}
+            />
+          </TopMenuLarge>
+      }
       <div className={classes.root}>
         <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
         <ButtonBase
@@ -169,10 +187,10 @@ export const LogoMenu = ({ handleLogout, handleToggleLogoMenu, logoMenuDeployed,
 
         <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
         <ButtonBase
-          aria-label='Log in, log out'
+          aria-label={isAuthenticated ? 'Dashboard' : location.pathname == '/signin' ? 'Sign up' : 'Sign in'}
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
-          component='div'
-          onClick={handleLogout}
+          component={Link}
+          to={isAuthenticated ? '/dashboard' : location.pathname == '/signin' ? '/signup' : '/signin'}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
             <Person />
@@ -205,14 +223,13 @@ export const LogoMenu = ({ handleLogout, handleToggleLogoMenu, logoMenuDeployed,
 }
 
 LogoMenu.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
   handleLogout: PropTypes.func.isRequired,
-  handleToggleLogoMenu: PropTypes.func.isRequired,
-  logoMenuDeployed: PropTypes.bool.isRequired,
-  smallDevice: PropTypes.bool.isRequired,
+  handleToggleLogoMenu: PropTypes.func,
+  logoMenuDeployed: PropTypes.bool,
 };
 
-export default withTracker(props => {
-  return {
-    handleLogout: () => Accounts.logout(),
-  };
-})(LogoMenu);
+export default withTracker(props => ({
+  handleLogout: () => Accounts.logout(),
+  isAuthenticated: !!Meteor.userId(),
+}))(LogoMenu);

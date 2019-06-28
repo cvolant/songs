@@ -6,10 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 
-import LogoMenu from './LogoMenu';
-import SongList from './SongList';
-import Editor from "./Editor";
-import ButtonAppBar from "./formerComponents/ButtonAppBar.js";
+import LogoMenu from '../LogoMenu';
+import SongList from '../SongList';
+import Editor from "../Editor";
 
 const styles = theme => ({
   root: {

@@ -84,6 +84,12 @@ if (Meteor.isServer) {
         }
         return foundSongs;
     });
+
+    Meteor.publish('song', function (_id, options) {
+        console.log('From songs, publish song. _id:', _id);
+        return Songs.find(_id, options);
+    });
+
 }
 
 Meteor.methods({

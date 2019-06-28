@@ -1,25 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Panel from '../utils/Panel';
+
 import {
   Button,
-  IconButton,
-  Paper,
   Typography,
 } from '@material-ui/core';
-import Clear from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    float: 'left',
-    height: '100%',
-    justifyContent: 'space-between',
-    padding: theme.spacing(4),
-    position: 'relative',
-  },
   bottomButtons: {
     display: 'flex',
     flexDirection: 'column',
@@ -29,12 +20,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1, 0),
     maxWidth: '45rem',
     width: '100%',
-  },
-  close: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    margin: theme.spacing(1),
+    textAlign: 'center',
   },
   logoSpace: {
     borderRadius: '0 0 0 100%',
@@ -53,10 +39,7 @@ export const InfosSongBySong = props => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
-      <IconButton className={classes.close} onClick={props.handleCloseInfos}>
-        <Clear />
-      </IconButton>
+    <Panel handleClosePanel={props.handleCloseInfos}>
       <div className={classes.text}>
         <div className={classes.logoSpace} />
         <Typography variant="h2" component="h2" gutterBottom>
@@ -68,20 +51,19 @@ export const InfosSongBySong = props => {
       </div>
       {props.children}
       <div className={classes.bottomButtons}>
-        <Button variant="contained" color="primary" className={classes.button}>
+        <Button component={Link} to="/signin" variant="contained" color="primary" className={classes.button}>
           Sign In
-      </Button>
-        <Button variant="contained" color="primary" className={classes.button}>
+        </Button>
+        <Button component={Link} to="/signup" variant="contained" color="primary" className={classes.button}>
           Create an&nbsp;Account (that's&nbsp;free)
-      </Button>
+        </Button>
       </div>
-    </Paper>
+    </Panel>
   );
 }
 
 InfosSongBySong.propTypes = {
   handleCloseInfos: PropTypes.func.isRequired,
-  showInfos: PropTypes.number.isRequired,
 };
 
 export default InfosSongBySong;
