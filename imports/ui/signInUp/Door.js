@@ -53,7 +53,7 @@ export const Door = ({ alreadySignedUp, link, title }) => {
 
                 <EmailPasswordForm
                     alreadySignedUp={alreadySignedUp}
-                    link={link}
+                    title={title}
                 />
 
                 <Grid container className={classes.links}>

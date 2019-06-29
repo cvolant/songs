@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLogin, link }) => {
+export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLogin, title }) => {
     const classes = useStyles();
     const [error, setError] = useState('');
     const emailRef = createRef();
@@ -90,7 +90,7 @@ export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLog
                     type="submit"
                     variant="contained"
                 >
-                    Sign in
+                    {title}
                 </Button>
             </form>
         </div>
@@ -100,7 +100,8 @@ export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLog
 EmailPasswordForm.propTypes = {
     alreadySignedUp: PropTypes.bool.isRequired,
     handleLogin: PropTypes.func.isRequired,
-    handleCreateUser: PropTypes.func.isRequired
+    handleCreateUser: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
 };
 
 export default withTracker(props => ({

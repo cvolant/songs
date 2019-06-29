@@ -4,22 +4,13 @@ import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-    LinearProgress,
-    List
-} from '@material-ui/core';
+import List from '@material-ui/core/List';
 
 import { Songs } from '../../api/songs';
 import SongListItem from './SongListItem';
 import SongListEmptyItem from './SongListEmptyItem';
 
 const useStyles = makeStyles(theme => ({
-/* 
-    progressBar: {
-        width: ({ extended }) => `calc(100% - 15rem + ${5 * extended}rem)`,
-        margin: theme.spacing(0, 1),
-    },
-*/
     root: {
         overflowY: 'auto',
         display: 'flex',
@@ -29,29 +20,33 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const SongList = props => {
-    const { /* extended, */ handleSelectSong, /* loading, */ songs, search, setLoading } = props;
+    const { /* extended, */ handleSelectSong, loading, /* songs, */ search, stopLoading } = props;
     const [unfoldedSong, setUnfoldedSong] = useState(undefined);
-    /* const [loading, setLoading] = useState(false); */
+    /* const [loading, stopLoading] = useState(false); */
     const classes = useStyles({ /* extended */ });
+    const [songs, setSongs] = useState([]);
     
     console.log('From SongList. render. props:', props);
-
+/* 
     useEffect(() => {
-        console.log('From SongList, useEffect. search:', search);
+        console.log('From SongList, useEffect[songs]. stopLoading(). songs:', songs);
+        stopLoading();
+    }, [songs]);
+*/
+    useEffect(() => {
         if (search && (search.globalQuery || (search.specificQueries && Object.keys(search.specificQueries).length))) {
-            console.log('From SongList, useEffect. search:', search);            
-            setLoading(true);
-            const subscription = Meteor.subscribe('songs', search);
-            console.log('From SongList, useEffect. subscription:', subscription);            
+            console.log('From SongList, useEffect[JSON.stringify(search)]. search:', search, 'songs.length:', songs.length, '<< subscription >>');            
+            const subscription = Meteor.subscribe('songs', search, function () {
+                setSongs(Songs.find({}).fetch());
+                console.log('From SongList, useEffect[JSON.stringify(search)], subscription callback. songs.length:', songs.length);            
+                stopLoading();
+            });         
             return () => {
                 console.log('From SongList, useEffect. Stop subscription.');
                 subscription.stop();
             };
         }
-    }, [JSON.stringify(search)]);
-    useEffect(() => {
-        setLoading(false);
-    }, [songs]);
+    }, [ , JSON.stringify(search)]);
 
     const handleSelect = song => () => {
         handleSelectSong(song);
@@ -64,8 +59,8 @@ export const SongList = props => {
     return (
             <List component="nav" className={classes.root}>
                 {/* loading ? <LinearProgress className={classes.progressBar} /> : '' */}
-                {songs.length === 0 && search ?
-                    <SongListEmptyItem search={search} />
+                {songs.length === 0 && search && !loading ?
+                    !console.log('From SongList, return. No results.') && <SongListEmptyItem search={search} />
                     :
                     songs.map(song => {
                         return (
@@ -86,18 +81,18 @@ export const SongList = props => {
 SongList.propTypes = {
     handleSelectSong: PropTypes.func.isRequired,
     /* loading: PropTypes.bool, */
-    songs: PropTypes.array.isRequired,
-    search: PropTypes.object,
-    setLoading: PropTypes.func.isRequired,
+    /* songs: PropTypes.array.isRequired, */
+    stopLoading: PropTypes.func.isRequired,
 };
-
+/* 
 export default withTracker(props => {
 
-    const search = Session.get('search');
-    console.log('From SongList, withTracker. search:', search);
-
+    /* const search = Session.get('search'); */
+    /* console.log('From SongList, withTracker. search:', search); */
+/*
     return {
         songs: Songs.find({}).fetch(),
-        search,
     };
 })(SongList);
+ */
+export default SongList;

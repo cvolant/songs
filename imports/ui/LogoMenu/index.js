@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState } from "react";
+import { withRouter } from "react-router";
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
@@ -7,7 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 import { ButtonBase } from '@material-ui/core';
-import { ExpandLess, Help, Menu, Person } from '@material-ui/icons';
+import { ExpandLess, Help, Home, Menu, Person } from '@material-ui/icons';
 
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
@@ -119,29 +120,29 @@ const useStyles = makeStyles(theme => ({
 export const LogoMenu = props => {
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
-  const [logoMenuDeployed, setLogoMenuDeployed] = props.logoMenuDeployed ?
-    [props.logoMenuDeployed, undefined] :
-    useState(true);
-  const { isAuthenticated, handleLogout } = props;
+  const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed == 'undefined' ?
+    useState(true) :
+    [props.logoMenuDeployed, () => console.error('If you gave a logoMenuDeployed prop to LogoMenu without giving it a handleToggleLogoMenu prop...')];
+  const { isAuthenticated, handleLogout, location } = props;
+  
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
+  
+  console.log('From LogoMenu. render.');
 
-  const handleToggleTopMenu = oc => event => {
+  const handleToggleTopMenu = deploy => event => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       console.log('From LogoMenu, handleToggleTopMenu. aborted. event.type:', event.type, 'event.key:', event.key);
       return;
     }
-    console.log('From LogoMenu, handleToggleTopMenu. performed. oc (should be a bool):', oc, 'former topMenuIsOpen:', topMenuIsOpen);
-    setTopMenuIsOpen(typeof oc == 'undefined' ? !topMenuIsOpen : !!oc);
+    console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen);
+    setTopMenuIsOpen(typeof deploy == 'undefined' ? !topMenuIsOpen : !!deploy);
   }
 
   const handleToggleLogoMenu = props.handleToggleLogoMenu ?
     props.handleToggleLogoMenu :
-    oc => () => {
-      console.log('From LogoMenu, handleToggleLogoMenu. oc (should be a bool):', oc);
-      setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
-    };
+    deploy => () => setLogoMenuDeployed(typeof deploy == 'undefined' ? !logoMenuDeployed : !!deploy);
 
   return (
     <React.Fragment>
@@ -187,13 +188,19 @@ export const LogoMenu = props => {
 
         <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
         <ButtonBase
-          aria-label={isAuthenticated ? 'Dashboard' : location.pathname == '/signin' ? 'Sign up' : 'Sign in'}
+          aria-label={isAuthenticated ?
+            location.pathname == '/dashboard' ? 'Home' : 'Dashboard'
+            :
+            location.pathname == '/signin' ? 'Sign up' : 'Sign in'}
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
-          to={isAuthenticated ? '/dashboard' : location.pathname == '/signin' ? '/signup' : '/signin'}
+          to={isAuthenticated ?
+            location.pathname == '/dashboard' ? '/' : '/dashboard'
+            :
+            location.pathname == '/signin' ? '/signup' : '/signin'}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-            <Person />
+            {location.pathname == '/dashboard' ? <Home /> : <Person />}
           </div>
         </ButtonBase >
 
@@ -232,4 +239,4 @@ LogoMenu.propTypes = {
 export default withTracker(props => ({
   handleLogout: () => Accounts.logout(),
   isAuthenticated: !!Meteor.userId(),
-}))(LogoMenu);
+}))(withRouter(LogoMenu));

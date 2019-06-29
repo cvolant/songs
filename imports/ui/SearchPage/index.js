@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import LogoMenu from '../LogoMenu';
-import SearchField from './SearchField';
-import InfosSongBySong from './InfosSongBySong';
-import SongList from '../SongList';
 import Editor from '../Editor';
+import InfosSongBySong from './InfosSongBySong';
+import PageLayout from '../utils/PageLayout';
+import SearchField from './SearchField';
+import SongList from '../SongList';
 
 import {
   Fab,
@@ -65,10 +65,13 @@ const useStyles = makeStyles(theme => ({
   },
   searchPanel: {
     width: '100%',
+    maxWidth: '1000px',
+    margin: '0 auto',
   },
 }));
 
 export const SearchPage = ({ songId, history }) => {
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
@@ -85,7 +88,15 @@ export const SearchPage = ({ songId, history }) => {
     if (showInfos && smallDevice) scrollDown();
   };
 
-  const handleGoBackFromEditor = () => setSelectedSong(undefined);
+  const handleGoBackFromEditor = () => {
+    setSelectedSong(undefined);
+    history.push('/search/');
+  };
+
+  const handleNewSearch = newSearch => {
+    setLoading(true);
+    setSearch(newSearch);
+  };
 
   const handleSelectSong = song => {
     setSelectedSong(song);
@@ -98,6 +109,8 @@ export const SearchPage = ({ songId, history }) => {
     setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
   }
 
+  const stopLoading = () => setLoading(false);
+
   const scrollDown = () => {
     contentAreaRef.current.scrollIntoView({ behavior: "smooth" });
     setTimeout(handleCloseInfos, 500);
@@ -106,52 +119,46 @@ export const SearchPage = ({ songId, history }) => {
   console.log('From SearchPage. render.')
 
   return (
-    <div className={classes.root}>
-      <LogoMenu
-        handleToggleLogoMenu={handleToggleLogoMenu}
-        logoMenuDeployed={logoMenuDeployed}
-      />
-      <Grid container spacing={4} className={classes.pageContent}>
-        {showInfos ?
-          <Grid item sm={12} md={4} lg={3}>
-            <InfosSongBySong
-              handleCloseInfos={handleCloseInfos}
-            >
-              {
-                smallDevice ?
-                  <Fab
-                    variant="extended"
-                    size="small"
-                    aria-label="Continue"
-                    className={classes.continueFab}
-                    onClick={scrollDown}
-                  >
-                    <ExpandMore className={classes.continueFabIcon} />
-                    <Typography>Continuer</Typography>
-                  </Fab>
-                  : undefined
-              }
-            </InfosSongBySong>
-          </Grid>
-          : null}
-        <Grid item xs={12} md={showInfos ? 8 : undefined} lg={showInfos ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
-          <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-            <SearchField extended={!logoMenuDeployed} handleFocus={handleFocus} loading={loading} />
-            <SongList handleSelectSong={handleSelectSong} setLoading={setLoading} />
-          </div>
-          {selectedSong ?
-            <Editor
-              song={selectedSong}
-              goBack={handleGoBackFromEditor}
-              viewer={toSendToViewer => setViewer(toSendToViewer)}
-            />
-            :
-            null
-          }
+    <PageLayout menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}>
+      {showInfos ?
+        <Grid item sm={12} md={4} lg={3}>
+          <InfosSongBySong
+            handleCloseInfos={handleCloseInfos}
+          >
+            {
+              smallDevice ?
+                <Fab
+                  variant="extended"
+                  size="small"
+                  aria-label="Continue"
+                  className={classes.continueFab}
+                  onClick={scrollDown}
+                >
+                  <ExpandMore className={classes.continueFabIcon} />
+                  <Typography>Continuer</Typography>
+                </Fab>
+                : undefined
+            }
+          </InfosSongBySong>
         </Grid>
+        : null}
+      <Grid item xs={12} md={showInfos ? 8 : undefined} lg={showInfos ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
+        <div className={selectedSong ? classes.hidden : classes.searchPanel}>
+          <SearchField {...{ extended: !logoMenuDeployed, handleFocus, handleNewSearch, loading }} />
+          <SongList {...{ handleSelectSong, loading, search, stopLoading }} />
+        </div>
+        {selectedSong ?
+          <Editor
+            song={selectedSong}
+            goBack={handleGoBackFromEditor}
+            viewer={toSendToViewer => setViewer(toSendToViewer)}
+          />
+          :
+          null
+        }
       </Grid>
       {viewer}
-    </div >
+    </PageLayout >
   );
 };
 

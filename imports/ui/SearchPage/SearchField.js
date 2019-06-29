@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const SearchField = ({ extended, handleFocus, loading }) => {
+export const SearchField = ({ extended, handleFocus, handleNewSearch, loading }) => {
   const fields = {
     titles: {
       name: 'titles',
@@ -205,6 +205,7 @@ export const SearchField = ({ extended, handleFocus, loading }) => {
 
     Session.set('search', newSearch);
     console.log('From SearchField, handleSearch. newSearch:', newSearch);
+    handleNewSearch(newSearch);
   };
 
   const handleToggleAdvancedSearch = () => setAdvancedSearch(!advancedSearch);
@@ -270,6 +271,7 @@ export const SearchField = ({ extended, handleFocus, loading }) => {
 SearchField.propTypes = {
   extended: PropTypes.bool.isRequired,
   handleFocus: PropTypes.func.isRequired,
+  handleNewSearch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
 };
 
