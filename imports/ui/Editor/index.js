@@ -126,8 +126,8 @@ const styles = theme => ({
         '& > div': {
             position: 'absolute',
             bottom: 0,
-            height: '6px',
-            background: `linear-gradient(to top, ${theme.palette.grey['600']}, transparent)`,
+            height: theme.spacing(0.5),
+            background: `linear-gradient(to top, ${theme.palette.grey['500']}, transparent)`,
             width: '100%',
             borderRadius: theme.spacing(0, 0, 0.5, 0.5),
         },

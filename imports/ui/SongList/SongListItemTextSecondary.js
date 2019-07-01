@@ -3,6 +3,7 @@ import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { MusicNote, Publish, TextFields, Translate } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     folded: {
@@ -14,6 +15,13 @@ const useStyles = makeStyles(theme => ({
             textOverflow: 'ellipsis',
         },
     },
+    inlineIcons: {
+        height: '0.8em',
+        margin: '0 3px',
+        opacity: 0.8,
+        position: 'relative',
+        top: '4px',
+    },
     unfolded: {
         marginRight: theme.spacing(2),
     }
@@ -22,31 +30,54 @@ const useStyles = makeStyles(theme => ({
 export const SongListItemTextSecondary = ({ smallDevice, song, unfolded }) => {
     const classes = useStyles();
 
-    let { auteur, compositeur, editeur, pg } = song;
-    let details = '';
+    let { auteur, compositeur, editeur, pg, traducteur } = song;
+    let details = [];
     const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
-    const jsxElements = [];
 
-    if (unfolded && !smallDevice) {
-        auteur = auteur ? 'Author: ' + auteur : '';
-        compositeur = compositeur ? 'Compositor: ' + compositeur : '';
-        editeur = editeur ? 'Editor: ' + editeur : '';
-    }
-    if (auteur) details += auteur;
-    if (compositeur && compositeur != auteur) details += !!details && ' · ' + compositeur;
-    if (editeur) details += details ? (unfolded ? ` · ${editeur}` : ` (${editeur})`) : editeur;
-
-    if (smallDevice) {
-        if (unfolded) jsxElements.push(<Typography key={0}>{details}</Typography>);
-        jsxElements.push(<Typography key={1}>{lyrics}</Typography>);
-    } else {
-        jsxElements.push(<Typography key={0}>{details + (unfolded ? '' : (!!details && ' — ' + lyrics))}</Typography>);
-        if (unfolded) jsxElements.push(<Typography key={1}>{lyrics}</Typography>)
-    }
+    if (compositeur && compositeur != auteur) details.push({
+        key: 'Music: ',
+        before: null,
+        name: compositeur,
+        icon: MusicNote,
+        after: null,
+    });
+    if (auteur) details.push({
+        key: 'Text: ',
+        before: details.length && ' · ',
+        name: auteur,
+        icon: TextFields,
+        after: null,
+    });
+    if (traducteur) details.push({
+        key: 'Translation: ',
+        before: details.length && ' · ',
+        name: traducteur,
+        icon: Translate,
+        after: null,
+    });
+    if (editeur) details.push({
+        key: 'Edition: ',
+        before: details.length && ' (',
+        name: editeur,
+        icon: null,
+        after: details.length && ')',
+    });
 
     return (
         <div className={unfolded ? classes.unfolded : classes.folded}>
-            {jsxElements}
+            {(!smallDevice || unfolded) && <Typography>
+                {details.map(detail =>
+                    <span key={detail.key}>
+                        {detail.before}
+                        {detail.icon && <detail.icon className={classes.inlineIcons} />}
+                        {!smallDevice && unfolded && detail.key}
+                        {detail.name}
+                        {detail.after}
+                    </span>
+                )}
+                {!smallDevice && !unfolded && <span> — {lyrics}</span>}
+            </Typography>}
+            {(smallDevice || unfolded) && <Typography>{lyrics}</Typography>}
         </div>
     );
 };
