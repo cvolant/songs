@@ -1,6 +1,8 @@
 <head>
   <title>Songs</title>
-  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no">
+  <meta name="viewport"
+    content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel='icon' type='image/png' href='/images/favicon.png' />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -8,4 +10,12 @@
 
 <body>
   <div id='app'></div>
+  <script type="text/javascript">
+    document.addEventListener('touchmove', function (event) {
+      if (event.target.parentNode.className.indexOf('noBounce') != -1
+        || event.target.className.indexOf('noBounce') != -1) {
+        event.preventDefault();
+      }
+    }, false);
+  </script>
 </body>

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
       color: 'black',
       float: 'right', 
       margin: theme.spacing(1),
-      opacity: 0.3,
+      opacity: 0.4,
 
       '& svg': {
         width: '3rem',
@@ -29,17 +29,17 @@ const useStyles = makeStyles(theme => ({
     '& button:hover': {
       background: '#888',
       color: 'black',
-      opacity: 0.6,
+      opacity: 0.7,
     },
     '& button:focus': {
       background: 'black',
       color: '#888',
-      opacity: 0.3,
+      opacity: 0.4,
     },
     '& button:disabled': {
       background: '#999',
       color: '#888',
-      opacity: 0.3,
+      opacity: 0.4,
     },
   },
   closeScreen: {
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     height: '3.5rem',
     margin: theme.spacing(3),
     minWidth: 0,
-    opacity: 0.3,
+    opacity: 0.4,
     padding: 0,
     position: 'absolute',
     right: 0,
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
 
     '&:hover': {
       background: '#888',
-      opacity: 0.6,
+      opacity: 0.7,
     },
   },
   displayZone: {

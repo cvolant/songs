@@ -64,9 +64,11 @@ const useStyles = makeStyles(theme => ({
     width: '100vw',
   },
   searchPanel: {
-    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
     maxWidth: '1000px',
     margin: '0 auto',
+    width: '100%',
   },
 }));
 
@@ -104,10 +106,7 @@ export const SearchPage = ({ songId, history }) => {
     console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id._str:', song._id._str);
   };
 
-  const handleToggleLogoMenu = oc => () => {
-    console.log('From SearchPage, handleToggleLogoMenu. oc (should be a bool):', oc);
-    setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
-  }
+  const handleToggleLogoMenu = oc => () => setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
 
   const stopLoading = () => setLoading(false);
 
@@ -144,11 +143,12 @@ export const SearchPage = ({ songId, history }) => {
         : null}
       <Grid item xs={12} md={showInfos ? 8 : undefined} lg={showInfos ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
         <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-          <SearchField {...{ extended: !logoMenuDeployed, handleFocus, handleNewSearch, loading }} />
+          <SearchField {...{ logoMenuDeployed, handleFocus, handleNewSearch, loading }} />
           <SongList {...{ handleSelectSong, loading, search, stopLoading }} />
         </div>
         {selectedSong ?
           <Editor
+            logoMenuDeployed={logoMenuDeployed}
             song={selectedSong}
             goBack={handleGoBackFromEditor}
             viewer={toSendToViewer => setViewer(toSendToViewer)}

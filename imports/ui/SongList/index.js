@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
+        overflowScrolling: 'touch',
         width: '100%',
     },
 }));
@@ -44,7 +45,10 @@ export const SongList = props => {
             return () => {
                 console.log('From SongList, useEffect. Stop subscription.');
                 subscription.stop();
+                setSongs([]);
             };
+        } else {
+            stopLoading();
         }
     }, [ , JSON.stringify(search)]);
 
@@ -59,7 +63,7 @@ export const SongList = props => {
     return (
             <List component="nav" className={classes.root}>
                 {/* loading ? <LinearProgress className={classes.progressBar} /> : '' */}
-                {songs.length === 0 && search && !loading ?
+                {songs.length === 0 && !loading ?
                     !console.log('From SongList, return. No results.') && <SongListEmptyItem search={search} />
                     :
                     songs.map(song => {

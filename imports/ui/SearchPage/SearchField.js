@@ -1,5 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
-import PropTypes, { string } from 'prop-types';
+import { withRouter } from "react-router";
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -10,6 +11,7 @@ import {
   CardActions,
   CircularProgress,
   Divider,
+  FormControl,
   IconButton,
   InputAdornment,
   InputBase,
@@ -72,11 +74,11 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
     margin: theme.spacing(1),
     transition: 'width 0.3s ease',
-    width: ({ extended }) => `calc(100% - 15rem + ${5 * extended}rem)`,
+    width: ({ logoMenuDeployed }) => `calc(100% - 15rem + ${5 * !logoMenuDeployed}rem)`,
   },
 }));
 
-export const SearchField = ({ extended, handleFocus, handleNewSearch, loading }) => {
+export const SearchField = ({ handleFocus, handleNewSearch, history, loading, location, logoMenuDeployed }) => {
   const fields = {
     titles: {
       name: 'titles',
@@ -105,11 +107,22 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
   };
   const inputRef = createRef();
 
-  const classes = useStyles({ extended });
+  const classes = useStyles({ logoMenuDeployed });
   const [searchEntry, setSearchEntry] = useState('');
   const [selectionRange, setSelectionRange] = useState(undefined);
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [delay, setDelay] = useState(undefined);
+
+  useEffect(() => {
+    if (location.search) {
+      const query = location.search.substring(1).replace('global=', '').split('&').map(q => {
+        const egal = q.indexOf('=');
+        return egal == -1 ? q : `$${q.substring(0, egal)}[${q.substring(egal + 1)}]`;
+      }).join(' ');
+      setSearchEntry(query);
+      handleSearch(query);
+    }
+  }, []);
   useEffect(() => {
     if (selectionRange) {
       const input = inputRef.current.lastChild;
@@ -139,7 +152,10 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
   }, [searchEntry]);
 
 
-  const giveFocus = () => inputRef.current.lastChild.focus();
+  const inputFocus = focus => () => {
+    if (focus || typeof focus == 'undefined') inputRef.current.lastChild.focus();
+    else inputRef.current.lastChild.blur();
+  };
 
   const handleAdvancedButtonClick = e => {
     const target = e.target;
@@ -166,10 +182,15 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
       selectionEnd = (stringParts[0] + stringParts[1]).length;
       setSelectionRange({ selectionStart, selectionEnd });
       setSearchEntry(stringParts.join(' '));
+      inputFocus(true)();
       console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'value:', value, 'stringParts:', stringParts);
     } else {
       console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field object.');
     }
+  };
+
+  const handleKeyDown = e => {
+    if (e && e.key == 'Enter') inputFocus(false)();
   };
 
   const handleSearchChange = e => {
@@ -199,16 +220,26 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
     }
 
     const globalQuery = searchEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
-    
+
     if (Object.keys(specificQueries).length === 0) specificQueries = '';
     const newSearch = globalQuery || specificQueries ? { globalQuery, specificQueries } : null;
 
-    Session.set('search', newSearch);
     console.log('From SearchField, handleSearch. newSearch:', newSearch);
+    Session.set('search', newSearch);
     handleNewSearch(newSearch);
+    history.replace('/search' + (globalQuery || specificQueries) && (
+      '?'
+      + [
+        globalQuery && 'global=' + globalQuery,
+        ...(specificQueries && Object.entries(specificQueries).map(([key, value]) => key + '=' + value))
+      ].join('&')
+    ));
   };
 
-  const handleToggleAdvancedSearch = () => setAdvancedSearch(!advancedSearch);
+  const handleToggleAdvancedSearch = () => {
+    setAdvancedSearch(!advancedSearch);
+    inputFocus(true)();
+  };
 
   return (
     <Card className={classes.root}>
@@ -222,7 +253,7 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
               <InputAdornment
                 position="start"
                 className={classes.adornment}
-                onClick={giveFocus}
+                onClick={inputFocus(true)}
               >
                 <Search />
               </InputAdornment>
@@ -231,6 +262,7 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
           onChange={handleSearchChange}
           onFocus={handleFocus(true)}
           onBlur={handleFocus(false)}
+          onKeyDown={handleKeyDown}
         />
         {loading ? <CircularProgress className={classes.circularProgress} /> : null}
         <Divider className={classes.divider} />
@@ -269,10 +301,10 @@ export const SearchField = ({ extended, handleFocus, handleNewSearch, loading })
 }
 
 SearchField.propTypes = {
-  extended: PropTypes.bool.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleNewSearch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  logoMenuDeployed: PropTypes.bool.isRequired,
 };
 
-export default SearchField;
+export default withRouter(SearchField);

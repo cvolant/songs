@@ -11,7 +11,7 @@ import {
 
 const styles = theme => ({
     chip: {
-        margin: theme.spacing(0.5),
+        margin: theme.spacing(0.25),
     },
     switch: {
         marginLeft: theme.spacing(1),

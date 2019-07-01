@@ -27,11 +27,11 @@ const App = props => {
     Session.set('search', {});
   
     localStorage.setItem('zoom', localStorage.getItem('zoom') || (
-      xs ? 0.7
-        : sm ? 0.8
-          : md ? 0.9
-            : lg ? 1
-              : 1.1
+      xs ? 0.6
+        : sm ? 0.7
+          : md ? 0.8
+            : lg ? 0.9
+              : 1
     ));
   }, []);
 

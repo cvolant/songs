@@ -28,7 +28,7 @@ export const SongListItemTextPrimary = ({ smallDevice, song, unfolded }) => {
     let { titre, sousTitre, annee } = song;
     return (
         <div className={classes.container}>
-            <Typography className={classes.titles} variant='h6'>{titre || <em>Untitled song</em> + sousTitre && !smallDevice && <em> &mdash; {sousTitre}</em>}</Typography>
+            <Typography className={classes.titles} variant='h6'>{titre || <em>Untitled song</em>}{sousTitre && !smallDevice && <em> &mdash; {sousTitre}</em>}</Typography>
             {annee && <Typography className={classes.year} variant='h6'>{annee}</Typography>}
         </div>
     );

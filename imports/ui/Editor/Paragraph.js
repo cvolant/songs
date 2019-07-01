@@ -20,17 +20,42 @@ import {
 } from '@material-ui/icons';
 
 const styles = theme => ({
+  actionButtonColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  actions: {
+    transition: 'height 1s',
+    justifyContent: 'space-between',
+  },
   card: {
     height: '100%',
     margin: theme.spacing(1),
     transition: 'height 0.5s',
     width: '100%',
   },
+  cardHeaderAction: {
+    order: -1,
+    marginRight: 0,
+    marginLeft: theme.spacing(-1),
+  },
   hoverableCard: {
     '&:hover': {
       backgroundColor: '#ddd',
       transition: 'background-color 0.3s'
     }
+  },
+  nonDisplayed: {
+    display: 'none',
+  },
+  paragraph: {
+    flexGrow: 1,
+    margin: theme.spacing(1),
+    whiteSpace: 'pre-line'
+  },
+  rightIcon: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   selectedCard: {
     background: `radial-gradient(circle,
@@ -44,26 +69,6 @@ const styles = theme => ({
     marginRight: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
-  },
-  rightIcon: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  paragraph: {
-    flexGrow: 1,
-    margin: theme.spacing(1),
-    whiteSpace: 'pre-line'
-  },
-  nonDisplayed: {
-    display: 'none',
-  },
-  actionButtonColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  actions: {
-    transition: 'height 1s',
-    justifyContent: 'space-between',
   },
 });
 
@@ -118,6 +123,7 @@ const Paragraph = (props) => {
               :
               undefined
           }
+          classes={{ action: classes.cardHeaderAction }}
           title={edit ?
             <TextField
               select

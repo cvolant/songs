@@ -30,7 +30,7 @@ const styles = theme => ({
         position: 'relative',
     },
     bottomFab: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(0.5),
     },
     bottomFabs: {
         '& div': {
@@ -39,13 +39,13 @@ const styles = theme => ({
         [theme.breakpoints.down('sm')]: {
             position: 'absolute',
             right: 0,
-            top: '-2rem',
+            top: 0,
             verticalAlign: 'bottom',
             width: '100%',
 
             '& > div': {
                 position: 'absolute',
-                bottom: 0,
+                bottom: theme.spacing(0.25),
                 right: 0,
                 flexWrap: 'wrap',
                 justifyContent: 'flex-end',
@@ -75,8 +75,11 @@ const styles = theme => ({
         backgroundColor: 'white',
         width: '100%',
         height: '100%',
-        overflow: 'auto',
-        borderBottom: '1px solid',
+        overflowY: 'scroll',
+        overflowScrolling: 'touch',
+        borderWidth: '0 0 1px 0',
+        borderColor: 'transparent',
+        borderStyle: 'solid',
         borderImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), gray, rgba(0, 0, 0, 0)) 100% 0%',
     },
     content: {
@@ -85,9 +88,6 @@ const styles = theme => ({
         flexWrap: 'nowrap!important',
         overflowX: 'hidden',
         padding: '0',
-    },
-    waitingContent: {
-        height: '100%',
     },
     displayNone: {
         display: 'none',
@@ -104,6 +104,9 @@ const styles = theme => ({
         flexGrow: 1,
         textAlign: 'center',
     },
+    lyrics: {
+        marginBottom: theme.spacing(2),
+    },
     root: {
         display: 'flex',
         flexDirection: 'column',
@@ -111,6 +114,22 @@ const styles = theme => ({
         padding: theme.spacing(2),
         [theme.breakpoints.down('sm')]: {
             margin: theme.spacing(-2),
+        },
+    },
+    shadowTop: {
+        position: 'absolute',
+        height: 0,
+        width: '100%',
+        top: 0,
+        left: 0,
+
+        '& > div': {
+            position: 'absolute',
+            bottom: 0,
+            height: '6px',
+            background: `linear-gradient(to top, ${theme.palette.grey['600']}, transparent)`,
+            width: '100%',
+            borderRadius: theme.spacing(0, 0, 0.5, 0.5),
         },
     },
     textField: {
@@ -122,6 +141,9 @@ const styles = theme => ({
             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
         },
+    },
+    waitingContent: {
+        height: '100%',
     },
 });
 
@@ -292,7 +314,7 @@ export class Editor extends React.Component {
                     pgStates[formerPgState.pgIndex].selected = true;
                 }
             });
-            this.setState({ pgStates });
+            this.setState({ pgStates, edit: false });
         }
     }
     handleCloseScreen() {
@@ -475,8 +497,9 @@ export class Editor extends React.Component {
                                     handleSubtitleChange={this.handleSubtitleChange.bind(this)}
                                     handleDetailChange={this.handleDetailChange.bind(this)}
                                     handleTitleCancel={this.handleTitleCancel.bind(this)}
+                                    logoMenuDeployed={this.props.logoMenuDeployed}
                                 />
-                                <Grid container spacing={1}>
+                                <Grid className={classes.lyrics} container spacing={1}>
                                     {this.state.pg.length > 0 ?
                                         this.state.pgStates.map(
                                             pgState => (
@@ -507,6 +530,7 @@ export class Editor extends React.Component {
                         }
                     </div>
                     <CardActions className={classes.actions}>
+                        <div className={classes.shadowTop}><div /></div>
                         {this.state.edit ?
                             <React.Fragment>
                                 <IconButton
@@ -520,7 +544,7 @@ export class Editor extends React.Component {
                                         className={classes.button}
                                         onClick={this.handleCancelAll.bind(this)}
                                     >
-                                        Cancel
+                                        Cancel all
                                     </Button>
                                     <Button
                                         variant='outlined'
@@ -528,7 +552,7 @@ export class Editor extends React.Component {
                                         color='primary'
                                         onClick={this.handleSaveAll.bind(this)}
                                     >
-                                        Save
+                                        Save all
                                     </Button>
                                 </div>
                             </React.Fragment>
@@ -550,14 +574,16 @@ export class Editor extends React.Component {
                                 </Typography>
                                 <div className={classes.bottomFabs}>
                                     <div>
-                                        <Fab
-                                            aria-label="Edit"
-                                            className={classes.bottomFab}
-                                            disabled={!this.state.title}
-                                            onClick={() => this.setState({ edit: true })}
-                                        >
-                                            <Edit />
-                                        </Fab>
+                                        {!Meteor.userId() ? null :
+                                            <Fab
+                                                aria-label="Edit"
+                                                className={classes.bottomFab}
+                                                disabled={!this.state.title}
+                                                onClick={() => this.setState({ edit: true })}
+                                            >
+                                                <Edit />
+                                            </Fab>
+                                        }
                                         <div className={classes.choiceFabs}>
                                             <Fab
                                                 aria-label="Select or unselect all"
@@ -566,7 +592,7 @@ export class Editor extends React.Component {
                                                 onClick={this.handleToggleSelectAll.bind(this)}
                                                 variant="extended"
                                             >
-                                                Select / unselect all
+                                                {!this.state.pgStates.filter(pgState => pgState.selected).length ? 'Select all' : 'Unselect all'}
                                             </Fab>
                                             <Fab
                                                 aria-label="Validate"
@@ -585,48 +611,20 @@ export class Editor extends React.Component {
                     </CardActions>
                 </Card>
             );
-        } else {
-            return (
-                <div className='editor__message'>
-                    {(this.props.selectedSongId) ?
-                        <Typography variant="body1" color="inherit" className={classes.grow}>
-                            No song found yet.
-                        </Typography>
-                        :
-                        <Typography variant="body1" color="inherit" className={classes.grow}>
-                            Pick or create a song to get started.
-                        </Typography>
-                    }
-                </div>
-            );
         }
     }
 }
 
 Editor.propTypes = {
     classes: PropTypes.object.isRequired,
-    /* editorClassName: PropTypes.object, */
     goBack: PropTypes.func.isRequired,
     meteorCall: PropTypes.func.isRequired,
-    /* 
-        setSelectedSongId: PropTypes.func.isRequired,
-        selectedSongId: PropTypes.string,
-    */
+    logoMenuDeployed: PropTypes.bool,
     song: PropTypes.object,
     viewer: PropTypes.func.isRequired,
 }
 
-export default withTracker(props => {
-    /* 
-        const selectedSongId = Session.get('selectedSongId');
-        const setSelectedSongId = newId => Session.set('selectedSongId', newId);
-    */
-    return {
-        /* 
-            selectedSongId,
-            setSelectedSongId,
-        */
-        meteorCall: Meteor.call,
-        song: { ...props.song, ...Songs.findOne(props.song._id) },
-    };
-})(withStyles(styles)(Editor));
+export default withTracker(props => ({
+    meteorCall: Meteor.call,
+    song: { ...props.song, ...Songs.findOne(props.song._id) },
+}))(withStyles(styles)(Editor));

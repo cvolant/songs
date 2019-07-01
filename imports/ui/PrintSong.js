@@ -32,11 +32,11 @@ export const PrintSong = props => {
   return (
     <React.Fragment>
       <Typography className={classes.title} variant='h1'>{song.title}</Typography>
-      <Typography className={classes.subtitle} variant='subtitle1'>Zoom: {zoom}</Typography>
+      <Typography className={classes.subtitle} variant='subtitle1'>{song.subtitle}</Typography>
       <div className={classes.return} />
       {song.pg.map((paragraph, index) => (
         <Typography key={index} className={classes.paragraph} variant='body1'>
-          {paragraph.pg}
+          {paragraph.pg.replace(/<br\/>/g, '')}
         </Typography>
       ))}
     </React.Fragment>
