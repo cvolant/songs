@@ -5,65 +5,84 @@ import moment from 'moment';
 
 export const Songs = new Mongo.Collection('songs');
 
+// Custom toString function for deep in objects/arrays containing regexp stringing.
+const toStr = o => Array.isArray(o) ? '[ ' + o.map(oel => toStr(oel)).join(', ') + ' ]' : o.constructor.name == 'Object' ? '{ ' + Object.entries(o).map(entry => entry[0] + ': ' + toStr(entry[1])).join(', ') + ' }' : o.toString();
+
 if (Meteor.isServer) {
-    Meteor.publish('songs', function ({ globalQuery, specificQueries }) {
+    Meteor.publish('songs', function ({
+        search: { globalQuery, specificQueries },
+        options: { sort, limit = 20 },
+    }) {
 
         const fields = {
-            titles: {
-                names: ['titre', 'sousTitre']
+            search: {
+                titles: {
+                    names: ['titre', 'sousTitre']
+                },
+                authors: {
+                    names: ['auteur', 'compositeur']
+                },
+                editor: {
+                    names: ['editeur']
+                },
+                classifications: {
+                    names: ['cote', 'nouvelleCote']
+                },
+                lyrics: {
+                    names: ['pg.pg']
+                },
+                before: {
+                    names: ['annee'],
+                    operator: '$lt'
+                },
+                after: {
+                    names: ['annee'],
+                    operator: '$gt'
+                },
             },
-            authors: {
-                names: ['auteur', 'compositeur']
-            },
-            editor: {
-                names: ['editeur']
-            },
-            classifications: {
-                names: ['cote', 'nouvelleCote']
-            },
-            before: {
-                names: ['annee'],
-                operator: '$lt'
-            },
-            after: {
-                names: ['annee'],
-                operator: '$gt'
-            },
+            sortTranslate: sort => {
+                const translatedSort = {};
+                sort.title      && ( translatedSort.titre       = sort.title        );
+                sort.author     && ( translatedSort.auteur      = sort.author       );
+                sort.compositor && ( translatedSort.compositeur = sort.compositor   );
+                sort.year       && ( translatedSort.annee       = sort.year         );
+                return translatedSort;
+            }
         };
 
         console.log('\n------------------------');
         console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
 
+        const options = { sort: sort ? fields.sortTranslate(sort) : { annee: -1 }, limit };
+        
         let foundSongs;
-        const isThereSpecificQueries = specificQueries ? Object.keys(specificQueries).length > 0 : false;
+        const isThereSpecificQueries = specificQueries && !!specificQueries.length > 0;
 
         if (!globalQuery && !isThereSpecificQueries) {
             console.log('=> no globalQuery, no specificQueries...');
-            foundSongs = Songs.find({}, { sort: { annee: -1 }, limit: 20 });
-            debugger;
+            foundSongs = Songs.find({}, options);
         } else {
             let queries = [];
             if (isThereSpecificQueries) {
                 console.log('=> specificQueries...');
 
-                queries = Object.entries(specificQueries).map(entry => {
-                    const specificQuery = {};
-                    const key = entry[0];
-                    const { names: queryFields, operator } = fields[key];
+                queries = specificQueries.map(specificQuery => {
+                    const query = {};
+                    const [[key, value]] = Object.entries(specificQuery);
+                    if (!(key in fields.search)) return {};
+                    const { names: queryFields, operator } = fields.search[key];
                     const expression = operator ?
-                        { [operator]: parseInt(entry[1]) } :
-                        new RegExp(entry[1], 'i');
+                        { [operator]: parseInt(value) } :
+                        new RegExp(value, 'i');
 
                     if (queryFields.length == 1) {
-                        specificQuery[queryFields[0]] = expression;
+                        query[queryFields[0]] = expression;
                     } else if (queryFields.length > 1) {
-                        specificQuery['$or'] = queryFields.map(queryField => ({ [queryField]: expression }));
+                        query['$or'] = queryFields.map(queryField => ({ [queryField]: expression }));
                     }
-                    return specificQuery;
+                    return query;
                 });
             }
-
-            let options = { sort: {}, limit: 20 };
 
             if (globalQuery) {
                 queries.push({
@@ -76,9 +95,8 @@ if (Meteor.isServer) {
                 };
                 options.sort.score = { $meta: "textScore" };
             }
-            options.sort.annee = -1;
 
-            console.log('From songs.\nqueries:', queries, 'options:', options);
+            console.log('From songs.\nqueries:', toStr(queries), '\noptions:', toStr(options));
 
             foundSongs = Songs.find({ '$and': queries }, options);
         }
@@ -107,11 +125,11 @@ Meteor.methods({
     },
 
     'songs.remove'(_id) {
-        /* 
+
         if (!this.userId) {
             throw new Meteor.Error('not-authorized');
         }
-        */
+
         new SimpleSchema({
             _id: {
                 type: String,

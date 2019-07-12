@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
   },
   listItem: {
-    transition: 'background-color 0.3s ease',
+    transition: theme.transitions.create('background-color'),
     borderBottom: `1px solid ${theme.palette.darken.light}`,
     marginBottom: '-1px',
     padding: theme.spacing(2),
@@ -62,7 +62,7 @@ export const TopMenuContent = ({ isAuthenticated, handleLogout, handleToggleTopM
       >
         <List className={classes.list}>
           {navLinks.map((navLink, index) => (
-            navLink.hide || navLink.path == location.pathname ? null :
+            !navLink.hide && navLink.path != location.pathname &&
               <ListItem
                 className={classes.listItem}
                 component={NavButton}

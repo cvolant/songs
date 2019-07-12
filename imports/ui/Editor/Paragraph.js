@@ -15,6 +15,7 @@ import {
   ArrowDownward,
   ArrowUpward,
   Cancel,
+  Check,
   Delete,
   Edit,
 } from '@material-ui/icons';
@@ -25,13 +26,11 @@ const styles = theme => ({
     flexDirection: 'column',
   },
   actions: {
-    transition: 'height 1s',
     justifyContent: 'space-between',
   },
   card: {
     height: '100%',
     margin: theme.spacing(1),
-    transition: 'height 0.5s',
     width: '100%',
   },
   cardHeaderAction: {
@@ -42,7 +41,7 @@ const styles = theme => ({
   hoverableCard: {
     '&:hover': {
       backgroundColor: '#ddd',
-      transition: 'background-color 0.3s'
+      transition: theme.transitions.create('background-color'),
     }
   },
   nonDisplayed: {
@@ -112,7 +111,7 @@ const Paragraph = (props) => {
                   color={edit ? "primary" : "default"}
                   onClick={handleEditPg}
                 >
-                  <Edit />
+                  {edit ? <Check /> : <Edit />}
                 </IconButton>
                 {edit ?
                   <IconButton onClick={handlePgCancel}>

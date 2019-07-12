@@ -574,7 +574,7 @@ export class Editor extends React.Component {
                                 </Typography>
                                 <div className={classes.bottomFabs}>
                                     <div>
-                                        {!Meteor.userId() ? null :
+                                        {Meteor.userId() &&
                                             <Fab
                                                 aria-label="Edit"
                                                 className={classes.bottomFab}

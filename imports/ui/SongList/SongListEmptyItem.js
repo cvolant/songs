@@ -6,6 +6,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import { Search, Settings } from '@material-ui/icons';
+import InlineIcon from '../utils/InlineIcon';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -13,12 +14,6 @@ const useStyles = makeStyles(theme => ({
     },
     divider: {
         margin: theme.spacing(2),
-    },
-    inlineIcons: {
-        height: '0.8em',
-        margin: '0 3px',
-        position: 'relative',
-        top: '4px',
     },
     spacedText: {
         lineHeight: '2',
@@ -35,19 +30,19 @@ const SongListEmptyItem = ({ search }) => {
             {search && Object.values(search).join('') ?
                 <span>
                     <Typography className={classes.spacedText}>
-                    <Search className={classes.inlineIcons} />
-                        Aucun résulat pour cette recherche. Veuillez essayer un autre mot clé ou utiliser la recherche avancée
-                    <Settings className={classes.inlineIcons} />
-                        .<br/>Si le chant n'existe pas dans la base de données, vous pouvez l'y ajouter si vous êtes connecté à votre compte.
+                    <InlineIcon Icon={Search} />
+                        No result for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options
+                        <InlineIcon Icon={Settings} />
+                        .<br/>If the song does not exist in the database, you can add it when logged in you account.
                     </Typography>
                 </span>
             :
             <span>
                 <Typography className={classes.spacedText}>
-                <Search className={classes.inlineIcons} />
-                    Recherche par titres, paroles, auteurs, éditeurs, cotes. Utilisez la roue dentée
-                <Settings className={classes.inlineIcons} />
-                    pour faire une recherche avancée.
+                    <InlineIcon Icon={Search} />
+                    Search by titles, lyrics, authors, editors, classifications. Use the settings button
+                    <InlineIcon Icon={Settings} />
+                    in the search field to open advanced search settings.
                 </Typography>
             </span>
             }

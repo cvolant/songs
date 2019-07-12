@@ -3,11 +3,11 @@ import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { MusicNote, Publish, TextFields, Translate } from '@material-ui/icons';
+import { MusicNote, TextFields, Translate } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     folded: {
-        color: theme.palette.grey['600'],
+        color: theme.palette.font.light,
         marginRight: theme.spacing(2),
         whiteSpace: 'nowrap',
         '& > *': {
@@ -34,25 +34,25 @@ export const SongListItemTextSecondary = ({ smallDevice, song, unfolded }) => {
     let details = [];
     const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
 
-    if (compositeur && compositeur != auteur) details.push({
+    if (compositeur) details.push({
         key: 'Music: ',
         before: null,
-        name: compositeur,
         icon: MusicNote,
+        name: compositeur,
         after: null,
     });
     if (auteur) details.push({
         key: 'Text: ',
         before: details.length && ' · ',
-        name: auteur,
         icon: TextFields,
+        name: auteur,
         after: null,
     });
     if (traducteur) details.push({
         key: 'Translation: ',
         before: details.length && ' · ',
-        name: traducteur,
         icon: Translate,
+        name: traducteur,
         after: null,
     });
     if (editeur) details.push({

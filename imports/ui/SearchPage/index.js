@@ -9,21 +9,15 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
-import SearchField from './SearchField';
 import SongList from '../SongList';
 
 import {
   Fab,
-  Grid,
   Typography,
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
-  contentArea: {
-    display: 'flex',
-    overflow: 'hidden',
-  },
   continueFabIcon: {
     border: `1px solid ${theme.palette.primary.main}`,
     fill: theme.palette.primary.main,
@@ -68,13 +62,12 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     maxWidth: '1000px',
     margin: '0 auto',
+    overflow: 'hidden',
     width: '100%',
   },
 }));
 
 export const SearchPage = ({ songId, history }) => {
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
@@ -84,6 +77,8 @@ export const SearchPage = ({ songId, history }) => {
   const contentAreaRef = createRef();
 
   const handleCloseInfos = () => setShowInfos(0);
+
+/*   const handleToggleTutorial = open => () => setShowTutorial(typeof open == 'undefined' ? !showTutorial : !!open); */
 
   const handleFocus = focus => () => {
     if (smallDevice) handleToggleLogoMenu(!focus)();
@@ -95,21 +90,14 @@ export const SearchPage = ({ songId, history }) => {
     history.push('/search/');
   };
 
-  const handleNewSearch = newSearch => {
-    setLoading(true);
-    setSearch(newSearch);
-  };
-
   const handleSelectSong = song => {
     setSelectedSong(song);
     history.push('/search/' + song._id._str);
     console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id._str:', song._id._str);
   };
-
+  
   const handleToggleLogoMenu = oc => () => setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
-
-  const stopLoading = () => setLoading(false);
-
+  
   const scrollDown = () => {
     contentAreaRef.current.scrollIntoView({ behavior: "smooth" });
     setTimeout(handleCloseInfos, 500);
@@ -118,46 +106,41 @@ export const SearchPage = ({ songId, history }) => {
   console.log('From SearchPage. render.')
 
   return (
-    <PageLayout menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}>
-      {showInfos ?
-        <Grid item sm={12} md={4} lg={3}>
-          <InfosSongBySong
-            handleCloseInfos={handleCloseInfos}
-          >
-            {
-              smallDevice ?
-                <Fab
-                  variant="extended"
-                  size="small"
-                  aria-label="Continue"
-                  className={classes.continueFab}
-                  onClick={scrollDown}
-                >
-                  <ExpandMore className={classes.continueFabIcon} />
-                  <Typography>Continuer</Typography>
-                </Fab>
-                : undefined
-            }
-          </InfosSongBySong>
-        </Grid>
-        : null}
-      <Grid item xs={12} md={showInfos ? 8 : undefined} lg={showInfos ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
-        <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-          <SearchField {...{ logoMenuDeployed, handleFocus, handleNewSearch, loading }} />
-          <SongList {...{ handleSelectSong, loading, search, stopLoading }} />
-        </div>
-        {selectedSong ?
-          <Editor
-            logoMenuDeployed={logoMenuDeployed}
-            song={selectedSong}
-            goBack={handleGoBackFromEditor}
-            viewer={toSendToViewer => setViewer(toSendToViewer)}
-          />
-          :
-          null
-        }
-      </Grid>
-      {viewer}
+    <PageLayout
+      menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
+      showSidePanel={showInfos}
+      sidePanel={
+        showInfos && <InfosSongBySong {...{ handleCloseInfos }}>
+          {smallDevice &&
+              <Fab
+                variant="extended"
+                size="small"
+                aria-label="Continue"
+                className={classes.continueFab}
+                onClick={scrollDown}
+              >
+                <ExpandMore className={classes.continueFabIcon} />
+                <Typography>Continuer</Typography>
+              </Fab>
+          }
+        </InfosSongBySong>
+      }
+      tutorialContentName={selectedSong ? 'Editor' : 'SearchPage'}
+      {...{ contentAreaRef, scrollDown, smallDevice, viewer }}
+    >
+      <div className={selectedSong ? classes.hidden : classes.searchPanel}>
+        <SongList {...{ handleFocus, handleSelectSong, logoMenuDeployed, smallDevice }} />
+      </div>
+      {selectedSong ?
+        <Editor
+          logoMenuDeployed={logoMenuDeployed}
+          song={selectedSong}
+          goBack={handleGoBackFromEditor}
+          viewer={toSendToViewer => setViewer(toSendToViewer)}
+        />
+        :
+        null
+      }
     </PageLayout >
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -13,26 +14,30 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     float: 'left',
-    height: '100%',
     justifyContent: 'space-between',
     padding: theme.spacing(4),
     position: 'relative',
+    
+    '& > *': {
+      zIndex: 0,
+    },
   },
   close: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
     margin: theme.spacing(1),
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 2,
   },
 }));
 
-export const Panel = ({ children, handleClosePanel }) => {
+export const Panel = ({ children, classes: propClasses, className, handleClosePanel }) => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
-      <IconButton className={classes.close} onClick={handleClosePanel}>
-        <Clear />
+    <Paper className={clsx(classes.root, className, propClasses && propClasses.root)}>
+      <IconButton className={clsx(classes.close, propClasses && propClasses.iconButton)} onClick={handleClosePanel}>
+        <Clear className={propClasses && propClasses.icon} />
       </IconButton>
       {children}
     </Paper>
@@ -41,6 +46,7 @@ export const Panel = ({ children, handleClosePanel }) => {
 
 Panel.propTypes = {
   handleClosePanel: PropTypes.func.isRequired,
+  classes: PropTypes.object,
 };
 
 export default Panel;

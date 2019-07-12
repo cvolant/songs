@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
 import EmailPasswordForm from './EmailPasswordForm';
-import LogoMenu from '../LogoMenu';
+import PageLayout from '../utils/PageLayout';
 
 import {
     Avatar,
@@ -40,34 +40,35 @@ export const Door = ({ alreadySignedUp, link, title }) => {
     const classes = useStyles();
 
     return (
-        <Container component="main" maxWidth="xs">
-            <LogoMenu />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
+        <PageLayout tutorialContentName={alreadySignedUp ? 'SignIn' : 'SignUp'}>
+            <Container component="main" maxWidth="xs">
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
 
-                <Typography component="h1" variant="h5">
-                    {title}
-                </Typography>
+                    <Typography component="h1" variant="h5">
+                        {title}
+                    </Typography>
 
-                <EmailPasswordForm
-                    alreadySignedUp={alreadySignedUp}
-                    title={title}
-                />
+                    <EmailPasswordForm
+                        alreadySignedUp={alreadySignedUp}
+                        title={title}
+                    />
 
-                <Grid container className={classes.links}>
-                    {/* <Grid item xs>
+                    <Grid container className={classes.links}>
+                        {/* <Grid item xs>
                         <Link href="#" variant="body2">
                             Forgot password?
                         </Link>
                     </Grid> */}
-                    <Grid item>
-                        {link ? <Link to={link.path}>{link.text}</Link> : null}
+                        <Grid item>
+                            {link ? <Link to={link.path}>{link.text}</Link> : null}
+                        </Grid>
                     </Grid>
-                </Grid>
-            </div>
-        </Container>
+                </div>
+            </Container>
+        </PageLayout>
     );
 }
 

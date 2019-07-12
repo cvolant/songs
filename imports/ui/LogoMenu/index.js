@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 import { ButtonBase } from '@material-ui/core';
-import { ExpandLess, Help, Home, Menu, Person } from '@material-ui/icons';
+import { ExpandLess, Help, HelpOutline, Home, Menu, Person } from '@material-ui/icons';
 
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
@@ -109,7 +109,7 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     right: '0',
     width: '175%',
-    transition: 'all 0.3s ease',
+    transition: theme.transitions.create('transform'),
 
     /* border-radius */
     borderRadius: '0 0 0 100%',
@@ -122,8 +122,8 @@ export const LogoMenu = props => {
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed == 'undefined' ?
     useState(true) :
-    [props.logoMenuDeployed, () => console.error('If you gave a logoMenuDeployed prop to LogoMenu without giving it a handleToggleLogoMenu prop...')];
-  const { isAuthenticated, handleLogout, location } = props;
+    [props.logoMenuDeployed, () => console.error('You gave a logoMenuDeployed prop to LogoMenu without giving it a handleToggleLogoMenu prop...')];
+  const { isAuthenticated, handleLogout, handleToggleTutorial, location, showTutorial } = props;
   
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
@@ -180,9 +180,10 @@ export const LogoMenu = props => {
           aria-label='Help'
           className={clsx(classes.tabShape, classes.tab, classes.tab1)}
           component='div'
+          onClick={handleToggleTutorial()}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon1)}>
-            <Help />
+            {showTutorial ? <HelpOutline /> : <Help />}
           </div>
         </ButtonBase>
 
@@ -197,7 +198,10 @@ export const LogoMenu = props => {
           to={isAuthenticated ?
             location.pathname == '/dashboard' ? '/' : '/dashboard'
             :
-            location.pathname == '/signin' ? '/signup' : '/signin'}
+            {
+              pathname: location.pathname == '/signin' ? '/signup' : '/signin',
+              state: { from: location },
+            }}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
             {location.pathname == '/dashboard' ? <Home /> : <Person />}
@@ -233,7 +237,9 @@ LogoMenu.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   handleLogout: PropTypes.func.isRequired,
   handleToggleLogoMenu: PropTypes.func,
+  handleToggleTutorial: PropTypes.func,
   logoMenuDeployed: PropTypes.bool,
+  showTutorial: PropTypes.bool,
 };
 
 export default withTracker(props => ({

@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
     height: '10rem',
     width: '10rem',
   },
+  root: {
+    height: '100%',
+  },
   text: {
     overflow: 'auto',
     overflowWrap: 'break-word',
@@ -39,7 +42,7 @@ export const InfosSongBySong = props => {
   const classes = useStyles();
 
   return (
-    <Panel handleClosePanel={props.handleCloseInfos}>
+    <Panel className={classes.root} handleClosePanel={props.handleCloseInfos}>
       <div className={classes.text}>
         <div className={classes.logoSpace} />
         <Typography variant="h2" component="h2" gutterBottom>

@@ -5,7 +5,7 @@ import Drawer from '@material-ui/core/Drawer';
 
 const useStyles = makeStyles(theme => ({
   cushion: {
-    transition: 'margin-top 0.2s ease',
+    transition: theme.transitions.create('margin-top', { duration: theme.transitions.duration.shorter }),
     marginTop: ({ topMenuIsOpen }) => topMenuIsOpen && theme.sizes.menuItem,
   },
 }));

@@ -9,7 +9,7 @@ export default theme = createMuiTheme({
             contrastText: '#fff',
         },
         secondary: {
-            light: '#ffc046',
+            light: '#ffc780', //#ffc046',
             main: '#ff8f00',
             dark: '#c56000',
             contrastText: '#000',
@@ -21,6 +21,17 @@ export default theme = createMuiTheme({
             medium: '#0004', 
             dark: '#0006', 
             darker: '#0008', 
+        },
+        background: {
+            page: "#f3ece4",
+            paper: "#fff",
+            default: "#fafafa"
+        },
+        font: {
+            subtle: '#bdbdbd',
+            lighter: '#757575',
+            light: '#656565',
+            normal: 'black',
         }
     },
     typography: {

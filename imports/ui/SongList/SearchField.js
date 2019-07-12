@@ -11,17 +11,16 @@ import {
   CardActions,
   CircularProgress,
   Divider,
-  FormControl,
   IconButton,
   InputAdornment,
   InputBase,
 } from '@material-ui/core';
-import { Settings, Search } from '@material-ui/icons';
+import { Settings, SettingsOutlined, Search } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   adornment: {
     position: 'absolute',
-    color: theme.palette.grey[400],
+    color: theme.palette.font.subtle,
   },
   advancedSearchContainer: {
     padding: 0,
@@ -73,12 +72,20 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0px 2px 6px 0px inset rgba(0,0,0,0.2),0px 2px 2px 0px inset rgba(0,0,0,0.14),0px 4px 2px -2px inset rgba(0,0,0,0.12)',
     flexShrink: 0,
     margin: theme.spacing(1),
-    transition: 'width 0.3s ease',
+    transition: theme.transitions.create('width'),
     width: ({ logoMenuDeployed }) => `calc(100% - 15rem + ${5 * !logoMenuDeployed}rem)`,
   },
 }));
 
-export const SearchField = ({ handleFocus, handleNewSearch, history, loading, location, logoMenuDeployed }) => {
+export const SearchField = ({
+    handleFocus,
+    handleNewSearch,
+    handleToggleDisplaySort,
+    history,
+    loading,
+    location,
+    logoMenuDeployed
+  }) => {
   const fields = {
     titles: {
       name: 'titles',
@@ -94,6 +101,10 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
     },
     classifications: {
       name: 'classifications',
+      placeholder: ' ??? ',
+    },
+    lyrics: {
+      name: 'lyrics',
       placeholder: ' ??? ',
     },
     before: {
@@ -114,10 +125,12 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
   const [delay, setDelay] = useState(undefined);
 
   useEffect(() => {
-    if (location.search) {
+    const formerSearch = location.search || Session.get('search');
+    if (formerSearch) {
+      console.log('From SearchField, useEffect[]. search on mount. location.search:', location.search);
       const query = location.search.substring(1).replace('global=', '').split('&').map(q => {
         const egal = q.indexOf('=');
-        return egal == -1 ? q : `$${q.substring(0, egal)}[${q.substring(egal + 1)}]`;
+        return egal == -1 ? decodeURI(q) : `$${q.substring(0, egal)}[${decodeURI(q.substring(egal + 1))}]`;
       }).join(' ');
       setSearchEntry(query);
       handleSearch(query);
@@ -131,24 +144,6 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
         input.focus();
       }
     }
-    /* 
-        const input = inputRef.current.lastChild;
-        const searchEntryLength = searchEntry.length;
-        if (input.selectionStart == searchEntryLength || input.selectionStart === undefined) {
-          const result = searchEntry.matchAll(/(?:\$)(\w+)(?:\[)([^\[]+?)(?:\]$)/g).next().value;
-          console.log('From SearchField, useEffect. result:', result);
-          if (result) {
-            const [ , fieldName, placeholder ] = result;
-            const stringStart = searchEntryLength - placeholder.length - 1;
-            const stringEnd = searchEntryLength - 1;
-            console.log('From SearchField, useEffect. stringStart:', stringStart, 'stringEnd:', stringEnd);
-            if (fields[fieldName].placeholder == placeholder) {
-              input.setSelectionRange(stringStart, stringEnd);
-              input.focus();
-            }
-          }
-        }
-    */
   }, [searchEntry]);
 
 
@@ -181,8 +176,10 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
       selectionStart = stringParts[0].length + fieldName.length + 3;
       selectionEnd = (stringParts[0] + stringParts[1]).length;
       setSelectionRange({ selectionStart, selectionEnd });
-      setSearchEntry(stringParts.join(' '));
+      const newSearchString = stringParts.join(' ');
+      setSearchEntry(newSearchString);
       inputFocus(true)();
+      handleSearch(newSearchString);
       console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'value:', value, 'stringParts:', stringParts);
     } else {
       console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field object.');
@@ -203,37 +200,38 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
   };
 
   const handleSearch = (searchEntry) => {
+    const newUrlSearchElements = [];
+
+    const globalQuery = searchEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
+    globalQuery && newUrlSearchElements.push('global=' + encodeURI(globalQuery));
+
     const specificEntries = searchEntry.match(/\$\w+\[.*?(\]|\$|$)/g) || [];
-    console.log('From SearchField. searchEntry:', searchEntry, ', specificEntries:', specificEntries);
-
-    let specificQueries = {};
-
+    let specificQueries = [];
     if (specificEntries.length > 0) {
       specificEntries.map(specificEntry => {
         const queryFirstChar = specificEntry.indexOf('[') + 1;
         const queryLastChar = specificEntry[specificEntry.length - 1] == ']' ? specificEntry.length - 1 : specificEntry.length;
         const field = specificEntry.substring(1, queryFirstChar - 1);
-        const query = specificEntry.substring(queryFirstChar, queryLastChar).replace(/(\W\w\W)|\W+/g, ' ').trim();;
-        specificQueries[field] = query;
+        const query = specificEntry.substring(queryFirstChar, queryLastChar).replace(/(\W\w\W)|\W+/g, ' ').trim();
+        const queryWords = query.split(' ');
+        queryWords.forEach(queryWord => specificQueries.push({ [field]: queryWord }));
+        newUrlSearchElements.push(field + '=' + encodeURI(query));
       });
       console.log('From SearchField, handleSearch. specificQueries:', specificQueries);
     }
-
-    const globalQuery = searchEntry.replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '').replace(/(\W\w\W)|\W+/g, ' ').trim();
 
     if (Object.keys(specificQueries).length === 0) specificQueries = '';
     const newSearch = globalQuery || specificQueries ? { globalQuery, specificQueries } : null;
 
     console.log('From SearchField, handleSearch. newSearch:', newSearch);
     Session.set('search', newSearch);
+    console.log("From SearchField, Session.get('search'):", Session.get('search'));
     handleNewSearch(newSearch);
-    history.replace('/search' + (globalQuery || specificQueries) && (
-      '?'
-      + [
-        globalQuery && 'global=' + globalQuery,
-        ...(specificQueries && Object.entries(specificQueries).map(([key, value]) => key + '=' + value))
-      ].join('&')
-    ));
+    const newUrlSearch = '?' + newUrlSearchElements.join('&');
+    console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
+    if (location.search != newUrlSearch) {
+      history.replace({ ...location, search: newUrlSearch });
+    }
   };
 
   const handleToggleAdvancedSearch = () => {
@@ -272,29 +270,26 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
           aria-label="Advanced search"
           onClick={handleToggleAdvancedSearch}
         >
-          <Settings />
+          {advancedSearch ? <SettingsOutlined /> : <Settings />}
         </IconButton>
       </CardContent>
-      {
-        advancedSearch ?
-          <CardActions className={classes.advancedSearchContainer}>
-            <ButtonGroup
-              classes={{ root: classes.buttonGroup, grouped: classes.buttons }}
-              color="primary"
-              variant="contained"
-            >
-              <Button value="titles" onClick={handleAdvancedButtonClick}>Titles</Button>
-              <Button value="lyrics" onClick={handleAdvancedButtonClick}>Lyrics</Button>
-              <Button value="authors" onClick={handleAdvancedButtonClick}>Authors</Button>
-              <Button value="editor" onClick={handleAdvancedButtonClick}>Editor</Button>
-              <Button value="classifications" onClick={handleAdvancedButtonClick}>Classifications</Button>
-              <Button value="before" onClick={handleAdvancedButtonClick}>Before</Button>
-              <Button value="after" onClick={handleAdvancedButtonClick}>After</Button>
-              {/*               <YearSelector className={clsx('MuiButtonBase-root', 'MuiButton-root', 'MuiButton-contained', 'MuiButton-containedPrimary', 'MuiButtonGroup-grouped', 'MuiButtonGroup-groupedContained')} /> */}
-            </ButtonGroup>
-          </CardActions>
-          :
-          undefined
+      {advancedSearch &&
+        <CardActions className={classes.advancedSearchContainer}>
+          <ButtonGroup
+            classes={{ root: classes.buttonGroup, grouped: classes.buttons }}
+            color="primary"
+            variant="contained"
+          >
+            <Button value="titles" onClick={handleAdvancedButtonClick}>Titles</Button>
+            <Button value="authors" onClick={handleAdvancedButtonClick}>Authors</Button>
+            <Button value="editor" onClick={handleAdvancedButtonClick}>Editor</Button>
+            <Button value="classifications" onClick={handleAdvancedButtonClick}>Classifications</Button>
+            <Button value="lyrics" onClick={handleAdvancedButtonClick}>Lyrics</Button>
+            <Button value="before" onClick={handleAdvancedButtonClick}>Before</Button>
+            <Button value="after" onClick={handleAdvancedButtonClick}>After</Button>
+            <Button onClick={handleToggleDisplaySort()}>Sort</Button>
+          </ButtonGroup>
+        </CardActions>
       }
     </Card>
   );
@@ -303,6 +298,7 @@ export const SearchField = ({ handleFocus, handleNewSearch, history, loading, lo
 SearchField.propTypes = {
   handleFocus: PropTypes.func.isRequired,
   handleNewSearch: PropTypes.func.isRequired,
+  handleToggleDisplaySort: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   logoMenuDeployed: PropTypes.bool.isRequired,
 };

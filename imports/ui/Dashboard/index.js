@@ -13,7 +13,7 @@ export const Dashboard = () => {
 
   return (
     <PageLayout>
-      {!showPanel ? null :
+      {showPanel &&
         <Grid item xs={8} md={4} lg={3}>
           <Panel handleClosePanel={handleClosePanel}>
             <Typography>

@@ -8,7 +8,7 @@ import {
   IconButton,
   TextField,
 } from '@material-ui/core';
-import { Cancel, Edit } from '@material-ui/icons';
+import { Cancel, Check, Edit } from '@material-ui/icons';
 
 import Detail from './Detail';
 
@@ -79,7 +79,7 @@ const Title = (props) => {
                 color={edit ? "primary" : "default"}
                 onClick={handleEditTitle}
               >
-                <Edit />
+                {edit ? <Check /> : <Edit />}
               </IconButton>
               {edit ?
                 <IconButton onClick={handleTitleCancel}>

@@ -100,7 +100,7 @@ const useStyles = makeStyles(theme => ({
     opacity,
     textAlign: 'center',
     top: 0,
-    transition: 'opacity 0.5s ease',
+    transition: theme.transitions.create('opacity', { duration: theme.transitions.duration.complex }),
     width: '100%',
     zIndex: 2000,
   }),
@@ -118,6 +118,7 @@ export const Screen = props => {
   useEffect(() => {
     setTimeout(() => setOpacity(1), 10);
   }, [ print ]);
+  
   const setZoom = newZoom => {
     localStorage.setItem('zoom', newZoom);
     setStateZoom(newZoom);

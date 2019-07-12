@@ -1,8 +1,5 @@
-import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { Session } from 'meteor/session';
-import { withTracker } from 'meteor/react-meteor-data';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,47 +7,55 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import NoteIcon from '@material-ui/icons/Note';
+import QueueMusic from '@material-ui/icons/QueueMusic';
 import Check from '@material-ui/icons/Check';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 import SongListItemTextSecondary from './SongListItemTextSecondary';
 import SongListItemTextPrimary from './SongListItemTextPrimary';
+import SongListItemText from './SongListItemText';
 
 const useStyles = makeStyles(theme => ({
+    listIcon: {
+        justifyContent: 'center',
+    },
     root: {
         paddingLeft: 0,
+        paddingRight: ({ displayFavorite }) => displayFavorite && theme.spacing(11),
     },
     secondaryAction: {
         right: 0,
     },
 }));
 
-export const SongListItem = props => {
-    const classes = useStyles();
-    const { handleSelect, handleUnfold, selectedSongId, song, unfolded } = props;
-    let smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+export const SongListItem = ({ favorite, handleSelect, handleToggleFavorite, handleUnfold, displayFavorite, smallDevice, song, unfolded }) => {
+    const classes = useStyles({ displayFavorite });
 
     return (
         <ListItem
             button={!unfolded}
             className={classes.root}
             divider
-            selected={selectedSongId === song._id}
             onClick={handleUnfold}
         >
             {
-                smallDevice ? null :
-                    <ListItemIcon>
-                        <NoteIcon />
+                !smallDevice &&
+                    <ListItemIcon className={classes.listIcon}>
+                        <QueueMusic />
                     </ListItemIcon>
             }
-            <ListItemText
-                disableTypography
+            <SongListItemText{ ...{smallDevice, song, unfolded} } />
+              {/*   disableTypography
                 primary={<SongListItemTextPrimary { ...{smallDevice, song, unfolded} } />}
                 secondary={<SongListItemTextSecondary { ...{smallDevice, song, unfolded} } />}
-            />
+            /> */}
             <ListItemSecondaryAction className={classes.secondaryAction}>
+                {displayFavorite &&
+                    <IconButton onClick={handleToggleFavorite()}>
+                        {favorite ? <Favorite color='primary' /> : <FavoriteBorder />}
+                    </IconButton>
+                }
                 <IconButton onClick={handleSelect}>
                     <Check />
                 </IconButton>
@@ -60,16 +65,14 @@ export const SongListItem = props => {
 };
 
 SongListItem.propTypes = {
+    favorite: PropTypes.bool,
     handleSelect: PropTypes.func.isRequired,
+    handleToggleFavorite: PropTypes.func.isRequired,
     handleUnfold: PropTypes.func.isRequired,
-    meteorCall: PropTypes.func.isRequired,
-    selectedSongId: PropTypes.string,
+    displayFavorite: PropTypes.bool.isRequired,
+    smallDevice: PropTypes.bool.isRequired,
     song: PropTypes.object.isRequired,
+    unfolded: PropTypes.bool.isRequired,
 };
 
-export default withTracker(props => {
-    return {
-        meteorCall: Meteor.call,
-        selectedSongId: Session.get('selectedSongId'),
-    };
-})(SongListItem);
+export default SongListItem;
