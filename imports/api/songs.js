@@ -33,19 +33,33 @@ if (Meteor.isServer) {
                 },
                 before: {
                     names: ['annee'],
-                    operator: '$lt'
+                    operator: value => ({ '$lt': parseInt(value) }),
                 },
                 after: {
                     names: ['annee'],
-                    operator: '$gt'
+                    operator: value => ({ '$gt': parseInt(value) }),
+                },
+                favorites: {
+                    names: ['_id'],
+                    operator: value => {
+                        console.log('From songs, fields.search.favorites.operator. value:', value);
+                        const user = Meteor.user();
+                        if (user && user.userSongs && user.userSongs.favoriteSongs) {
+                            console.log('From songs, fields.search.favorites.operator. Meteor.user().userSongs.favorites:', Meteor.user().userSongs.favoriteSongs);
+                            return value == 'no' ? { '$nin': Meteor.user().userSongs.favoriteSongs } : { '$in': Meteor.user().userSongs.favoriteSongs };
+                        } else {
+                            console.log('From songs, fields.search.favorites.operator. Meteor.user():', Meteor.user());
+                            return {};
+                        }
+                    },
                 },
             },
             sortTranslate: sort => {
                 const translatedSort = {};
-                sort.title      && ( translatedSort.titre       = sort.title        );
-                sort.author     && ( translatedSort.auteur      = sort.author       );
-                sort.compositor && ( translatedSort.compositeur = sort.compositor   );
-                sort.year       && ( translatedSort.annee       = sort.year         );
+                sort.title && (translatedSort.titre = sort.title);
+                sort.author && (translatedSort.auteur = sort.author);
+                sort.compositor && (translatedSort.compositeur = sort.compositor);
+                sort.year && (translatedSort.annee = sort.year);
                 return translatedSort;
             }
         };
@@ -54,7 +68,7 @@ if (Meteor.isServer) {
         console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
 
         const options = { sort: sort ? fields.sortTranslate(sort) : { annee: -1 }, limit };
-        
+
         let foundSongs;
         const isThereSpecificQueries = specificQueries && !!specificQueries.length > 0;
 
@@ -72,7 +86,7 @@ if (Meteor.isServer) {
                     if (!(key in fields.search)) return {};
                     const { names: queryFields, operator } = fields.search[key];
                     const expression = operator ?
-                        { [operator]: parseInt(value) } :
+                        operator(value) :
                         new RegExp(value, 'i');
 
                     if (queryFields.length == 1) {

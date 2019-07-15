@@ -130,7 +130,8 @@ export const SongList = props => {
                     :
                     songs.map(song => {
                         const songId = song._id;
-                        const favorite = favoriteSongs && favoriteSongs.indexOf(songId._str) != -1;
+                        console.log('favoritesSongs:', favoriteSongs, 'songId:', songId);
+                        const favorite = favoriteSongs && favoriteSongs.map(favoriteSong => favoriteSong._str).indexOf(songId._str) != -1;
                         return (
                             <SongListItem
                                 key={songId}

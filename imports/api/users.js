@@ -40,10 +40,10 @@ Meteor.methods({
           throw new Meteor.Error('not-authorized');
       }
       const userSongs = Meteor.users.findOne(this.userId).userSongs;
-      const index = userSongs.favoriteSongs.indexOf(songId._str);
-      console.log('From users, user.favorite.toggle. songId:', songId, '\nvalue:', value, '\nindex:', index, '\nfavoriteSongs:', userSongs.favoriteSongs);
+      const index = userSongs.favoriteSongs.map(favoriteSong => favoriteSong._str).indexOf(songId._str);
+      console.log('From users, user.favorite.toggle. songId._str:', songId._str, '\nvalue:', value, '\nindex:', index, '\nfavoriteSongs.map(favoriteSong => favoriteSong._str):', userSongs.favoriteSongs.map(favoriteSong => favoriteSong._str));
       if (index < 0) {
-        userSongs.favoriteSongs.push(songId._str);
+        userSongs.favoriteSongs.push(songId);
       } else {
         userSongs.favoriteSongs.splice(index, 1);
       }

@@ -115,6 +115,10 @@ export const SearchField = ({
       name: 'after',
       placeholder: ' year ',
     },
+    favorites: {
+      name: 'favorites',
+      placeholder: 'yes',
+    },
   };
   const inputRef = createRef();
 
@@ -287,6 +291,7 @@ export const SearchField = ({
             <Button value="lyrics" onClick={handleAdvancedButtonClick}>Lyrics</Button>
             <Button value="before" onClick={handleAdvancedButtonClick}>Before</Button>
             <Button value="after" onClick={handleAdvancedButtonClick}>After</Button>
+            <Button value="favorites" onClick={handleAdvancedButtonClick}>Favorites</Button>
             <Button onClick={handleToggleDisplaySort()}>Sort</Button>
           </ButtonGroup>
         </CardActions>
