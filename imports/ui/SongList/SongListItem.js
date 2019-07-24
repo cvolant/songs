@@ -1,19 +1,17 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import QueueMusic from '@material-ui/icons/QueueMusic';
 import Check from '@material-ui/icons/Check';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
-import SongListItemTextSecondary from './SongListItemTextSecondary';
-import SongListItemTextPrimary from './SongListItemTextPrimary';
 import SongListItemText from './SongListItemText';
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const SongListItem = ({ favorite, handleSelect, handleToggleFavorite, handleUnfold, displayFavorite, smallDevice, song, unfolded }) => {
+    const { t } = useTranslation();
     const classes = useStyles({ displayFavorite });
 
     return (
@@ -46,17 +45,16 @@ export const SongListItem = ({ favorite, handleSelect, handleToggleFavorite, han
                     </ListItemIcon>
             }
             <SongListItemText{ ...{smallDevice, song, unfolded} } />
-              {/*   disableTypography
-                primary={<SongListItemTextPrimary { ...{smallDevice, song, unfolded} } />}
-                secondary={<SongListItemTextSecondary { ...{smallDevice, song, unfolded} } />}
-            /> */}
             <ListItemSecondaryAction className={classes.secondaryAction}>
                 {displayFavorite &&
-                    <IconButton onClick={handleToggleFavorite()}>
+                    <IconButton
+                        aria-label={favorite ? t("search.Unmark as favorite", "Unmark as favorite") : t("search.Mark as favorite", "Mark as favorite")}
+                        onClick={handleToggleFavorite()}
+                    >
                         {favorite ? <Favorite color='primary' /> : <FavoriteBorder />}
                     </IconButton>
                 }
-                <IconButton onClick={handleSelect}>
+                <IconButton aria-label={t("search.Choose this song", "Choose this song")} onClick={handleSelect}>
                     <Check />
                 </IconButton>
             </ListItemSecondaryAction>

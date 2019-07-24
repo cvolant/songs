@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from 'react-router-dom';
-import { Session } from 'meteor/session';
 
 import AuthRoute from './AuthRoute';
 import NotFound from "../ui/NotFound";
@@ -9,51 +8,59 @@ import Dashboard from '../ui/Dashboard';
 import SignUp from "../ui/signInUp/SignUp";
 import SignIn from "../ui/signInUp/SignIn";
 
-export default Routes = () => {
+import routesPaths from './routesPaths';
+
+export default Routes = ({ lng }) => {
+  console.log('From Routes, render. lng', lng);
+
   return (
     <Switch>
       <AuthRoute
-        exact path="/"
+        exact={true}
+        path={routesPaths.path(lng, 'home')}
+        lng={lng}
         component={SearchPage}
       />
       <AuthRoute
-        exact path="/search"
+        exact
+        path={routesPaths.path(lng, 'search')}
+        lng={lng}
         component={SearchPage}
       />
       <AuthRoute
-        exact path="/search/:id"
+        exact
+        path={routesPaths.path(lng, 'search', ':id')}
+        lng={lng}
         component={SearchPage}
         render={props => <SearchPage songId={props.match.params.id} {...props} />}
       />
       <AuthRoute
-        exact path="/signin"
+        exact
+        path={routesPaths.path(lng, 'signin')}
+        lng={lng}
         component={SignIn}
         auth={false}
-        redirection='/dashboard'
+        redirection='dashboard'
       />
       <AuthRoute
-        exact path="/signup"
+        exact
+        path={routesPaths.path(lng, 'signup')}
+        lng={lng}
         component={SignUp}
         auth={false}
-        redirection='/dashboard'
+        redirection='dashboard'
       />
       <AuthRoute
-        exact path="/dashboard"
+        exact
+        path={routesPaths.path(lng, 'dashboard')}
+        lng={lng}
         component={Dashboard}
         auth={true}
-        redirection='/'
+        redirection='home'
       />
       <AuthRoute
-        path="/dashboard/:id"
-        render={props => {
-          Session.set("selectedSongId", props.match.params.id);
-          return <Dashboard {...props} />;
-        }}
-        auth={true}
-        redirection='/'
-      />
-      <Route
-        path="/*"
+        path='/*'
+        lng={lng}
         component={NotFound}
       />
     </Switch>

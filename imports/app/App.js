@@ -1,19 +1,37 @@
 import { Meteor } from "meteor/meteor";
 import React, { useEffect } from 'react';
+import { Helmet } from "react-helmet";
+import { useTranslation } from 'react-i18next';
 import { Session } from 'meteor/session';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Routes from "./Routes";
 
+/* import Loading from '../ui/Loading'; */
+
 import 'normalize.css';
-import theme from '../theme';
+import theme from '../client/theme';
 
 import '../startup/simple-schema-configuration.js';
 
-const App = props => {
+const languages = ['en', 'fr'];
 
-  console.log('From App. render. props:', props);
+const App = props => {
+  
+  const { i18n } = useTranslation();
+  console.log('From App. render. i18n:', i18n, 'props:', props);
+
+  const { match, history, location } = props;
+  let lng;
+  if (match.params.lng === undefined || languages.indexOf(match.params.lng) === -1) {
+    lng = i18n.language;
+    console.log('From App, render. REDIRECTION. Language undefined or invalid. redirection using language:', lng); 
+    history.replace(`/${lng + match.url}`);
+  } else {
+    lng = match.params.lng;
+    if (i18n.language != lng) i18n.changeLanguage(lng);
+  }
 
   const xs = useMediaQuery(theme.breakpoints.only('xs'));
   const sm = useMediaQuery(theme.breakpoints.only('sm'));
@@ -45,23 +63,32 @@ const App = props => {
       // props here are the props useEffect received, not the current props,
       // but history is mutable: it is always the current history.
       if (isUnauthenticatedPage && isAuthenticated) {
-        console.log('From App, Tracker.autorun. props.history:', props.history, 'props.location:', props.location, 'props.history.location.state:', props.history.location.state);
-        if (props.history.location.state.from) {
-          console.log('From App, Tracker.autorun. props.history.location', props.history.location, ' props.location:', props.location, ' JSON.stringigy(props.location):', JSON.stringify(props.location), ' JSON.stringigy(props.history.location):', JSON.stringify(props.history.location));
-          props.history.replace(props.history.location.pathname == '/signin' ? props.history.location.state.from : '/DDDASHHdashboard');
+        console.log('From App, Tracker.autorun. history:', history, 'location:', location, 'history.location.state:', history.location.state);
+        if (history.location.state.from) {
+          console.log('From App, Tracker.autorun. REDIRECTION. history.location', history.location, ' location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
+          history.replace(history.location.pathname.substring(3) == '/signin' ? history.location.state.from : `/${lng}/dashboard`);
         } else {
-          console.log('From App, Tracker.autorun. No state...  props.history.location:', props.history.location, ' props.location:', props.location, ' JSON.stringigy(props.location):', JSON.stringify(props.location), ' JSON.stringigy(props.history.location):', JSON.stringify(props.history.location));
-          props.history.replace('/dashboard');
+          console.log('From App, Tracker.autorun. REDIRECTION. No state... history.location:', history.location, 'location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
+          history.replace(`/${lng}/dashboard`);
         }
-      } else if (isAuthenticatedPage && !isAuthenticated) props.history.replace("/");
+      } else if (isAuthenticatedPage && !isAuthenticated) {
+        console.log('From App, Tracker.autorun. REDIRECTION. Autenticated page but unauthenticated: redirection to home.');
+        history.replace(`/${lng}`);
+      }
     });
   }, []);
 
   return (
     <div>
+      <Helmet>
+        <html lang={lng} />
+        <title>Alleluia.plus</title>
+      </Helmet>
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
-        <Routes />
+        {/* <Suspense fallback={<Loading />}> */}
+          <Routes lng={lng} />
+        {/* </Suspense> */}
       </MuiThemeProvider>
     </div>
   );

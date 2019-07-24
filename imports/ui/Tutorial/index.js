@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { PropTypes } from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
@@ -11,10 +12,10 @@ import Panel from '../utils/Panel';
 import TutorialStepContent from './TutorialStepContent';
 
 const steps = {
-  SearchPage: ['globalNavigation', 'searchSong', 'chooseSong'],
-  Editor: ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
-  SignIn : ['signIn', 'notSignedUp'],
-  SignUp : ['signUp', 'alreadySignedUp'],
+  SearchPage: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
+  Editor:     ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
+  SignIn :    ['signIn', 'notSignedUp'],
+  SignUp :    ['signUp', 'alreadySignedUp'],
 };
 
 const useStyles = makeStyles(theme => ({
@@ -52,7 +53,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Tutorial = ({ handleToggleTutorial, tutorialContentName }) => {  
+export const Tutorial = ({ handleToggleTutorial, tutorialContentName }) => {
+  const { t } = useTranslation();
   const nbSteps = steps[tutorialContentName].length;
   const [activeStep, setActiveStep] = React.useState(0);
   const classes = useStyles({ nbSteps, activeStep });
@@ -66,7 +68,7 @@ export const Tutorial = ({ handleToggleTutorial, tutorialContentName }) => {
   };
 
   return (
-    <Panel className={classes.root} handleClosePanel={handleToggleTutorial(false)}>
+    <Panel className={classes.root} handleClosePanel={handleToggleTutorial(false)} closeName={t("tutorial.Close tutorial", "Close tutorial")}>
       {console.log('From Tutorial, return. tutorialContentName:', tutorialContentName)}
       <div className={classes.tutorial}>
         <div className={classes.steps}>
@@ -84,14 +86,14 @@ export const Tutorial = ({ handleToggleTutorial, tutorialContentName }) => {
           className={classes.stepper}
           nextButton={
             <Button size="small" onClick={handleNext} disabled={activeStep === nbSteps - 1}>
-              Next
+              {t('Next')}
               <KeyboardArrowRight />
             </Button>
           }
           backButton={
             <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
               <KeyboardArrowLeft />
-              Back
+              {t('Back')}
         </Button>
           }
         />

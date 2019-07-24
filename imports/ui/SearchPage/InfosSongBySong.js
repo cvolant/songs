@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Panel from '../utils/Panel';
@@ -39,26 +40,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const InfosSongBySong = props => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
-    <Panel className={classes.root} handleClosePanel={props.handleCloseInfos}>
+    <Panel className={classes.root} handleClosePanel={props.handleCloseInfos} closeName={t('infos.Close infos', "Close infos")}>
       <div className={classes.text}>
         <div className={classes.logoSpace} />
         <Typography variant="h2" component="h2" gutterBottom>
-          Search song by song
+          {t('infos.Search title', "Search")}
         </Typography>
         <Typography component="p">
-          Here you can search and display songs one by one, but you need to sign in if you want to build a repertoire, a song list for an event, save your songs, etc.
+          {t('infos.Search details', "")}
         </Typography>
       </div>
       {props.children}
       <div className={classes.bottomButtons}>
         <Button component={Link} to="/signin" variant="contained" color="primary" className={classes.button}>
-          Sign In
+          {t('Sign in')}
         </Button>
         <Button component={Link} to="/signup" variant="contained" color="primary" className={classes.button}>
-          Create an&nbsp;Account (that's&nbsp;free)
+          {t("infos.Create account", "Create account").replace(/\/\//g, '\xa0')}
         </Button>
       </div>
     </Panel>

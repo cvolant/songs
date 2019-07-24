@@ -1,1 +1,4 @@
-add onlyFavorites in advancedSearch
+Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
+  => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.
+Régler le bug de redirection lors de la connexion.
+Définir un langue au chargement d'après l'url et la langue du client.

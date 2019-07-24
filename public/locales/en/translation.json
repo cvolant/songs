@@ -1,0 +1,194 @@
+{
+  "colon": ":",
+
+  "Continue": "Continue",
+  "Next": "Next",
+  "Back": "Back",
+  "Not found": "Not found",
+  "Sorry": "... Hmmm, sorry! :/",
+  "Head home": "Head home",
+
+  "menu": "menu",
+  "Help": "Help",
+  "Home": "Home",
+  "Song lists": "Song lists",
+  "Shared view": "Shared view",
+  "About": "About",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Dashboard": "Dashboard",
+  "Sign up": "Sign up",
+  "Sign in": "Sign in",
+
+  "menus": {
+    "Toggle detailed menu": "Toggle detailed menu",
+    "Toggle small menu": "Toggle small menu"
+  },
+
+  "register": {
+    "Already have an account": "Already have an account?",
+    "Need an account": "Need an account?",
+    "Email Address": "Email Address",
+    "Password": "Password",
+    "Too short": "Password must be at least {{passwordLengthMin}} characters long"
+  },
+  
+  "dashboard": {
+    "Dashboard welcome": "Welcome to your personnal dashboard!",
+    "Dashboard message": "<0>Yeah!</0> it is <2>translated</2>. It is yet to build...",
+    "Close dashboard message": "Close dashboard message"
+  },
+
+  "editor": {
+    "No lyrics": "No lyrics in the database for this song...",
+    "Cancel all": "Cancel all",
+    "Save all": "Save all",
+    "Select or unselect all": "Select or unselect all",
+    "Select all": "Select all",
+    "Unselect all": "Unselect all",
+    "Edit": "Edit",
+    "Validate": "Validate",
+    "Return": "Return",
+    "Select paragraphs": "Select the paragraphs you want..."
+  },
+
+  "pg": {
+    "Content": "Content",
+    "Type": "Type",
+
+    "paragraph": "paragraph",
+    "verse": "verse",
+    "chorus": "chorus",
+    "main chorus": "main chorus",
+    "stanza": "stanza",
+    "bridge" : "bridge",
+    
+    "paragraphe": "paragraph",
+    "couplet": "verse",
+    "refrain": "chorus",
+    "grand refrain": "main chorus",
+    "stance": "stanza",
+    "pont" : "bridge"
+  },
+
+  "search": {
+    "Search songs": "Search songs",
+    "Search field": "Search field",
+    "Advanced search": "Advanced search",
+    "Sort": "Sort",
+    "No results try advanced": "No result for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options",
+    "Possible to add": "If the song does not exist in the database, you can add it once you logged in.",
+    "Search possibilities": "Search by titles, lyrics, authors, editors, classifications. Use the settings button",
+    "in the searchfield": "in the search field to open advanced search settings.",
+
+    "Mark as favorite": "Mark as favorite",
+    "Unmark as favorite": "Unmark as favorite",
+    "Choose this song": "Choose this song",
+
+    "sort by": "sort by",
+
+    "placeholder": {
+      " year ": " year ",
+      "yes": "yes",
+      " ??? ": " ??? ",
+      "Search": "Search…"
+    }
+  },
+
+  "song": {
+    "title": "title",
+    "subtitle": "subtitle",
+    "year": "year",
+    "compositor": "compositor",
+    "author": "author",
+    "titles": "titles",
+    "authors": "authors",
+    "editor": "editor",
+    "classifications": "classifications",
+    "lyrics": "lyrics",
+    "before": "before",
+    "after": "after",
+    "favorites": "favorites",
+
+    "Author": "Author",
+    "Classification": "Classification",
+    "Compositor": "Compositor",
+    "Editor": "Editor",
+    "New classification": "New classification",
+    "Number": "Number",
+    "Year": "Year",
+    "CNPL": "CNPL",
+
+    "Music": "Music",
+    "Text": "Text",
+    "Translation:": "Translation",
+    "Edition": "Edition",
+
+    "Untitled song": "Untitled song"
+  },
+
+  "infos": {
+    "Search title": "Search song by song",
+    "Search details": "Here you can search and display songs one by one, but you need to sign in if you want to build a repertoire, a song list for an event, save your songs, etc.",
+    "Create account": "Create an//account (that's//free)",
+    "Close infos": "Close infos"
+  },
+
+  "tutorial": {
+    "Close tutorial": "Close tutorial",
+    
+    "globalNavigation": {
+      "title": "Navigation",
+      "1": "Click the logo in the top left corner to expand/collapse the menu buttons. Click the menu icon <1 /> to open the full menu.",
+      "auth": "Click the personnal space icon <1 /> to access your personnal space.",
+      "unAuth": "You must be signed in to access your personnal space, data, songlists, ... Click the personnal space icon <1 /> to sign in ou sign up."
+    },
+    "searchSong": {
+      "title": "Song search",
+      "1": "Write any keyword from a title, an author, an editor, or a classification in the search field.<br />If you get too much results you are not interested in, add more keywords or open the advanced search options:<3 />.<br />Click on an option, then type your keyword inside the corresponding brackets \"[ ]\". Add as many options as you want.<br />Ex: silence $before[1910] $authors[bach]"
+    },
+    "sortList": {
+      "title": "Sort songs list",
+      "1": "In the advanced options, you will find a \"$t(search.Sort)\" button. Click on it to enable sorting.<br />A sorting header will appear above the list: click on a sorting option to sort the list, and a second time to sort in reverse order.<br />Click a third time to remove this sorting, or on the close icon <5 /> to leave the sorting options."
+    },
+    "chooseSong": {
+      "title": "Choosing a song",
+      "1": "Once a list of songs is displayed, you can choose the one you were looking for by clicking the check mark <1 /> at its right.<br />You may not be sure which one to choose: just click on one song elsewhere than on the check mark to have a closer look at it."
+    },
+    "favorites": {
+      "title": "Mark favorites songs",
+      "auth": "In the list, you can also click the favorite icon <1 /> of a song to mark it as a favorite. Click once again to unmark it.<br />Among the advanced search options, a \"Favorites\" button allows you to only display your favorites songs.",
+      "unAuth": "When you are signed in, you can mark the songs you like as favorites, and display only your favorite songs thanks to a new advanced search option."
+    },
+    "displaySong": {
+      "title": "Display a song",
+      "1": "Click on the paragraphs you want to select them, or on the \"$t(editor.Select all)\" button to select all of them.<br />Then click the check button <3 /> to display the song in the view mode.<br />There, you can use the <7 /> and <9 /> button to change the font size, and the <11 /> button to close the viewer."
+    },
+    "editSong": {
+      "title": "Song edition",
+      "auth": "Click the edit button <1 /> to enter the edit mode.<br />Once you are done, click on the \"t(editor.Save all)\" or the \"t(editor.Cancel all)\" button to quit editing.<br />You can erase the edited song by clicking on the bottom delete icon <7 />.",
+      "unAuth": "Once signed in, you will be able to edit and save the song here.<br />Click the personnal space icon <4 /> in the top right menu to sign in."
+    },
+    "editParagraph": {
+      "title": "Paragraph edition",
+      "auth": "Once you have entered the edit mode, choose a paragraph and click its edit button <1 /> to edit it.<br />Make any change to it, then click on its check icon <5 /> to save or its cancel icon <7 /> to dismiss your changes.<br />You can delete this paragraph by clicking on its delete icon <11 />.<br />You can also click its up and down arrows <15 /><16 /> move it up or down and reorder the song.<br />Finally, you can edit the titles and data about the song the same way, using the edit button <20 /> next to the title.",
+      "unAuth": "Once signed in, you will be able edit the titles, data, paragraphs, and reorder them as you wish here.<br />Click the personnal space icon <4 /> in the top right menu to sign in."
+    },
+    "signIn": {
+      "title": "Signing in",
+      "1": "If you already signed up, you just need to enter here the email adress you used to sign up in the email field, and the password you chose in the password field."
+    },
+    "signUp": {
+      "title": "Signing up",
+      "1": "If you have not signed up yet, to do so, you just need to enter a valid email adress in the email field, and enter a password you will remember in the password field.<br />Your password must be at least 6 characters long."
+    },
+    "notSignedUp": {
+      "title": "If have not signed up yet",
+      "1": "If you have not signed up yet, click the \"$t(register.Need an account)\" link to sign up."
+    },
+    "alreadySignedUp": {
+      "title": "If you have already signed up",
+      "1": "If you already signed up, click the \"$t(register.Already have an account)\" link to sign in."
+    }
+  }
+}

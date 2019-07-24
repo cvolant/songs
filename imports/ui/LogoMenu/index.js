@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
@@ -118,11 +119,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const LogoMenu = props => {
+  const { t, i18n } = useTranslation();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed == 'undefined' ?
     useState(true) :
-    [props.logoMenuDeployed, () => console.error('You gave a logoMenuDeployed prop to LogoMenu without giving it a handleToggleLogoMenu prop...')];
+    [props.logoMenuDeployed, () => console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...')];
   const { isAuthenticated, handleLogout, handleToggleTutorial, location, showTutorial } = props;
   
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
@@ -136,7 +138,7 @@ export const LogoMenu = props => {
       console.log('From LogoMenu, handleToggleTopMenu. aborted. event.type:', event.type, 'event.key:', event.key);
       return;
     }
-    console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen);
+    console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen, 'event.target:', event.target);
     setTopMenuIsOpen(typeof deploy == 'undefined' ? !topMenuIsOpen : !!deploy);
   }
 
@@ -177,7 +179,7 @@ export const LogoMenu = props => {
       <div className={classes.root}>
         <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
         <ButtonBase
-          aria-label='Help'
+          aria-label={t('Help')}
           className={clsx(classes.tabShape, classes.tab, classes.tab1)}
           component='div'
           onClick={handleToggleTutorial()}
@@ -190,27 +192,27 @@ export const LogoMenu = props => {
         <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
         <ButtonBase
           aria-label={isAuthenticated ?
-            location.pathname == '/dashboard' ? 'Home' : 'Dashboard'
+            location.pathname.indexOf('/dashboard') >= 0 ? t('Home') : t('Dashboard')
             :
-            location.pathname == '/signin' ? 'Sign up' : 'Sign in'}
+            location.pathname.indexOf('/signin') >= 0 ? t('Sign up') : t('Sign in')}
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
           to={isAuthenticated ?
-            location.pathname == '/dashboard' ? '/' : '/dashboard'
+            location.pathname.indexOf('/dashboard') >= 0 ? `/${i18n.language}` : `/${i18n.language}/dashboard`
             :
             {
-              pathname: location.pathname == '/signin' ? '/signup' : '/signin',
+              pathname: location.pathname.indexOf('/signin') >= 0 ? `/${i18n.language}/signup` : `/${i18n.language}/signin`,
               state: { from: location },
             }}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-            {location.pathname == '/dashboard' ? <Home /> : <Person />}
+            {location.pathname.indexOf('/dashboard') >= 0 ? <Home /> : <Person />}
           </div>
         </ButtonBase >
 
         <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
         <ButtonBase
-          aria-label='Toggle menu'
+          aria-label={t('menus.Toggle detailed menu', 'Toggle detailed menu')}
           className={clsx(classes.tabShape, classes.tab, classes.tab3)}
           component='div'
           onClick={handleToggleTopMenu()}
@@ -222,6 +224,7 @@ export const LogoMenu = props => {
 
         <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
         <ButtonBase
+          aria-label={t('menus.Toggle small menu', 'Toggle small menu')}
           component='div'
           onClick={handleToggleLogoMenu()}
           className={clsx(classes.logoAreaShape, classes.logoArea)}

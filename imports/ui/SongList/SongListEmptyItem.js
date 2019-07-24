@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -21,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SongListEmptyItem = ({ search }) => {
+    const { t } = useTranslation();
     const classes = useStyles();
 
     return (
@@ -31,18 +33,19 @@ const SongListEmptyItem = ({ search }) => {
                 <span>
                     <Typography className={classes.spacedText}>
                     <InlineIcon Icon={Search} />
-                        No result for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options
+                        {t('search.No results try advanced', 'No results, try advanced search')}
                         <InlineIcon Icon={Settings} />
-                        .<br/>If the song does not exist in the database, you can add it when logged in you account.
+                        .<br/>
+                        {t("search.Possible to add", "It is possible to add songs")}
                     </Typography>
                 </span>
             :
             <span>
                 <Typography className={classes.spacedText}>
                     <InlineIcon Icon={Search} />
-                    Search by titles, lyrics, authors, editors, classifications. Use the settings button
+                    {t("search.Search possibilities", "Search by keyword or use")}
                     <InlineIcon Icon={Settings} />
-                    in the search field to open advanced search settings.
+                    {t("search.in the searchfield", "in the searchfield.")}
                 </Typography>
             </span>
             }

@@ -40,7 +40,7 @@ export const Door = ({ alreadySignedUp, link, title }) => {
     const classes = useStyles();
 
     return (
-        <PageLayout tutorialContentName={alreadySignedUp ? 'SignIn' : 'SignUp'}>
+        <PageLayout title={title} tutorialContentName={alreadySignedUp ? 'SignIn' : 'SignUp'}>
             <Container component="main" maxWidth="xs">
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>

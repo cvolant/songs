@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
@@ -53,7 +54,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
 }));
-const Title = (props) => {
+
+const Title = props => {
   const {
     editGlobal,
     details,
@@ -67,6 +69,8 @@ const Title = (props) => {
     logoMenuDeployed,
   } = props;
   const edit = props.edit && editGlobal;
+
+  const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
 
   return (
@@ -93,7 +97,7 @@ const Title = (props) => {
         classes={{ root: classes.cardHeader, action: classes.cardHeaderAction }}
         title={edit ?
           <TextField
-            label="Title"
+            label={t("song.title", 'Title')}
             multiline
             rowsMax="2"
             className={classes.textField}
@@ -108,7 +112,7 @@ const Title = (props) => {
         }
         subheader={edit ?
           <TextField
-            label="Subtitle"
+            label={t("song.subtitle", 'Subtitle')}
             multiline
             rowsMax="2"
             className={classes.textField}
@@ -119,7 +123,7 @@ const Title = (props) => {
             autoFocus={true}
           />
           :
-          subtitle ? subtitle : undefined
+          subtitle
         }
       />
       <CardContent className={classes.cardContent}>

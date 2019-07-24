@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
   CardActions,
@@ -20,7 +20,7 @@ import {
   Edit,
 } from '@material-ui/icons';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   actionButtonColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -63,17 +63,21 @@ const styles = theme => ({
       rgba(100,80,50,0.3) 100%
       )`,
   },
+  subheader: {},
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
   },
-});
+}));
 
-const Paragraph = (props) => {
+const Paragraph = props => {
+
+  const { t } = useTranslation();
+  const classes = useStyles();
+
   const {
-    classes,
     editGlobal,
     selected,
     paragraph,
@@ -88,12 +92,12 @@ const Paragraph = (props) => {
   } = props;
   const edit = props.edit && editGlobal;
   const types = [
-    'paragraphe',
-    'couplet',
-    'refrain',
-    'grand refrain',
-    'stance',
-    'pont'
+    t('pg.paragraph', 'paragraph'),
+    t('pg.verse', 'verse'),
+    t('pg.chorus', 'chorus'),
+    t('pg.main chorus', 'main chorus'),
+    t('pg.stanza', 'stanza'),
+    t('pg.bridge', 'bridge')
   ];
 
   return (
@@ -126,12 +130,11 @@ const Paragraph = (props) => {
           title={edit ?
             <TextField
               select
-              label={'Type'}
-              defaultValue='paragraph'
+              label={t('pg.Type', 'Type')}
               className={classes.textField}
               margin="normal"
               variant="outlined"
-              value={paragraph.label}
+              value={t(`pg.${paragraph.label}`)}
               onChange={handleLabelChange}
             >
               {types.map(option => (
@@ -141,7 +144,7 @@ const Paragraph = (props) => {
               ))}
             </TextField>
             :
-            paragraph.label === 'paragraphe' ? undefined : paragraph.label
+            t(`pg.${paragraph.label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${paragraph.label}`, paragraph.label)
           }
           titleTypographyProps={edit ?
             {
@@ -156,7 +159,7 @@ const Paragraph = (props) => {
           }
           subheader={edit ?
             <TextField
-              label='Contenu'
+              label={t('pg.Content', 'Content')}
               multiline
               className={classes.textField}
               margin="normal"
@@ -171,11 +174,7 @@ const Paragraph = (props) => {
           subheaderTypographyProps={edit ? {} :
             {
               color: 'textPrimary',
-              style: {                      // FIXME: Must find a solution to put this as a class.
-                whiteSpace: 'pre-line',
-                flexGrow: 1,
-                margin: theme.spacing(1),
-              },
+              className: classes.subheader,
             }
           }
         />
@@ -212,4 +211,4 @@ Paragraph.propTypes = {
   handleMoveDown: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles)(Paragraph);
+export default Paragraph;

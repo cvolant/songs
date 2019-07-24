@@ -1,0 +1,195 @@
+{
+  "colon": " :",
+
+  "Continue": "Continuer",
+  "Next": "Suivant",
+  "Back": "Précédent",
+  "Not found": "Introuvable",
+  "Sorry": "... Désolé ! :/",
+  "Head home": "Retour à l'accueil",
+
+  "menu": "menu",
+  "Help": "Aide",
+  "Home": "Accueil",
+  "Song lists": "Listes de chants",
+  "Shared view": "Partage d'écran",
+  "About": "À propos",
+  "Login": "Connexion",
+  "Logout": "Déconnexion",
+  "Dashboard": "Espace personnel",
+  "Sign up": "Inscription",
+  "Sign in": "Connexion",
+
+  "menus": {
+    "Toggle detailed menu": "Cacher/montrer le menu détaillé",
+    "Toggle small menu": "Cacher/montrer le petit menu"
+  },
+
+  "register": {
+    "Already have an account": "Déjà inscrit ?",
+    "Need an account": "Pas encore inscrit ?",
+    "Email Address": "Addresse e-mail",
+    "Password": "Mot de passe",
+    "Too short": "Le mot de passe doit contenir au moins {{passwordLengthMin}} caractères"
+  },
+
+  "dashboard": {
+    "Dashboard welcome": "Bienvenue dans votre espace personnel !",
+    "Dashboard message": "<0>Super !</0> C'est <2>traduit</2>. Ça reste encore à construire...",
+    "Close dashboard message": "Fermer le message de l'espace personnel"
+  },
+
+  "editor": {
+    "No lyrics": "Aucune parole enregistrée pour ce chant...",
+    "Cancel all": "Tout annuler",
+    "Save all": "Tout enregistrer",
+    "Select or unselect all": "Sélectionner or désélectionner tout",
+    "Select all": "Tout sélectionner",
+    "Unselect all": "Tout désélectionner",
+    "Edit": "Edit",
+    "Validate": "Validate",
+    "Return": "Retour",
+    "Select paragraphs": "Selectionner les paragraphes désirés..."
+  },
+
+  "pg": {
+    "Content": "Contenu",
+    "Type": "Type",
+
+    "paragraph": "paragraphe",
+    "verse": "couplet",
+    "chorus": "refrain",
+    "main chorus": "grand refrain",
+    "stanza": "stance",
+    "bridge" : "pont",
+
+    "paragraphe": "paragraphe",
+    "couplet": "couplet",
+    "refrain": "refrain",
+    "grand refrain": "grand refrain",
+    "stance": "stance",
+    "pont" : "pont"
+  },
+
+  "search": {
+    "Search songs": "Recherche de chants",
+    "Search field": "Champs de recherche",
+    "Advanced search": "Recherche avancée",
+    "Sort": "Tri",
+    "No results try advanced": "Aucun résultat pour cette recherche : veuillez essayer autre chose, peut-être en utilisant des mots-clés moins spécifiques. N'oubliez pas que différents critères de recherches peuvent vous aider dans les options de recherche avancée",
+    "Possible to add": "Si le chant que vous recherchez n'existe pas dans la base de données, vous pouvez l'ajouter lorsque vous êtes connecté à un compte.",
+    "Search possibilities": "Recherche par titres, paroles, auteurs, editeurs, cotes. Utilisez le bouton de réglage",
+    "in the searchfield": "dans le champs de recherche pour ouvrir les options de recherche avancée.",
+
+    "Mark as favorite": "Marquer comme favori",
+    "Unmark as favorite": "Enlever des favoris",
+    "Choose this song": "Choisir ce chant",
+
+    "sort by": "trier par",
+
+    "placeholder": {
+      " year ": " année ",
+      "yes": "oui",
+      " ??? ": " ??? ",
+      "Search": "Recherche…"
+    }
+  },
+
+  "song": {
+    "title": "titre",
+    "subtitle": "sous-titre",
+    "year": "année",
+    "compositor": "compositeur",
+    "author": "auteur",
+    "titles": "titres",
+    "authors": "auteurs",
+    "editor": "editeur",
+    "classifications": "cote",
+    "lyrics": "paroles",
+    "before": "avant",
+    "after": "après",
+    "favorites": "favoris",
+    
+    "Author": "Auteur",
+    "Classification": "Cote",
+    "Compositor": "Compositeur",
+    "Editor": "Éditeur",
+    "New classification": "Nouvelle cote",
+    "Number": "Numéro",
+    "Year": "Année",
+    "CNPL": "CNPL",
+
+    "Music": "Musique",
+    "Text": "Textes",
+    "Translation:": "Traduction",
+    "Edition": "Édition",
+
+    "Untitled song": "Chant sans titre"
+  },
+
+  "infos": {
+    "Search title": "Recherche chant par chant",
+    "Search details": "Ici, vous pouvez afficher les chants un par un, mais il est nécessaire de se connecter à un compte pour pouvoir construire un répertoire, une liste de chants pour un évènement, sauvegarder des chants, etc.",
+    "Create account": "Créer un//compte (c'est//gratuit)",
+    "Close infos": "Fermer les infos"
+  },
+
+  "tutorial": {
+
+    "Close tutorial": "Fermer le tutoriel",
+    
+    "globalNavigation": {
+      "title": "Navigation",
+      "1": "Cliquez sur le logo en haut à droite pour faire apparaître ou masquer les boutons du menu. Cliquez sur l'icône menu <1 /> pour ouvrir le menu complet.",
+      "auth": "Cliquez sur l'icône espace personnel <1 /> pour accéder à votre espace.",
+      "unAuth": "Vous avez besoin d'être connecté pour pouvoir accéder à votre espace personnel avec vos données, listes de chants, sauvegardes... Cliquez sur l'icône espace personnel <1 /> pour vous connecter ou créer un compte."
+    },
+    "searchSong": {
+      "title": "Recherche de chants",
+      "1": "Entrez dans le champ de recherche des mots-clés venant d'un titre, du nom d'un auteur ou d'un éditeur, ou encore d'un cote.<br />Si vous obtenez trop de résultats qui ne vous intéressent pas, ajoutez plus de mots-clés ou ouvrez les options de recherche avancée :<3 />.<br />Cliquez sur une option, puis écrivez le mot-clé voulu entre les crochets \"[ ]\" qui vont apparaître dans le champs de recherche. Ajoutez autant d'options que vous voulez.<br />Ex: silence $avant[1910] $auteurs[bach]"
+    },
+    "sortList": {
+      "title": "Trier la liste des chants",
+      "1": "Dans les options de recherche avancée, vous trouverez un bouton \"$t(search.Sort)\". Cliquez dessus pour activer les options de tri.<br />Un bandeau de tri apparaîtra alors au-dessus de la liste : cliquez sur une option pour trier la liste, et une seconde fois pour inverser l'order de tri.<br />Cliquez une troisième fois pour enlever ce tri, ou sur l'icône fermer <5 /> pour quitter les options de tri."
+    },
+    "chooseSong": {
+      "title": "Choisir un chant",
+      "1": "Une fois qu'un liste de chant s'affiche, vous pouvez choisir celui que vous cherchiez en cliquant sur l'icône de validation <1 /> à droite.<br />Si vous n'êtes pas sûr qu'il s'agit bien de celui que vous cherchez, cliquez simplement sur le chant autre part que sur l'icône de validation pour visualiser davantage de détails."
+    },
+    "favorites": {
+      "title": "Marquer des chants comme favoris",
+      "auth": "Dans la liste, vous pouvez aussi cliquer sur l'icône favoris <1 /> d'un chant pour le marquer comme tel. Cliquez une fois de plus pour effectuer l'opération inverse.<br />Parmi les options de recherche avancée, un bouton \"Favoris\" vous permet de n'afficher que les chants marqués comme favoris.",
+      "unAuth": "Lorsque vous êtes connecté, vous pouvez marquer ici des chants comme favoris, et n'afficher que vos chants favoris dans les résultats à l'aide d'une nouvelle option de recherche avancée."
+    },
+    "displaySong": {
+      "title": "Afficher un chant",
+      "1": "Cliquez sur les paragraphes que vous souhaitez pour les sélectionner, ou cliquez sur le boutons \"$t(editor.Select all)\" pour les sélectionner tous.<br />Cliquez ensuite sur le bouton valider <3 /> pour afficher le chant en mode lecture.<br />Là, vous pourrez utiliser les boutons <7 /> et <9 /> pour changer la taille du texte, et le bouton <11 /> pour fermer le mode lecture."
+    },
+    "editSong": {
+      "title": "Modifier un chant",
+      "auth": "Cliquez sur le bouton modifier <1 /> pour entrer dans le mode de modification.<br />Une fois que vous aurez terminé, cliquez sur le bouton \"t(editor.Save all)\" ou sur le bouton \"t(editor.Cancel all)\" pour quitter le mode de modification.<br />Vous pouvez effacer votre sauvegarder en cliquant sur le bouton supprimer <7 />.",
+      "unAuth": "Une fois connecté, vous pourrez modifier et sauvegarder le chant ici.<br />Cliquez sur l'icône espace personnel <4 /> dans le menu en haut à droite pour vous connecter."
+    },
+    "editParagraph": {
+      "title": "Modifier un paragraphe",
+      "auth": "Une fois entré dans le mode d'édition, choisissez un paragraphe et cliquer sur son bouton de modification <1 /> pour le modifier.<br />Faites les changements désirés, puis cliquez sur l'icône de validation <5 /> ou sur l'icône d'annulation <7 /> apparues à côté du paragraphe pour sauvegarder ou annuler les modifications du paragraphe.<br />Vous pouvez aussi supprimer le paragraphe en cliquant sur l'icône supprimer <11 /> en dessous des deux précédentes.<br />Vous pouvez encore utiliser les deux dernières icônes <15 /><16 /> pour monter ou descendre le paragraphe et réordonner ainsi l'ordre du chant.<br />Il vous est également possible de modifier les titres et les informations du chant de la même manière grâce à l'icône de modification <20 /> à côté du titre.",
+      "unAuth": "Une fois connecté, vous pourrez modifier et sauvegarder les titres, les informations, les paragraphes, et réordonner le chant.<br />Cliquez sur l'icône espace personnel <4 /> dans le menu en haut à droite pour vous connecter."
+    },
+    "signIn": {
+      "title": "Connexion",
+      "1": "Si vous êtes déjà inscrit, il vous suffit d'entrer l'adresse e-mail que vous avez utilisée lors de l'inscription ainsi que le mot de passe que vous avez choisi dans les champs correspondants."
+    },
+    "signUp": {
+      "title": "Inscription",
+      "1": "Si vous n'êtes pas encore inscrit, il vous suffit pour le faire d'entrer une adresse e-mail valide ainsi qu'un mot de passe que vous pourrez retrouver dans les champs correspondants.<br />Votre mot de passe doit être long d'au moins 6 caractères."
+    },
+    "notSignedUp": {
+      "title": "Si vous n'êtes pas encore inscrit",
+      "1": "Si vous n'êtes pas encore inscrit, cliquez sur le lien \"$t(register.Need an account)\" pour vous inscrire."
+    },
+    "alreadySignedUp": {
+      "title": "Si vous êtes déjà inscrit",
+      "1": "Si vous êtes déjà inscrit, cliquez sur le lien \"$t(register.Already have an account)\" pour vous connecter."
+    }
+  }
+}

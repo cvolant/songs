@@ -1,8 +1,9 @@
-import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
+import React from 'react';
+import { Helmet } from "react-helmet";
 import { PropTypes } from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import { withTranslation } from 'react-i18next';
 import { withStyles } from '@material-ui/core/styles';
 
 import { Songs } from '../../api/songs';
@@ -221,8 +222,10 @@ export class Editor extends React.Component {
 
     initSong(song) {
         if (!song || !song.pg) return;
+
+        const t = this.props.t;
         console.log('From Editor, initSong. song:', song);
-        const pg = JSON.parse(JSON.stringify(song.pg));
+        const pg = JSON.parse(JSON.stringify(song.pg)); // To copy song.pg properties in a new object.
 
         // Memory of moves and selections: pgStates order can change.
         //   pgStates[i].pgIndex: refer to the pg in his original position
@@ -479,137 +482,142 @@ export class Editor extends React.Component {
 
 
     render() {
-        const { classes } = this.props;
         if (this.props.song) {
+            const { classes, goBack, logoMenuDeployed, t } = this.props;
             return (
-                <Card className={classes.root /* this.props.editorClassName */}>
-                    <div className={classes.container}>
-                        {this.state.title ?
-                            <CardContent className={classes.content}>
-                                <Title
-                                    edit={this.state.editTitle}
-                                    editGlobal={this.state.edit}
-                                    details={this.state.details}
-                                    title={this.state.title}
-                                    subtitle={this.state.subtitle}
-                                    handleEditTitle={this.handleEditTitle.bind(this)}
-                                    handleTitleChange={this.handleTitleChange.bind(this)}
-                                    handleSubtitleChange={this.handleSubtitleChange.bind(this)}
-                                    handleDetailChange={this.handleDetailChange.bind(this)}
-                                    handleTitleCancel={this.handleTitleCancel.bind(this)}
-                                    logoMenuDeployed={this.props.logoMenuDeployed}
-                                />
-                                <Grid className={classes.lyrics} container spacing={1}>
-                                    {this.state.pg.length > 0 ?
-                                        this.state.pgStates.map(
-                                            pgState => (
-                                                <Paragraph
-                                                    key={pgState.pgIndex}
-                                                    paragraph={this.state.pg[pgState.pgIndex]}
-                                                    editGlobal={this.state.edit}
-                                                    {...pgState}
-                                                />
+                <React.Fragment>
+                    <Helmet>
+                        <title>{`Alleluia.plus - ${this.state.title}`}</title>
+                    </Helmet>
+                    <Card className={classes.root}>
+                        <div className={classes.container}>
+                            {this.state.title ?
+                                <CardContent className={classes.content}>
+                                    <Title
+                                        edit={this.state.editTitle}
+                                        editGlobal={this.state.edit}
+                                        details={this.state.details}
+                                        title={this.state.title}
+                                        subtitle={this.state.subtitle}
+                                        handleEditTitle={this.handleEditTitle.bind(this)}
+                                        handleTitleChange={this.handleTitleChange.bind(this)}
+                                        handleSubtitleChange={this.handleSubtitleChange.bind(this)}
+                                        handleDetailChange={this.handleDetailChange.bind(this)}
+                                        handleTitleCancel={this.handleTitleCancel.bind(this)}
+                                        logoMenuDeployed={logoMenuDeployed}
+                                    />
+                                    <Grid className={classes.lyrics} container spacing={1}>
+                                        {this.state.pg.length > 0 ?
+                                            this.state.pgStates.map(
+                                                pgState => (
+                                                    <Paragraph
+                                                        key={pgState.pgIndex}
+                                                        paragraph={this.state.pg[pgState.pgIndex]}
+                                                        editGlobal={this.state.edit}
+                                                        {...pgState}
+                                                    />
+                                                )
                                             )
-                                        )
-                                        :
-                                        <p>No lyrics</p>
-                                    }
-                                </Grid>
-                                <Button
-                                    variant='contained'
-                                    className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
-                                    onClick={this.handleAdd.bind(this)}
-                                >
-                                    <Add />
-                                </Button>
-                            </CardContent>
-                            :
-                            <CardContent className={classes.waitingContent}>
-                                <CircularProgress className={classes.circularProgress} />
-                            </CardContent>
-                        }
-                    </div>
-                    <CardActions className={classes.actions}>
-                        <div className={classes.shadowTop}><div /></div>
-                        {this.state.edit ?
-                            <React.Fragment>
-                                <IconButton
-                                    onClick={this.handleDelete.bind(this)}
-                                >
-                                    <Delete />
-                                </IconButton>
-                                <div>
-                                    <Button
-                                        variant='outlined'
-                                        className={classes.button}
-                                        onClick={this.handleCancelAll.bind(this)}
-                                    >
-                                        Cancel all
-                                    </Button>
-                                    <Button
-                                        variant='outlined'
-                                        className={classes.button}
-                                        color='primary'
-                                        onClick={this.handleSaveAll.bind(this)}
-                                    >
-                                        Save all
-                                    </Button>
-                                </div>
-                            </React.Fragment>
-                            :
-                            <React.Fragment>
-                                <Button
-                                    color='primary'
-                                    onClick={() => this.props.goBack()}
-                                    size='large'
-                                    variant='outlined'
-                                >
-                                    <ArrowBackIos />
-                                    Return
-                                </Button>
-                                <Typography variant="body1" className={classes.instructions}>
-                                    {!this.state.pgStates.length ? '' :
-                                        'Select the paragraphs you want...'
-                                    }
-                                </Typography>
-                                <div className={classes.bottomFabs}>
-                                    <div>
-                                        {Meteor.userId() &&
-                                            <Fab
-                                                aria-label="Edit"
-                                                className={classes.bottomFab}
-                                                disabled={!this.state.title}
-                                                onClick={() => this.setState({ edit: true })}
-                                            >
-                                                <Edit />
-                                            </Fab>
+                                            :
+                                            <p>{t('editor.No lyrics', 'No lyrics')}</p>
                                         }
-                                        <div className={classes.choiceFabs}>
-                                            <Fab
-                                                aria-label="Select or unselect all"
-                                                disabled={!this.state.pgStates.length}
-                                                className={classes.bottomFab}
-                                                onClick={this.handleToggleSelectAll.bind(this)}
-                                                variant="extended"
-                                            >
-                                                {!this.state.pgStates.filter(pgState => pgState.selected).length ? 'Select all' : 'Unselect all'}
-                                            </Fab>
-                                            <Fab
-                                                aria-label="Validate"
-                                                className={classes.bottomFab}
-                                                color='primary'
-                                                disabled={!this.state.pgStates.filter(pgState => pgState.selected).length}
-                                                onClick={this.handleOpenScreen.bind(this)}
-                                            >
-                                                <Check />
-                                            </Fab>
+                                    </Grid>
+                                    <Button
+                                        variant='contained'
+                                        className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
+                                        onClick={this.handleAdd.bind(this)}
+                                    >
+                                        <Add />
+                                    </Button>
+                                </CardContent>
+                                :
+                                <CardContent className={classes.waitingContent}>
+                                    <CircularProgress className={classes.circularProgress} />
+                                </CardContent>
+                            }
+                        </div>
+                        <CardActions className={classes.actions}>
+                            <div className={classes.shadowTop}><div /></div>
+                            {this.state.edit ?
+                                <React.Fragment>
+                                    <IconButton
+                                        onClick={this.handleDelete.bind(this)}
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                    <div>
+                                        <Button
+                                            variant='outlined'
+                                            className={classes.button}
+                                            onClick={this.handleCancelAll.bind(this)}
+                                        >
+                                            {t('editor.Cancel all', 'Cancel all')}
+                                        </Button>
+                                        <Button
+                                            variant='outlined'
+                                            className={classes.button}
+                                            color='primary'
+                                            onClick={this.handleSaveAll.bind(this)}
+                                        >
+                                            {t('editor.Save all', 'Save all')}
+                                        </Button>
+                                    </div>
+                                </React.Fragment>
+                                :
+                                <React.Fragment>
+                                    <Button
+                                        color='primary'
+                                        onClick={() => goBack()}
+                                        size='large'
+                                        variant='outlined'
+                                    >
+                                        <ArrowBackIos />
+                                        {t('editor.Return', 'Return')}
+                                    </Button>
+                                    <Typography variant="body1" className={classes.instructions}>
+                                        {!this.state.pgStates.length ? '' :
+                                            t('editor.Select paragraphs', 'Select paragraphs')
+                                        }
+                                    </Typography>
+                                    <div className={classes.bottomFabs}>
+                                        <div>
+                                            {Meteor.userId() &&
+                                                <Fab
+                                                    aria-label={t("editor.Edit", "Edit")}
+                                                    className={classes.bottomFab}
+                                                    disabled={!this.state.title}
+                                                    onClick={() => this.setState({ edit: true })}
+                                                >
+                                                    <Edit />
+                                                </Fab>
+                                            }
+                                            <div className={classes.choiceFabs}>
+                                                <Fab
+                                                    aria-label={("editor.Select or unselect all", "Select or unselect all")}
+                                                    disabled={!this.state.pgStates.length}
+                                                    className={classes.bottomFab}
+                                                    onClick={this.handleToggleSelectAll.bind(this)}
+                                                    variant="extended"
+                                                >
+                                                    {!this.state.pgStates.filter(pgState => pgState.selected).length ? t('editor.Select all', 'Select all') : t('editor.Unselect all', 'Unselect all')}
+                                                </Fab>
+                                                <Fab
+                                                    aria-label={("editor.Validate", "Validate")}
+                                                    className={classes.bottomFab}
+                                                    color='primary'
+                                                    disabled={!this.state.pgStates.filter(pgState => pgState.selected).length}
+                                                    onClick={this.handleOpenScreen.bind(this)}
+                                                >
+                                                    <Check />
+                                                </Fab>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </React.Fragment>
-                        }
-                    </CardActions>
-                </Card>
+                                </React.Fragment>
+                            }
+                        </CardActions>
+                    </Card>
+                </React.Fragment>
             );
         }
     }
@@ -618,13 +626,15 @@ export class Editor extends React.Component {
 Editor.propTypes = {
     classes: PropTypes.object.isRequired,
     goBack: PropTypes.func.isRequired,
+    i18n: PropTypes.object.isRequired,
     meteorCall: PropTypes.func.isRequired,
     logoMenuDeployed: PropTypes.bool,
     song: PropTypes.object,
+    t: PropTypes.func.isRequired,
     viewer: PropTypes.func.isRequired,
 }
 
 export default withTracker(props => ({
     meteorCall: Meteor.call,
     song: { ...props.song, ...Songs.findOne(props.song._id) },
-}))(withStyles(styles)(Editor));
+}))(withStyles(styles)(withTranslation()(Editor)));

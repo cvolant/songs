@@ -31,12 +31,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Panel = ({ children, classes: propClasses, className, handleClosePanel }) => {
+export const Panel = ({ children, classes: propClasses, className, closeName, handleClosePanel }) => {
   const classes = useStyles();
 
   return (
     <Paper className={clsx(classes.root, className, propClasses && propClasses.root)}>
-      <IconButton className={clsx(classes.close, propClasses && propClasses.iconButton)} onClick={handleClosePanel}>
+      <IconButton aria-label={closeName} className={clsx(classes.close, propClasses && propClasses.iconButton)} onClick={handleClosePanel}>
         <Clear className={propClasses && propClasses.icon} />
       </IconButton>
       {children}
@@ -47,6 +47,7 @@ export const Panel = ({ children, classes: propClasses, className, handleClosePa
 Panel.propTypes = {
   handleClosePanel: PropTypes.func.isRequired,
   classes: PropTypes.object,
+  closeName: PropTypes.string.isRequired,
 };
 
 export default Panel;

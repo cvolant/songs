@@ -1,5 +1,6 @@
 import React, { createRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { Accounts } from "meteor/accounts-base";
 import { withTracker } from 'meteor/react-meteor-data';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,10 +22,13 @@ const useStyles = makeStyles(theme => ({
 
 
 export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLogin, title }) => {
+    const { t } = useTranslation();
     const classes = useStyles();
     const [error, setError] = useState('');
     const emailRef = createRef();
     const passwordRef = createRef();
+
+    const passwordLengthMin = 6;
 
     const onSubmit = e => {
         e.preventDefault();
@@ -40,8 +44,8 @@ export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLog
                 }
             });
         } else {
-            if (password.length < 6)
-                return setError("Password must be at least 6 characters long");
+            if (password.length < passwordLengthMin)
+                return setError(t("register.Too short", "Password too short", { passwordLengthMin }));
 
             handleCreateUser({ email, password }, err => {
                 if (err) {
@@ -64,7 +68,7 @@ export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLog
                     fullWidth
                     id="email"
                     inputRef={emailRef}
-                    label="Email Address"
+                    label={t("register.Email Address", "Email Address")}
                     name="email"
                     margin="normal"
                     required
@@ -75,7 +79,7 @@ export const EmailPasswordForm = ({ alreadySignedUp, handleCreateUser, handleLog
                     fullWidth
                     id="password"
                     inputRef={passwordRef}
-                    label="Password"
+                    label={t("register.Password", "Password")}
                     name="password"
                     margin="normal"
                     type="password"

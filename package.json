@@ -8,26 +8,32 @@
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.5",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@material-ui/styles": "latest",
     "clsx": "^1.0.4",
     "downshift": "^3.2.10",
+    "i18next": "^17.0.6",
+    "i18next-browser-languagedetector": "^3.0.1",
+    "i18next-xhr-backend": "^3.0.0",
     "meteor-node-stubs": "^0.4.1",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-helmet": "^5.2.1",
+    "react-i18next": "^10.11.4",
     "react-router-dom": "^5.0.0",
     "react-select": "^3.0.4",
-    "simpl-schema": "^1.5.5"
+    "simpl-schema": "^1.5.5",
+    "webfontloader": "^1.6.28"
   },
   "engines": {
     "node": "11.14.0"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.5.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
     "expect": "^1.20.2",

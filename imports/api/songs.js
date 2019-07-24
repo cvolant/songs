@@ -6,12 +6,19 @@ import moment from 'moment';
 export const Songs = new Mongo.Collection('songs');
 
 // Custom toString function for deep in objects/arrays containing regexp stringing.
-const toStr = o => Array.isArray(o) ? '[ ' + o.map(oel => toStr(oel)).join(', ') + ' ]' : o.constructor.name == 'Object' ? '{ ' + Object.entries(o).map(entry => entry[0] + ': ' + toStr(entry[1])).join(', ') + ' }' : o.toString();
+const toStr = o =>
+    typeof o == 'undefined' ?
+        '[undefined]':
+        Array.isArray(o) ?
+            '[ ' + o.map(oel => toStr(oel)).join(', ') + ' ]' :
+            o.constructor.name == 'Object' ?
+                '{ ' + Object.entries(o).map(entry => entry[0] + ': ' + toStr(entry[1])).join(', ') + ' }' :
+                o.toString();
 
 if (Meteor.isServer) {
     Meteor.publish('songs', function ({
-        search: { globalQuery, specificQueries },
-        options: { sort, limit = 20 },
+        search: { globalQuery, specificQueries } = {},
+        options: { sort, limit = 20 } = { limit: 20 },
     }) {
 
         const fields = {
@@ -46,10 +53,10 @@ if (Meteor.isServer) {
                         const user = Meteor.user();
                         if (user && user.userSongs && user.userSongs.favoriteSongs) {
                             console.log('From songs, fields.search.favorites.operator. Meteor.user().userSongs.favorites:', Meteor.user().userSongs.favoriteSongs);
-                            return value == 'no' ? { '$nin': Meteor.user().userSongs.favoriteSongs } : { '$in': Meteor.user().userSongs.favoriteSongs };
+                            return value in ['no', 'non'] ? { '$nin': Meteor.user().userSongs.favoriteSongs } : { '$in': Meteor.user().userSongs.favoriteSongs };
                         } else {
                             console.log('From songs, fields.search.favorites.operator. Meteor.user():', Meteor.user());
-                            return {};
+                            return undefined;
                         }
                     },
                 },
@@ -89,7 +96,9 @@ if (Meteor.isServer) {
                         operator(value) :
                         new RegExp(value, 'i');
 
-                    if (queryFields.length == 1) {
+                    if (typeof expression == 'undefined') {
+                        return {};
+                    } else if (queryFields.length == 1) {
                         query[queryFields[0]] = expression;
                     } else if (queryFields.length > 1) {
                         query['$or'] = queryFields.map(queryField => ({ [queryField]: expression }));

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     Chip,
     FormControlLabel,
@@ -9,7 +9,7 @@ import {
     TextField,
 } from '@material-ui/core';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     chip: {
         margin: theme.spacing(0.25),
     },
@@ -21,10 +21,13 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
-});
+}));
 
-const Detail = props => {
-    const { classes, detail, edit, keyname, handleDetailChange } = props;
+const Detail = ({ detail, edit, keyname, handleDetailChange }) => {
+
+    const { t } = useTranslation();
+    const classes = useStyles();
+    const detailName = t(`song.${detail.name}`, detail.name);
 
     if (detail && detail.name) {
         if (edit) {
@@ -40,13 +43,13 @@ const Detail = props => {
                                 value={keyname}
                             />
                         }
-                        label={detail.name}
+                        label={detailName}
                     />
                 );
             } else {
                 return (
                     <TextField
-                        label={detail.name}
+                        label={detailName}
                         type={detail.type}
                         inputProps={{ keyname, type: detail.type }}
                         multiline
@@ -65,7 +68,7 @@ const Detail = props => {
             if (detail.value) {
                 return (
                     <Chip
-                        label={detail.name + (detail.type === 'bool' ? '' : (': ' + detail.value))}
+                        label={detailName + (detail.type != 'bool' && `${t('colon', ':')} ${detail.value}`)}
                         className={classes.chip}
                     />
                 );
@@ -85,4 +88,4 @@ Detail.propTypes = {
     handleDetailChange: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles)(Detail);
+export default Detail;

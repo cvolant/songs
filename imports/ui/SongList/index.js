@@ -26,12 +26,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const SongList = props => {
-    const { favoriteSongs, handleFocus, handleSelectSong, logoMenuDeployed, meteorCall, smallDevice } = props;
+    const { favoriteSongs, handleFocus, handleSelectSong, isAuthenticated, logoMenuDeployed, meteorCall, smallDevice } = props;
     const listRef = createRef();
 
     const classes = useStyles();
 
-    const [ displaySort,    setDisplaySort  ] = useState(true);
+    const [ displaySort,    setDisplaySort  ] = useState(false);
     const [ limit,          setLimit        ] = useState(nbItemsPerPage);
     const [ limitRaised,    setLimitRaised  ] = useState(false);
     const [ loading,        setLoading      ] = useState(false);
@@ -100,7 +100,10 @@ export const SongList = props => {
         [sortCriterion]: sort && sort[sortCriterion] ? (sort[sortCriterion] == -1 ? undefined : -1) : 1
     });
     const handleSelect = song => () => handleSelectSong(song);
-    const handleToggleDisplaySort = open => () => setDisplaySort(open || !displaySort);
+    const handleToggleDisplaySort = open => () => {
+        setSort(undefined);
+        setDisplaySort(open || !displaySort);
+    }
     const handleToggleFavorite = (songId, value) => () => {
         console.log('From SongList, handleToggleFavorite. songId:', songId);
         meteorCall('user.favorite.toggle', songId, value);
@@ -110,11 +113,13 @@ export const SongList = props => {
     return (
         <React.Fragment>
             <SearchField {...{
+                displaySort,
                 logoMenuDeployed,
                 handleFocus,
                 handleNewSearch,
                 handleToggleDisplaySort,
-                loading
+                isAuthenticated,
+                loading,
             }}/>
             <List
                 component="nav"
@@ -126,11 +131,10 @@ export const SongList = props => {
                 }
             >
                 {songs.length === 0 && !loading ?
-                    !console.log('From SongList, return. No results.') && <SongListEmptyItem search={search} />
+                    <SongListEmptyItem search={search} />
                     :
                     songs.map(song => {
                         const songId = song._id;
-                        console.log('favoritesSongs:', favoriteSongs, 'songId:', songId);
                         const favorite = favoriteSongs && favoriteSongs.map(favoriteSong => favoriteSong._str).indexOf(songId._str) != -1;
                         return (
                             <SongListItem
@@ -155,17 +159,20 @@ SongList.propTypes = {
     favoriteSongs: PropTypes.array,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSong: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
     logoMenuDeployed: PropTypes.bool,
     meteorCall: PropTypes.func.isRequired,
     smallDevice: PropTypes.bool.isRequired,
 };
 
 export default withTracker(props => {
-    if (Meteor.userId()) Meteor.subscribe('Meteor.users.userSongs');
+    const isAuthenticated = !!Meteor.userId();
+    if (isAuthenticated) Meteor.subscribe('Meteor.users.userSongs');
     const favoriteSongs = Meteor.user() && Meteor.user().userSongs && Meteor.user().userSongs.favoriteSongs;
 
     return {
         favoriteSongs,
+        isAuthenticated,
         meteorCall: Meteor.call,
     };
 

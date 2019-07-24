@@ -1,5 +1,6 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
@@ -39,6 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const SongListItemText = ({ smallDevice, song, unfolded }) => {
+    const { t } = useTranslation();
     const classes = useStyles();
 
     let {
@@ -55,28 +57,28 @@ export const SongListItemText = ({ smallDevice, song, unfolded }) => {
     const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
 
     if (compositeur) details.push({
-        key: 'Music: ',
+        key: `${('song.Music', 'Music')}${'colon', ':'} `,
         before: null,
         icon: MusicNote,
         name: compositeur,
         after: null,
     });
     if (auteur) details.push({
-        key: 'Text: ',
+        key: `${('song.Text', 'Text')}${'colon', ':'} `,
         before: details.length && ' · ',
         icon: TextFields,
         name: auteur,
         after: null,
     });
     if (traducteur) details.push({
-        key: 'Translation: ',
+        key: `${('song.Translation', 'Translation')}${'colon', ':'} `,
         before: details.length && ' · ',
         icon: Translate,
         name: traducteur,
         after: null,
     });
     /* if (editeur) details.push({
-        key: 'Edition: ',
+        key: `${('song.Edition', 'Edition')}${'colon', ':'} `,
         before: details.length && ' (',
         name: editeur,
         icon: null,
@@ -88,7 +90,7 @@ export const SongListItemText = ({ smallDevice, song, unfolded }) => {
             disableTypography
             primary={
                 <div className={classes.container}>
-                    <Typography className={classes.titles} variant='h6'>{titre || <em>Untitled song</em>}{sousTitre && !smallDevice && <em> &mdash; {sousTitre}</em>}</Typography>
+                    <Typography className={classes.titles} variant='h6'>{titre || <em>{t('song.Untitled song', 'Untitled song')}</em>}{sousTitre && !smallDevice && <em> &mdash; {sousTitre}</em>}</Typography>
                     {annee && <Typography className={classes.year} variant='h6'>{annee}</Typography>}
                 </div>
             }

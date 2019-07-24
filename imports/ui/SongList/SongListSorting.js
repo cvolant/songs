@@ -1,6 +1,7 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -70,6 +71,7 @@ const useStyles = makeStyles(theme => {
 });
 
 export const SongListSorting = ({ displayFavorite, handleToggleDisplaySort, handleSort, sort, smallDevice }) => {
+    const { t } = useTranslation();
     const classes = useStyles({ displayFavorite });
     console.log('From SongListSorting, render. sort:', sort);
 
@@ -90,7 +92,7 @@ export const SongListSorting = ({ displayFavorite, handleToggleDisplaySort, hand
                     )
                 )
             } />
-            {buttonName}
+            {t(`song.${buttonName}`, buttonName)}
         </Button>
     );
 
@@ -109,7 +111,7 @@ export const SongListSorting = ({ displayFavorite, handleToggleDisplaySort, hand
                 primary={
                     <div className={classes.container}>
                         <Typography className={classes.sortOptions} fontSize='small' variant='body1'>
-                            <span>sort by: </span>
+                            <span>{t('search.sort by', 'sort by')}{t('colon', ':')} </span>
                             <span className={classes.buttons}>
                                 {
                                     ['title', 'compositor', 'author'].map(buttonName => sortButton(buttonName))

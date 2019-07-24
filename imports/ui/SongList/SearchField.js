@@ -1,6 +1,7 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { withRouter } from "react-router";
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -67,6 +68,9 @@ const useStyles = makeStyles(theme => ({
       paddingBottom: theme.spacing(1),
     },
   },
+  lineThrough: {
+    textDecoration: 'line-through',
+  },
   root: {
     borderRadius: '1.5rem',
     boxShadow: '0px 2px 6px 0px inset rgba(0,0,0,0.2),0px 2px 2px 0px inset rgba(0,0,0,0.14),0px 4px 2px -2px inset rgba(0,0,0,0.12)',
@@ -78,46 +82,50 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const SearchField = ({
+    displaySort,
     handleFocus,
     handleNewSearch,
     handleToggleDisplaySort,
     history,
+    isAuthenticated,
     loading,
     location,
     logoMenuDeployed
   }) => {
+  const { t } = useTranslation();
+
   const fields = {
     titles: {
-      name: 'titles',
-      placeholder: ' ??? ',
+      name: t('song.titles', 'titles'),
+      placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
     authors: {
-      name: 'authors',
-      placeholder: ' ??? ',
+      name: t('song.authors', 'authors'),
+      placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
     editor: {
-      name: 'editor',
-      placeholder: ' ??? ',
+      name: t('song.editor', 'editor'),
+      placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
     classifications: {
-      name: 'classifications',
-      placeholder: ' ??? ',
+      name: t('song.classifications', 'classifications'),
+      placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
     lyrics: {
-      name: 'lyrics',
-      placeholder: ' ??? ',
+      name: t('song.lyrics', 'lyrics'),
+      placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
     before: {
-      name: 'before',
-      placeholder: ' year ',
+      name: t('song.before', 'before'),
+      placeholder: t('search.placeholder. year ', ' year '),
     },
     after: {
-      name: 'after',
-      placeholder: ' year ',
+      name: t('song.after', 'after'),
+      placeholder: t('search.placeholder. year ', ' year '),
     },
     favorites: {
-      name: 'favorites',
-      placeholder: 'yes',
+      name: t('song.favorites', 'favorites'),
+      placeholder: t('search.placeholder.yes', 'yes'),
     },
   };
   const inputRef = createRef();
@@ -234,6 +242,7 @@ export const SearchField = ({
     const newUrlSearch = '?' + newUrlSearchElements.join('&');
     console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
     if (location.search != newUrlSearch) {
+      console.log('From SearchField, handleSearch. REDIRECTION. Former url search:', location.search, ', newUrlSearch:', newUrlSearch);
       history.replace({ ...location, search: newUrlSearch });
     }
   };
@@ -247,8 +256,9 @@ export const SearchField = ({
     <Card className={classes.root}>
       <CardContent className={classes.inputContainer}>
         <InputBase
+          aria-label={t("search.Search field", "Search field")}
           className={classes.input}
-          placeholder="      Search…"
+          placeholder={'      ' + t("search.placeholder.Search", "Search…")}
           ref={inputRef}
           startAdornment={
             searchEntry ? undefined :
@@ -271,7 +281,7 @@ export const SearchField = ({
         <IconButton
           color="primary"
           className={classes.iconButton}
-          aria-label="Advanced search"
+          aria-label={t("search.Advanced search", "Advanced search")}
           onClick={handleToggleAdvancedSearch}
         >
           {advancedSearch ? <SettingsOutlined /> : <Settings />}
@@ -284,15 +294,17 @@ export const SearchField = ({
             color="primary"
             variant="contained"
           >
-            <Button value="titles" onClick={handleAdvancedButtonClick}>Titles</Button>
-            <Button value="authors" onClick={handleAdvancedButtonClick}>Authors</Button>
-            <Button value="editor" onClick={handleAdvancedButtonClick}>Editor</Button>
-            <Button value="classifications" onClick={handleAdvancedButtonClick}>Classifications</Button>
-            <Button value="lyrics" onClick={handleAdvancedButtonClick}>Lyrics</Button>
-            <Button value="before" onClick={handleAdvancedButtonClick}>Before</Button>
-            <Button value="after" onClick={handleAdvancedButtonClick}>After</Button>
-            <Button value="favorites" onClick={handleAdvancedButtonClick}>Favorites</Button>
-            <Button onClick={handleToggleDisplaySort()}>Sort</Button>
+            {Object.entries(fields).map(([fieldKey, fieldValues]) => {
+              if (fieldKey == 'favorites' && !isAuthenticated) return undefined;
+              return (
+                <Button value={fieldKey} key={fieldKey} onClick={handleAdvancedButtonClick}>
+                  {fieldValues.name.replace(/\b\w/g, l => l.toUpperCase())}
+                </Button>
+              );
+            })}
+            <Button classes={{ label: displaySort && classes.lineThrough }} onClick={handleToggleDisplaySort()}>
+              {t('search.Sort', 'Sort')}
+            </Button>
           </ButtonGroup>
         </CardActions>
       }
@@ -301,9 +313,11 @@ export const SearchField = ({
 }
 
 SearchField.propTypes = {
+  displaySort: PropTypes.bool,
   handleFocus: PropTypes.func.isRequired,
   handleNewSearch: PropTypes.func.isRequired,
   handleToggleDisplaySort: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
   loading: PropTypes.bool,
   logoMenuDeployed: PropTypes.bool.isRequired,
 };

@@ -1,4 +1,6 @@
 import React, { Suspense, useState } from 'react';
+import { Helmet } from "react-helmet";
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { CircularProgress, Grid } from '@material-ui/core';
 
@@ -66,6 +68,7 @@ export const PageLayout = ({
   scrollDown,
   sidePanel,
   smallDevice,
+  title,
   tutorialContentName,
   viewer
 }) => {
@@ -80,6 +83,9 @@ export const PageLayout = ({
 
   return (
     <div className={classes.root}>
+      <Helmet>
+          <title>{`Alleluia.plus - ${title}`}</title>
+      </Helmet>
       <LogoMenu {...{ handleToggleTutorial, showTutorial }} {...menuProps} />
       <Grid container spacing={4} className={classes.pageContent} onScroll={sidePanel && smallDevice && scrollDown ? scrollDown : undefined}>
         {console.log('From PageLayout, return. sidePanel:', sidePanel)}
@@ -100,6 +106,16 @@ export const PageLayout = ({
       {viewer}
     </div >
   );
+};
+
+PageLayout.propTypes = {
+  menuProps: PropTypes.object,
+  scrollDown: PropTypes.func,
+  sidePanel: PropTypes.object,
+  smallDevice: PropTypes.bool,
+  title: PropTypes.string,
+  tutorialContentName: PropTypes.string,
+  viewer: PropTypes.object,
 };
 
 export default PageLayout;
