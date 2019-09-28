@@ -1,21 +1,22 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import Panel from '../utils/Panel';
 import TutorialStepContent from './TutorialStepContent';
 
 const steps = {
   SearchPage: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
-  Editor:     ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
-  SignIn :    ['signIn', 'notSignedUp'],
-  SignUp :    ['signUp', 'alreadySignedUp'],
+  Editor: ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
+  SignIn: ['signIn', 'notSignedUp'],
+  SignUp: ['signUp', 'alreadySignedUp'],
 };
 
 const useStyles = makeStyles(theme => ({
@@ -94,7 +95,7 @@ export const Tutorial = ({ handleToggleTutorial, tutorialContentName }) => {
             <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
               <KeyboardArrowLeft />
               {t('Back')}
-        </Button>
+            </Button>
           }
         />
       </div>

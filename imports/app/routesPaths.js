@@ -8,7 +8,7 @@ export const routesPaths = {
   },
   signin: {
     en: '/signin',
-    fr: 'connexion',
+    fr: '/connexion',
   },
   signup: {
     en: '/signup',

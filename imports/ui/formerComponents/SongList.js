@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 /* import FlipMove from 'react-flip-move'; */
 import { withTracker } from 'meteor/react-meteor-data';

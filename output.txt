@@ -1,0 +1,19 @@
+MongoDB shell version v4.0.6
+connecting to: mongodb://127.0.0.1:3001/meteor?gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("984ee015-2acd-471f-a8d8-0aaf7b65b89c") }
+MongoDB server version: 4.0.6
+Server has startup warnings: 
+2019-07-31T10:16:59.728+0800 I STORAGE  [initandlisten] 
+2019-07-31T10:16:59.728+0800 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2019-07-31T10:16:59.728+0800 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2019-07-31T10:17:01.382+0800 I CONTROL  [initandlisten] 
+2019-07-31T10:17:01.382+0800 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. rlimits set to 31386 processes, 1048576 files. Number of processes should be at least 524288 : 0.5 times number of files.
+meteor:PRIMARY> show dbs[17G[Jshow dbs[25G
+admin   0.000GB
+config  0.000GB
+local   0.014GB
+meteor  0.061GB
+meteor:PRIMARY> print('wer')[17G[Jprint('wer')[29G
+wer
+meteor:PRIMARY> [17G[J[17G^C
+bye

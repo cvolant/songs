@@ -1,11 +1,13 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
-import { MusicNote, TextFields, Translate } from '@material-ui/icons';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import MusicNote from '@material-ui/icons/MusicNote';
+import TextFields from '@material-ui/icons/TextFields';
+import Translate from '@material-ui/icons/Translate';
 
 import InlineIcon from '../utils/InlineIcon';
 
@@ -57,28 +59,28 @@ export const SongListItemText = ({ smallDevice, song, unfolded }) => {
     const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
 
     if (compositeur) details.push({
-        key: `${('song.Music', 'Music')}${'colon', ':'} `,
+        key: `${t('song.Music', 'Music')}${'colon', ':'} `,
         before: null,
         icon: MusicNote,
         name: compositeur,
         after: null,
     });
     if (auteur) details.push({
-        key: `${('song.Text', 'Text')}${'colon', ':'} `,
+        key: `${t('song.Text', 'Text')}${'colon', ':'} `,
         before: details.length && ' · ',
         icon: TextFields,
         name: auteur,
         after: null,
     });
     if (traducteur) details.push({
-        key: `${('song.Translation', 'Translation')}${'colon', ':'} `,
+        key: `${t('song.Translation', 'Translation')}${'colon', ':'} `,
         before: details.length && ' · ',
         icon: Translate,
         name: traducteur,
         after: null,
     });
     /* if (editeur) details.push({
-        key: `${('song.Edition', 'Edition')}${'colon', ':'} `,
+        key: `${t('song.Edition', 'Edition')}${'colon', ':'} `,
         before: details.length && ' (',
         name: editeur,
         icon: null,

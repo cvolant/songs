@@ -3,7 +3,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import Panel from '../utils/Panel';
 import PageLayout from '../utils/PageLayout';
 
-import { Grid, Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
 export const Dashboard = () => {

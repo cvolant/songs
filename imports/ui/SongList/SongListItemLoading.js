@@ -1,9 +1,9 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
-import { CircularProgress } from '@material-ui/core';
+import Circular from '@material-ui/core/Circular';
 
 const useStyles = makeStyles(theme => ({
     root: {

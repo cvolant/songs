@@ -6,6 +6,9 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Fab from '@material-ui/core/Fab';
+import Typography from '@material-ui/core/Typography';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
@@ -13,12 +16,6 @@ import PageLayout from '../utils/PageLayout';
 import SongList from '../SongList';
 
 import routesPaths from '../../app/routesPaths';
-
-import {
-  Fab,
-  Typography,
-} from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   continueFabIcon: {

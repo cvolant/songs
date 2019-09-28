@@ -1,24 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  Grid,
-  IconButton,
-  MenuItem,
-  TextField,
-} from '@material-ui/core';
-import {
-  ArrowDownward,
-  ArrowUpward,
-  Cancel,
-  Check,
-  Delete,
-  Edit,
-} from '@material-ui/icons';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardHeader from '@material-ui/core/CardHeader';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Cancel from '@material-ui/icons/Cancel';
+import Check from '@material-ui/icons/Check';
+import Delete from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles(theme => ({
   actionButtonColumn: {
@@ -100,8 +97,10 @@ const Paragraph = props => {
     t('pg.bridge', 'bridge')
   ];
 
+  const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, index) => e == '<br/>\n' ? <br key={index} /> : e);
+
   return (
-    <Grid item xs={12} md={6} xl={4}>
+    <Grid item xs={12} sm={6} md={4} xl={3}>
       <Card
         className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
         onClick={edit ? () => {} : handleSelect}
@@ -164,12 +163,12 @@ const Paragraph = props => {
               className={classes.textField}
               margin="normal"
               variant="outlined"
-              value={paragraph.pg.replace(/<br\/>/g, '')}
+              value={<React.Fragment>{pgText}</React.Fragment>}
               onChange={handlePgChange}
               autoFocus={true}
             />
             :
-            paragraph.pg.replace(/<br\/>/g, '')
+            <React.Fragment>{pgText}</React.Fragment>
           }
           subheaderTypographyProps={edit ? {} :
             {

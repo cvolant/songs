@@ -1,9 +1,9 @@
-import { Meteor } from "meteor/meteor";
-import React from "react";
+import { Meteor } from 'meteor/meteor';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { Session } from 'meteor/session';
 
-export default AuthRoute = ({
+const AuthRoute = ({
   auth,
   component: Component,
   lng,
@@ -13,7 +13,7 @@ export default AuthRoute = ({
 }) => (
   <Route
     {...rest}
-    render={props => {
+    render={(props) => {
       console.log('From AuthRoute. props:', props);
 
       let goal;
@@ -31,18 +31,21 @@ export default AuthRoute = ({
         if (auth === !!Meteor.userId()) {
           console.log(`OK, go to location: "${props.location.pathname}"`);
           return goal;
-        } else {
-          console.log(`Redirection to: "${redirection}" from location: "${props.location.pathname}" (match: "${props.match.path}")`);
-          return <Redirect to={{
-            pathname: redirection,
-            state: { from: props.location }
-          }} />;
         }
-      } else {
-        console.log('No redirection, go to goal. goal:', goal);
-        Session.set('currentPagePrivacy', undefined);
-        return goal;
+        console.log(`Redirection to: "${redirection}" from location: "${props.location.pathname}" (match: "${props.match.path}")`);
+        return (
+          <Redirect to={{
+            pathname: redirection,
+            state: { from: props.location },
+          }}
+          />
+        );
       }
+      console.log('No redirection, go to goal. goal:', goal);
+      Session.set('currentPagePrivacy', undefined);
+      return goal;
     }}
   />
 );
+
+export default AuthRoute;

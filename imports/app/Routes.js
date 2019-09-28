@@ -1,22 +1,22 @@
-import React from "react";
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
-import NotFound from "../ui/NotFound";
+import NotFound from '../ui/NotFound';
 import SearchPage from '../ui/SearchPage';
 import Dashboard from '../ui/Dashboard';
-import SignUp from "../ui/signInUp/SignUp";
-import SignIn from "../ui/signInUp/SignIn";
+import SignUp from '../ui/signInUp/SignUp';
+import SignIn from '../ui/signInUp/SignIn';
 
 import routesPaths from './routesPaths';
 
-export default Routes = ({ lng }) => {
+const Routes = ({ lng }) => {
   console.log('From Routes, render. lng', lng);
 
   return (
     <Switch>
       <AuthRoute
-        exact={true}
+        exact
         path={routesPaths.path(lng, 'home')}
         lng={lng}
         component={SearchPage}
@@ -32,7 +32,7 @@ export default Routes = ({ lng }) => {
         path={routesPaths.path(lng, 'search', ':id')}
         lng={lng}
         component={SearchPage}
-        render={props => <SearchPage songId={props.match.params.id} {...props} />}
+        render={(props) => <SearchPage songId={props.match.params.id} {...props} />}
       />
       <AuthRoute
         exact
@@ -40,7 +40,7 @@ export default Routes = ({ lng }) => {
         lng={lng}
         component={SignIn}
         auth={false}
-        redirection='dashboard'
+        redirection="dashboard"
       />
       <AuthRoute
         exact
@@ -48,21 +48,23 @@ export default Routes = ({ lng }) => {
         lng={lng}
         component={SignUp}
         auth={false}
-        redirection='dashboard'
+        redirection="dashboard"
       />
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'dashboard')}
         lng={lng}
         component={Dashboard}
-        auth={true}
-        redirection='home'
+        auth
+        redirection="home"
       />
       <AuthRoute
-        path='/*'
+        path="/*"
         lng={lng}
         component={NotFound}
       />
     </Switch>
   );
 };
+
+export default Routes;

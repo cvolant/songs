@@ -1,0 +1,37 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  visibility: hidden;
+}
+
+.wf-active h1,
+.wf-active h2,
+.wf-active h3,
+.wf-active h4,
+.wf-active h5,
+.wf-active h6,
+.wf-active p,
+.wf-active a,
+.wf-inactive h1,
+.wf-inactive h2,
+.wf-inactive h3,
+.wf-inactive h4,
+.wf-inactive h5,
+.wf-inactive h6,
+.wf-inactive p,
+.wf-inactive a {
+  visibility: visible;
+}

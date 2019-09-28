@@ -1,22 +1,30 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState } from "react";
-import { withRouter } from "react-router";
+import React, { useState } from 'react';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
-import { ButtonBase } from '@material-ui/core';
-import { ExpandLess, Help, HelpOutline, Home, Menu, Person } from '@material-ui/icons';
+
+import { makeStyles } from '@material-ui/styles';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import Help from '@material-ui/icons/Help';
+import HelpOutline from '@material-ui/icons/HelpOutline';
+import Home from '@material-ui/icons/Home';
+import Menu from '@material-ui/icons/Menu';
+import Person from '@material-ui/icons/Person';
 
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
 
-const useStyles = makeStyles(theme => ({
+import routesPaths from '../../app/routesPaths';
+
+const useStyles = makeStyles((theme) => ({
   root: {
     margin: '0 auto',
     width: theme.sizes.menuItem,
@@ -91,7 +99,7 @@ const useStyles = makeStyles(theme => ({
     '& svg': {
       width: '2.8rem',
       height: '2.8rem',
-    }
+    },
   },
   tabIcon1: {
     transform: 'rotate(-0deg)',
@@ -118,70 +126,81 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const LogoMenu = props => {
+export const LogoMenu = (props) => {
   const { t, i18n } = useTranslation();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
-  const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed == 'undefined' ?
-    useState(true) :
-    [props.logoMenuDeployed, () => console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...')];
-  const { isAuthenticated, handleLogout, handleToggleTutorial, location, showTutorial } = props;
-  
+  const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed === 'undefined'
+    ? useState(true)
+    : [props.logoMenuDeployed, () => console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...')];
+  const {
+    isAuthenticated,
+    handleLogout,
+    handleToggleTutorial,
+    location,
+    showTutorial,
+    tutorialAvailable,
+  } = props;
+
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
-  
+
   console.log('From LogoMenu. render.');
 
-  const handleToggleTopMenu = deploy => event => {
+  const handleToggleTopMenu = (deploy) => (event) => {
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       console.log('From LogoMenu, handleToggleTopMenu. aborted. event.type:', event.type, 'event.key:', event.key);
       return;
     }
     console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen, 'event.target:', event.target);
-    setTopMenuIsOpen(typeof deploy == 'undefined' ? !topMenuIsOpen : !!deploy);
-  }
+    setTopMenuIsOpen(typeof deploy === 'undefined' ? !topMenuIsOpen : !!deploy);
+  };
 
-  const handleToggleLogoMenu = props.handleToggleLogoMenu ?
-    props.handleToggleLogoMenu :
-    deploy => () => setLogoMenuDeployed(typeof deploy == 'undefined' ? !logoMenuDeployed : !!deploy);
+  const handleToggleLogoMenu = props.handleToggleLogoMenu
+    ? props.handleToggleLogoMenu
+    : (deploy) => () => setLogoMenuDeployed(typeof deploy === 'undefined' ? !logoMenuDeployed : !!deploy);
 
   return (
-    <React.Fragment>
+    <>
       {
-        smallDevice ?
-          <TopMenuSmall
-            PaperProps={PaperProps}
-            handleToggleTopMenu={handleToggleTopMenu}
-            topMenuIsOpen={topMenuIsOpen}
-          >
-            <TopMenuContent
-              isAuthenticated={isAuthenticated}
-              handleLogout={handleLogout}
+        smallDevice
+          ? (
+            <TopMenuSmall
+              PaperProps={PaperProps}
               handleToggleTopMenu={handleToggleTopMenu}
+              topMenuIsOpen={topMenuIsOpen}
+            >
+              <TopMenuContent
+                isAuthenticated={isAuthenticated}
+                handleLogout={handleLogout}
+                handleToggleTopMenu={handleToggleTopMenu}
+                smallDevice={smallDevice}
+              />
+            </TopMenuSmall>
+          )
+          : (
+            <TopMenuLarge
+              PaperProps={PaperProps}
+              topMenuIsOpen={topMenuIsOpen}
               smallDevice={smallDevice}
-            />
-          </TopMenuSmall>
-          :
-          <TopMenuLarge
-            PaperProps={PaperProps}
-            topMenuIsOpen={topMenuIsOpen}
-            smallDevice={smallDevice}
-          >
-            <TopMenuContent
-              isAuthenticated={isAuthenticated}
-              handleLogout={handleLogout}
-              handleToggleTopMenu={handleToggleTopMenu}
-              smallDevice={smallDevice}
-            />
-          </TopMenuLarge>
+            >
+              <TopMenuContent
+                isAuthenticated={isAuthenticated}
+                handleLogout={handleLogout}
+                handleToggleTopMenu={handleToggleTopMenu}
+                smallDevice={smallDevice}
+              />
+            </TopMenuLarge>
+          )
       }
       <div className={classes.root}>
         <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
         <ButtonBase
           aria-label={t('Help')}
           className={clsx(classes.tabShape, classes.tab, classes.tab1)}
-          component='div'
+          component="div"
+          disabled={!tutorialAvailable}
           onClick={handleToggleTutorial()}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon1)}>
@@ -191,50 +210,48 @@ export const LogoMenu = props => {
 
         <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
         <ButtonBase
-          aria-label={isAuthenticated ?
-            location.pathname.indexOf('/dashboard') >= 0 ? t('Home') : t('Dashboard')
-            :
-            location.pathname.indexOf('/signin') >= 0 ? t('Sign up') : t('Sign in')}
+          aria-label={isAuthenticated
+            ? location.pathname.indexOf(routesPaths.translatePath('/en/dashboard', i18n.language)) >= 0 ? t('Home') : t('Dashboard')
+            : location.pathname.indexOf(routesPaths.translatePath('/en/signin', i18n.language)) >= 0 ? t('Sign up') : t('Sign in')}
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
-          to={isAuthenticated ?
-            location.pathname.indexOf('/dashboard') >= 0 ? `/${i18n.language}` : `/${i18n.language}/dashboard`
-            :
-            {
-              pathname: location.pathname.indexOf('/signin') >= 0 ? `/${i18n.language}/signup` : `/${i18n.language}/signin`,
+          to={isAuthenticated
+            ? location.pathname.indexOf(routesPaths.translatePath('/en/dashboard', i18n.language)) >= 0 ? `/${i18n.language}` : routesPaths.translatePath('/en/dashboard', i18n.language)
+            : {
+              pathname: location.pathname.indexOf(routesPaths.translatePath('/en/signin', i18n.language)) >= 0 ? routesPaths.translatePath('/en/signup', i18n.language) : routesPaths.translatePath('/en/signin', i18n.language),
               state: { from: location },
             }}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-            {location.pathname.indexOf('/dashboard') >= 0 ? <Home /> : <Person />}
+            {location.pathname.indexOf(routesPaths.translatePath('/en/dashboard', i18n.language)) >= 0 ? <Home /> : <Person />}
           </div>
-        </ButtonBase >
+        </ButtonBase>
 
         <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
         <ButtonBase
           aria-label={t('menus.Toggle detailed menu', 'Toggle detailed menu')}
           className={clsx(classes.tabShape, classes.tab, classes.tab3)}
-          component='div'
+          component="div"
           onClick={handleToggleTopMenu()}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon3)}>
             {topMenuIsOpen ? <ExpandLess /> : <Menu />}
           </div>
-        </ButtonBase >
+        </ButtonBase>
 
         <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
         <ButtonBase
           aria-label={t('menus.Toggle small menu', 'Toggle small menu')}
-          component='div'
+          component="div"
           onClick={handleToggleLogoMenu()}
           className={clsx(classes.logoAreaShape, classes.logoArea)}
         >
           <Logo className={classes.logo} fill={theme.palette.secondary.main} />
         </ButtonBase>
       </div>
-    </React.Fragment>
+    </>
   );
-}
+};
 
 LogoMenu.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
@@ -243,9 +260,10 @@ LogoMenu.propTypes = {
   handleToggleTutorial: PropTypes.func,
   logoMenuDeployed: PropTypes.bool,
   showTutorial: PropTypes.bool,
+  tutorialAvailable: PropTypes.bool.isRequired,
 };
 
-export default withTracker(props => ({
+export default withTracker(() => ({
   handleLogout: () => Accounts.logout(),
   isAuthenticated: !!Meteor.userId(),
 }))(withRouter(LogoMenu));

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+
 import { makeStyles } from '@material-ui/styles';
-import {
-  Button,
-  Fab
-} from '@material-ui/core';
-import { Add, Clear, Remove } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import Add from '@material-ui/icons/Add';
+import Clear from '@material-ui/icons/Clear';
+import Remove from '@material-ui/icons/Remove';
 
 const useStyles = makeStyles(theme => ({
   bottomFab: {
@@ -73,9 +74,10 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(6),
       },
       overflowY: 'scroll',
-      WebkitOverflowScrolling: 'touch',
       scrollbarWidth: 'none',
-      
+      textAlign: 'left',
+      WebkitOverflowScrolling: 'touch',
+      /* 
       '& *': {
         float: 'left',
         textAlign: 'left',
@@ -88,7 +90,7 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.up('lg')]: {
           margin: ({ zoom }) => theme.spacing(2 * zoom, 4),
         },
-      },
+      }, */
   },
   screen: ({ opacity }) => ({
     background: 'black',

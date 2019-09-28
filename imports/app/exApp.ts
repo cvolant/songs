@@ -1,6 +1,6 @@
-import { Meteor } from "meteor/meteor";
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Session } from 'meteor/session';
 import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider } from '@material-ui/core/styles';

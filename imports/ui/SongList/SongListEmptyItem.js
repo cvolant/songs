@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/core/styles';
 
-import {
-    Divider,
-    Typography,
-} from '@material-ui/core';
-import { Search, Settings } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+import Search from '@material-ui/icons/Search';
+import Settings from '@material-ui/icons/Settings';
+
 import InlineIcon from '../utils/InlineIcon';
 
 const useStyles = makeStyles(theme => ({

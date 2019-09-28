@@ -2,21 +2,22 @@ import React, { createRef, useEffect, useState } from 'react';
 import { withRouter } from "react-router";
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardContent,
-  CardActions,
-  CircularProgress,
-  Divider,
-  IconButton,
-  InputAdornment,
-  InputBase,
-} from '@material-ui/core';
-import { Settings, SettingsOutlined, Search } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputBase from '@material-ui/core/InputBase';
+import Settings from '@material-ui/icons/Settings';
+import SettingsOutlined from '@material-ui/icons/SettingsOutlined';
+import Search from '@material-ui/icons/Search';
 
 const useStyles = makeStyles(theme => ({
   adornment: {

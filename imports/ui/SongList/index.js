@@ -1,17 +1,18 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
-import { makeStyles } from '@material-ui/core/styles';
 
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
-import { Songs } from '../../api/songs';
 import SearchField from './../SongList/SearchField';
 import SongListItem from './SongListItem';
 import SongListItemLoading from './SongListItemLoading';
 import SongListEmptyItem from './SongListEmptyItem';
 import SongListSorting from './SongListSorting';
+
+import { Songs } from '../../api/songs';
 
 const nbItemsPerPage = 20;
 

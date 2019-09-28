@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
-import { ArrowDropUp, Clear } from '@material-ui/icons';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
+import Clear from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles(theme => {
     const favoritesSpace = ({ displayFavorite }) => theme.spacing(displayFavorite ? 11 : 6);

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+
 import { makeStyles } from '@material-ui/styles';
-import { Typography } from "@material-ui/core";
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const modifyFontSize = (fontSize, zoom) => parseFloat(fontSize) * zoom + fontSize.substring(('' + parseFloat(fontSize)).length);
 
@@ -28,18 +30,27 @@ export const PrintSong = props => {
   const { song, zoom } = props;
   const classes = useStyles({ zoom });
   const [currentPage, setCurrentPage] = useState(1);
+
   console.log('From PrintSong. song:', song);
+
   return (
-    <React.Fragment>
-      <Typography className={classes.title} variant='h1'>{song.title}</Typography>
-      <Typography className={classes.subtitle} variant='subtitle1'>{song.subtitle}</Typography>
+    <Grid container spacing={8}>
+      <Grid item xs={12}>
+        <Typography className={classes.title} variant='h1'>{song.title}</Typography>
+        <Typography className={classes.subtitle} variant='subtitle1'>{song.subtitle}</Typography>
+      </Grid>
       <div className={classes.return} />
-      {song.pg.map((paragraph, index) => (
-        <Typography key={index} className={classes.paragraph} variant='body1'>
-          {paragraph.pg.replace(/<br\/>/g, '')}
-        </Typography>
-      ))}
-    </React.Fragment>
+      {song.pg.map((paragraph, index) => {
+        const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, index) => e == '<br/>\n' ? <br key={index} /> : e);
+        return (
+          <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Typography key={index} className={classes.paragraph} variant='body1'>
+              {pgText}
+            </Typography>
+          </Grid>
+        );
+      })}
+    </Grid>
   );
 };
 

@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    Chip,
-    FormControlLabel,
-    Switch,
-    TextField,
-} from '@material-ui/core';
+import Chip from '@material-ui/core/Chip';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles(theme => ({
     chip: {

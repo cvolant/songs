@@ -1,21 +1,21 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+
 import Typography from '@material-ui/core/Typography';
-import {
-  Add,
-  ArrowDownward,
-  ArrowUpward,
-  Cancel,
-  Check,
-  Clear,
-  Delete,
-  Edit,
-  FavoriteBorder,
-  Menu,
-  Person,
-  Remove,
-  Settings,
-} from '@material-ui/icons';
+import Add from '@material-ui/icons/Add';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Cancel from '@material-ui/icons/Cancel';
+import Check from '@material-ui/icons/Check';
+import Clear from '@material-ui/icons/Clear';
+import Delete from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Menu from '@material-ui/icons/Menu';
+import Person from '@material-ui/icons/Person';
+import Remove from '@material-ui/icons/Remove';
+import Settings from '@material-ui/icons/Settings';
+
 import InlineIcon from '../utils/InlineIcon';
 
 export const TutorialStepContent = ({ isAutenticated, stepName }) => {

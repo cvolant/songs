@@ -6,12 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import EmailPasswordForm from './EmailPasswordForm';
 import PageLayout from '../utils/PageLayout';
 
-import {
-    Avatar,
-    Container,
-    Grid,
-    Typography
-} from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 const useStyles = makeStyles(theme => ({
