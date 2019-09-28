@@ -130,6 +130,7 @@ export const LogoMenu = (props) => {
   const { t, i18n } = useTranslation();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
+
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof props.logoMenuDeployed === 'undefined'
     ? useState(true)
     : [props.logoMenuDeployed, () => console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...')];
@@ -156,6 +157,7 @@ export const LogoMenu = (props) => {
     console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen, 'event.target:', event.target);
     setTopMenuIsOpen(typeof deploy === 'undefined' ? !topMenuIsOpen : !!deploy);
   };
+
 
   const handleToggleLogoMenu = props.handleToggleLogoMenu
     ? props.handleToggleLogoMenu
@@ -195,7 +197,7 @@ export const LogoMenu = (props) => {
           )
       }
       <div className={classes.root}>
-        <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)}></div>
+        <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)} />
         <ButtonBase
           aria-label={t('Help')}
           className={clsx(classes.tabShape, classes.tab, classes.tab1)}
@@ -208,7 +210,7 @@ export const LogoMenu = (props) => {
           </div>
         </ButtonBase>
 
-        <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)}></div>
+        <div className={clsx(classes.tabShape, classes.tab2, classes.shadow)} />
         <ButtonBase
           aria-label={isAuthenticated
             ? location.pathname.indexOf(routesPaths.translatePath('/en/dashboard', i18n.language)) >= 0 ? t('Home') : t('Dashboard')
@@ -227,7 +229,7 @@ export const LogoMenu = (props) => {
           </div>
         </ButtonBase>
 
-        <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)}></div>
+        <div className={clsx(classes.tabShape, classes.tab3, classes.shadow)} />
         <ButtonBase
           aria-label={t('menus.Toggle detailed menu', 'Toggle detailed menu')}
           className={clsx(classes.tabShape, classes.tab, classes.tab3)}
@@ -239,7 +241,7 @@ export const LogoMenu = (props) => {
           </div>
         </ButtonBase>
 
-        <div className={clsx(classes.logoAreaShape, classes.shadow)}></div>
+        <div className={clsx(classes.logoAreaShape, classes.shadow)} />
         <ButtonBase
           aria-label={t('menus.Toggle small menu', 'Toggle small menu')}
           component="div"
@@ -247,7 +249,9 @@ export const LogoMenu = (props) => {
           className={clsx(classes.logoAreaShape, classes.logoArea)}
         >
           <Logo className={classes.logo} fill={theme.palette.secondary.main} />
+
         </ButtonBase>
+
       </div>
     </>
   );

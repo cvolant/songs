@@ -16,5 +16,6 @@ Meteor.startup(() => {
         <Route path="/:lng?" component={App} />
       </Router>
     </Suspense>
+  // eslint-disable-next-line no-undef
   ), document.getElementById('app'));
 });

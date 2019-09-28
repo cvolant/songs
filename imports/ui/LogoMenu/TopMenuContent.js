@@ -3,8 +3,8 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-
 import { makeStyles } from '@material-ui/styles';
+
 import ButtonBase from '@material-ui/core/ButtonBase';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavButton = React.forwardRef(({
   nestedProps,
-  ...others,
+  ...others
 }, ref) => <ButtonBase {...others} {...nestedProps} ref={ref} />);
 
 export const TopMenuContent = ({

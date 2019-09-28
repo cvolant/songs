@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
@@ -30,14 +31,13 @@ const Routes = ({ lng }) => {
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'search', ':id')}
-        lng={lng}
         component={SearchPage}
+        // eslint-disable-next-line react/prop-types, react/jsx-props-no-spreading
         render={(props) => <SearchPage songId={props.match.params.id} {...props} />}
       />
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'signin')}
-        lng={lng}
         component={SignIn}
         auth={false}
         redirection="dashboard"
@@ -45,7 +45,6 @@ const Routes = ({ lng }) => {
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'signup')}
-        lng={lng}
         component={SignUp}
         auth={false}
         redirection="dashboard"
@@ -53,18 +52,20 @@ const Routes = ({ lng }) => {
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'dashboard')}
-        lng={lng}
         component={Dashboard}
         auth
         redirection="home"
       />
       <AuthRoute
         path="/*"
-        lng={lng}
         component={NotFound}
       />
     </Switch>
   );
+};
+
+Routes.propTypes = {
+  lng: PropTypes.string.isRequired,
 };
 
 export default Routes;

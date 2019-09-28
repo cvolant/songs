@@ -1,12 +1,12 @@
 {
-  "name": "songs",
+  "name": "typescript-app",
   "private": true,
   "scripts": {
     "start": "meteor run",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "TEST_WATCH=1 meteor test --driver-package meteortesting:mocha",
+    "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pretest": "npm run lint --silent"
   },
   "eslintConfig": {
@@ -17,6 +17,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@material-ui/styles": "latest",
+    "@types/react-router-dom": "^5.1.0",
     "clsx": "^1.0.4",
     "downshift": "^3.2.10",
     "i18next": "^17.0.6",
@@ -26,25 +27,25 @@
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-helmet": "^5.2.1",
     "react-i18next": "^10.11.4",
     "react-router-dom": "^5.0.0",
     "react-select": "^3.0.4",
     "simpl-schema": "^1.5.5",
+    "typescript": "^3.6.3",
     "webfontloader": "^1.6.28"
-  },
-  "engines": {
-    "node": "11.14.0"
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
-    "@typescript-eslint/eslint-plugin": "^2.3.0",
-    "@typescript-eslint/parser": "^2.3.0",
+    "@types/meteor": "^1.4.30",
+    "@types/mocha": "^5.2.7",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
     "babel-eslint": "^10.0.3",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.11.2",
     "eslint": "^6.4.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-import-resolver-meteor": "^0.4.0",
@@ -53,8 +54,14 @@
     "eslint-plugin-meteor": "^6.0.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "expect": "^1.20.2",
-    "jest": "^24.5.0",
-    "react-test-renderer": "^16.3"
+    "eslint-import-resolver-typescript": "^1.1.1",
+    "eslint-plugin-json": "^1.4.0"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.tsx",
+      "server": "server/main.ts"
+    },
+    "testModule": "tests/main.ts"
   }
 }

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withTranslation } from 'react-i18next';
@@ -8,18 +8,10 @@ import { withTranslation } from 'react-i18next';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import Check from '@material-ui/icons/Check';
-import Edit from '@material-ui/icons/Edit';
-import Delete from '@material-ui/icons/Delete';
 
 import { Songs } from '../../api/songs';
 
@@ -27,46 +19,12 @@ import PrintSong from '../PrintSong';
 import Paragraph from './Paragraph';
 import Screen from '../Screen';
 import Title from './Title';
+import EditorButtons from './EditorButtons';
 
 const styles = (theme) => ({
-  actions: {
-    justifyContent: 'space-between',
-    position: 'relative',
-  },
-  bottomFab: {
-    margin: theme.spacing(0.5),
-  },
-  bottomFabs: {
-    '& div': {
-      display: 'flex',
-    },
-    [theme.breakpoints.down('sm')]: {
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      verticalAlign: 'bottom',
-      width: '100%',
-
-      '& > div': {
-        position: 'absolute',
-        bottom: theme.spacing(0.25),
-        right: 0,
-        flexWrap: 'wrap',
-        justifyContent: 'flex-end',
-      },
-    },
-  },
   button: {
     margin: theme.spacing(1),
     padding: theme.spacing(1, 1.5),
-  },
-  card: {
-    margin: theme.spacing(1),
-  },
-  choiceFabs: {
-    flexWrap: 'wrap-reverse',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   circularProgress: {
     width: '6rem',
@@ -96,18 +54,6 @@ const styles = (theme) => ({
   displayNone: {
     display: 'none',
   },
-  fag: {
-    position: 'absolute',
-    bottom: '5rem',
-    right: '8rem',
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  instructions: {
-    flexGrow: 1,
-    textAlign: 'center',
-  },
   lyrics: {
     marginBottom: theme.spacing(2),
   },
@@ -120,32 +66,6 @@ const styles = (theme) => ({
       margin: theme.spacing(-2),
     },
   },
-  shadowTop: {
-    position: 'absolute',
-    height: 0,
-    width: '100%',
-    top: 0,
-    left: 0,
-
-    '& > div': {
-      position: 'absolute',
-      bottom: 0,
-      height: theme.spacing(0.5),
-      background: `linear-gradient(to top, ${theme.palette.grey['500']}, transparent)`,
-      width: '100%',
-      borderRadius: theme.spacing(0, 0, 0.5, 0.5),
-    },
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'column',
-    rightIcon: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
-  },
   waitingContent: {
     height: '100%',
   },
@@ -153,12 +73,18 @@ const styles = (theme) => ({
 
 
 export class Editor extends React.Component {
+  static indexOfObject(array, objectProperty) {
+    return array
+      .map((e) => e[Object.keys(objectProperty)[0]])
+      .indexOf(Object.values(objectProperty)[0]);
+  }
+
   constructor(props) {
     super(props);
+    const { song } = props;
     this.state = {
       subscription: undefined,
       editTitle: false,
-      printSong: false,
       screenOpacity: 0,
       details: {},
       edit: false,
@@ -166,67 +92,77 @@ export class Editor extends React.Component {
       pgStates: [],
       title: '',
       subtitle: '',
-      ...this.initSong(this.props.song),
+      ...this.initSong(song),
     };
-  };
+  }
 
   componentDidMount() {
-    const subscription = Meteor.subscribe('song', this.props.song._id, function () {
-      console.log('From Editor, componentDidMount, subscription callback. Songs.findOne(this.props.song._id):', Songs.findOne(this.props.song._id));
-      if (!Songs.findOne(this.props.song._id)) this.props.goBack();
-    }.bind(this));
+    const { song, goBack } = this.props;
+    const subscription = Meteor.subscribe('song', song._id, () => {
+      console.log('From Editor, componentDidMount, subscription callback. Songs.findOne(this.props.song._id):', Songs.findOne(song._id));
+      if (!Songs.findOne(song._id)) goBack();
+    });
     this.setState({ subscription });
     console.log('From Editor, componentDidMount. subscription:', subscription);
-    /* 
-            if (this.refs.title && this.refs.body) {
-                if (this.props.song.title) {
-                    this.refs.body.focus();
-                } else {
-                    this.refs.title.focus();
-                }
-            }
-     */
   }
+
   componentDidUpdate(prevProps, prevState) {
-    const currentSongId = this.props.song ? this.props.song._id._str : undefined;
+    const { song } = this.props;
+    const currentSongId = song ? song._id._str : undefined;
     const prevNodeId = prevProps && prevProps.song ? prevProps.song._id._str : undefined;
 
     if (currentSongId && currentSongId !== prevNodeId) {
-      this.setState(this.initSong(this.props.song));
+      this.setState(this.initSong(song));
     }
 
-    if (JSON.stringify(prevProps.song) != JSON.stringify(this.props.song)) {
-      this.setState(this.initSong(this.props.song));
+    if (JSON.stringify(prevProps.song) !== JSON.stringify(song)) {
+      this.setState(this.initSong(song));
     }
   }
+
   componentWillUnmount() {
-    if (this.state.subscription.stop) this.state.subscription.stop();
+    const { subscription: { stop } } = this.state;
+    if (stop) stop();
   }
 
   createPgState(pgIndex, edit = false, selected = false) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
 
     const pgState = { pgIndex, edit, selected };
-    pgState.handlePgCancel = function () { that.handlePgCancel(this.pgIndex) }.bind(pgState);
-    pgState.handleDeletePg = function () { that.handleDeletePg(this.pgIndex) }.bind(pgState);
-    pgState.handleEditPg = function () { that.handleEditPg(this.pgIndex) }.bind(pgState);
-    pgState.handleLabelChange = function (e) { that.handlePgChange(e.target, this.pgIndex, 'label') }.bind(pgState);
-    pgState.handleMoveDown = function () { that.handleMove(this.pgIndex, 1) }.bind(pgState);
-    pgState.handleMoveUp = function () { that.handleMove(this.pgIndex, -1) }.bind(pgState);
-    pgState.handlePgChange = function (e) { that.handlePgChange(e.target, this.pgIndex, 'pg') }.bind(pgState);
-    pgState.handleSelect = function (e) { that.handleSelect(e.target, this.pgIndex) }.bind(pgState);
+    pgState.handlePgCancel = function () {
+      that.handlePgCancel(this.pgIndex);
+    }.bind(pgState);
+    pgState.handleDeletePg = function () {
+      that.handleDeletePg(this.pgIndex);
+    }.bind(pgState);
+    pgState.handleEditPg = function () {
+      that.handleEditPg(this.pgIndex);
+    }.bind(pgState);
+    pgState.handleLabelChange = function (e) {
+      that.handlePgChange(e.target, this.pgIndex, 'label');
+    }.bind(pgState);
+    pgState.handleMoveDown = function () {
+      that.handleMove(this.pgIndex, 1);
+    }.bind(pgState);
+    pgState.handleMoveUp = function () {
+      that.handleMove(this.pgIndex, -1);
+    }.bind(pgState);
+    pgState.handlePgChange = function (e) {
+      that.handlePgChange(e.target, this.pgIndex, 'pg');
+    }.bind(pgState);
+    pgState.handleSelect = function (e) {
+      that.handleSelect(e.target, this.pgIndex);
+    }.bind(pgState);
 
     return pgState;
-  }
-  indexOfObject(array, objectProperty) {
-    return array.map(e => e[Object.keys(objectProperty)[0]]).indexOf(Object.values(objectProperty)[0]);
   }
 
 
   initSong(song) {
-    if (!song || !song.pg) return;
+    if (!song || !song.pg) return null;
 
-    const t = this.props.t;
+    const { t } = this.props;
     console.log('From Editor, initSong. song:', song);
     const pg = JSON.parse(JSON.stringify(song.pg)); // To copy song.pg properties in a new object.
 
@@ -234,7 +170,7 @@ export class Editor extends React.Component {
     //   pgStates[i].pgIndex: refer to the pg in his original position
     //   pgStates[i].selected
     const pgStates = [];
-    let that = this;
+    const that = this;
     pg.forEach(() => {
       const l = pgStates.length;
       const pgState = that.createPgState(l, false, false);
@@ -303,19 +239,23 @@ export class Editor extends React.Component {
 
 
   handleAdd() {
-    const pg = this.state.pg;
-    const pgStates = this.state.pgStates;
+    const { pg } = this.state;
+    const { pgStates } = this.state;
     const pgLength = pg.length;
     pg.push({ label: '', pg: '' });
     pgStates.push(this.createPgState(pgLength, true, false));
     this.setState({ pg, pgStates });
   }
+
   handleCancelAll() {
-    const formerPgStates = this.state.pgStates;
-    if (this.props.song) {
-      this.initSong(this.props.song);
-      const pgStates = this.state.pgStates;
-      formerPgStates.forEach(formerPgState => {
+    const {
+      state: { pgStates: formerPgStates },
+      props: { song },
+    } = this;
+    if (song) {
+      this.initSong(song);
+      const { pgStates } = this.state;
+      formerPgStates.forEach((formerPgState) => {
         if (formerPgState.selected) {
           pgStates[formerPgState.pgIndex].selected = true;
         }
@@ -323,54 +263,74 @@ export class Editor extends React.Component {
       this.setState({ pgStates, edit: false });
     }
   }
+
   handleCloseScreen() {
-    this.props.viewer(null);
+    const { viewer } = this.props;
+    viewer(null);
   }
+
   handleDelete() {
-    this.props.meteorCall('songs.remove', this.props.song._id._str);
-    this.props.setSelectedSongId(undefined);
+    const { meteorCall, song, setSelectedSongId } = this.props;
+    meteorCall('songs.remove', song._id._str);
+    setSelectedSongId(undefined);
   }
+
   handleDeletePg(pgIndex) {
-    const pgStates = this.state.pgStates;
-    const pgStateIndex = this.indexOfObject(pgStates, { pgIndex });
-    console.log('From Editor, handleDeletePg. Before splice. pg:', this.state.pg, 'pgStates:', pgStates);
+    const { pg, pgStates } = this.state;
+    const pgStateIndex = Editor.indexOfObject(pgStates, { pgIndex });
+    console.log('From Editor, handleDeletePg. Before splice. pg:', pg, 'pgStates:', pgStates);
     pgStates.splice(pgStateIndex, 1);
-    console.log('From Editor, handleDeletePg. After splice. pg:', this.state.pg, 'pgStates:', pgStates);
+    console.log('From Editor, handleDeletePg. After splice. pg:', pg, 'pgStates:', pgStates);
     this.setState({ pgStates });
   }
+
   handleDetailChange(e) {
-    let details = JSON.parse(JSON.stringify(this.state.details));
-    const { keyname, type } = e.target.attributes;
-    console.log('From Editor, handleDetailChange. keyname.value:', keyname.value, ', type.value:', type.value);
-    console.log('From Editor, handleDetailChange. e.target.value:', e.target.value);
-    console.log('From Editor, handleDetailChange. e.target.checked:', e.target.checked);
-    if (type.value === 'bool') {
-      details[e.target.attributes.keyname.value].value = !e.target.checked;
-    } else if (type.value === 'number') {
-      const readValue = e.target.value;
+    const { details } = this.state;
+    const {
+      target: {
+        attributes: {
+          keyname: {
+            value: keynameValue,
+          },
+          type: {
+            value: typeValue,
+          },
+        },
+        checked,
+        value: targetValue,
+      },
+    } = e;
+    const detailsCopy = JSON.parse(JSON.stringify(details));
+    if (typeValue === 'bool') {
+      detailsCopy[keynameValue].value = !checked;
+    } else if (typeValue === 'number') {
+      const readValue = targetValue;
       let value = '';
-      for (let i = 0; i < readValue.length; i++) {
+      for (let i = 0; i < readValue.length; i += 1) {
         if (!isNaN(readValue[i])) value += readValue[i];
       }
-      details[e.target.attributes.keyname.value].value = value;
+      detailsCopy[keynameValue].value = value;
     } else {
-      details[e.target.attributes.keyname.value].value = e.target.value;
+      detailsCopy[keynameValue].value = targetValue;
     }
-    this.setState({ details });
+    this.setState({ details: detailsCopy });
   }
+
   handleEditPg(pgIndex) {
-    const pgStates = this.state.pgStates;
-    const pgStateIndex = this.indexOfObject(pgStates, { pgIndex });
+    const { pgStates } = this.state;
+    const pgStateIndex = Editor.indexOfObject(pgStates, { pgIndex });
     pgStates[pgStateIndex].edit = !pgStates[pgStateIndex].edit;
     this.setState({ pgStates });
   }
+
   handleEditTitle() {
     this.setState((formerState, formerProps) => ({ editTitle: !formerState.editTitle }));
   }
+
   handleMove(pgIndex, movement) {
-    let previousPgStates = this.state.pgStates;
+    const { pgStates: previousPgStates } = this.state;
     console.log('From Editor => handleMove. movement:', movement, 'previousPgStates:', previousPgStates);
-    const previousPgStateIndex = this.indexOfObject(previousPgStates, { pgIndex });
+    const previousPgStateIndex = Editor.indexOfObject(previousPgStates, { pgIndex });
     const movedPgState = previousPgStates.splice(previousPgStateIndex, 1);
     let pgStateIndex = previousPgStateIndex + movement;
     if (pgStateIndex < 0) {
@@ -384,83 +344,114 @@ export class Editor extends React.Component {
     const pgStates = [
       ...previousPgStates.slice(0, pgStateIndex),
       ...movedPgState,
-      ...previousPgStates.slice(pgStateIndex)
+      ...previousPgStates.slice(pgStateIndex),
     ];
     console.log('From Editor => handleMove. After. pgStates:', pgStates);
     this.setState({ pgStates });
   }
-  handleOpenScreen() {
-    this.setState({ printSong: true })
-    setTimeout(() => this.setState({ screenOpacity: 1 }), 10);
 
-    this.props.viewer(
+  handleOpenScreen() {
+    setTimeout(() => this.setState({ screenOpacity: 1 }), 10);
+    const {
+      details,
+      pg,
+      pgStates,
+      screenOpacity,
+      subtitle,
+      title,
+    } = this.state;
+    const { viewer } = this.props;
+
+    viewer(
       <Screen
         closeScreen={this.handleCloseScreen.bind(this)}
-        opacity={this.state.screenOpacity}
-        print={zoom =>
+        opacity={screenOpacity}
+        print={(zoom) => (
           <PrintSong
             zoom={zoom}
             song={{
-              title: this.state.title,
-              subtitle: this.state.subtitle,
-              pg: this.state.pgStates.filter(pgState => pgState.selected).map(pgState => this.state.pg[pgState.pgIndex]),
-              ...this.state.details,
+              title,
+              subtitle,
+              pg: pgStates
+                .filter((pgState) => pgState.selected)
+                .map((pgState) => pg[pgState.pgIndex]),
+              ...details,
             }}
           />
-        }
-      />
+        )}
+      />,
     );
   }
+
   handlePgCancel(pgIndex) {
-    const pg = this.state.pg;
-    console.log('From Editor, handlePgCancel. this.props.song.pg[pgIndex]:', this.props.song.pg[pgIndex]);
-    pg[pgIndex] = this.props.song.pg[pgIndex];
-    this.setState({ pg });
+    const { pg: statePg } = this.state;
+    const { song: { pg: propsPg } } = this.props;
+    console.log('From Editor, handlePgCancel. this.props.song.pg[pgIndex]:', propsPg[pgIndex]);
+    statePg[pgIndex] = propsPg[pgIndex];
+    this.setState({ pg: statePg });
     this.handleEditPg(pgIndex);
   }
+
   handlePgChange(target, pgIndex, part) {
-    let pg = JSON.parse(JSON.stringify(this.state.pg));
+    const { pg: statePg } = this.state;
+    const pg = JSON.parse(JSON.stringify(statePg));
     pg[pgIndex][part] = target.value;
     this.setState({ pg });
   }
+
   handleSaveAll() {
+    const {
+      details,
+      statePg,
+      pgStates,
+      subtitle,
+      title,
+    } = this.state;
+    const { meteorCall, song } = this.props;
     const pg = [];
-    for (let i = 0; i < this.state.pgStates.length; i++) {
-      pg.push(this.state.pg[this.state.pgStates[i].pgIndex]);
+    for (let i = 0; i < pgStates.length; i += 1) {
+      pg.push(statePg[pgStates[i].pgIndex]);
     }
     const updates = {
       pg,
-      annee: this.state.details.year.value,
-      auteur: this.state.details.author.value,
-      cote: this.state.details.classification.value,
-      cnpl: this.state.details.cnpl.value,
-      compositeur: this.state.details.compositor.value,
-      editeur: this.state.details.editor.value,
-      number: this.state.details.number.value,
-      nouvelleCote: this.state.details.newClassification.value,
-      sousTitre: this.state.subtitle,
-      titre: this.state.title,
+      annee: details.year.value,
+      auteur: details.author.value,
+      cote: details.classification.value,
+      cnpl: details.cnpl.value,
+      compositeur: details.compositor.value,
+      editeur: details.editor.value,
+      number: details.number.value,
+      nouvelleCote: details.newClassification.value,
+      sousTitre: subtitle,
+      titre: title,
     };
     console.log('From Editor, handleSaveAll. details:', updates);
-    this.props.meteorCall('songs.update', this.props.song._id._str, updates);
+    meteorCall('songs.update', song._id._str, updates);
     this.setState({ edit: false });
   }
+
   handleSelect(target, index) {
     if (!['path', 'button', 'svg'].includes(target.localName)) {
-      const pgStates = this.state.pgStates;
+      const { pgStates } = this.state;
       pgStates[index].selected = !pgStates[index].selected;
       this.setState({ pgStates });
     }
   }
+
   handleToggleSelectAll() {
-    const pgStates = this.state.pgStates;
-    const alreadySelected = this.state.pgStates.filter(pgState => pgState.selected).length;
-    pgStates.forEach(pgState => pgState.selected = !alreadySelected);
-    this.setState({ pgStates });
+    const { pgStates } = this.state;
+    const alreadySelected = pgStates.filter((pgState) => pgState.selected).length;
+    const newPgStates = pgStates.map((pgState) => {
+      const newPgState = pgState;
+      newPgState.selected = !alreadySelected;
+      return newPgState;
+    });
+    this.setState({ pgStates: newPgStates });
   }
+
   handleTitleCancel() {
-    const song = this.props.song;
-    const details = this.state.details;
+    const { song } = this.props;
+    const { details } = this.state;
     details.author.value = song.auteur;
     details.cnpl.value = song.cnpl;
     details.classification.value = song.cote;
@@ -472,14 +463,16 @@ export class Editor extends React.Component {
     this.setState({
       details,
       subtitle: song.sousTitre,
-      title: song.titre
+      title: song.titre,
     });
     this.handleEditTitle();
   }
+
   handleSubtitleChange(e) {
     const subtitle = e.target.value;
     this.setState({ subtitle });
   }
+
   handleTitleChange(e) {
     const title = e.target.value;
     this.setState({ title });
@@ -487,159 +480,121 @@ export class Editor extends React.Component {
 
 
   render() {
-    if (this.props.song) {
-      const { classes, goBack, logoMenuDeployed, t } = this.props;
+    const {
+      edit,
+      editTitle,
+      details,
+      subtitle,
+      title,
+      pg,
+      pgStates,
+    } = this.state;
+    const { song } = this.props;
+    if (song) {
+      const {
+        classes, goBack, logoMenuDeployed, t,
+      } = this.props;
       return (
-        <React.Fragment>
+        <>
           <Helmet>
-            <title>{`Alleluia.plus - ${this.state.title}`}</title>
+            <title>{`Alleluia.plus - ${title}`}</title>
           </Helmet>
           <Card className={classes.root}>
             <div className={classes.container}>
-              {this.state.title ?
-                <CardContent className={classes.content}>
-                  <Title
-                    edit={this.state.editTitle}
-                    editGlobal={this.state.edit}
-                    details={this.state.details}
-                    title={this.state.title}
-                    subtitle={this.state.subtitle}
-                    handleEditTitle={this.handleEditTitle.bind(this)}
-                    handleTitleChange={this.handleTitleChange.bind(this)}
-                    handleSubtitleChange={this.handleSubtitleChange.bind(this)}
-                    handleDetailChange={this.handleDetailChange.bind(this)}
-                    handleTitleCancel={this.handleTitleCancel.bind(this)}
-                    logoMenuDeployed={logoMenuDeployed}
-                  />
-                  <Grid className={classes.lyrics} container spacing={1}>
-                    {this.state.pg.length > 0 ?
-                      this.state.pgStates.map(
-                        pgState => (
-                          <Paragraph
-                            key={pgState.pgIndex}
-                            paragraph={this.state.pg[pgState.pgIndex]}
-                            editGlobal={this.state.edit}
-                            {...pgState}
-                          />
+              {title
+                ? (
+                  <CardContent className={classes.content}>
+                    <Title
+                      edit={editTitle}
+                      editGlobal={edit}
+                      details={details}
+                      title={title}
+                      subtitle={subtitle}
+                      handleEditTitle={this.handleEditTitle.bind(this)}
+                      handleTitleChange={this.handleTitleChange.bind(this)}
+                      handleSubtitleChange={this.handleSubtitleChange.bind(this)}
+                      handleDetailChange={this.handleDetailChange.bind(this)}
+                      handleTitleCancel={this.handleTitleCancel.bind(this)}
+                      logoMenuDeployed={logoMenuDeployed}
+                    />
+                    <Grid className={classes.lyrics} container spacing={1}>
+                      {pg.length > 0
+                        ? pgStates.map(
+                          (pgState) => (
+                            <Paragraph
+                              key={pgState.pgIndex}
+                              paragraph={pg[pgState.pgIndex]}
+                              editGlobal={edit}
+                              {...pgState}
+                            />
+                          ),
                         )
-                      )
-                      :
-                      <p>{t('editor.No lyrics', 'No lyrics')}</p>
-                    }
-                  </Grid>
-                  <Button
-                    variant='contained'
-                    className={`${classes.button} ${this.state.edit ? '' : classes.displayNone}`}
-                    onClick={this.handleAdd.bind(this)}
-                  >
-                    <Add />
-                  </Button>
-                </CardContent>
-                :
-                <CardContent className={classes.waitingContent}>
-                  <CircularProgress className={classes.circularProgress} />
-                </CardContent>
-              }
+                        : <p>{t('editor.No lyrics', 'No lyrics')}</p>}
+                    </Grid>
+                    <Button
+                      variant="contained"
+                      className={`${classes.button} ${edit ? '' : classes.displayNone}`}
+                      onClick={this.handleAdd.bind(this)}
+                    >
+                      <Add />
+                    </Button>
+                  </CardContent>
+                )
+                : (
+                  <CardContent className={classes.waitingContent}>
+                    <CircularProgress className={classes.circularProgress} />
+                  </CardContent>
+                )}
             </div>
-            <CardActions className={classes.actions}>
-              <div className={classes.shadowTop}><div /></div>
-              {this.state.edit ?
-                <React.Fragment>
-                  <IconButton
-                    onClick={this.handleDelete.bind(this)}
-                  >
-                    <Delete />
-                  </IconButton>
-                  <div>
-                    <Button
-                      variant='outlined'
-                      className={classes.button}
-                      onClick={this.handleCancelAll.bind(this)}
-                    >
-                      {t('editor.Cancel all', 'Cancel all')}
-                    </Button>
-                    <Button
-                      variant='outlined'
-                      className={classes.button}
-                      color='primary'
-                      onClick={this.handleSaveAll.bind(this)}
-                    >
-                      {t('editor.Save all', 'Save all')}
-                    </Button>
-                  </div>
-                </React.Fragment>
-                :
-                <React.Fragment>
-                  <Button
-                    color='primary'
-                    onClick={() => goBack()}
-                    size='large'
-                    variant='outlined'
-                  >
-                    <ArrowBackIos />
-                    {t('editor.Return', 'Return')}
-                  </Button>
-                  <Typography variant="body1" className={classes.instructions}>
-                    {!this.state.pgStates.length ? '' :
-                      t('editor.Select paragraphs', 'Select paragraphs')
-                    }
-                  </Typography>
-                  <div className={classes.bottomFabs}>
-                    <div>
-                      {Meteor.userId() &&
-                        <Fab
-                          aria-label={t("editor.Edit", "Edit")}
-                          className={classes.bottomFab}
-                          disabled={!this.state.title}
-                          onClick={() => this.setState({ edit: true })}
-                        >
-                          <Edit />
-                        </Fab>
-                      }
-                      <div className={classes.choiceFabs}>
-                        <Fab
-                          aria-label={("editor.Select or unselect all", "Select or unselect all")}
-                          disabled={!this.state.pgStates.length}
-                          className={classes.bottomFab}
-                          onClick={this.handleToggleSelectAll.bind(this)}
-                          variant="extended"
-                        >
-                          {!this.state.pgStates.filter(pgState => pgState.selected).length ? t('editor.Select all', 'Select all') : t('editor.Unselect all', 'Unselect all')}
-                        </Fab>
-                        <Fab
-                          aria-label={("editor.Validate", "Validate")}
-                          className={classes.bottomFab}
-                          color='primary'
-                          disabled={!this.state.pgStates.filter(pgState => pgState.selected).length}
-                          onClick={this.handleOpenScreen.bind(this)}
-                        >
-                          <Check />
-                        </Fab>
-                      </div>
-                    </div>
-                  </div>
-                </React.Fragment>
-              }
-            </CardActions>
+            <EditorButtons
+              edit={edit}
+              goBack={goBack}
+              handleDelete={this.handleDelete.bind(this)}
+              handleCancelAll={this.handleCancelAll.bind(this)}
+              handleOpenScreen={this.handleOpenScreen.bind(this)}
+              handleSaveAll={this.handleSaveAll.bind(this)}
+              handleToggleSelectAll={this.handleToggleSelectAll.bind(this)}
+              isAuthenticated={!!Meteor.userId()}
+              isThereParagraphs={!!pgStates.length}
+              isThereSelected={!!pgStates.filter((pgState) => pgState.selected).length}
+              setEdit={(setEditTo) => this.setState({ edit: setEditTo })}
+            />
           </Card>
-        </React.Fragment>
+        </>
       );
     }
+    return null;
   }
 }
 
 Editor.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   classes: PropTypes.object.isRequired,
   goBack: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
   i18n: PropTypes.object.isRequired,
   meteorCall: PropTypes.func.isRequired,
   logoMenuDeployed: PropTypes.bool,
-  song: PropTypes.object,
+  setSelectedSongId: PropTypes.bool,
+  song: PropTypes.shape({
+    _id: PropTypes.string,
+    auteur: PropTypes.string,
+    cnpl: PropTypes.bool,
+    cote: PropTypes.string,
+    compositeur: PropTypes.string,
+    editeur: PropTypes.string,
+    nouvelleCote: PropTypes.string,
+    numero: PropTypes.number,
+    annee: PropTypes.number,
+    sousTitre: PropTypes.string,
+    titre: PropTypes.string,
+    pg: PropTypes.array,
+  }),
   t: PropTypes.func.isRequired,
   viewer: PropTypes.func.isRequired,
-}
+};
 
-export default withTracker(props => ({
+export default withTracker((props) => ({
   meteorCall: Meteor.call,
   song: { ...props.song, ...Songs.findOne(props.song._id) },
 }))(withStyles(styles)(withTranslation()(Editor)));

@@ -1,17 +1,18 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { Session } from 'meteor/session';
 
 const AuthRoute = ({
   auth,
   component: Component,
-  lng,
   render: originalRender,
   redirection,
   ...rest
 }) => (
   <Route
+    // eslint-disable-next-line react/jsx-props-no-spreading
     {...rest}
     render={(props) => {
       console.log('From AuthRoute. props:', props);
@@ -20,6 +21,7 @@ const AuthRoute = ({
       if (originalRender) {
         goal = originalRender(props);
       } else if (Component) {
+        // eslint-disable-next-line react/jsx-props-no-spreading
         goal = <Component {...props} />;
       } else {
         throw new Meteor.Error('goal-needed', 'A component or a render function must be provided to the AuthRoute');
@@ -27,7 +29,7 @@ const AuthRoute = ({
 
       if (redirection) {
         console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`);
-        Session.set('currentPagePrivacy', !!Meteor.userId() ? 'auth' : 'unauth');
+        Session.set('currentPagePrivacy', Meteor.userId() ? 'auth' : 'unauth');
         if (auth === !!Meteor.userId()) {
           console.log(`OK, go to location: "${props.location.pathname}"`);
           return goal;
@@ -47,5 +49,12 @@ const AuthRoute = ({
     }}
   />
 );
+
+AuthRoute.propTypes = {
+  auth: PropTypes.bool,
+  component: PropTypes.object,
+  render: PropTypes.func,
+  redirection: PropTypes.string.isRequired,
+};
 
 export default AuthRoute;

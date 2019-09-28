@@ -13,7 +13,6 @@ const Tutorial = React.lazy(() => import('../Tutorial'));
 const useStyles = makeStyles((theme) => ({
   contentArea: {
     display: 'flex',
-    flexDirection: 'column',
     overflow: 'hidden',
   },
   pageContent: {
@@ -21,12 +20,12 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     overflowY: 'scroll',
     overflowScrolling: 'touch',
-    
+
     '& > *': {
       height: '100%',
       padding: theme.spacing(4, 4, 4, 4),
       position: 'relative',
-    }
+    },
   },
   root: {
     background: theme.palette.background.page,
@@ -49,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
     '& > div': {
       color: 'white',
-    }
+    },
   },
   viewerContainer: {
     position: 'absolute',
@@ -72,43 +71,45 @@ export const PageLayout = ({
   smallDevice,
   title,
   tutorialContentName,
-  viewer
+  viewer,
 }) => {
   const classes = useStyles();
   const [showTutorial, setShowTutorial] = useState(false);
 
   const tutorialAvailable = !!tutorialContentName;
 
-  const handleToggleTutorial = open => () => {
+  const handleToggleTutorial = (open) => () => {
     smallDevice && scrollDown && scrollDown();
-    setShowTutorial(typeof open == 'undefined' ? !showTutorial : !!open);
+    setShowTutorial(typeof open === 'undefined' ? !showTutorial : !!open);
     console.log('From PageLayout, handleToggleTutorial.');
   };
 
   return (
     <div className={classes.root}>
       <Helmet>
-          <title>{`Alleluia.plus - ${title}`}</title>
+        <title>{`Alleluia.plus - ${title}`}</title>
       </Helmet>
       <LogoMenu {...{ handleToggleTutorial, showTutorial, tutorialAvailable }} {...menuProps} />
       <Grid container spacing={4} className={classes.pageContent} onScroll={sidePanel && smallDevice && scrollDown ? scrollDown : undefined}>
         {console.log('From PageLayout, return. sidePanel:', sidePanel)}
-        {!!sidePanel &&
-          <Grid item sm={12} md={4} lg={3}>
-            {sidePanel}
-          </Grid>
-        }
+        {!!sidePanel
+          && (
+            <Grid item sm={12} md={4} lg={3}>
+              {sidePanel}
+            </Grid>
+          )}
         <Grid item xs={12} md={sidePanel ? 8 : undefined} lg={sidePanel ? 9 : undefined} ref={contentAreaRef} className={classes.contentArea}>
           {children}
-          {showTutorial &&
-            <Suspense fallback={<div className={classes.suspense}><CircularProgress /></div>}>
+          {showTutorial
+            && (
+<Suspense fallback={<div className={classes.suspense}><CircularProgress /></div>}>
               <Tutorial {...{ handleToggleTutorial, tutorialContentName }} />
             </Suspense>
-          }
+)}
         </Grid>
       </Grid>
       {viewer}
-    </div >
+    </div>
   );
 };
 

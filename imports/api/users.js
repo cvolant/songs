@@ -18,7 +18,7 @@ export const validateNewUser = (user) => {
 if (Meteor.isServer) {
   Accounts.validateNewUser(validateNewUser);
 
-  Meteor.publish('Meteor.users.userSongs', function () {
+  Meteor.publish('Meteor.users.userSongs', () => {
     // Select only the users that match the array of IDs passed in
     const selector = {
       _id: Meteor.userId(),
@@ -34,7 +34,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'user.favorite.toggle'(songId, value) {
+  'user.favorite.toggle': function (songId, value) {
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
@@ -56,3 +56,5 @@ Meteor.methods({
     });
   },
 });
+
+export default validateNewUser;

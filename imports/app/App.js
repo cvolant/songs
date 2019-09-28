@@ -12,7 +12,7 @@ import routesPaths from './routesPaths';
 import 'normalize.css';
 import theme from '../client/theme';
 
-import '../startup/simple-schema-configuration.js';
+import '../startup/simple-schema-configuration';
 
 const languages = ['en', 'fr'];
 

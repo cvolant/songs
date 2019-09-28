@@ -17,7 +17,7 @@ import Check from '@material-ui/icons/Check';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   actionButtonColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: '#ddd',
       transition: theme.transitions.create('background-color'),
-    }
+    },
   },
   nonDisplayed: {
     display: 'none',
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   paragraph: {
     flexGrow: 1,
     margin: theme.spacing(1),
-    whiteSpace: 'pre-line'
+    whiteSpace: 'pre-line',
   },
   rightIcon: {
     marginLeft: theme.spacing(1),
@@ -69,12 +69,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Paragraph = props => {
-
+const Paragraph = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
   const {
+    edit: propsEdit,
     editGlobal,
     selected,
     paragraph,
@@ -87,102 +87,104 @@ const Paragraph = props => {
     handleMoveUp,
     handleMoveDown,
   } = props;
-  const edit = props.edit && editGlobal;
+  const edit = propsEdit && editGlobal;
   const types = [
     t('pg.paragraph', 'paragraph'),
     t('pg.verse', 'verse'),
     t('pg.chorus', 'chorus'),
     t('pg.main chorus', 'main chorus'),
     t('pg.stanza', 'stanza'),
-    t('pg.bridge', 'bridge')
+    t('pg.bridge', 'bridge'),
   ];
 
-  const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, index) => e == '<br/>\n' ? <br key={index} /> : e);
+  // eslint-disable-next-line react/no-array-index-key
+  const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, index) => (e === '<br/>\n' ? <br key={index} /> : e));
 
   return (
     <Grid item xs={12} sm={6} md={4} xl={3}>
       <Card
         className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
-        onClick={edit ? () => {} : handleSelect}
+        onClick={edit ? () => { } : handleSelect}
         raised
       >
         <CardHeader
           action={
-            editGlobal ?
-              <div className={classes.actionButtonColumn} >
-                <IconButton
-                  color={edit ? "primary" : "default"}
-                  onClick={handleEditPg}
-                >
-                  {edit ? <Check /> : <Edit />}
-                </IconButton>
-                {edit ?
-                  <IconButton onClick={handlePgCancel}>
-                    <Cancel />
+            editGlobal
+              ? (
+                <div className={classes.actionButtonColumn}>
+                  <IconButton
+                    color={edit ? 'primary' : 'default'}
+                    onClick={handleEditPg}
+                  >
+                    {edit ? <Check /> : <Edit />}
                   </IconButton>
-                  : undefined}
-              </div>
-              :
-              undefined
+                  {edit
+                    ? (
+                      <IconButton onClick={handlePgCancel}>
+                        <Cancel />
+                      </IconButton>
+                    )
+                    : undefined}
+                </div>
+              )
+              : undefined
           }
           classes={{ action: classes.cardHeaderAction }}
-          title={edit ?
-            <TextField
-              select
-              label={t('pg.Type', 'Type')}
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-              value={t(`pg.${paragraph.label}`)}
-              onChange={handleLabelChange}
-            >
-              {types.map(option => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-            :
-            t(`pg.${paragraph.label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${paragraph.label}`, paragraph.label)
-          }
-          titleTypographyProps={edit ?
-            {
+          // eslint-disable-next-line no-nested-ternary
+          title={edit
+            ? (
+              <TextField
+                select
+                label={t('pg.Type', 'Type')}
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                value={t(`pg.${paragraph.label}`)}
+                onChange={handleLabelChange}
+              >
+                {types.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )
+            : t(`pg.${paragraph.label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${paragraph.label}`, paragraph.label)}
+          titleTypographyProps={edit
+            ? {
               variant: 'body1',
-              color: 'textSecondary'
+              color: 'textSecondary',
             }
-            :
-            {
+            : {
               variant: 'overline',
-              color: 'textSecondary'
-            }
-          }
-          subheader={edit ?
-            <TextField
-              label={t('pg.Content', 'Content')}
-              multiline
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-              value={<React.Fragment>{pgText}</React.Fragment>}
-              onChange={handlePgChange}
-              autoFocus={true}
-            />
-            :
-            <React.Fragment>{pgText}</React.Fragment>
-          }
-          subheaderTypographyProps={edit ? {} :
-            {
+              color: 'textSecondary',
+            }}
+          subheader={edit
+            ? (
+              <TextField
+                label={t('pg.Content', 'Content')}
+                multiline
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+                value={pgText}
+                onChange={handlePgChange}
+                autoFocus
+              />
+            )
+            : <>{pgText}</>}
+          subheaderTypographyProps={edit ? {}
+            : {
               color: 'textPrimary',
               className: classes.subheader,
-            }
-          }
+            }}
         />
         <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
           <div>
-            <IconButton color='primary' onClick={handleMoveUp}>
+            <IconButton color="primary" onClick={handleMoveUp}>
               <ArrowUpward />
             </IconButton>
-            <IconButton color='primary' onClick={handleMoveDown}>
+            <IconButton color="primary" onClick={handleMoveDown}>
               <ArrowDownward />
             </IconButton>
           </div>
@@ -193,10 +195,13 @@ const Paragraph = props => {
       </Card>
     </Grid>
   );
-}
+};
 
 Paragraph.propTypes = {
-  paragraph: PropTypes.object.isRequired,
+  paragraph: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    pg: PropTypes.array.isRequired,
+  }).isRequired,
   edit: PropTypes.bool.isRequired,
   editGlobal: PropTypes.bool.isRequired,
   selected: PropTypes.bool.isRequired,
@@ -208,6 +213,6 @@ Paragraph.propTypes = {
   handleDeletePg: PropTypes.func.isRequired,
   handleMoveUp: PropTypes.func.isRequired,
   handleMoveDown: PropTypes.func.isRequired,
-}
+};
 
 export default Paragraph;

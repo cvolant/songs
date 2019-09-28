@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Clear from '@material-ui/icons/Clear';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     padding: theme.spacing(4),
     position: 'relative',
-    
+
     '& > *': {
       zIndex: 0,
     },
@@ -29,7 +29,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Panel = ({ children, classes: propClasses, className, closeName, handleClosePanel }) => {
+export const Panel = ({
+ children, classes: propClasses, className, closeName, handleClosePanel 
+}) => {
   const classes = useStyles();
 
   return (
@@ -40,7 +42,7 @@ export const Panel = ({ children, classes: propClasses, className, closeName, ha
       {children}
     </Paper>
   );
-}
+};
 
 Panel.propTypes = {
   handleClosePanel: PropTypes.func.isRequired,
