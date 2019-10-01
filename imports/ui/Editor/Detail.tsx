@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,21 +22,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface StringDetailT {
+interface IStringDetail {
   name: string;
   type: 'string';
   value: string;
   min?: number;
   max?: number;
 }
-interface NumberDetailT {
+interface INumberDetail {
   name: string;
   type: 'number';
   value: number;
   min?: number;
   max?: number;
 }
-interface BoolDetailT {
+interface IBoolDetail {
   name: string;
   type: 'bool';
   value: boolean;
@@ -45,20 +44,20 @@ interface BoolDetailT {
   max?: number;
 }
 
-export interface DetailsT {
-  author: StringDetailT;
-  compositor: StringDetailT;
-  editor: StringDetailT;
-  classification: StringDetailT;
-  newClassification: StringDetailT;
-  number: NumberDetailT;
-  year: NumberDetailT;
-  cnpl: BoolDetailT;
+export interface IDetails {
+  author: IStringDetail;
+  compositor: IStringDetail;
+  editor: IStringDetail;
+  classification: IStringDetail;
+  newClassification: IStringDetail;
+  number: INumberDetail;
+  year: INumberDetail;
+  cnpl: IBoolDetail;
 }
 
-export type DetailT = StringDetailT | NumberDetailT | BoolDetailT;
+export type IDetail = IStringDetail | INumberDetail | IBoolDetail;
 
-export interface DetailChangeEventT {
+export interface IDetailChangeEvent {
   target: {
     attributes: {
       name: {
@@ -73,8 +72,8 @@ export interface DetailChangeEventT {
   };
 }
 
-interface DetailPropsT {
-  detail: DetailT;
+interface IDetailProps {
+  detail: IDetail;
   edit: boolean;
   keyname: string;
   handleDetailChange: (event: any) => void;
@@ -139,12 +138,12 @@ export const createDetails = (detailsToCreate: DeepPartial<DetailsT>): DetailsT 
   },
 });
 
-const Detail = ({
+const Detail: React.FC<IDetailProps> = ({
   detail,
   edit,
   keyname,
   handleDetailChange,
-}: DetailPropsT): JSX.Element | null => {
+}) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const detailName = t(`song.${detail.name}`, detail.name);
@@ -195,17 +194,6 @@ const Detail = ({
     return null;
   }
   return null;
-};
-
-Detail.propTypes = {
-  detail: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    value: PropTypes.any.isRequired,
-  }).isRequired,
-  edit: PropTypes.bool.isRequired,
-  keyname: PropTypes.string.isRequired,
-  handleDetailChange: PropTypes.func.isRequired,
 };
 
 export default Detail;

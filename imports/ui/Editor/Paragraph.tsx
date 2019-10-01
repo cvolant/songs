@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -69,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ParagraphPropsT {
+interface IParagraphProps {
   edit: boolean;
   editGlobal: boolean;
   selected: boolean;
@@ -87,7 +86,7 @@ interface ParagraphPropsT {
   handleSelect: (e: any) => void;
 }
 
-const Paragraph = ({
+const Paragraph: React.FC<IParagraphProps> = ({
   edit: propsEdit,
   editGlobal,
   selected,
@@ -103,7 +102,7 @@ const Paragraph = ({
   handleDeletePg,
   handleMoveUp,
   handleMoveDown,
-}: ParagraphPropsT): JSX.Element => {
+}) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -217,24 +216,6 @@ const Paragraph = ({
       </Card>
     </Grid>
   );
-};
-
-Paragraph.propTypes = {
-  paragraph: PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    pg: PropTypes.array.isRequired,
-  }).isRequired,
-  edit: PropTypes.bool.isRequired,
-  editGlobal: PropTypes.bool.isRequired,
-  selected: PropTypes.bool.isRequired,
-  handleEditPg: PropTypes.func.isRequired,
-  handlePgChange: PropTypes.func.isRequired,
-  handleLabelChange: PropTypes.func.isRequired,
-  handlePgCancel: PropTypes.func.isRequired,
-  handleSelect: PropTypes.func.isRequired,
-  handleDeletePg: PropTypes.func.isRequired,
-  handleMoveUp: PropTypes.func.isRequired,
-  handleMoveDown: PropTypes.func.isRequired,
 };
 
 export default Paragraph;

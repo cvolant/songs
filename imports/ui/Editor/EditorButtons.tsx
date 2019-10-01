@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -79,8 +78,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface IEditorButtonsProps {
+  edit: boolean;
+  goBack: () => void;
+  handleCancelAll: () => void;
+  handleDelete: () => void;
+  handleOpenScreen: () => void;
+  handleSaveAll: () => void;
+  handleToggleSelectAll: () => void;
+  isAuthenticated: boolean;
+  isThereParagraphs: boolean;
+  isThereSelected: boolean;
+  setEdit: (newEdit: boolean) => void;
+}
 
-const EditorButtons = ({
+const EditorButtons: React.FC<IEditorButtonsPropsT> = ({
   edit,
   goBack,
   handleCancelAll,
@@ -92,7 +104,7 @@ const EditorButtons = ({
   isThereParagraphs,
   isThereSelected,
   setEdit,
-}) => {
+}: EditorButtonsPropsT) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -148,14 +160,14 @@ const EditorButtons = ({
                   <Fab
                     aria-label={t('editor.Edit', 'Edit')}
                     className={classes.bottomFab}
-                    onClick={() => setEdit(true)}
+                    onClick={(): void => setEdit(true)}
                   >
                     <Edit />
                   </Fab>
                 )}
                 <div className={classes.choiceFabs}>
                   <Fab
-                    aria-label={('editor.Select or unselect all', 'Select or unselect all')}
+                    aria-label={t('editor.Select or unselect all', 'Select or unselect all')}
                     disabled={!isThereParagraphs}
                     className={classes.bottomFab}
                     onClick={handleToggleSelectAll}
@@ -166,7 +178,7 @@ const EditorButtons = ({
                       : t('editor.Select all', 'Select all')}
                   </Fab>
                   <Fab
-                    aria-label={('editor.Validate', 'Validate')}
+                    aria-label={t('editor.Validate', 'Validate')}
                     className={classes.bottomFab}
                     color="primary"
                     disabled={!isThereSelected}
@@ -181,20 +193,6 @@ const EditorButtons = ({
         )}
     </CardActions>
   );
-};
-
-EditorButtons.propTypes = {
-  edit: PropTypes.bool.isRequired,
-  goBack: PropTypes.func.isRequired,
-  handleCancelAll: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  handleOpenScreen: PropTypes.func.isRequired,
-  handleSaveAll: PropTypes.func.isRequired,
-  handleToggleSelectAll: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
-  isThereParagraphs: PropTypes.bool.isRequired,
-  isThereSelected: PropTypes.bool.isRequired,
-  setEdit: PropTypes.func.isRequired,
 };
 
 export default EditorButtons;
