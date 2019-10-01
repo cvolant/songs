@@ -68,6 +68,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export interface IParagraph {
+  label: string;
+  pg: string;
+}
 interface IParagraphProps {
   edit: boolean;
   editGlobal: boolean;

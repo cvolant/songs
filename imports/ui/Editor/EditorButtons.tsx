@@ -92,7 +92,7 @@ interface IEditorButtonsProps {
   setEdit: (newEdit: boolean) => void;
 }
 
-const EditorButtons: React.FC<IEditorButtonsPropsT> = ({
+const EditorButtons: React.FC<IEditorButtonsProps> = ({
   edit,
   goBack,
   handleCancelAll,
@@ -104,7 +104,7 @@ const EditorButtons: React.FC<IEditorButtonsPropsT> = ({
   isThereParagraphs,
   isThereSelected,
   setEdit,
-}: EditorButtonsPropsT) => {
+}) => {
   const { t } = useTranslation();
   const classes = useStyles();
 

@@ -79,7 +79,7 @@ interface IDetailProps {
   handleDetailChange: (event: any) => void;
 }
 
-export const createDetails = (detailsToCreate: DeepPartial<DetailsT>): DetailsT => ({
+export const createDetails = (detailsToCreate: DeepPartial<IDetails>): IDetails => ({
   author: {
     name: 'Author',
     type: 'string',
