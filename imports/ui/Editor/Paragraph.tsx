@@ -69,24 +69,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Paragraph = (props) => {
+interface ParagraphPropsT {
+  edit: boolean;
+  editGlobal: boolean;
+  selected: boolean;
+  paragraph: {
+    label: string;
+    pg: string;
+  };
+  handleDeletePg: () => void;
+  handleEditPg: () => void;
+  handleLabelChange: (e: any) => void;
+  handleMoveUp: () => void;
+  handleMoveDown: () => void;
+  handlePgCancel: () => void;
+  handlePgChange: (e: any) => void;
+  handleSelect: (e: any) => void;
+}
+
+const Paragraph = ({
+  edit: propsEdit,
+  editGlobal,
+  selected,
+  paragraph: {
+    label,
+    pg,
+  },
+  handleEditPg,
+  handlePgChange,
+  handleLabelChange,
+  handlePgCancel,
+  handleSelect,
+  handleDeletePg,
+  handleMoveUp,
+  handleMoveDown,
+}: ParagraphPropsT): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const {
-    edit: propsEdit,
-    editGlobal,
-    selected,
-    paragraph,
-    handleEditPg,
-    handlePgChange,
-    handleLabelChange,
-    handlePgCancel,
-    handleSelect,
-    handleDeletePg,
-    handleMoveUp,
-    handleMoveDown,
-  } = props;
   const edit = propsEdit && editGlobal;
   const types = [
     t('pg.paragraph', 'paragraph'),
@@ -98,14 +118,15 @@ const Paragraph = (props) => {
   ];
 
   // eslint-disable-next-line react/no-array-index-key
-  const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, index) => (e === '<br/>\n' ? <br key={index} /> : e));
+  const pgText = pg.replace(/(<br\/>\n)/g, '\n');
 
   return (
     <Grid item xs={12} sm={6} md={4} xl={3}>
       <Card
         className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
-        onClick={edit ? () => { } : handleSelect}
-        raised
+        onClick={edit ? (): void => { } : handleSelect}
+        elevation={selected ? 4 : 0}
+        raised={selected}
       >
         <CardHeader
           action={
@@ -139,7 +160,7 @@ const Paragraph = (props) => {
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
-                value={t(`pg.${paragraph.label}`)}
+                value={t(`pg.${label}`)}
                 onChange={handleLabelChange}
               >
                 {types.map((option) => (
@@ -149,7 +170,7 @@ const Paragraph = (props) => {
                 ))}
               </TextField>
             )
-            : t(`pg.${paragraph.label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${paragraph.label}`, paragraph.label)}
+            : t(`pg.${label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${label}`, label)}
           titleTypographyProps={edit
             ? {
               variant: 'body1',
@@ -172,7 +193,8 @@ const Paragraph = (props) => {
                 autoFocus
               />
             )
-            : <>{pgText}</>}
+            // eslint-disable-next-line react/no-array-index-key
+            : <>{pgText.split(/(\n)/g).map((element: string, index: number) => (element === '\n' ? <br key={index} /> : element))}</>}
           subheaderTypographyProps={edit ? {}
             : {
               color: 'textPrimary',
@@ -188,7 +210,7 @@ const Paragraph = (props) => {
               <ArrowDownward />
             </IconButton>
           </div>
-          <IconButton className={classes.delete} onClick={handleDeletePg}>
+          <IconButton onClick={handleDeletePg}>
             <Delete />
           </IconButton>
         </CardActions>
