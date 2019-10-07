@@ -3,7 +3,12 @@ enum Locale {
   fr = 'fr',
 }
 
-interface PathPart {
+export const locales: Record<string, Locale> = {
+  en: Locale.en,
+  fr: Locale.fr,
+};
+
+interface IPathPart {
   name: string;
   pathPartValues?: {
     [Locale.en]: string;
@@ -12,13 +17,13 @@ interface PathPart {
   optional?: boolean;
   variable?: boolean;
   any?: string;
-  children?: PathPart[];
+  children?: IPathPart[];
 }
 
 export const routesPaths: {
-  pathTree: PathPart[];
-  translatePath: (formerPath: string, newLng: Locale) => string;
-  path: (lng: Locale, ...routeParts: string[]) => string;
+  pathTree: IPathPart[];
+  translatePath: (formerPath: string, newLng: string) => string;
+  path: (lng: string, ...routeParts: string[]) => string;
 } = {
   pathTree: [
     {
@@ -70,7 +75,8 @@ export const routesPaths: {
       ],
     },
   ],
-  path(lng: Locale, ...routeParts: string[]): string {
+  path(lang: string, ...routeParts: string[]): string {
+    const lng = locales[lang];
     const pathParts: string[] = ['', Locale[lng]];
     let branches = this.pathTree[0].children;
     for (let i = 0; i < routeParts.length; i += 1) {
@@ -83,22 +89,23 @@ export const routesPaths: {
         console.error('Error in routesPaths.path. Arguments do not correspond to a route path. arguments:', [lng, ...routeParts]);
         break;
       }
-      let newPathPart;
+      let newIPathPart;
       if (branch.pathPartValues !== undefined) {
         const branchValue = branch.pathPartValues[lng]
           ? branch.pathPartValues[lng]
           : branch.pathPartValues[Locale.en];
-        newPathPart = branchValue;
+        newIPathPart = branchValue;
       } else {
-        newPathPart = branch.any || branch.variable ? part : '';
+        newIPathPart = branch.any || branch.variable ? part : '';
       }
-      if (newPathPart) pathParts.push(newPathPart);
+      if (newIPathPart) pathParts.push(newIPathPart);
       branches = branch.children;
     }
 
     return pathParts.join('/');
   },
-  translatePath(formerPath: string, newLng: Locale): string {
+  translatePath(formerPath: string, lang: string): string {
+    const newLng = locales[lang];
     if (!Locale[newLng]) {
       console.error('Impossible to translate path. Unknown language:', newLng);
       return '';
@@ -114,7 +121,7 @@ export const routesPaths: {
     const translateFurther = (
       translatedPath: string,
       parts: string[],
-      branches: PathPart[] | undefined,
+      branches: IPathPart[] | undefined,
     ): string => {
       if (parts.length === 0) return translatedPath;
       if (branches === undefined) return [translatedPath, ...parts].join('/');

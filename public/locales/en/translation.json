@@ -1,6 +1,7 @@
 {
   "colon": ":",
 
+  "Close": "Close",
   "Continue": "Continue",
   "Next": "Next",
   "Back": "Back",
@@ -35,7 +36,7 @@
   
   "dashboard": {
     "Dashboard welcome": "Welcome to your personnal dashboard!",
-    "Dashboard message": "<0>Yeah!</0> it is <2>translated</2>. It is yet to build...",
+    "Dashboard message": "<0>Yeah!</0> it is <4>translated</4>. It is yet to build...",
     "Close dashboard message": "Close dashboard message"
   },
 

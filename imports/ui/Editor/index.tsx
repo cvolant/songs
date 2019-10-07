@@ -15,11 +15,11 @@ import Add from '@material-ui/icons/Add';
 import { Songs } from '../../api/songs';
 
 import PrintSong from '../PrintSong';
-import Paragraph from './Paragraph';
+import Paragraph, { IParagraph } from './Paragraph';
 import Screen from '../Screen';
 import Title from './Title';
 import EditorButtons from './EditorButtons';
-import { createDetails, DetailsT, DetailChangeEventT } from './Detail';
+import { createDetails, IDetails, IDetailTarget } from './Detail';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -71,40 +71,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ParagraphT {
-  label: string;
-  pg: string;
-}
-interface SongT {
-  _id: {
-    _str: string;
-  };
-  auteur?: string;
-  cnpl?: boolean;
-  cote?: string;
-  compositeur?: string;
-  editeur?: string;
-  nouvelleCote?: string;
-  numero?: number;
-  annee?: number;
-  sousTitre?: string;
-  titre?: string;
-  pg?: ParagraphT[];
-}
-interface EditorPropsT {
+interface IEditorProps {
   goBack: () => void;
-  meteorCall: (method: string, ...rest: any[]) => void;
   logoMenuDeployed: boolean;
   setSelectedSongId: (_id: string | undefined) => void;
-  song: SongT;
+  song: ISong;
   viewer: (content: JSX.Element | null) => void;
 }
-interface PgStateT {
+interface IEditorWTData {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  meteorCall: (method: string, ...rest: any[]) => void;
+  song: ISong;
+}
+interface IWrappedEditorProps
+  extends IEditorProps, IEditorWTData {}
+
+interface IPgState {
+  [key: string]: number | boolean;
   pgIndex: number;
   selected: boolean;
   edit: boolean;
 }
-const createPgState = (pgStateProps: Partial<PgStateT>): PgStateT => {
+const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
   const pgState = {
     pgIndex: 0,
     edit: false,
@@ -114,34 +102,33 @@ const createPgState = (pgStateProps: Partial<PgStateT>): PgStateT => {
   return pgState;
 };
 
-const Editor = ({
+export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   goBack,
   meteorCall,
   logoMenuDeployed,
   setSelectedSongId,
   song,
   viewer,
-}: EditorPropsT): JSX.Element | null => {
+}) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
   const [edit, setEdit] = useState(false);
   const [editTitle, setEditTitle] = useState(false);
-  const [screenOpacity, setScreenOpacity] = useState(0);
   const [details, setDetails] = useState(createDetails({}));
-  const [pg, setPg] = useState([] as ParagraphT[]);
-  const [pgStates, setPgStates] = useState([] as PgStateT[]);
+  const [pg, setPg] = useState<IParagraph[]>([]);
+  const [pgStates, setPgStates] = useState<IPgState[]>([]);
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
 
   const indexOfObject = (
-    array: { [key: string]: any }[],
-    objectProperty: { [key: string]: number | string },
+    array: Record<string | number, number | string | boolean>[],
+    objectProperty: Record<string | number, number | string | boolean>,
   ): number => array
     .map((element) => element[Object.keys(objectProperty)[0]])
     .indexOf(Object.values(objectProperty)[0]);
 
-  const handleCloseScreen = () => {
+  const handleCloseScreen = (): void => {
     viewer(null);
   };
 
@@ -157,21 +144,20 @@ const Editor = ({
     setPgStates(newPgStates);
   };
 
-  const handleDetailChange = (e: DetailChangeEventT): void => {
+  const handleDetailChange = (target: IDetailTarget): void => {
+    console.log('From Editor, handleDetailChange. target:', target);
     const {
-      target: {
-        attributes: {
-          name: {
-            value: nameValue,
-          },
-          type: {
-            value: typeValue,
-          },
+      attributes: {
+        name: {
+          value: nameValue,
         },
-        checked,
-        value: targetValue,
+        type: {
+          value: typeValue,
+        },
       },
-    } = e;
+      checked,
+      value: targetValue,
+    } = target;
     const newDetails = JSON.parse(JSON.stringify(details));
     if (typeValue === 'bool') {
       newDetails[nameValue].value = !checked;
@@ -224,12 +210,9 @@ const Editor = ({
 
   const handleOpenScreen = (): void => {
     console.log('From Editor, handleOpenScreen. title:', title, 'pgStates:', pgStates);
-    setTimeout(() => setScreenOpacity(1), 10);
-
     viewer(
       <Screen
         closeScreen={handleCloseScreen}
-        opacity={screenOpacity}
         print={(zoom: number): JSX.Element => (
           <PrintSong
             zoom={zoom}
@@ -238,7 +221,7 @@ const Editor = ({
               subtitle,
               pg: pgStates
                 .filter((pgState) => pgState.selected)
-                .map((pgState) => pg[pgState.pgIndex]),
+                .map((pgState) => (pg[pgState.pgIndex])),
               ...details,
             }}
           />
@@ -292,19 +275,20 @@ const Editor = ({
     setEdit(false);
   };
 
-  const handleSelect = (target: { localName: string } | null, index: number): void => {
-    if (target
-      && target.localName
-      && !['path', 'button', 'svg'].includes(target.localName)) {
-      const newPgStates = JSON.parse(JSON.stringify(pgStates)) as PgStateT[];
-      newPgStates[index].selected = !pgStates[index].selected;
-      setPgStates(newPgStates);
+  const handleSelect = (target: EventTarget | null, index: number): void => {
+    if (target) {
+      const { localName } = target as unknown as { localName: string };
+      if (localName && !['path', 'button', 'svg'].includes(localName)) {
+        const newPgStates = JSON.parse(JSON.stringify(pgStates)) as IPgState[];
+        newPgStates[index].selected = !pgStates[index].selected;
+        setPgStates(newPgStates);
+      }
     }
   };
 
   const handleToggleSelectAll = (): void => {
     const alreadySelected = pgStates.filter((pgState) => pgState.selected).length;
-    const newPgStates = pgStates.map((pgState: PgStateT) => {
+    const newPgStates = pgStates.map((pgState: IPgState) => {
       const newPgState = pgState;
       newPgState.selected = !alreadySelected;
       return newPgState;
@@ -328,33 +312,33 @@ const Editor = ({
     handleEditTitle();
   };
 
-  const handleSubtitleChange = (e: { target: { value: string }}): void => {
-    const newSubtitle = e.target.value;
+  const handleSubtitleChange = (e: { currentTarget: { value: string }}): void => {
+    const newSubtitle = e.currentTarget.value;
     setSubtitle(newSubtitle);
   };
 
-  const handleTitleChange = (e: { target: { value: string }}): void => {
-    const newTitle = e.target.value;
+  const handleTitleChange = (e: { currentTarget: { value: string }}): void => {
+    const newTitle = e.currentTarget.value;
     setTitle(newTitle);
   };
 
-  const initSong = (songToInit: SongT): {
-    details: DetailsT;
+  const initSong = (ISongoInit: ISong): {
+    details: IDetails;
     edit: boolean;
-    pg: ParagraphT;
-    pgStates: PgStateT[];
+    pg: IParagraph;
+    pgStates: IPgState[];
     title: string;
     subtitle: string;
   } => {
-    console.log('From Editor, initSong. songToInit:', songToInit);
-    const newPg = songToInit.pg
-      ? JSON.parse(JSON.stringify(songToInit.pg))
+    console.log('From Editor, initSong. ISongoInit:', ISongoInit);
+    const newPg = ISongoInit.pg
+      ? JSON.parse(JSON.stringify(ISongoInit.pg))
       : []; // To copy song.pg properties in a new object.
 
     // Memory of moves and selections: pgStates order can change.
     //   pgStates[i].pgIndex: refer to the pg in his original position
     //   pgStates[i].selected
-    const newPgStates = [] as PgStateT[];
+    const newPgStates = [] as IPgState[];
     newPg.forEach(() => {
       const l = newPgStates.length;
       const pgState = createPgState({
@@ -364,28 +348,28 @@ const Editor = ({
     });
     const newDetails = createDetails({
       author: {
-        value: songToInit.auteur || '',
+        value: ISongoInit.auteur || '',
       },
       classification: {
-        value: songToInit.cote || '',
+        value: ISongoInit.cote || '',
       },
       compositor: {
-        value: songToInit.compositeur || '',
+        value: ISongoInit.compositeur || '',
       },
       editor: {
-        value: songToInit.editeur || '',
+        value: ISongoInit.editeur || '',
       },
       newClassification: {
-        value: songToInit.nouvelleCote || '',
+        value: ISongoInit.nouvelleCote || '',
       },
       number: {
-        value: songToInit.numero || 0,
+        value: ISongoInit.numero || 0,
       },
       year: {
-        value: songToInit.annee || 0,
+        value: ISongoInit.annee || 0,
       },
       cnpl: {
-        value: !!songToInit.cnpl || false,
+        value: !!ISongoInit.cnpl || false,
       },
     });
     const newStates = {
@@ -393,8 +377,8 @@ const Editor = ({
       edit: false,
       pg: newPg,
       pgStates: newPgStates,
-      title: songToInit.titre || '',
-      subtitle: songToInit.sousTitre || '',
+      title: ISongoInit.titre || '',
+      subtitle: ISongoInit.sousTitre || '',
     };
     setTitle(newStates.title);
     setSubtitle(newStates.subtitle);
@@ -409,7 +393,7 @@ const Editor = ({
     const pgLength = pg.length;
     const newPg = [...pg];
     const newPgStates = [...pgStates];
-    newPg.push({ label: '', pg: '' });
+    newPg.push({ label: '', pg: '', index: pgLength });
     newPgStates.push(createPgState({
       pgIndex: pgLength,
       edit: true,
@@ -422,7 +406,7 @@ const Editor = ({
     if (song) {
       const formerPgStates = JSON.parse(JSON.stringify(pgStates));
       const { pgStates: newPgStates } = initSong(song);
-      formerPgStates.forEach((formerPgState: PgStateT) => {
+      formerPgStates.forEach((formerPgState: IPgState) => {
         if (formerPgState.selected) {
           newPgStates[formerPgState.pgIndex].selected = true;
         }
@@ -436,7 +420,7 @@ const Editor = ({
     if (song._id._str) {
       const subscription = Meteor.subscribe('song', song._id, () => {
         console.log('From Editor, useEffect, subscription callback. Songs.findOne(song._id):', Songs.findOne(song._id));
-        const newSong = Songs.findOne(song._id);
+        const newSong = Songs.findOne(song._id) as ISong;
         if (!newSong) goBack();
         else initSong(newSong);
       });
@@ -482,12 +466,18 @@ const Editor = ({
                             selected={pgState.selected}
                             handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
                             handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
-                            handleLabelChange={(e): void => { handlePgChange(e.target, pgState.pgIndex, 'label'); }}
+                            handleLabelChange={(e): void => {
+                              handlePgChange(e.currentTarget, pgState.pgIndex, 'label');
+                            }}
                             handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
                             handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
                             handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
-                            handlePgChange={(e): void => { handlePgChange(e.target, pgState.pgIndex, 'pg'); }}
-                            handleSelect={(e): void => { handleSelect(e.target, pgState.pgIndex); }}
+                            handlePgChange={(e): void => {
+                              handlePgChange(e.currentTarget, pgState.pgIndex, 'pg');
+                            }}
+                            handleSelect={(e): void => {
+                              handleSelect(e.currentTarget, pgState.pgIndex);
+                            }}
                           />
                         ),
                       )
@@ -519,7 +509,7 @@ const Editor = ({
             isAuthenticated={!!Meteor.userId()}
             isThereParagraphs={!!pgStates.length}
             isThereSelected={!!pgStates.filter((pgState) => pgState.selected).length}
-            setEdit={(setEditTo) => setEdit(setEditTo)}
+            setEdit={(setEditTo): void => setEdit(setEditTo)}
           />
         </Card>
       </>
@@ -528,7 +518,9 @@ const Editor = ({
   return null;
 };
 
-export default withTracker((props: { song: SongT }) => ({
+export const Editor = withTracker<IEditorWTData, IEditorProps>((props: { song: ISong }) => ({
   meteorCall: Meteor.call,
-  song: { ...props.song, ...Songs.findOne(props.song._id) },
-}))(Editor);
+  song: { ...props.song, ...(Songs.findOne(props.song._id) as ISong) },
+}))(WrappedEditor);
+
+export default Editor;

@@ -19,5 +19,5 @@ shell-server@0.4.0            # Server-side component of the `meteor shell` comm
 
 static-html
 accounts-password@1.5.1
-session@1.2.0
+session
 react-meteor-data

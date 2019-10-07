@@ -1,6 +1,7 @@
 {
   "colon": " :",
 
+  "Close": "Fermer",
   "Continue": "Continuer",
   "Next": "Suivant",
   "Back": "Précédent",
@@ -35,7 +36,7 @@
 
   "dashboard": {
     "Dashboard welcome": "Bienvenue dans votre espace personnel !",
-    "Dashboard message": "<0>Super !</0> C'est <2>traduit</2>. Ça reste encore à construire...",
+    "Dashboard message": "<0>Super !</0> C'est <4>traduit</4>. Ça reste encore à construire...",
     "Close dashboard message": "Fermer le message de l'espace personnel"
   },
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEventHandler, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 export interface IParagraph {
   label: string;
   pg: string;
+  index: number;
 }
 interface IParagraphProps {
   edit: boolean;
@@ -82,12 +83,12 @@ interface IParagraphProps {
   };
   handleDeletePg: () => void;
   handleEditPg: () => void;
-  handleLabelChange: (e: any) => void;
+  handleLabelChange: ChangeEventHandler<HTMLInputElement>;
   handleMoveUp: () => void;
   handleMoveDown: () => void;
   handlePgCancel: () => void;
-  handlePgChange: (e: any) => void;
-  handleSelect: (e: any) => void;
+  handlePgChange: ChangeEventHandler<HTMLInputElement>;
+  handleSelect: MouseEventHandler<HTMLDivElement>;
 }
 
 const Paragraph: React.FC<IParagraphProps> = ({
@@ -97,6 +98,7 @@ const Paragraph: React.FC<IParagraphProps> = ({
   paragraph: {
     label,
     pg,
+    index,
   },
   handleEditPg,
   handlePgChange,
@@ -120,7 +122,6 @@ const Paragraph: React.FC<IParagraphProps> = ({
     t('pg.bridge', 'bridge'),
   ];
 
-  // eslint-disable-next-line react/no-array-index-key
   const pgText = pg.replace(/(<br\/>\n)/g, '\n');
 
   return (
@@ -196,8 +197,7 @@ const Paragraph: React.FC<IParagraphProps> = ({
                 autoFocus
               />
             )
-            // eslint-disable-next-line react/no-array-index-key
-            : <>{pgText.split(/(\n)/g).map((element: string, index: number) => (element === '\n' ? <br key={index} /> : element))}</>}
+            : <>{pgText.split(/(\n)/g).map((element: string) => (element === '\n' ? <br key={index} /> : element))}</>}
           subheaderTypographyProps={edit ? {}
             : {
               color: 'textPrimary',

@@ -1,9 +1,10 @@
 import React, { createRef, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+import { useTheme } from '@material-ui/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Fab from '@material-ui/core/Fab';
@@ -17,7 +18,7 @@ import SongList from '../SongList';
 
 import routesPaths from '../../app/routesPaths';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
     border: `1px solid ${theme.palette.primary.main}`,
     fill: theme.palette.primary.main,
@@ -48,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     '& > *': {
       height: '100%',
       padding: theme.spacing(4, 4, 4, 4),
-    }
+    },
   },
   root: {
     display: 'flex',
@@ -68,6 +69,7 @@ const useStyles = makeStyles(theme => ({
 
 export const SearchPage = ({ songId, history }) => {
   const { t, i18n } = useTranslation();
+  const theme = useTheme();
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
@@ -78,7 +80,7 @@ export const SearchPage = ({ songId, history }) => {
 
   const handleCloseInfos = () => setShowInfos(0);
 
-  const handleFocus = focus => () => {
+  const handleFocus = (focus) => () => {
     if (smallDevice) handleToggleLogoMenu(!focus)();
     if (showInfos && smallDevice) scrollDown();
   };
@@ -88,29 +90,29 @@ export const SearchPage = ({ songId, history }) => {
     history.push(routesPaths.translatePath('/en/search/', i18n.language));
   };
 
-  const handleSelectSong = song => {
+  const handleSelectSong = (song) => {
     setSelectedSong(song);
     history.push(routesPaths.translatePath(`/en/search/${song._id._str}`, i18n.language));
     console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id._str:', song._id._str);
   };
-  
-  const handleToggleLogoMenu = oc => () => setLogoMenuDeployed(typeof oc == 'undefined' ? !logoMenuDeployed : !!oc);
-  
+
+  const handleToggleLogoMenu = (oc) => () => setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : !!oc);
+
   const scrollDown = () => {
-    contentAreaRef.current.scrollIntoView({ behavior: "smooth" });
+    contentAreaRef.current.scrollIntoView({ behavior: 'smooth' });
     setTimeout(handleCloseInfos, 500);
   };
 
-  console.log('From SearchPage. render.')
+  console.log('From SearchPage. render.');
 
   return (
     <PageLayout
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
       showSidePanel={showInfos}
-      sidePanel={showInfos && !Meteor.userId() &&
-        <InfosSongBySong {...{ handleCloseInfos }}>
-          {smallDevice &&
-              <Fab
+      sidePanel={showInfos && !Meteor.userId()
+        && <InfosSongBySong {...{ handleCloseInfos }}>
+          {smallDevice
+              && <Fab
                 variant="extended"
                 size="small"
                 aria-label="Continue"
@@ -119,28 +121,29 @@ export const SearchPage = ({ songId, history }) => {
               >
                 <ExpandMore className={classes.continueFabIcon} />
                 <Typography>{t('Continue')}</Typography>
-              </Fab>
-          }
+              </Fab>}
         </InfosSongBySong>
       || undefined}
-      title={t("search.Search songs", "Search songs")}
+      title={t('search.Search songs', 'Search songs')}
       tutorialContentName={selectedSong ? 'Editor' : 'SearchPage'}
-      {...{ contentAreaRef, scrollDown, smallDevice, viewer }}
+      {...{
+ contentAreaRef, scrollDown, smallDevice, viewer 
+}}
     >
       <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-        <SongList {...{ handleFocus, handleSelectSong, logoMenuDeployed, smallDevice }} />
+        <SongList {...{
+ handleFocus, handleSelectSong, logoMenuDeployed, smallDevice 
+}} />
       </div>
-      {selectedSong ?
-        <Editor
+      {selectedSong
+        ? <Editor
           logoMenuDeployed={logoMenuDeployed}
           song={selectedSong}
           goBack={handleGoBackFromEditor}
-          viewer={toSendToViewer => setViewer(toSendToViewer)}
+          viewer={(toSendToViewer) => setViewer(toSendToViewer)}
         />
-        :
-        null
-      }
-    </PageLayout >
+        :        null}
+    </PageLayout>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler, ChangeEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,26 +57,24 @@ export interface IDetails {
 
 export type IDetail = IStringDetail | INumberDetail | IBoolDetail;
 
-export interface IDetailChangeEvent {
-  target: {
-    attributes: {
-      name: {
-        value: string;
-      };
-      type: {
-        value: 'string' | 'number' | 'bool';
-      };
+export interface IDetailTarget {
+  attributes: {
+    name: {
+      value: string;
     };
-    checked?: boolean;
-    value?: string;
+    type: {
+      value: 'string' | 'number' | 'bool';
+    };
   };
+  checked?: boolean;
+  value?: string;
 }
 
 interface IDetailProps {
   detail: IDetail;
   edit: boolean;
   keyname: string;
-  handleDetailChange: (event: any) => void;
+  handleDetailChange: (target: IDetailTarget) => void;
 }
 
 export const createDetails = (detailsToCreate: DeepPartial<IDetails>): IDetails => ({
@@ -148,6 +146,13 @@ const Detail: React.FC<IDetailProps> = ({
   const classes = useStyles();
   const detailName = t(`song.${detail.name}`, detail.name);
 
+  const handleDetailClick: MouseEventHandler<
+  HTMLButtonElement
+  > = (e) => handleDetailChange(e.target as unknown as IDetailTarget);
+  const handleDetailKeystroke: ChangeEventHandler<
+  HTMLInputElement | HTMLTextAreaElement
+  > = (e) => handleDetailChange(e.currentTarget as unknown as IDetailTarget);
+
   if (detail && detail.name) {
     if (edit) {
       if (detail.type === 'bool') {
@@ -157,7 +162,7 @@ const Detail: React.FC<IDetailProps> = ({
               <Switch
                 checked={detail.value}
                 className={classes.switch}
-                onClick={handleDetailChange}
+                onClick={handleDetailClick}
                 inputProps={{ name: keyname, type: detail.type }}
                 value={keyname}
               />
@@ -176,7 +181,7 @@ const Detail: React.FC<IDetailProps> = ({
           margin="normal"
           variant="outlined"
           value={detail.value}
-          onChange={handleDetailChange}
+          onChange={handleDetailKeystroke}
           InputLabelProps={{
             shrink: true,
           }}
