@@ -128,7 +128,10 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
   );
 };
 
-export const EmailPasswordForm = withTracker<IEmailPasswordFormWTData, IEmailPasswordFormProps>(() => ({
+export const EmailPasswordForm = withTracker<
+IEmailPasswordFormWTData,
+IEmailPasswordFormProps
+>(() => ({
   handleLogin: Meteor.loginWithPassword,
   handleCreateUser: Accounts.createUser,
 }))(WrappedEmailPasswordForm);

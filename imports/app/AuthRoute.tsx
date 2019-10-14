@@ -1,23 +1,34 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { Session } from 'meteor/session';
 
-const AuthRoute = ({
+interface IAuthRouteProps {
+  auth?: boolean;
+  exact?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component?: React.ComponentType<any>;
+  path: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  render?: (props: any) => React.ReactNode;
+  redirection?: string;
+}
+
+export const AuthRoute: React.FC<IAuthRouteProps> = ({
   auth,
   component: Component,
+  exact,
+  path,
   render: originalRender,
   redirection,
-  ...rest
 }) => (
   <Route
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    {...rest}
-    render={(props) => {
+    exact={exact}
+    path={path}
+    render={(props): React.ReactNode => {
       console.log('From AuthRoute. props:', props);
 
-      let goal;
+      let goal: React.ReactNode;
       if (originalRender) {
         goal = originalRender(props);
       } else if (Component) {
@@ -49,12 +60,5 @@ const AuthRoute = ({
     }}
   />
 );
-
-AuthRoute.propTypes = {
-  auth: PropTypes.bool,
-  component: PropTypes.object,
-  render: PropTypes.func,
-  redirection: PropTypes.string.isRequired,
-};
 
 export default AuthRoute;

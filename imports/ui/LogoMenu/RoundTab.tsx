@@ -3,7 +3,9 @@ import React from 'react';
 interface IRoundTabProps {
   className: string;
 }
-export const RoundTab: React.FC<IRoundTabProps> = ({ className }) => (
+export const RoundTab: React.FC<IRoundTabProps> = ({
+  className,
+}) => (
   <svg
     className={className}
     viewBox="0 0 53 26.5"

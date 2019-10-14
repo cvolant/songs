@@ -12,7 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
-import { Songs } from '../../api/songs';
+import { Songs, ISong } from '../../api/songs';
 
 import PrintSong from '../PrintSong';
 import Paragraph, { IParagraph } from './Paragraph';
@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
 interface IEditorProps {
   goBack: () => void;
   logoMenuDeployed: boolean;
-  setSelectedSongId: (_id: string | undefined) => void;
   song: ISong;
   viewer: (content: JSX.Element | null) => void;
 }
@@ -106,7 +105,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   goBack,
   meteorCall,
   logoMenuDeployed,
-  setSelectedSongId,
   song,
   viewer,
 }) => {
@@ -133,8 +131,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleDelete = (): void => {
-    meteorCall('songs.remove', song._id._str);
-    setSelectedSongId(undefined);
+    meteorCall('songs.remove', song._id.toHexString());
+    goBack();
   };
 
   const handleDeletePg = (pgIndex: number): void => {
@@ -271,7 +269,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       titre: title,
     };
     console.log('From Editor, handleSaveAll. details:', updates);
-    meteorCall('songs.update', song._id._str, updates);
+    meteorCall('songs.update', song._id.toHexString(), updates);
     setEdit(false);
   };
 
@@ -417,7 +415,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   useEffect(() => {
-    if (song._id._str) {
+    if (song._id.toHexString()) {
       const subscription = Meteor.subscribe('song', song._id, () => {
         console.log('From Editor, useEffect, subscription callback. Songs.findOne(song._id):', Songs.findOne(song._id));
         const newSong = Songs.findOne(song._id) as ISong;
@@ -428,9 +426,9 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       return subscription.stop;
     }
     return (): void => {};
-  }, [song._id._str]);
+  }, [song._id.toHexString()]);
 
-  if (song._id._str) {
+  if (song._id.toHexString()) {
     return (
       <>
         <Helmet>

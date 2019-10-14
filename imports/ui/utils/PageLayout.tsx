@@ -62,8 +62,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IPageLayoutProps {
-  children: ReactNode | ReactNode[];
-  contentAreaRef?: any;
+  children: ReactNode;
+  contentAreaRef?: React.RefObject<HTMLDivElement>;
   menuProps?: {
     logoMenuDeployed: boolean;
     handleToggleLogoMenu: (deploy?: boolean) => () => void;
@@ -73,7 +73,7 @@ interface IPageLayoutProps {
   smallDevice?: boolean;
   title?: string;
   tutorialContentName?: ITutorialContentName;
-  viewer?: JSX.Element;
+  viewer?: React.ReactNode;
 }
 
 export const PageLayout: React.FC<IPageLayoutProps> = ({

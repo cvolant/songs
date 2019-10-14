@@ -5,8 +5,9 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
+import { Mongo } from 'meteor/mongo';
 import SearchField, {
- ISearch, ISearchOptions, ISearchOptionSort, ISearchOptionSortValue 
+  ISearch, ISearchOptions, ISearchOptionSort, ISearchOptionSortValue,
 } from './SearchField';
 import SongListItem from './SongListItem';
 import SongListItemLoading from './SongListItemLoading';
@@ -14,7 +15,7 @@ import SongListEmptyItem from './SongListEmptyItem';
 import SongListSorting from './SongListSorting';
 
 import { Songs, ISong } from '../../api/songs';
-import { IUser } from '/imports/api/users';
+import { IUser } from '../../api/users';
 
 const nbItemsPerPage = 20;
 
@@ -37,7 +38,7 @@ interface ISongListProps {
 interface ISongListWTData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meteorCall: (method: string, ...rest: any[]) => void;
-  favoriteSongs: { _str: string }[];
+  favoriteSongs: Mongo.ObjectID[];
   isAuthenticated: boolean;
 }
 interface IWrappedSongListProps
@@ -149,11 +150,11 @@ export const WrappedSongList: React.FC<IWrappedSongListProps> = ({
     setSort(undefined);
     setDisplaySort(open || !displaySort);
   };
-  const handleToggleFavorite = (songId: { _str: string }, value?: boolean) => (): void => {
+  const handleToggleFavorite = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
     console.log('From SongList, handleToggleFavorite. songId:', songId);
     meteorCall('user.favorite.toggle', songId, value);
   };
-  const handleUnfold = (songId: { _str: string }) => (): void => setUnfoldedSong(songId);
+  const handleUnfold = (songId: Mongo.ObjectID) => (): void => setUnfoldedSong(songId);
 
   return (
     <>
@@ -188,8 +189,8 @@ export const WrappedSongList: React.FC<IWrappedSongListProps> = ({
             const songId = song._id;
             const favorite = favoriteSongs
               ? favoriteSongs
-                .map((favoriteSong) => favoriteSong._str)
-                .indexOf(songId._str) !== -1 : false;
+                .map((favoriteSong) => favoriteSong.toHexString())
+                .indexOf(songId.toHexString()) !== -1 : false;
             return (
               <SongListItem
                 displayFavorite={!!favoriteSongs}

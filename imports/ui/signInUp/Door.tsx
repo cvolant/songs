@@ -43,9 +43,7 @@ interface IDoorProps {
 }
 
 export const Door: React.FC<IDoorProps> = ({
-  alreadySignedUp,
-  link,
-  title,
+  alreadySignedUp, link, title,
 }) => {
   const classes = useStyles();
 

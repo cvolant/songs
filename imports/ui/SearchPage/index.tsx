@@ -1,7 +1,6 @@
 import React, { createRef, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { withRouter } from 'react-router';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@material-ui/styles';
@@ -17,6 +16,7 @@ import PageLayout from '../utils/PageLayout';
 import SongList from '../SongList';
 
 import routesPaths from '../../app/routesPaths';
+import { ISong } from '../../api/songs';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
@@ -67,40 +67,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SearchPage = ({ songId, history }) => {
+interface ISearchPageProps {
+  songId: string;
+}
+
+export const SearchPage: React.FC<ISearchPageProps> = ({
+  songId,
+}) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const history = useHistory();
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
-  const [viewer, setViewer] = useState(null);
+  const [viewer, setViewer] = useState<React.ReactNode | null>(undefined);
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const classes = useStyles();
-  const contentAreaRef = createRef();
+  const contentAreaRef = createRef<HTMLDivElement>();
 
-  const handleCloseInfos = () => setShowInfos(0);
+  const handleCloseInfos = (): void => { setShowInfos(false); };
 
-  const handleFocus = (focus) => () => {
-    if (smallDevice) handleToggleLogoMenu(!focus)();
-    if (showInfos && smallDevice) scrollDown();
-  };
-
-  const handleGoBackFromEditor = () => {
+  const handleGoBackFromEditor = (): void => {
     setSelectedSong(undefined);
     history.push(routesPaths.translatePath('/en/search/', i18n.language));
   };
 
-  const handleSelectSong = (song) => {
+  const handleSelectSong = (song: ISong): void => {
     setSelectedSong(song);
-    history.push(routesPaths.translatePath(`/en/search/${song._id._str}`, i18n.language));
-    console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id._str:', song._id._str);
+    history.push(routesPaths.translatePath(`/en/search/${song._id.toHexString()}`, i18n.language));
+    console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id.toHexString():', song._id.toHexString());
   };
 
-  const handleToggleLogoMenu = (oc) => () => setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : !!oc);
+  const handleToggleLogoMenu = (oc?: boolean) => (): void => {
+    setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : oc);
+  };
 
-  const scrollDown = () => {
-    contentAreaRef.current.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(handleCloseInfos, 500);
+  const scrollDown = (): void => {
+    const { current: contentArea } = contentAreaRef;
+    if (contentArea) {
+      contentArea.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(handleCloseInfos, 500);
+    }
+  };
+
+  const handleFocus = (focus?: boolean) => (): void => {
+    if (smallDevice) handleToggleLogoMenu(!focus)();
+    if (showInfos && smallDevice) scrollDown();
   };
 
   console.log('From SearchPage. render.');
@@ -108,48 +120,52 @@ export const SearchPage = ({ songId, history }) => {
   return (
     <PageLayout
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
-      showSidePanel={showInfos}
       sidePanel={showInfos && !Meteor.userId()
-        && <InfosSongBySong {...{ handleCloseInfos }}>
-          {smallDevice
-              && <Fab
-                variant="extended"
-                size="small"
-                aria-label="Continue"
-                className={classes.continueFab}
-                onClick={scrollDown}
-              >
-                <ExpandMore className={classes.continueFabIcon} />
-                <Typography>{t('Continue')}</Typography>
-              </Fab>}
-        </InfosSongBySong>
-      || undefined}
+        ? (
+          <InfosSongBySong handleCloseInfos={handleCloseInfos}>
+            {smallDevice
+              && (
+                <Fab
+                  variant="extended"
+                  size="small"
+                  aria-label="Continue"
+                  className={classes.continueFab}
+                  onClick={scrollDown}
+                >
+                  <ExpandMore className={classes.continueFabIcon} />
+                  <Typography>{t('Continue')}</Typography>
+                </Fab>
+              )}
+          </InfosSongBySong>
+        )
+        : undefined}
       title={t('search.Search songs', 'Search songs')}
       tutorialContentName={selectedSong ? 'Editor' : 'SearchPage'}
-      {...{
- contentAreaRef, scrollDown, smallDevice, viewer 
-}}
+      contentAreaRef={contentAreaRef}
+      scrollDown={scrollDown}
+      smallDevice={smallDevice}
+      viewer={viewer}
     >
       <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-        <SongList {...{
- handleFocus, handleSelectSong, logoMenuDeployed, smallDevice 
-}} />
+        <SongList
+          handleFocus={handleFocus}
+          handleSelectSong={handleSelectSong}
+          logoMenuDeployed={logoMenuDeployed}
+          smallDevice={smallDevice}
+        />
       </div>
       {selectedSong
-        ? <Editor
-          logoMenuDeployed={logoMenuDeployed}
-          song={selectedSong}
-          goBack={handleGoBackFromEditor}
-          viewer={(toSendToViewer) => setViewer(toSendToViewer)}
-        />
-        :        null}
+        ? (
+          <Editor
+            logoMenuDeployed={logoMenuDeployed}
+            song={selectedSong}
+            goBack={handleGoBackFromEditor}
+            viewer={setViewer}
+          />
+        )
+        : null}
     </PageLayout>
   );
 };
 
-SearchPage.propTypes = {
-  history: PropTypes.object.isRequired,
-  songId: PropTypes.string,
-};
-
-export default withRouter(SearchPage);
+export default SearchPage;

@@ -3,6 +3,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { Palette, PaletteOptions, PaletteColor } from '@material-ui/core/styles/createPalette';
 import { Spacing } from '@material-ui/core/styles/createSpacing';
 import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
+import { Typography } from '@material-ui/core/styles/createTypography';
 import { Transitions } from '@material-ui/core/styles';
 
 declare module '@material-ui/styles' {
@@ -18,7 +19,7 @@ declare module '@material-ui/styles' {
       secondary: PaletteColor;
       darken: PaletteColor;
     };
-    typography: any;
+    typography: Typography;
   }
 }
 

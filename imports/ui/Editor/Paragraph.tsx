@@ -77,10 +77,7 @@ interface IParagraphProps {
   edit: boolean;
   editGlobal: boolean;
   selected: boolean;
-  paragraph: {
-    label: string;
-    pg: string;
-  };
+  paragraph: IParagraph;
   handleDeletePg: () => void;
   handleEditPg: () => void;
   handleLabelChange: ChangeEventHandler<HTMLInputElement>;

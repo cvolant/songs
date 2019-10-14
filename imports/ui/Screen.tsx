@@ -103,8 +103,7 @@ interface IScreen {
 }
 
 export const Screen: React.FC<IScreen> = ({
-  print,
-  closeScreen,
+  print, closeScreen,
 }) => {
   const [opacity, setOpacity] = useState(0);
 

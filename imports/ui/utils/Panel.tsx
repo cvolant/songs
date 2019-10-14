@@ -29,15 +29,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface IPanel {
-  children: ReactNode | ReactNode[];
+interface IPanelProps {
+  children: ReactNode;
   classes?: Record<string, string>;
   className?: string;
   closeName?: string;
   handleClosePanel: () => void;
 }
 
-export const Panel: React.FC<IPanel> = ({
+export const Panel: React.FC<IPanelProps> = ({
   children,
   classes: propClasses,
   className,

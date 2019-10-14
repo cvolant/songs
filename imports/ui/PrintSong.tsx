@@ -10,17 +10,17 @@ const modifyFontSize = (fontSize: string, zoom: number): string => parseFloat(fo
 
 const useStyles = makeStyles((theme) => ({
   title: ({ zoom }: { zoom: number }): { fontSize: string } => ({
-    fontSize: modifyFontSize(theme.typography.h1.fontSize, zoom) as string,
+    fontSize: modifyFontSize(theme.typography.h1.fontSize.toString(), zoom),
   }),
   subtitle: ({ zoom }: { zoom: number }): {
     fontSize: string;
     clear: 'left' | 'right' | '-moz-initial' | 'inherit' | 'initial' | 'revert' | 'unset' | 'both' | 'none' | 'inline-end' | 'inline-start';
   } => ({
-    fontSize: modifyFontSize(theme.typography.subtitle1.fontSize, 2 * zoom) as string,
+    fontSize: modifyFontSize(theme.typography.subtitle1.fontSize.toString(), 2 * zoom) as string,
     clear: 'both',
   }),
   paragraph: ({ zoom }: { zoom: number }): { fontSize: string } => ({
-    fontSize: modifyFontSize(theme.typography.body1.fontSize, 2 * zoom) as string,
+    fontSize: modifyFontSize(theme.typography.body1.fontSize.toString(), 2 * zoom) as string,
   }),
   return: {
     margin: '0 !important',
@@ -37,7 +37,9 @@ interface IPrintSongProps {
   zoom: number;
 }
 
-export const PrintSong: React.FC<IPrintSongProps> = ({ song, zoom }) => {
+export const PrintSong: React.FC<IPrintSongProps> = ({
+  song, zoom,
+}) => {
   const classes = useStyles({ zoom });
 
   console.log('From PrintSong. song:', song);

@@ -137,10 +137,7 @@ export const createDetails = (detailsToCreate: DeepPartial<IDetails>): IDetails 
 });
 
 const Detail: React.FC<IDetailProps> = ({
-  detail,
-  edit,
-  keyname,
-  handleDetailChange,
+  detail, edit, keyname, handleDetailChange,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();

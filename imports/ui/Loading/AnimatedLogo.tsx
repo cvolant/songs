@@ -6,7 +6,9 @@ interface IAnimatedLogo {
   className: string;
 }
 
-export const AnimatedLogo: React.FC<IAnimatedLogo> = ({ className }) => {
+export const AnimatedLogo: React.FC<IAnimatedLogo> = ({
+  className,
+}) => {
   const duration = 2;
   const delayed = ` + ${duration / 4}s`;
   const animateProps = {

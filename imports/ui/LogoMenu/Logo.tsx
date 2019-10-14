@@ -5,7 +5,9 @@ interface ILogoProps {
   fill: string;
 }
 
-export const Logo: React.FC<ILogoProps> = ({ className, fill }) => (
+export const Logo: React.FC<ILogoProps> = ({
+  className, fill,
+}) => (
   <svg
     className={className}
     viewBox="0 0 60.854 60.854"

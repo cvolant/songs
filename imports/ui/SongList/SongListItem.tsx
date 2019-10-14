@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 interface ISongListItemProps {
   favorite?: boolean;
   handleSelect: () => void;
-  handleToggleFavorite: (value: boolean) => () => void;
+  handleToggleFavorite: (value?: boolean) => () => void;
   handleUnfold: () => void;
   displayFavorite: boolean;
   smallDevice: boolean;

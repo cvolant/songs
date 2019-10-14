@@ -13,7 +13,7 @@ import Edit from '@material-ui/icons/Edit';
 
 import { CSSProperties } from '@material-ui/styles';
 
-import Detail, { IDetails, IDetailChangeEvent } from './Detail';
+import Detail, { IDetails, IDetailTarget } from './Detail';
 
 const useStyles = makeStyles((theme) => ({
   actionButtonColumn: {
@@ -70,7 +70,7 @@ interface ITitle {
   handleEditTitle: () => void;
   handleTitleChange: ChangeEventHandler<HTMLInputElement>;
   handleSubtitleChange: ChangeEventHandler<HTMLInputElement>;
-  handleDetailChange: (e: IDetailChangeEvent) => void;
+  handleDetailChange: (target: IDetailTarget) => void;
   handleTitleCancel: () => void;
   logoMenuDeployed?: boolean;
 }

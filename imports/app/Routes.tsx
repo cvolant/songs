@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
@@ -11,7 +10,13 @@ import SignIn from '../ui/signInUp/SignIn';
 
 import routesPaths from './routesPaths';
 
-const Routes = ({ lng }) => {
+interface IRoutesProps {
+  lng: string;
+}
+
+export const Routes: React.FC<IRoutesProps> = ({
+  lng,
+}) => {
   console.log('From Routes, render. lng', lng);
 
   return (
@@ -19,21 +24,25 @@ const Routes = ({ lng }) => {
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'home')}
-        lng={lng}
         component={SearchPage}
       />
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'search')}
-        lng={lng}
         component={SearchPage}
       />
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'search', ':id')}
-        component={SearchPage}
-        // eslint-disable-next-line react/prop-types, react/jsx-props-no-spreading
-        render={(props) => <SearchPage songId={props.match.params.id} {...props} />}
+        render={
+          ({ match }: {
+            match: {
+              params: {
+                id: string;
+              };
+            };
+          }): React.ReactElement => <SearchPage songId={match.params.id} />
+        }
       />
       <AuthRoute
         exact
@@ -62,10 +71,6 @@ const Routes = ({ lng }) => {
       />
     </Switch>
   );
-};
-
-Routes.propTypes = {
-  lng: PropTypes.string.isRequired,
 };
 
 export default Routes;

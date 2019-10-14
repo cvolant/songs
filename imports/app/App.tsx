@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Session } from 'meteor/session';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -16,12 +17,26 @@ import '../startup/simple-schema-configuration';
 
 const languages = ['en', 'fr'];
 
-const App = (props) => {
-  const { i18n } = useTranslation();
-  console.log('From App. render. i18n:', i18n, 'props:', props);
+interface IAppProps {
+  match: {
+    isExact: boolean;
+    params: {
+      lng?: string;
+    };
+    path: string;
+    url: string;
+  };
+}
 
-  const { match, history, location } = props;
-  let lng;
+export const App: React.FC<IAppProps> = ({
+  match,
+}) => {
+  const history = useHistory();
+  const location = useLocation();
+  const { i18n } = useTranslation();
+  console.log('From App. render. i18n:', i18n);
+
+  let lng: string;
   if (match.params.lng === undefined || !languages.includes(match.params.lng)) {
     lng = ['en', 'en-en'].includes(i18n.language.toLocaleLowerCase()) ? 'en' : 'fr';
     console.log('From App, render. REDIRECTION. Language undefined or invalid. redirection using language:', lng);
@@ -37,24 +52,19 @@ const App = (props) => {
   const lg = useMediaQuery(theme.breakpoints.only('lg'));
 
   useEffect(() => {
-    console.log('From App, useEffect. App mounted.\ntheme:', theme, '\nprops:', props);
+    console.log('From App, useEffect. App mounted.\ntheme:', theme);
 
     Session.set('selectedSongId', undefined);
     Session.set('isNavOpen', false);
 
+    // eslint-disable-next-line no-undef
     localStorage.setItem('zoom', localStorage.getItem('zoom') || (
-      // eslint-disable-next-line no-nested-ternary
-      xs ? 0.6
-        // eslint-disable-next-line no-nested-ternary
-        : sm ? 0.7
-          // eslint-disable-next-line no-nested-ternary
-          : md ? 0.8
-            : lg ? 1
-              : 1.2
-    ));
+      (xs && 0.6) || (sm && 0.7) || (md && 0.8) || (lg && 1) || 1.2
+    ).toString());
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line no-undef
     Tracker.autorun(() => {
       const isAuthenticated = !!Meteor.userId();
       const currentPagePrivacy = Session.get('currentPagePrivacy');

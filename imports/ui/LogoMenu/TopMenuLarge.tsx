@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ITopMenuLargeProps {
-  children: ReactNode | ReactNode[];
+  children: ReactNode;
   PaperProps?: Partial<IPaperProps>;
   topMenuIsOpen: boolean;
 }
