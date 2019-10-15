@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     padding: 0,
-    margin: theme.spacing(0.5, 1, 0.5, 0),
+    margin: theme.spacing(0.5, 2, 0.5, 0),
     lineHeight: 1.5,
 
     '&:focus': {

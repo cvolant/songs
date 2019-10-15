@@ -39,10 +39,11 @@ const useStyles = makeStyles((theme) => ({
 interface IInfosSongBySongProps {
   handleCloseInfos: () => void;
   children: React.ReactNode;
+  smallDevice: boolean;
 }
 
 export const InfosSongBySong: React.FC<IInfosSongBySongProps> = ({
-  handleCloseInfos, children,
+  handleCloseInfos, children, smallDevice,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -50,7 +51,7 @@ export const InfosSongBySong: React.FC<IInfosSongBySongProps> = ({
   return (
     <Panel className={classes.root} handleClosePanel={handleCloseInfos} closeName={t('infos.Close infos', 'Close infos')}>
       <div className={classes.text}>
-        <div className={classes.logoSpace} />
+        {smallDevice && <div className={classes.logoSpace} />}
         <Typography variant="h2" component="h2" gutterBottom>
           {t('infos.Search title', 'Search')}
         </Typography>

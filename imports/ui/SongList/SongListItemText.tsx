@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   folded: {
-    color: theme.palette.font.black.light,
+    color: theme.palette.font.color.black,
+    opacity: theme.palette.font.opacity.light,
     marginRight: theme.spacing(2),
     whiteSpace: 'nowrap',
     '& > *': {

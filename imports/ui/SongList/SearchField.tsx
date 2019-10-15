@@ -24,7 +24,8 @@ import Search from '@material-ui/icons/Search';
 const useStyles = makeStyles((theme) => ({
   adornment: {
     position: 'absolute',
-    color: theme.palette.font.black.subtle,
+    color: theme.palette.font.color.black,
+    opacity: theme.palette.font.opacity.subtle,
   },
   advancedSearchContainer: {
     padding: 0,

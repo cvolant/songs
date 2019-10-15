@@ -27,12 +27,6 @@ declare module '@material-ui/core/styles/createPalette' {
   interface TypeBackground {
     page: string;
   }
-  interface FontColor {
-    subtle: string;
-    lighter: string;
-    light: string;
-    main: string;
-  }
   interface SimplePaletteColorOptions {
     subtle?: string;
     lighter?: string;
@@ -49,19 +43,35 @@ declare module '@material-ui/core/styles/createPalette' {
     background: TypeBackground;
     darken: PaletteColor;
     font: {
-      black: FontColor;
-      primary: FontColor;
-      secondary: FontColor;
-      white: FontColor;
+      color: {
+        black: string;
+        primary: string;
+        secondary: string;
+        white: string;
+      };
+      opacity: {
+        subtle: number;
+        lighter: number;
+        light: number;
+        full: number;
+      };
     };
   }
   interface PaletteOptions {
     darken?: PaletteColorOptions;
     font?: {
-      black?: FontColor;
-      primary?: FontColor;
-      secondary?: FontColor;
-      white?: FontColor;
+      color?: {
+        black?: string;
+        primary?: string;
+        secondary?: string;
+        white?: string;
+      };
+      opacity?: {
+        subtle?: number;
+        lighter?: number;
+        light?: number;
+        full?: number;
+      };
     };
   }
 }
@@ -109,11 +119,15 @@ const theme = createMuiTheme({
       default: '#fafafa',
     },
     font: {
-      black: {
-        subtle: '#bdbdbd',
-        lighter: '#757575',
-        light: '#656565',
-        main: 'black',
+      opacity: {
+        subtle: 0.4,
+        lighter: 0.6,
+        light: 0.8,
+        full: 1,
+      },
+      color: {
+        black: 'black',
+        white: 'white',
       },
     },
   },

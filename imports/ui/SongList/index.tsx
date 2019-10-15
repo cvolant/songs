@@ -175,6 +175,7 @@ export const WrappedSongList: React.FC<IWrappedSongListProps> = ({
         subheader={displaySort && (songs.length > 0 || loading)
           ? (
             <SongListSorting
+              displayFavorite={isAuthenticated}
               handleToggleDisplaySort={handleToggleDisplaySort}
               handleSort={handleSort}
               sort={sort}
@@ -193,7 +194,7 @@ export const WrappedSongList: React.FC<IWrappedSongListProps> = ({
                 .indexOf(songId.toHexString()) !== -1 : false;
             return (
               <SongListItem
-                displayFavorite={!!favoriteSongs}
+                displayFavorite={isAuthenticated}
                 favorite={favorite}
                 handleSelect={handleSelect(song)}
                 handleToggleFavorite={(value): (() => void) => handleToggleFavorite(songId, value)}

@@ -17,13 +17,14 @@ import { ISearchOptionSort } from './SearchField';
 const useStyles = makeStyles((theme) => {
   const favoritesSpace = (
     { displayFavorite }: { displayFavorite?: boolean },
-  ): number => theme.spacing(displayFavorite ? 11 : 6);
+  ): number => theme.spacing(displayFavorite ? 10 : 4);
   return ({
     button: {
       textTransform: 'none',
     },
     buttonDefaultColor: {
-      color: theme.palette.font.black.light,
+      color: theme.palette.font.color.black,
+      opacity: theme.palette.font.opacity.light,
     },
     buttons: {
       display: 'flex',

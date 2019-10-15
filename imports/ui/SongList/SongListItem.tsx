@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 0,
     paddingRight: (
       { displayFavorite }: { displayFavorite: boolean | undefined },
-    ): number => (displayFavorite ? theme.spacing(11) : 0),
+    ): number => theme.spacing(displayFavorite ? 11 : 5),
   },
   secondaryAction: {
     right: 0,

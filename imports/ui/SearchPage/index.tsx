@@ -122,7 +122,10 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
       sidePanel={showInfos && !Meteor.userId()
         ? (
-          <InfosSongBySong handleCloseInfos={handleCloseInfos}>
+          <InfosSongBySong
+            handleCloseInfos={handleCloseInfos}
+            smallDevice={smallDevice}
+          >
             {smallDevice
               && (
                 <Fab

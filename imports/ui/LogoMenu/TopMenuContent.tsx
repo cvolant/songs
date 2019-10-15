@@ -37,10 +37,12 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   },
   listItem: {
-    transition: theme.transitions.create('background-color'),
     borderBottom: `1px solid ${theme.palette.darken.light}`,
+    color: 'white',
     marginBottom: '-1px',
     padding: theme.spacing(2),
+    transition: theme.transitions.create('background-color'),
+    verticalAlign: 'baseline',
 
     [theme.breakpoints.up('md')]: {
       display: 'inline-flex',
@@ -66,7 +68,7 @@ interface ITopMenuContentProps {
   isAuthenticated: boolean;
   smallDevice: boolean;
 }
-interface INavButtonProps {
+/* interface INavButtonProps {
   className: string;
   key: string;
   nestedProps: {
@@ -99,7 +101,7 @@ INavButtonProps
     to={to}
   />
 ));
-
+ */
 export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   handleLogout,
   handleToggleTopMenu,
@@ -166,13 +168,10 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
           && (
             <ListItem
               className={classes.listItem}
-              component={NavButton}
-              nestedProps={{
-                component: navLink.path ? Link : undefined,
-                disabled: navLink.disabled,
-                onClick: navLink.onClick,
-                to: navLink.path,
-              }}
+              component={navLink.path ? Link : ButtonBase}
+              disabled={navLink.disabled}
+              onClick={navLink.onClick}
+              to={navLink.path}
               key={navLink.name}
             >
               <ListItemIcon className={classes.listItemIcon}><navLink.Icon /></ListItemIcon>
