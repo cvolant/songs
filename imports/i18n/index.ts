@@ -24,6 +24,10 @@ i18n
     load: 'languageOnly',
     lowerCaseLng: true,
     debug: true,
+    backend: {
+      // for all available options read the backend's repository readme file
+      loadPath: '/i18n/locales/{{lng}}/{{ns}}.json',
+    },
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

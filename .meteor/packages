@@ -21,3 +21,8 @@ static-html
 accounts-password@1.5.1
 session
 react-meteor-data
+mdg:validated-method
+mdg:validation-error
+aldeed:collection2@3.0.0
+dburles:collection-helpers
+reywood:publish-composite

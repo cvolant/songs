@@ -9,7 +9,7 @@ import TextFields from '@material-ui/icons/TextFields';
 import Translate from '@material-ui/icons/Translate';
 
 import InlineIcon from '../utils/InlineIcon';
-import { ISong } from '../../api/songs';
+import { ISong } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,41 +55,41 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
   const classes = useStyles();
 
   const {
-    titre,
-    sousTitre,
-    annee,
-    auteur,
-    compositeur,
+    title,
+    subtitle,
+    year,
+    author,
+    compositor,
     pg,
-    traducteur,
+    traductor,
   } = song;
   const details = [];
   const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
 
-  if (compositeur) {
+  if (compositor) {
     details.push({
       key: `${t('song.Music', 'Music')}${t('colon', ':')} `,
       before: null,
       icon: MusicNote,
-      name: compositeur,
+      name: compositor,
       after: null,
     });
   }
-  if (auteur) {
+  if (author) {
     details.push({
       key: `${t('song.Text', 'Text')}${t('colon', ':')} `,
       before: details.length && ' · ',
       icon: TextFields,
-      name: auteur,
+      name: author,
       after: null,
     });
   }
-  if (traducteur) {
+  if (traductor) {
     details.push({
       key: `${t('song.Translation', 'Translation')}${t('colon', ':')} `,
       before: details.length && ' · ',
       icon: Translate,
-      name: traducteur,
+      name: traductor,
       after: null,
     });
   }
@@ -107,17 +107,17 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
       primary={(
         <div className={classes.container}>
           <Typography className={classes.titles} variant="h6">
-            {titre || <em>{t('song.Untitled song', 'Untitled song')}</em>}
-            {sousTitre && !smallDevice && (
+            {title || <em>{t('song.Untitled song', 'Untitled song')}</em>}
+            {subtitle && !smallDevice && (
               <em>
                 {' '}
                 &mdash;
                 {' '}
-                {sousTitre}
+                {subtitle}
               </em>
             )}
           </Typography>
-          {annee && <Typography className={classes.year} variant="h6">{annee}</Typography>}
+          {year && <Typography className={classes.year} variant="h6">{year}</Typography>}
         </div>
       )}
       secondary={(

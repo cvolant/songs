@@ -9,11 +9,12 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Routes from './Routes';
 import routesPaths from './routesPaths';
+import { UserProvider } from '../state-contexts/app-user-context';
+import { insert } from '../api/folders/methods';
 
 import 'normalize.css';
-import theme from '../client/theme';
-
 import '../startup/simple-schema-configuration';
+import theme from '../client/theme';
 
 const languages = ['en', 'fr'];
 
@@ -34,7 +35,6 @@ export const App: React.FC<IAppProps> = ({
   const history = useHistory();
   const location = useLocation();
   const { i18n } = useTranslation();
-  console.log('From App. render. i18n:', i18n);
 
   let lng: string;
   if (match.params.lng === undefined || !languages.includes(match.params.lng)) {
@@ -61,9 +61,7 @@ export const App: React.FC<IAppProps> = ({
     localStorage.setItem('zoom', localStorage.getItem('zoom') || (
       (xs && 0.6) || (sm && 0.7) || (md && 0.8) || (lg && 1) || 1.2
     ).toString());
-  }, []);
 
-  useEffect(() => {
     // eslint-disable-next-line no-undef
     Tracker.autorun(() => {
       const isAuthenticated = !!Meteor.userId();
@@ -97,7 +95,9 @@ export const App: React.FC<IAppProps> = ({
       </Helmet>
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
-        <Routes lng={lng} />
+        <UserProvider>
+          <Routes lng={lng} />
+        </UserProvider>
       </MuiThemeProvider>
     </div>
   );

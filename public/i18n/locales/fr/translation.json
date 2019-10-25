@@ -3,11 +3,16 @@
 
   "Close": "Fermer",
   "Continue": "Continuer",
+  "Cancel": "Annuler",
+  "Add": "Ajouter",
+  "Confirm": "Confirmer",
+  "Submit": "Valider",
   "Next": "Suivant",
   "Back": "Précédent",
   "Not found": "Introuvable",
   "Sorry": "... Désolé ! :/",
   "Head home": "Retour à l'accueil",
+  "Remove": "Enlever",
 
   "menu": "menu",
   "Help": "Aide",
@@ -35,6 +40,9 @@
   },
 
   "dashboard": {
+    "Dashboard": "Espace personnel",
+    "New song": "Nouveau chant",
+    "Enter title": "Entrer le titre du chant",
     "Dashboard welcome": "Bienvenue dans votre espace personnel !",
     "Dashboard message": "<0>Super !</0> C'est <4>traduit</4>. Ça reste encore à construire...",
     "Close dashboard message": "Fermer le message de l'espace personnel"
@@ -48,9 +56,10 @@
     "Select all": "Tout sélectionner",
     "Unselect all": "Tout désélectionner",
     "Edit": "Edit",
-    "Validate": "Validate",
+    "View": "Visualiser",
     "Return": "Retour",
-    "Select paragraphs": "Selectionner les paragraphes désirés..."
+    "Select paragraphs": "Selectionner les paragraphes désirés...",
+    "Add song to": "Ajouter le chant à"
   },
 
   "pg": {
@@ -97,6 +106,7 @@
   },
 
   "song": {
+    "song": "chant",
     "title": "titre",
     "subtitle": "sous-titre",
     "year": "année",
@@ -111,6 +121,7 @@
     "after": "après",
     "favorites": "favoris",
     
+    "Title": "Titre",
     "Author": "Auteur",
     "Classification": "Cote",
     "Compositor": "Compositeur",
@@ -126,6 +137,12 @@
     "Edition": "Édition",
 
     "Untitled song": "Chant sans titre"
+  },
+
+  "folder": {
+    "Add folder": "Ajouter un dossier",
+    "Add song to": "Ajouter le chant à",
+    "Folder name": "Nom du dossier"
   },
 
   "infos": {

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ISongListEmptyItemProps {
-  search: {
+  search?: {
     [key: string]: string;
   };
 }

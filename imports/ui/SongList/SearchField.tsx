@@ -21,6 +21,8 @@ import Settings from '@material-ui/icons/Settings';
 import SettingsOutlined from '@material-ui/icons/SettingsOutlined';
 import Search from '@material-ui/icons/Search';
 
+import { ISearch, ISpecificQuery, IFieldsKey } from '../../types';
+
 const useStyles = makeStyles((theme) => ({
   adornment: {
     position: 'absolute',
@@ -87,33 +89,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type IFieldName =
-| 'titles'
-| 'authors'
-| 'editor'
-| 'classifications'
-| 'lyrics'
-| 'before'
-| 'after'
-| 'favorites';
-type IFields = Record<IFieldName, {
+type IAdvancedFields = Record<IFieldsKey, {
   name: string;
   placeholder: string;
 }>
-type ISpecificQuery = Record<string, string>;
-export interface ISearch {
-  globalQuery?: string;
-  specificQueries?: ISpecificQuery[];
-}
-export type ISearchOptionSortValue = 1 | -1 | undefined;
-export interface ISearchOptionSort {
-  [sortCriterion: string]: ISearchOptionSortValue;
-}
-export interface ISearchOptions {
-  limit?: number;
-  sort?: ISearchOptionSort;
-}
-
 interface ISearchFieldProps {
   displaySort?: boolean;
   handleFocus: (focus?: boolean) => () => void;
@@ -135,7 +114,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const fields: IFields = {
+  const advancedFields: IAdvancedFields = {
     titles: {
       name: t('song.titles', 'titles'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
@@ -264,7 +243,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
     if (inputRef.current) {
       const {
         currentTarget: {
-          value: fieldName,
+          value: fieldKey,
         },
       } = e;
       const {
@@ -275,7 +254,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         },
       } = inputRef;
 
-      const field = fields[fieldName as IFieldName];
+      const field = advancedFields[fieldKey as IFieldsKey];
 
       if (selectionStart
         && selectionEnd
@@ -303,7 +282,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
           stringParts.push(`$${field.name}[${inputValue.substring(newSelectionStart, newSelectionEnd).trim()}]`);
         }
         stringParts.push(inputValue.substring(newSelectionEnd).trim());
-        newSelectionStart = stringParts[0].length + fieldName.length + 3;
+        newSelectionStart = stringParts[0].length + fieldKey.length + 3;
         newSelectionEnd = (stringParts[0] + stringParts[1]).length;
         setSelectionRange({
           selectionStart: newSelectionStart,
@@ -313,7 +292,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         setSearchEntry(newSearchString);
         inputFocus(true)();
         handleSearch(newSearchString);
-        console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'fieldName:', fieldName, 'inputValue:', inputValue, 'stringParts:', stringParts);
+        console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'fieldKey:', fieldKey, 'inputValue:', inputValue, 'stringParts:', stringParts);
       } else {
         console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field object.');
       }
@@ -383,11 +362,11 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
               color="primary"
               variant="contained"
             >
-              {Object.entries(fields).map(([fieldKey, fieldValues]) => {
+              {Object.entries(advancedFields).map(([fieldKey, fieldValues]) => {
                 if (fieldKey === 'favorites' && !isAuthenticated) return undefined;
                 return (
                   <Button value={fieldKey} key={fieldKey} onClick={handleAdvancedButtonClick}>
-                    {fieldValues.name.replace(/\b\w/g, (l) => l.toUpperCase())}
+                    {fieldValues.name.replace(/(^|\s)\w/g, (l) => l.toUpperCase())}
                   </Button>
                 );
               })}

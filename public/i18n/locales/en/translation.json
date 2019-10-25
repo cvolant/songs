@@ -3,11 +3,16 @@
 
   "Close": "Close",
   "Continue": "Continue",
+  "Cancel": "Cancel",
+  "Add": "Add",
+  "Confirm": "Confirm",
+  "Submit": "Submit",
   "Next": "Next",
   "Back": "Back",
   "Not found": "Not found",
   "Sorry": "... Hmmm, sorry! :/",
   "Head home": "Head home",
+  "Remove": "Remove",
 
   "menu": "menu",
   "Help": "Help",
@@ -35,6 +40,9 @@
   },
   
   "dashboard": {
+    "Dashboard": "Dashboard",
+    "New song": "New song",
+    "Enter title": "Enter the title of the song",
     "Dashboard welcome": "Welcome to your personnal dashboard!",
     "Dashboard message": "<0>Yeah!</0> it is <4>translated</4>. It is yet to build...",
     "Close dashboard message": "Close dashboard message"
@@ -48,9 +56,10 @@
     "Select all": "Select all",
     "Unselect all": "Unselect all",
     "Edit": "Edit",
-    "Validate": "Validate",
+    "View": "View",
     "Return": "Return",
-    "Select paragraphs": "Select the paragraphs you want..."
+    "Select paragraphs": "Select the paragraphs you want...",
+    "Add song to": "Add song to"
   },
 
   "pg": {
@@ -97,6 +106,7 @@
   },
 
   "song": {
+    "song": "song",
     "title": "title",
     "subtitle": "subtitle",
     "year": "year",
@@ -111,6 +121,7 @@
     "after": "after",
     "favorites": "favorites",
 
+    "Title": "Title",
     "Author": "Author",
     "Classification": "Classification",
     "Compositor": "Compositor",
@@ -126,6 +137,12 @@
     "Edition": "Edition",
 
     "Untitled song": "Untitled song"
+  },
+
+  "folder": {
+    "Add folder": "Add folder",
+    "Add song to": "Add song to",
+    "Folder name": "Folder name"
   },
 
   "infos": {

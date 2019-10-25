@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
-import { ISearchOptionSort } from './SearchField';
+import { ISortSpecifier } from '../../types';
 
 const useStyles = makeStyles((theme) => {
   const favoritesSpace = (
@@ -81,7 +81,7 @@ interface ISongListSortingProps {
   displayFavorite?: boolean;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSort: (sortName: ISortName) => () => void;
-  sort?: ISearchOptionSort;
+  sort?: ISortSpecifier;
   smallDevice: boolean;
 }
 

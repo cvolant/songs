@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,9 +8,14 @@ import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import Check from '@material-ui/icons/Check';
+import Add from '@material-ui/icons/Add';
+import Eye from '@material-ui/icons/RemoveRedEye';
 import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
+import AddSongTo from './AddSongTo';
+
+import { IFolder, IUnfetchedSong, IUser } from '../../types';
+import { useUser } from '../../state-contexts/app-user-context';
 
 const useStyles = makeStyles((theme) => ({
   actions: {
@@ -80,33 +85,50 @@ const useStyles = makeStyles((theme) => ({
 
 interface IEditorButtonsProps {
   edit: boolean;
+  folders: IFolder[];
   goBack: () => void;
   handleCancelAll: () => void;
   handleDelete: () => void;
+  handleEditSong: () => void;
   handleOpenScreen: () => void;
   handleSaveAll: () => void;
   handleToggleSelectAll: () => void;
-  isAuthenticated: boolean;
   isThereParagraphs: boolean;
   isThereSelected: boolean;
-  setEdit: (newEdit: boolean) => void;
+  isThereTitle: boolean;
+  song: IUnfetchedSong;
+  user?: IUser;
 }
 
 const EditorButtons: React.FC<IEditorButtonsProps> = ({
   edit,
+  folders,
   goBack,
   handleCancelAll,
   handleDelete,
+  handleEditSong,
   handleOpenScreen,
   handleSaveAll,
   handleToggleSelectAll,
-  isAuthenticated,
   isThereParagraphs,
   isThereSelected,
-  setEdit,
+  isThereTitle,
+  song,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  console.log('From EditorButtons. useUser():', useUser());
+  const [user] = useUser();
+  const [open, setOpen] = useState(false);
+
+
+  const handleClickOpen = (): void => {
+    setOpen(true);
+  };
+
+  const handleClose = (): void => {
+    setOpen(false);
+  };
 
   return (
     <CardActions className={classes.actions}>
@@ -128,10 +150,11 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
                 {t('editor.Cancel all', 'Cancel all')}
               </Button>
               <Button
-                variant="outlined"
+                disabled={!isThereTitle}
                 className={classes.button}
                 color="primary"
                 onClick={handleSaveAll}
+                variant="outlined"
               >
                 {t('editor.Save all', 'Save all')}
               </Button>
@@ -156,13 +179,22 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
             </Typography>
             <div className={classes.bottomFabs}>
               <div>
-                {isAuthenticated && (
+                {user && user._id && user._id === song.userId && (
                   <Fab
                     aria-label={t('editor.Edit', 'Edit')}
                     className={classes.bottomFab}
-                    onClick={(): void => setEdit(true)}
+                    onClick={handleEditSong}
                   >
                     <Edit />
+                  </Fab>
+                )}
+                {user && user._id && (
+                  <Fab
+                    aria-label={t('Add')}
+                    className={classes.bottomFab}
+                    onClick={handleClickOpen}
+                  >
+                    <Add />
                   </Fab>
                 )}
                 <div className={classes.choiceFabs}>
@@ -178,17 +210,24 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
                       : t('editor.Select all', 'Select all')}
                   </Fab>
                   <Fab
-                    aria-label={t('editor.Validate', 'Validate')}
+                    aria-label={t('editor.View', 'View')}
                     className={classes.bottomFab}
                     color="primary"
                     disabled={!isThereSelected}
                     onClick={handleOpenScreen}
                   >
-                    <Check />
+                    <Eye />
                   </Fab>
                 </div>
               </div>
             </div>
+            <AddSongTo
+              folders={folders}
+              open={open}
+              onClose={handleClose}
+              song={song}
+              user={user}
+            />
           </>
         )}
     </CardActions>

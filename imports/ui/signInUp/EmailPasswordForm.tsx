@@ -62,9 +62,9 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
     if (alreadySignedUp) {
-      handleLogin({ email }, password, (err) => {
+      handleLogin({ email }, password, (err?: Meteor.Error | Error) => {
         if (err) {
-          setError(err.reason || err.stack || 'Error');
+          setError(err.reason || err.stack || err.error || 'Error');
         } else {
           setError('');
         }
@@ -76,7 +76,7 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
 
       handleCreateUser({ email, password }, (err) => {
         if (err) {
-          setError(err.reason || err.stack || 'Error');
+          setError(err.reason || err.stack || err.error || 'Error');
         } else {
           setError('');
         }

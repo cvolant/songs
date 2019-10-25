@@ -6,7 +6,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Loading from '../imports/ui/Loading';
 
 import '../imports/client/load-fonts';
-import './i18n';
+import '../imports/i18n';
+
 const App = React.lazy(() => import('../imports/app/App'));
 
 Meteor.startup(() => {

@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withTracker } from 'meteor/react-meteor-data';
-import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
@@ -12,14 +11,26 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
-import { Songs, ISong } from '../../api/songs';
+import Songs from '../../api/songs/songs';
+import {
+  IFolder,
+  IPgState,
+  IParagraph,
+  ISong,
+  IUnfetchedSong,
+  IUser,
+} from '../../types';
 
 import PrintSong from '../PrintSong';
-import Paragraph, { IParagraph } from './Paragraph';
+import Paragraph from './Paragraph';
 import Screen from '../Screen';
 import Title from './Title';
 import EditorButtons from './EditorButtons';
+import NoLyrics from './NoLyrics';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
+import { useUser } from '../../state-contexts/app-user-context';
+import Folders from '../../api/folders/folders';
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -72,25 +83,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorProps {
+  edit?: boolean;
   goBack: () => void;
   logoMenuDeployed: boolean;
-  song: ISong;
-  viewer: (content: JSX.Element | null) => void;
+  song: IUnfetchedSong;
+  viewer?: (content: JSX.Element | null) => void;
 }
 interface IEditorWTData {
+  folders: IFolder[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meteorCall: (method: string, ...rest: any[]) => void;
-  song: ISong;
+  song: IUnfetchedSong;
+  user?: IUser;
 }
 interface IWrappedEditorProps
-  extends IEditorProps, IEditorWTData {}
+  extends IEditorProps, IEditorWTData { }
 
-interface IPgState {
-  [key: string]: number | boolean;
-  pgIndex: number;
-  selected: boolean;
-  edit: boolean;
-}
 const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
   const pgState = {
     pgIndex: 0,
@@ -102,22 +110,28 @@ const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
 };
 
 export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
+  edit: initEdit = false,
+  folders,
   goBack,
-  meteorCall,
   logoMenuDeployed,
+  meteorCall,
   song,
+  user,
   viewer,
 }) => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(initEdit);
   const [editTitle, setEditTitle] = useState(false);
   const [details, setDetails] = useState(createDetails({}));
-  const [pg, setPg] = useState<IParagraph[]>([]);
+  const [pg, setPg] = useState<IParagraph[]>(song.pg || []);
   const [pgStates, setPgStates] = useState<IPgState[]>([]);
-  const [title, setTitle] = useState('');
-  const [subtitle, setSubtitle] = useState('');
+  const [title, setTitle] = useState(song.title || '');
+  const [subtitle, setSubtitle] = useState(song.title || '');
+
+  const [, setUser] = useUser();
+
+  setUser(user);
 
   const indexOfObject = (
     array: Record<string | number, number | string | boolean>[],
@@ -127,7 +141,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     .indexOf(Object.values(objectProperty)[0]);
 
   const handleCloseScreen = (): void => {
-    viewer(null);
+    if (viewer) viewer(null);
   };
 
   const handleDelete = (): void => {
@@ -180,6 +194,12 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     setPgStates(newPgStates);
   };
 
+  const handleEditSong = (): void => {
+    if (!!Meteor.userId() && Meteor.userId() === song.userId) {
+      setEdit(!edit);
+    }
+  };
+
   const handleEditTitle = (): void => {
     setEditTitle(!editTitle);
   };
@@ -208,24 +228,26 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 
   const handleOpenScreen = (): void => {
     console.log('From Editor, handleOpenScreen. title:', title, 'pgStates:', pgStates);
-    viewer(
-      <Screen
-        closeScreen={handleCloseScreen}
-        print={(zoom: number): JSX.Element => (
-          <PrintSong
-            zoom={zoom}
-            song={{
-              title,
-              subtitle,
-              pg: pgStates
-                .filter((pgState) => pgState.selected)
-                .map((pgState) => (pg[pgState.pgIndex])),
-              ...details,
-            }}
-          />
-        )}
-      />,
-    );
+    if (viewer) {
+      viewer(
+        <Screen
+          closeScreen={handleCloseScreen}
+          print={(zoom: number): JSX.Element => (
+            <PrintSong
+              zoom={zoom}
+              song={{
+                title,
+                subtitle,
+                pg: pgStates
+                  .filter((pgState) => pgState.selected)
+                  .map((pgState) => (pg[pgState.pgIndex])),
+                ...details,
+              }}
+            />
+          )}
+        />,
+      );
+    }
   };
 
   const handlePgCancel = (pgIndex: number): void => {
@@ -251,26 +273,28 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleSaveAll = (): void => {
-    const newPg = [];
-    for (let i = 0; i < pgStates.length; i += 1) {
-      newPg.push(pg[pgStates[i].pgIndex]);
+    if (title && pgStates.length) {
+      const newPg = [];
+      for (let i = 0; i < pgStates.length; i += 1) {
+        newPg.push(pg[pgStates[i].pgIndex]);
+      }
+      const updates = {
+        pg: newPg,
+        year: details.year.value,
+        author: details.author.value,
+        classification: details.classification.value,
+        cnpl: details.cnpl.value,
+        compositor: details.compositor.value,
+        editor: details.editor.value,
+        number: details.number.value,
+        newClassification: details.newClassification.value,
+        subtitle,
+        title,
+      };
+      console.log('From Editor, handleSaveAll. details:', updates);
+      meteorCall('songs.update', song._id.toHexString(), updates);
+      setEdit(false);
     }
-    const updates = {
-      pg: newPg,
-      annee: details.year.value,
-      auteur: details.author.value,
-      cote: details.classification.value,
-      cnpl: details.cnpl.value,
-      compositeur: details.compositor.value,
-      editeur: details.editor.value,
-      number: details.number.value,
-      nouvelleCote: details.newClassification.value,
-      sousTitre: subtitle,
-      titre: title,
-    };
-    console.log('From Editor, handleSaveAll. details:', updates);
-    meteorCall('songs.update', song._id.toHexString(), updates);
-    setEdit(false);
   };
 
   const handleSelect = (target: EventTarget | null, index: number): void => {
@@ -296,31 +320,31 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 
   const handleTitleCancel = (): void => {
     const newDetails = JSON.parse(JSON.stringify(details));
-    newDetails.author.value = song.auteur;
+    newDetails.author.value = song.author;
     newDetails.cnpl.value = song.cnpl;
-    newDetails.classification.value = song.cote;
-    newDetails.compositor.value = song.compositeur;
-    newDetails.editor.value = song.editeur;
-    newDetails.newClassification.value = song.nouvelleCote;
-    newDetails.number.value = song.numero;
-    newDetails.year.value = song.annee;
+    newDetails.classification.value = song.classification;
+    newDetails.compositor.value = song.compositor;
+    newDetails.editor.value = song.editor;
+    newDetails.newClassification.value = song.newClassification;
+    newDetails.number.value = song.number;
+    newDetails.year.value = song.year;
     setDetails(newDetails);
-    setTitle(song.titre || '');
-    setSubtitle(song.sousTitre || '');
+    setTitle(song.title || '');
+    setSubtitle(song.subtitle || '');
     handleEditTitle();
   };
 
-  const handleSubtitleChange = (e: { currentTarget: { value: string }}): void => {
+  const handleSubtitleChange = (e: { currentTarget: { value: string } }): void => {
     const newSubtitle = e.currentTarget.value;
     setSubtitle(newSubtitle);
   };
 
-  const handleTitleChange = (e: { currentTarget: { value: string }}): void => {
+  const handleTitleChange = (e: { currentTarget: { value: string } }): void => {
     const newTitle = e.currentTarget.value;
     setTitle(newTitle);
   };
 
-  const initSong = (ISongoInit: ISong): {
+  const initSong = (songToInit: IUnfetchedSong): {
     details: IDetails;
     edit: boolean;
     pg: IParagraph;
@@ -328,9 +352,9 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     title: string;
     subtitle: string;
   } => {
-    console.log('From Editor, initSong. ISongoInit:', ISongoInit);
-    const newPg = ISongoInit.pg
-      ? JSON.parse(JSON.stringify(ISongoInit.pg))
+    console.log('From Editor, initSong. songToInit:', songToInit);
+    const newPg = songToInit.pg
+      ? JSON.parse(JSON.stringify(songToInit.pg))
       : []; // To copy song.pg properties in a new object.
 
     // Memory of moves and selections: pgStates order can change.
@@ -346,28 +370,28 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     });
     const newDetails = createDetails({
       author: {
-        value: ISongoInit.auteur || '',
+        value: songToInit.author || '',
       },
       classification: {
-        value: ISongoInit.cote || '',
+        value: songToInit.classification || '',
       },
       compositor: {
-        value: ISongoInit.compositeur || '',
+        value: songToInit.compositor || '',
       },
       editor: {
-        value: ISongoInit.editeur || '',
+        value: songToInit.editor || '',
       },
       newClassification: {
-        value: ISongoInit.nouvelleCote || '',
+        value: songToInit.newClassification || '',
       },
       number: {
-        value: ISongoInit.numero || 0,
+        value: songToInit.number || 0,
       },
       year: {
-        value: ISongoInit.annee || 0,
+        value: songToInit.year || 0,
       },
       cnpl: {
-        value: !!ISongoInit.cnpl || false,
+        value: !!songToInit.cnpl || false,
       },
     });
     const newStates = {
@@ -375,8 +399,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       edit: false,
       pg: newPg,
       pgStates: newPgStates,
-      title: ISongoInit.titre || '',
-      subtitle: ISongoInit.sousTitre || '',
+      title: songToInit.title || '',
+      subtitle: songToInit.subtitle || '',
     };
     setTitle(newStates.title);
     setSubtitle(newStates.subtitle);
@@ -387,7 +411,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     return (newStates);
   };
 
-  const handleAdd = (): void => {
+  const handleAddPg = (): void => {
     const pgLength = pg.length;
     const newPg = [...pg];
     const newPgStates = [...pgStates];
@@ -401,7 +425,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleCancelAll = (): void => {
-    if (song) {
+    if (song._id && song.title) {
       const formerPgStates = JSON.parse(JSON.stringify(pgStates));
       const { pgStates: newPgStates } = initSong(song);
       formerPgStates.forEach((formerPgState: IPgState) => {
@@ -415,17 +439,26 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   useEffect(() => {
+    if (user) {
+      const foldersSubscription = Meteor.subscribe('user.folders');
+      console.log('From Editor, useEffect[user._id]. foldersSubscription:', foldersSubscription);
+      return foldersSubscription.stop;
+    }
+    return (): void => { };
+  }, [user && user._id]);
+
+  useEffect(() => {
     if (song._id.toHexString()) {
-      const subscription = Meteor.subscribe('song', song._id, () => {
-        console.log('From Editor, useEffect, subscription callback. Songs.findOne(song._id):', Songs.findOne(song._id));
+      const songSubscription = Meteor.subscribe('song', song._id, () => {
         const newSong = Songs.findOne(song._id) as ISong;
+        console.log('From Editor, useEffect[song._id.toHexString()], songSubscription callback. Songs.findOne(song._id):', newSong);
         if (!newSong) goBack();
         else initSong(newSong);
       });
-      console.log('From Editor, useEffect. subscription:', subscription);
-      return subscription.stop;
+      console.log('From Editor, useEffect[song._id.toHexString()]. songSubscription:', songSubscription);
+      return songSubscription.stop;
     }
-    return (): void => {};
+    return (): void => { };
   }, [song._id.toHexString()]);
 
   if (song._id.toHexString()) {
@@ -479,12 +512,12 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                           />
                         ),
                       )
-                      : <p>{t('editor.No lyrics', 'No lyrics')}</p>}
+                      : <NoLyrics />}
                   </Grid>
                   <Button
                     variant="contained"
                     className={`${classes.button} ${edit ? '' : classes.displayNone}`}
-                    onClick={handleAdd}
+                    onClick={handleAddPg}
                   >
                     <Add />
                   </Button>
@@ -498,16 +531,19 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
           </div>
           <EditorButtons
             edit={edit}
+            folders={folders}
             goBack={goBack}
-            handleDelete={handleDelete}
             handleCancelAll={handleCancelAll}
+            handleDelete={handleDelete}
+            handleEditSong={handleEditSong}
             handleOpenScreen={handleOpenScreen}
             handleSaveAll={handleSaveAll}
             handleToggleSelectAll={handleToggleSelectAll}
-            isAuthenticated={!!Meteor.userId()}
             isThereParagraphs={!!pgStates.length}
             isThereSelected={!!pgStates.filter((pgState) => pgState.selected).length}
-            setEdit={(setEditTo): void => setEdit(setEditTo)}
+            isThereTitle={!!title}
+            song={song}
+            user={user}
           />
         </Card>
       </>
@@ -516,9 +552,13 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   return null;
 };
 
-export const Editor = withTracker<IEditorWTData, IEditorProps>((props: { song: ISong }) => ({
+export const Editor = withTracker<IEditorWTData, IEditorProps>(({
+  song: propsSong,
+}: { song: IUnfetchedSong }) => ({
   meteorCall: Meteor.call,
-  song: { ...props.song, ...(Songs.findOne(props.song._id) as ISong) },
+  song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
+  user: Meteor.user() as IUser | undefined,
+  folders: Folders.find({}).fetch(),
 }))(WrappedEditor);
 
 export default Editor;

@@ -12,7 +12,7 @@ import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 import SongListItemText from './SongListItemText';
-import { ISong } from '../../api/songs';
+import { ISong } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   listIcon: {

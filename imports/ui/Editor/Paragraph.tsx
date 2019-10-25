@@ -16,6 +16,8 @@ import Check from '@material-ui/icons/Check';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
 
+import { IParagraph } from '../../types';
+
 const useStyles = makeStyles((theme) => ({
   actionButtonColumn: {
     display: 'flex',
@@ -43,15 +45,6 @@ const useStyles = makeStyles((theme) => ({
   nonDisplayed: {
     display: 'none',
   },
-  paragraph: {
-    flexGrow: 1,
-    margin: theme.spacing(1),
-    whiteSpace: 'pre-line',
-  },
-  rightIcon: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
   selectedCard: {
     background: `radial-gradient(circle,
       rgba(100,80,50,0.1) 0%,
@@ -59,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
       rgba(100,80,50,0.3) 100%
       )`,
   },
-  subheader: {},
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -68,11 +60,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export interface IParagraph {
-  label: string;
-  pg: string;
-  index: number;
-}
 interface IParagraphProps {
   edit: boolean;
   editGlobal: boolean;
@@ -194,12 +181,9 @@ const Paragraph: React.FC<IParagraphProps> = ({
                 autoFocus
               />
             )
-            : <>{pgText.split(/(\n)/g).map((element: string) => (element === '\n' ? <br key={index} /> : element))}</>}
+            : <>{pgText.split(/(\n)/g).map((element: string, mapIndex) => (element === '\n' ? <br key={mapIndex} /> : element))}</>}
           subheaderTypographyProps={edit ? {}
-            : {
-              color: 'textPrimary',
-              className: classes.subheader,
-            }}
+            : { color: 'textPrimary' }}
         />
         <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
           <div>

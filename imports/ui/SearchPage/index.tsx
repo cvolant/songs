@@ -1,5 +1,6 @@
 import React, { createRef, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -10,13 +11,13 @@ import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
+import SearchList from './SearchList';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
-import SongList from '../SongList';
 
 import routesPaths from '../../app/routesPaths';
-import { ISong } from '../../api/songs';
+import { ISong } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
@@ -78,7 +79,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const theme = useTheme();
   const history = useHistory();
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Meteor.Collection.ObjectID(songId) } : undefined);
+  const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
   const [viewer, setViewer] = useState<React.ReactNode | null>(undefined);
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -150,7 +151,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       viewer={viewer}
     >
       <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-        <SongList
+        <SearchList
           handleFocus={handleFocus}
           handleSelectSong={handleSelectSong}
           logoMenuDeployed={logoMenuDeployed}
