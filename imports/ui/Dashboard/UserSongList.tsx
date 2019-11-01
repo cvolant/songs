@@ -60,7 +60,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
         _id: {
           $in: user ? ((user as IUser)[userSongList] || []) : [],
         },
-      }).fetch() as ISong[];
+      }, { sort: { updatedAt: -1 } }).fetch() as ISong[];
       setSongs(updatedSongs);
       console.log('From SongList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length, 'userSongList:', userSongList, 'Songs:', Songs);
       setLoading(false);

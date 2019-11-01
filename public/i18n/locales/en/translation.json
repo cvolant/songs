@@ -41,9 +41,11 @@
   
   "dashboard": {
     "Dashboard": "Dashboard",
+    "Folder": "Folder",
     "New song": "New song",
     "New folder": "Nouveau folder",
-    "Enter title": "Enter the title of the song",
+    "Enter title": "Enter the title of the new song",
+    "Enter folder name": "Enter folder name",
     "Dashboard welcome": "Welcome to your personnal dashboard!",
     "Dashboard message": "<0>Yeah!</0> it is <4>translated</4>. It is yet to build...",
     "Close dashboard message": "Close dashboard message",
@@ -52,7 +54,8 @@
     "Created songs": "Created songs",
     "No created song found": "No created song found... Click the new song button below to create one.",
     "Folders": "Folders",
-    "No folder found": "No folder found... Click the new folder button below to create one."
+    "No folder found": "No folder found... Click the new folder button below to create one.",
+    "Max 100 characters": "100 characters maximum..."
   },
 
   "editor": {

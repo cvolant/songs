@@ -17,12 +17,13 @@ import Folder from '@material-ui/icons/Folder';
 import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
+import { Mongo } from 'meteor/mongo';
 import PageLayout from '../utils/PageLayout';
 import Panel from '../utils/Panel';
 import Editor from '../Editor';
-import NewSongDialog from './NewSongDialog';
 import UserSongList from './UserSongList';
-import { ISong, IUser } from '../../types';
+import { ISong, IUser, IFolder } from '../../types';
+import CreateNewDialog from './CreateNewDialog';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -56,6 +57,7 @@ export const Dashboard: React.FC<{}> = () => {
   const [displaySort, setDisplaySort] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState<ISong | undefined>(undefined);
+  const [, setSelectedFolder] = useState<Partial<IFolder> | undefined>(undefined);
   const [showPanel, setShowPanel] = useState(true);
 
   const classes = useStyles({ logoMenuDeployed });
@@ -98,6 +100,30 @@ export const Dashboard: React.FC<{}> = () => {
 
   const handleToggleDisplaySort = (newDisplaySort?: boolean) => (): void => {
     setDisplaySort(newDisplaySort === undefined ? !displaySort : newDisplaySort);
+  };
+
+  const handleNewFolder = (
+    folderName: string,
+    callback: (err: Meteor.Error, res: Mongo.ObjectID) => void,
+  ): void => {
+    Meteor.call('user.folders.insert', { folder: { name: folderName } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
+      callback(err, res);
+      if (res) {
+        setSelectedFolder({ _id: res, name: folderName });
+      }
+    });
+  };
+
+  const handleNewSong = (
+    songTitle: string,
+    callback: (err: Meteor.Error, res: Mongo.ObjectID) => void,
+  ): void => {
+    Meteor.call('user.createdSongs.insert', { song: { title: songTitle } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
+      callback(err, res);
+      if (res) {
+        setSelectedSong({ _id: res, title: songTitle });
+      }
+    });
   };
 
   return (
@@ -196,7 +222,18 @@ export const Dashboard: React.FC<{}> = () => {
                 )}
             </CardContent>
             <CardActions className={classes.cardAction}>
-              <NewSongDialog setSelectedSong={setSelectedSong} />
+              <CreateNewDialog
+                buttonText={t('dashboard.New song', 'New song')}
+                dialogText={t('dashboard.Enter title', 'Enter title')}
+                handleCreateNew={handleNewSong}
+                inputLabel={t('song.Title', 'Title')}
+              />
+              <CreateNewDialog
+                buttonText={t('dashboard.New folder', 'New folder')}
+                dialogText={t('dashboard.Enter folder name', 'Enter folder name')}
+                handleCreateNew={handleNewFolder}
+                inputLabel={t('dashboard.Folder name', 'Folder name')}
+              />
             </CardActions>
           </Card>
         )}

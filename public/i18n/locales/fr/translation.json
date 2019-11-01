@@ -41,9 +41,11 @@
 
   "dashboard": {
     "Dashboard": "Espace personnel",
+    "Folder": "Dossier",
     "New song": "Nouveau chant",
     "New folder": "Nouveau dossier",
-    "Enter title": "Entrer le titre du chant",
+    "Enter title": "Entrer le titre du nouveau chant",
+    "Enter folder name": "Entrer un nom de dossier",
     "Dashboard welcome": "Bienvenue dans votre espace personnel !",
     "Dashboard message": "<0>Super !</0> C'est <4>traduit</4>. Ça reste encore à construire...",
     "Close dashboard message": "Fermer le message de l'espace personnel",
@@ -52,7 +54,8 @@
     "Created songs": "Chants créés",
     "No created song found": "Aucun chant créé... Cliquez sur le bouton nouveau chant ci-dessous pour en créer un.",
     "Folders": "Dossiers",
-    "No folder found": "Aucun dossier... Cliquez sur le bouton nouveau dossier ci-dessous pour en créer un."
+    "No folder found": "Aucun dossier... Cliquez sur le bouton nouveau dossier ci-dessous pour en créer un.",
+    "Max 100 characters": "100 caractères maximum..."
   },
 
   "editor": {
