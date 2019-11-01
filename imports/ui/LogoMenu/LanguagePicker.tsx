@@ -68,7 +68,7 @@ ILanguagePickerProps
     name?: string | undefined;
     value: unknown;
   }>): void => {
-    const lng = event.currentTarget.value as string;
+    const lng = event.target.value as string;
     const formerPath = location.pathname;
     setLanguage(lng);
     console.log('From LanguagePicker, handleChange. REDIRECTION. Changing language to', lng);

@@ -10,12 +10,12 @@ const id = (stringId: string): RealMongo.ObjectID => ({
 export const song = {
   _id: id('idSong1'),
   userId: '1234',
-  autor: 'Auteur George',
+  author: 'George Auteur',
   cnpl: true,
   classification: 'Cote123',
-  compositor: 'Compo Greg',
+  compositor: 'Greg Compo',
   editor: 'Ed Lapointe',
-  traductor: 'Trad Voine',
+  traductor: 'Nell Trad',
   newClassification: 'Ncoteabc',
   number: 123,
   year: 2000,
@@ -47,7 +47,7 @@ export const song = {
 
 export const details = createDetails({
   author: {
-    value: song.autor,
+    value: song.author,
   },
   compositor: {
     value: song.compositor,
@@ -104,7 +104,8 @@ export const folders = [
 
 user.folders = folders.map((folder) => folder._id);
 
-const specialLog = (name: string) => (args): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const specialLog = (name: string) => (args: any): void => {
   console.log(`-------StorybookLog------- ${name}:`, args);
 };
 

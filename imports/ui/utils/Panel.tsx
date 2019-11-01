@@ -53,6 +53,7 @@ export const Panel: React.FC<IPanelProps> = ({
         aria-label={closeName || t('Close')}
         className={clsx(classes.close, propClasses && propClasses.iconButton)}
         onClick={handleClosePanel}
+        size="small"
       >
         <Clear className={propClasses && propClasses.icon} />
       </IconButton>

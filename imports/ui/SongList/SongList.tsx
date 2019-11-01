@@ -1,42 +1,47 @@
-import React, { createRef, useState } from 'react';
-
+import React, { useRef, useState, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
 
 import { Mongo } from 'meteor/mongo';
 import SongListItem from './SongListItem';
 import SongListItemLoading from './SongListItemLoading';
-import SongListEmptyItem from './SongListEmptyItem';
 import SongListSorting from './SongListSorting';
 import {
   ISong,
   ISortSpecifier,
+  ISearch,
+  ISortCriterion,
 } from '../../types';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    overflowY: 'auto',
+    backgroundColor: 'inherit',
     display: 'flex',
     flexDirection: 'column',
     overflowScrolling: 'touch',
+    overflowY: 'auto',
     width: '100%',
+  },
+  emptyItemContainer: {
+    padding: theme.spacing(2),
   },
 }));
 
 interface ISongListProps {
   displaySort: boolean;
+  emptyListPlaceholder?: ReactNode;
   favoriteSongs: Mongo.ObjectID[];
-  handleFocus: (focus?: boolean) => () => void;
-  handleSelectSong: (song: ISong) => void;
-  handleSort: (sortCriterion: string) => () => void;
+  handleSelectSong?: (song: ISong) => void;
+  handleSort: (sortCriterion: ISortCriterion) => () => void;
   handleToggleDisplaySort: (open?: boolean) => () => void;
-  handleToggleFavorite: (songId: Mongo.ObjectID, value?: boolean) => () => void;
+  handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
   isAuthenticated: boolean;
   loading?: boolean;
   logoMenuDeployed?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   raiseLimit: () => void;
-  search?: { [key: string]: string };
+  search?: ISearch;
   smallDevice: boolean;
   songs: ISong[];
   sort?: ISortSpecifier;
@@ -44,27 +49,27 @@ interface ISongListProps {
 
 export const SongList: React.FC<ISongListProps> = ({
   displaySort,
+  emptyListPlaceholder,
   favoriteSongs,
-  handleSelectSong,
+  handleSelectSong = (): void => { },
   handleSort,
   handleToggleDisplaySort,
-  handleToggleFavorite,
+  handleToggleFavoriteSong,
   isAuthenticated,
   loading = false,
   raiseLimit,
-  search,
   smallDevice,
   songs,
   sort,
 }) => {
-  const listRef = createRef<HTMLElement>();
-
+  const listRef = useRef<HTMLElement>();
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const [unfoldedSong, setUnfoldedSong] = useState();
 
   const handleListScroll = (): void => {
-    if (!limitRaised && listRef.current) {
+    if (!loading && listRef.current) {
       const {
         current: {
           scrollTop,
@@ -74,7 +79,7 @@ export const SongList: React.FC<ISongListProps> = ({
       } = listRef;
       const scrollPosition = (scrollTop * 100) / (scrollHeight - clientHeight);
       if (scrollPosition > 90) {
-        console.log('From SearchList, useLayoutEffet. scrollPosition:', scrollPosition);
+        console.log('From SongList, handleListScroll. scrollPosition:', scrollPosition);
         raiseLimit();
       }
     }
@@ -88,7 +93,8 @@ export const SongList: React.FC<ISongListProps> = ({
       component="nav"
       className={classes.root}
       onScroll={handleListScroll}
-      ref={listRef}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref={listRef as any}
       subheader={displaySort && (songs.length > 0 || loading)
         ? (
           <SongListSorting
@@ -102,7 +108,15 @@ export const SongList: React.FC<ISongListProps> = ({
         : undefined}
     >
       {songs.length === 0 && !loading
-        ? <SongListEmptyItem search={search} />
+        ? (
+          <div className={classes.emptyItemContainer}>
+            {emptyListPlaceholder || (
+              <Typography>
+                {t('search.Nothing found so far', 'Nothing found so far.')}
+              </Typography>
+            )}
+          </div>
+        )
         : songs.map((song) => {
           const songId = song._id;
           const favorite = favoriteSongs
@@ -114,7 +128,9 @@ export const SongList: React.FC<ISongListProps> = ({
               displayFavorite={isAuthenticated}
               favorite={favorite}
               handleSelect={handleSelect(song)}
-              handleToggleFavorite={(value): (() => void) => handleToggleFavorite(songId, value)}
+              handleToggleFavorite={
+                (value): (() => void) => handleToggleFavoriteSong(songId, value)
+              }
               handleUnfold={handleUnfold(songId)}
               key={song._id.toHexString()}
               smallDevice={smallDevice}

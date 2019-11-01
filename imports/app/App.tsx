@@ -10,7 +10,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Routes from './Routes';
 import routesPaths from './routesPaths';
 import { UserProvider } from '../state-contexts/app-user-context';
-import { insert } from '../api/folders/methods';
 
 import 'normalize.css';
 import '../startup/simple-schema-configuration';

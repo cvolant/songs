@@ -42,10 +42,17 @@
   "dashboard": {
     "Dashboard": "Espace personnel",
     "New song": "Nouveau chant",
+    "New folder": "Nouveau dossier",
     "Enter title": "Entrer le titre du chant",
     "Dashboard welcome": "Bienvenue dans votre espace personnel !",
     "Dashboard message": "<0>Super !</0> C'est <4>traduit</4>. Ça reste encore à construire...",
-    "Close dashboard message": "Fermer le message de l'espace personnel"
+    "Close dashboard message": "Fermer le message de l'espace personnel",
+    "Favorite songs": "Chants favoris",
+    "No favorite song found": "Aucun chant favori... Cliquez sur l'icône favori à côté d'un chant pour le sauvegarder ici.",
+    "Created songs": "Chants créés",
+    "No created song found": "Aucun chant créé... Cliquez sur le bouton nouveau chant ci-dessous pour en créer un.",
+    "Folders": "Dossiers",
+    "No folder found": "Aucun dossier... Cliquez sur le bouton nouveau dossier ci-dessous pour en créer un."
   },
 
   "editor": {
@@ -86,6 +93,7 @@
     "Search field": "Champs de recherche",
     "Advanced search": "Recherche avancée",
     "Sort": "Tri",
+    "Nothing found so far": "Aucun résultat pour le moment.",
     "No results try advanced": "Aucun résultat pour cette recherche : veuillez essayer autre chose, peut-être en utilisant des mots-clés moins spécifiques. N'oubliez pas que différents critères de recherches peuvent vous aider dans les options de recherche avancée",
     "Possible to add": "Si le chant que vous recherchez n'existe pas dans la base de données, vous pouvez l'ajouter lorsque vous êtes connecté à un compte.",
     "Search possibilities": "Recherche par titres, paroles, auteurs, editeurs, cotes. Utilisez le bouton de réglage",
@@ -95,7 +103,10 @@
     "Unmark as favorite": "Enlever des favoris",
     "Choose this song": "Choisir ce chant",
 
-    "sort by": "trier par",
+    "sort by": "tri par",
+    "sort": "tri",
+    "by": "par",
+    "none": "aucun",
 
     "placeholder": {
       " year ": " année ",

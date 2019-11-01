@@ -6,7 +6,7 @@ import Chip from '@material-ui/core/Chip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
-import { DeepPartial } from '../utils/TypesDefs';
+import { DeepPartial } from '../../types/TypesDefs';
 
 const useStyles = makeStyles((theme) => ({
   chip: {

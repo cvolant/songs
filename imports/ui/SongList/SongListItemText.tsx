@@ -94,8 +94,9 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
     });
   }
   /* if (editeur) details.push({
-      key: `${t('song.Edition', 'Edition')}${'colon', ':'} `,
-      before: details.length && ' (',
+      key: `${t('song.Edition', 'Edition')}${'colon', ':'} `, */
+  // eslint-disable-next-line no-irregular-whitespace
+  /*    before: details.length && ' (',
       name: editeur,
       icon: null,
       after: details.length && ')',

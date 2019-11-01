@@ -1,19 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { withTracker } from 'meteor/react-meteor-data';
-import React, { createRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import SearchField from '../SongList/SearchField';
+import SearchField from './SearchField';
 import SongList from '../SongList/SongList';
+import SearchListNoResult from './SearchListNoResult';
 import {
-  IQueryOptions,
   ISearch,
   ISong,
   ISortSpecifier,
   ISortSpecifierValue,
   IUser,
+  ISortCriterion,
 } from '../../types';
 import Songs from '../../api/songs/songs';
+import buildQuery from './buildQuery';
 
 const nbItemsPerPage = 20;
 
@@ -41,8 +43,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   meteorCall,
   smallDevice,
 }) => {
-  const listRef = createRef<HTMLElement>();
-
   const [displaySort, setDisplaySort] = useState(false);
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [limitRaised, setLimitRaised] = useState(false);
@@ -52,17 +52,21 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   const [songs, setSongs] = useState<ISong[]>([]);
   const [subscriptions, setSubscriptions] = useState<Meteor.SubscriptionHandle[]>([]);
 
-  console.log('From SearchList. render. sort:', sort, 'limit:', limit);
-
-  const updateSubscription = (): (() => void) => {
-    setLoading(true);
+  const updateSubscription = (newSubscriptionOptions: {
+    limit?: number;
+    sort?: ISortSpecifier;
+  } = {}): (() => void) => {
     const newSubscriptions = subscriptions;
-    const options: IQueryOptions = { limit, sort };
-    console.log('From SearchList, updateSubscription. search:', { search, options });
-    const newSubscription = Meteor.subscribe('songs', { search, options }, () => {
-      const updatedSongs = Songs.find({}).fetch() as ISong[];
+    console.log('From SearchList, updateSubscription. limit:', limit);
+    const {
+      mongo: { query, options },
+      minimongo,
+    } = buildQuery({ search, options: newSubscriptionOptions });
+    console.log('From SearchList, updateSubscription. { query, options }:', { query, options });
+    const newSubscription = Meteor.subscribe('songs', { query, options }, () => {
+      const updatedSongs = Songs.find(minimongo.query, minimongo.options).fetch() as ISong[];
       setSongs(updatedSongs);
-      console.log('From SearchList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length);
+      console.log('From SearchList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length, 'Songs:', Songs, 'query:', query, 'options:', options, 'minimongo:', minimongo);
       setLoading(false);
       setLimitRaised(false);
     });
@@ -77,7 +81,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
 
   useEffect(updateSubscription, [sort]);
   useEffect(() => {
-    console.log('From SearchList, useEffect[search]. listRef:', listRef);
     console.log('From SearchList, useEffect[search].');
     setLimit(nbItemsPerPage);
     if (search
@@ -85,6 +88,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         || (search.specificQueries && Object.keys(search.specificQueries).length)
       )
     ) {
+      setLoading(true);
       return updateSubscription();
     }
     console.log('From Songlist, useEffect. empty search. stopLoading().');
@@ -93,10 +97,13 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   }, [search]);
 
   const raiseLimit = (): void => {
+    console.log('From SearchList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
     if (songs.length === limit) {
       setLimitRaised(true);
-      setLimit(limit + nbItemsPerPage);
-      updateSubscription();
+      const newLimit = limit + nbItemsPerPage;
+      console.log('From SearchList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
+      setLimit(newLimit);
+      updateSubscription({ limit: newLimit });
     }
   };
 
@@ -109,7 +116,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     }
   };
 
-  const handleSort = (sortCriterion: string) => (): void => {
+  const handleSort = (sortCriterion: ISortCriterion) => (): void => {
     let sortValue: ISortSpecifierValue;
     if (sort && sort[sortCriterion]) {
       sortValue = sort[sortCriterion] === -1 ? undefined : -1;
@@ -119,16 +126,16 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    });
+    } as unknown as ISortSpecifier);
   };
 
   const handleToggleDisplaySort = (open?: boolean) => (): void => {
     setSort(undefined);
-    setDisplaySort(open || !displaySort);
+    setDisplaySort(open === undefined ? !displaySort : open);
   };
 
-  const handleToggleFavorite = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
-    console.log('From SearchList, handleToggleFavorite. { songId, value }:', { songId, value });
+  const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
+    console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
     meteorCall('user.favoriteSong.toggle', { songId, value });
   };
 
@@ -144,16 +151,15 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
       />
       <SongList
         displaySort={displaySort}
+        emptyListPlaceholder={<SearchListNoResult search={search} />}
         favoriteSongs={favoriteSongs}
-        handleFocus={handleFocus}
         handleSelectSong={handleSelectSong}
         handleSort={handleSort}
         handleToggleDisplaySort={handleToggleDisplaySort}
-        handleToggleFavorite={handleToggleFavorite}
+        handleToggleFavoriteSong={handleToggleFavoriteSong}
         isAuthenticated={isAuthenticated}
         loading={limitRaised || loading}
         raiseLimit={raiseLimit}
-        search={search}
         smallDevice={smallDevice}
         songs={songs}
         sort={sort}

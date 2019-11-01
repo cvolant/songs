@@ -184,8 +184,8 @@ export interface ISearch {
 export type ISortSpecifierValue = 1 | -1 | undefined | {
   $meta: string;
 };
-export interface ISortSpecifier {
-  [sortCriterion: string]: ISortSpecifierValue;
+export type ISortCriterion = 'title' | 'compositor' | 'author' | 'year';
+export interface ISortSpecifier extends Record<ISortCriterion, ISortSpecifierValue> {
   score?: {
     $meta: string;
   };
@@ -203,6 +203,12 @@ export interface IQueryOptions {
   skip?: number;
   limit?: number;
   fields?: IFieldSpecifier;
+}
+export interface IMongoQueryOptions {
+  sort?: Mongo.SortSpecifier;
+  skip?: number;
+  limit?: number;
+  fields?: Mongo.FieldSpecifier;
 }
 
 

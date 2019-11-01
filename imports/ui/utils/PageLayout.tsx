@@ -11,10 +11,12 @@ const Tutorial = React.lazy(() => import('../Tutorial'));
 
 const useStyles = makeStyles((theme) => ({
   contentArea: {
+    backgroundColor: 'inherit',
     display: 'flex',
     overflow: 'hidden',
   },
   pageContent: {
+    backgroundColor: 'inherit',
     flexGrow: 1,
     height: '100%',
     overflowY: 'scroll',

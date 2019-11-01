@@ -8,6 +8,7 @@ import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 
 import InlineIcon from '../utils/InlineIcon';
+import { ISearch } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -21,13 +22,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ISongListEmptyItemProps {
-  search?: {
-    [key: string]: string;
-  };
+interface ISearchListNoResultProps {
+  search?: ISearch;
 }
 
-export const SongListEmptyItem: React.FC<ISongListEmptyItemProps> = ({
+export const SearchListNoResult: React.FC<ISearchListNoResultProps> = ({
   search,
 }) => {
   const { t } = useTranslation();
@@ -37,7 +36,7 @@ export const SongListEmptyItem: React.FC<ISongListEmptyItemProps> = ({
     <>
       <Divider className={classes.divider} />
       <div className={classes.container}>
-        {search && Object.values(search).join('')
+        {search && (search.globalQuery || (search.specificQueries && search.specificQueries.length))
           ? (
             <span>
               <Typography className={classes.spacedText}>
@@ -65,4 +64,4 @@ export const SongListEmptyItem: React.FC<ISongListEmptyItemProps> = ({
   );
 };
 
-export default SongListEmptyItem;
+export default SearchListNoResult;
