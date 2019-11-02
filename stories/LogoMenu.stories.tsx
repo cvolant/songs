@@ -13,7 +13,7 @@ import {
   TopMenuLarge,
   TopMenuSmall,
 } from '../imports/ui/LogoMenu';
-import LogoMenu, { WrappedLogoMenu } from '../imports/ui/LogoMenu/LogoMenu';
+import { WrappedLogoMenu } from '../imports/ui/LogoMenu/LogoMenu';
 
 export default {
   title: 'LogoMenu',

@@ -67,21 +67,18 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
   };
 
   return (
-    <>
-      <FolderList
-        emptyListPlaceholder={emptyListPlaceholder}
-        loading={loading}
-        logoMenuDeployed={logoMenuDeployed}
-        raiseLimit={raiseLimit}
-        smallDevice
-        folders={folders}
-      />
-    </>
+    <FolderList
+      emptyListPlaceholder={emptyListPlaceholder}
+      loading={loading}
+      logoMenuDeployed={logoMenuDeployed}
+      raiseLimit={raiseLimit}
+      smallDevice
+      folders={folders}
+    />
   );
 };
 
 const UserFolderList = withTracker<IUserFolderListWTData, IUserFolderListProps>(() => {
-  Meteor.subscribe('user.folders');
   const user = Meteor.user() as IUser;
   return { user };
 })(WrappedUserFolderList);

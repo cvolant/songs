@@ -6,10 +6,12 @@ module.exports = ({ config }) => {
     new webpack.ProvidePlugin({
       // mock global variables
       'Accounts': rootPath + '/.storybook/mocks/Accounts',
+      'Folders':  rootPath + '/.storybook/mocks/Folders',
       'Meteor':   rootPath + '/.storybook/mocks/Meteor',
       'Mongo':    rootPath + '/.storybook/mocks/Mongo',
       'Session':  rootPath + '/.storybook/mocks/Session',
       'Songs':    rootPath + '/.storybook/mocks/Songs',
+      'WT':       rootPath + '/.storybook/mocks/withTracker',
     })
   );
   config.module.rules.push({

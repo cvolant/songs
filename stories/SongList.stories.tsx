@@ -14,7 +14,7 @@ import SongList, {
 import SongListItemLoading from '../imports/ui/SongList/SongListItemLoading';
 
 import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types';
-import { songs, users } from '../imports/stories';
+import { songs, users } from './fixtures';
 
 export default {
   title: 'SongList',

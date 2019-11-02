@@ -110,28 +110,25 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
   };
 
   return (
-    <>
-      <SongList
-        displaySort={displaySort}
-        emptyListPlaceholder={emptyListPlaceholder}
-        favoriteSongs={favoriteSongs}
-        handleSort={handleSort}
-        handleToggleDisplaySort={handleToggleDisplaySort}
-        handleToggleFavoriteSong={handleToggleFavoriteSong}
-        isAuthenticated
-        loading={loading}
-        logoMenuDeployed={logoMenuDeployed}
-        raiseLimit={raiseLimit}
-        smallDevice
-        songs={songs}
-        sort={sort}
-      />
-    </>
+    <SongList
+      displaySort={displaySort}
+      emptyListPlaceholder={emptyListPlaceholder}
+      favoriteSongs={favoriteSongs}
+      handleSort={handleSort}
+      handleToggleDisplaySort={handleToggleDisplaySort}
+      handleToggleFavoriteSong={handleToggleFavoriteSong}
+      isAuthenticated
+      loading={loading}
+      logoMenuDeployed={logoMenuDeployed}
+      raiseLimit={raiseLimit}
+      smallDevice
+      songs={songs}
+      sort={sort}
+    />
   );
 };
 
 const UserSongList = withTracker<IUserSongListWTData, IUserSongListProps>(() => {
-  Meteor.subscribe('user.favoriteSongs');
   const user = Meteor.user() as IUser;
   const favoriteSongs = user && user.favoriteSongs;
 

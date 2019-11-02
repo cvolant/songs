@@ -1,6 +1,6 @@
 import { Mongo as RealMongo } from 'meteor/mongo';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { createDetails } from '../ui/Editor/Detail';
+import { createDetails } from '../../imports/ui/Editor/Detail';
 
 const id = (stringId: string): RealMongo.ObjectID => ({
   equals: (): boolean => false,

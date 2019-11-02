@@ -13,7 +13,7 @@ import FolderList, {
 import FolderListItemLoading from '../imports/ui/FolderList/FolderListItemLoading';
 
 import { ISortSpecifier, ISortCriterion } from '../imports/types';
-import { folders } from '../imports/stories';
+import { folders } from './fixtures';
 
 export default {
   title: 'FolderList',

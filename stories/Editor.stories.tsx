@@ -5,18 +5,28 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, boolean,
 } from '@storybook/addon-knobs';
-import Paragraph from '../imports/ui/Editor/Paragraph';
-import Title from '../imports/ui/Editor/Title';
-import EditorButtons from '../imports/ui/Editor/EditorButtons';
-import AddSongTo from '../imports/ui/Editor/AddSongTo';
+import {
+  AddSongTo,
+  EditorButtons,
+  Paragraph,
+  Title,
+} from '../imports/ui/Editor';
+import { WrappedEditor } from '../imports/ui/Editor/Editor';
 import { UserProvider } from '../imports/state-contexts/app-user-context';
 import {
   songs, folders, details, users,
-} from '../imports/stories';
+} from './fixtures';
 
 export default {
   title: 'Editor',
-  decorators: [withKnobs],
+  decorators: [
+    withKnobs,
+    (storyFn: () => JSX.Element): JSX.Element => (
+      <UserProvider user={users[0]}>
+        {storyFn()}
+      </UserProvider>
+    ),
+  ],
 };
 
 export const paragraph = (): JSX.Element => (
@@ -78,9 +88,7 @@ editorButtons.story = {
         width: '100%',
       }}
       >
-        <UserProvider user={users[0]}>
-          {storyFn()}
-        </UserProvider>
+        {storyFn()}
       </div>
     ),
   ],
@@ -92,6 +100,18 @@ export const addSongTo = (): JSX.Element => (
     open={boolean('open', true)}
     song={songs[0]}
     folders={folders}
+    user={users[0]}
+  />
+);
+
+export const wrappedEditor = (): JSX.Element => (
+  <WrappedEditor
+    edit={boolean('edit', false)}
+    goBack={action('goBack')}
+    logoMenuDeployed={boolean('logoMenuDeployed', true)}
+    song={songs[0]}
+    folders={folders}
+    meteorCall={action('meteorCall')}
     user={users[0]}
   />
 );
