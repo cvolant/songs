@@ -72,6 +72,22 @@
     "Add song to": "Add song to"
   },
 
+  "folder": {
+    "Add folder": "Add folder",
+    "Add song to": "Add song to",
+    "Folder name": "Folder name",
+    "Choose this folder": "Choose this folder",
+    "Folder settings": "Folder settings",
+    "Untitled folder": "Untitled folder"
+  },
+
+  "infos": {
+    "Search title": "Search song by song",
+    "Search details": "Here you can search and display songs one by one, but you need to sign in if you want to build a repertoire, a song list for an event, save your songs, etc.",
+    "Create account": "Create an//account (that's//free)",
+    "Close infos": "Close infos"
+  },
+
   "pg": {
     "Content": "Content",
     "Type": "Type",
@@ -151,19 +167,6 @@
     "Edition": "Edition",
 
     "Untitled song": "Untitled song"
-  },
-
-  "folder": {
-    "Add folder": "Add folder",
-    "Add song to": "Add song to",
-    "Folder name": "Folder name"
-  },
-
-  "infos": {
-    "Search title": "Search song by song",
-    "Search details": "Here you can search and display songs one by one, but you need to sign in if you want to build a repertoire, a song list for an event, save your songs, etc.",
-    "Create account": "Create an//account (that's//free)",
-    "Close infos": "Close infos"
   },
 
   "tutorial": {

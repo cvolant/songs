@@ -12,14 +12,20 @@ import {
 import Songs from '../../songs/songs';
 
 publishComposite('user.folders', {
-  find(): Mongo.Cursor<IFolder> {
-    return Folders.find({ userId: this.userId });
+  find(this: { userId: string }): Mongo.Cursor<IUser> {
+    return Meteor.users.find({ _id: this.userId }, { fields: { folders: 1 } });
   },
 
   children: [{
-    find(folder: IFolder): Mongo.Cursor<ISong> {
-      return Songs.find({ _id: { $in: folder.songs.map((song) => song._id) } });
+    find(user: IUser): Mongo.Cursor<IFolder> {
+      return Folders.find({ _id: { $in: user.folders } }, { fields: { name: 1, songs: 1 } });
     },
+
+    children: [{
+      find(folder: IFolder): Mongo.Cursor<ISong> {
+        return Songs.find({ _id: { $in: folder.songs.map((song) => song._id) } });
+      },
+    }],
   }],
 });
 

@@ -1,4 +1,14 @@
+const webpack = require('webpack');
+
 module.exports = ({ config }) => {
+  config.plugins.push(
+    new webpack.ProvidePlugin({
+      // mock global variables
+      'Meteor': '../../../.storybook/mocks/Meteor',
+      'Mongo': '../../../.storybook/mocks/Mongo',
+      'Songs': '../../../.storybook/mocks/Songs',
+    })
+  )
   config.module.rules.push({
     test: /\.tsx?$/,
     use: [

@@ -8,7 +8,7 @@ import {
 import {
   Meteor, Mongo, Session,
 } from '../../stories';
-import NewSongDialog from './NewSongDialog';
+import CreateNewDialog from './CreateNewDialog';
 
 export default {
   title: 'Dashboard',
@@ -19,7 +19,10 @@ export default {
 };
 
 export const newSongDialog = (): JSX.Element => (
-  <NewSongDialog
-    handleNewSong={action('handleNewSong')}
+  <CreateNewDialog
+    buttonText="New Stuff"
+    dialogText="Enter stuff name"
+    handleCreateNew={action('handleCreateNew')}
+    inputLabel="Stuff name"
   />
 );

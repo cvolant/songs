@@ -134,22 +134,29 @@ const FolderSchema = new SimpleSchema({
     type: String,
     max: 100,
   },
-  updatedAt: {
-    type: Date,
-    defaultValue: new Date(),
+  sharedWith: {
+    type: Array,
+    defaultValue: [],
   },
+  'sharedWith.$': String,
   songs: {
     type: Array,
     defaultValue: [],
   },
   'songs.$': SongSchema,
+  updatedAt: {
+    type: Date,
+    defaultValue: new Date(),
+  },
 });
 export interface IFolder {
   _id: Mongo.ObjectID;
+  date?: Date;
   name: string;
-  userId: string;
-  updatedAt?: Date;
+  sharedWith: string[];
   songs: IEditedSong[];
+  userId: string;
+  updatedAt: Date;
 }
 
 

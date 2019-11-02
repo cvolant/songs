@@ -72,6 +72,22 @@
     "Add song to": "Ajouter le chant à"
   },
 
+  "folder": {
+    "Add folder": "Ajouter un dossier",
+    "Add song to": "Ajouter le chant à",
+    "Folder name": "Nom du dossier",
+    "Choose this folder": "Choisir ce dossier",
+    "Folder settings": "Paramètres du dossier",
+    "Untitled folder": "Dossier sans nom"
+  },
+
+  "infos": {
+    "Search title": "Recherche chant par chant",
+    "Search details": "Ici, vous pouvez afficher les chants un par un, mais il est nécessaire de se connecter à un compte pour pouvoir construire un répertoire, une liste de chants pour un évènement, sauvegarder des chants, etc.",
+    "Create account": "Créer un//compte (c'est//gratuit)",
+    "Close infos": "Fermer les infos"
+  },
+
   "pg": {
     "Content": "Contenu",
     "Type": "Type",
@@ -151,19 +167,6 @@
     "Edition": "Édition",
 
     "Untitled song": "Chant sans titre"
-  },
-
-  "folder": {
-    "Add folder": "Ajouter un dossier",
-    "Add song to": "Ajouter le chant à",
-    "Folder name": "Nom du dossier"
-  },
-
-  "infos": {
-    "Search title": "Recherche chant par chant",
-    "Search details": "Ici, vous pouvez afficher les chants un par un, mais il est nécessaire de se connecter à un compte pour pouvoir construire un répertoire, une liste de chants pour un évènement, sauvegarder des chants, etc.",
-    "Create account": "Créer un//compte (c'est//gratuit)",
-    "Close infos": "Fermer les infos"
   },
 
   "tutorial": {

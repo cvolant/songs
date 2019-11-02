@@ -11,7 +11,7 @@ import SongList, {
   SongListDefaultEmpty,
   SongListSorting,
 } from '.';
-import { Session, song, user } from '../../stories';
+import { Session, songs, users } from '../../stories';
 import SongListItemLoading from './SongListItemLoading';
 
 import { ISortSpecifier, ISearch, ISortCriterion } from '../../types';
@@ -62,19 +62,15 @@ export const songListItem = (): JSX.Element => (
     handleToggleFavorite={(value?: boolean): () => void => action(`handleToggleFavorite(value: ${value})`)}
     handleUnfold={action('unfold')}
     displayFavorite={boolean('displayFavorite', true)}
-    song={song}
+    song={songs[0]}
     unfolded={boolean('unfolded', true)}
   />
 );
 
-export const songListEmptyItem = (): JSX.Element => {
-  const search = kSearch(knobs);
-  return (
-    <SongListDefaultEmpty
-      search={search}
-    />
-  );
-};
+export const songListEmptyItem = (): JSX.Element => (
+  <SongListDefaultEmpty />
+);
+
 export const songListItemLoading = (): JSX.Element => (
   <SongListItemLoading />
 );
@@ -85,7 +81,7 @@ export const songList = (): JSX.Element => {
   return (
     <SongList
       displaySort={boolean('displaySort', true)}
-      favoriteSongs={user.favoriteSongs}
+      favoriteSongs={users[0].favoriteSongs}
       handleSelectSong={action('handleSelectSong')}
       handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
@@ -96,7 +92,7 @@ export const songList = (): JSX.Element => {
       raiseLimit={action('raiseLimit')}
       search={search}
       smallDevice={boolean('smallDevice', true)}
-      songs={boolean('songs', true) ? [song, song, song] : []}
+      songs={boolean('songs', true) ? songs : []}
       sort={sort}
     />
   );

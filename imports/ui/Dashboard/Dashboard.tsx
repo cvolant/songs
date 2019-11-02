@@ -24,6 +24,7 @@ import Editor from '../Editor';
 import UserSongList from './UserSongList';
 import { ISong, IUser, IFolder } from '../../types';
 import CreateNewDialog from './CreateNewDialog';
+import UserFolderList from './UserFolderList';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -106,7 +107,7 @@ export const Dashboard: React.FC<{}> = () => {
     folderName: string,
     callback: (err: Meteor.Error, res: Mongo.ObjectID) => void,
   ): void => {
-    Meteor.call('user.folders.insert', { folder: { name: folderName } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
+    Meteor.call('user.folders.insert', { name: folderName }, (err: Meteor.Error, res: Mongo.ObjectID) => {
       callback(err, res);
       if (res) {
         setSelectedFolder({ _id: res, name: folderName });
@@ -208,8 +209,16 @@ export const Dashboard: React.FC<{}> = () => {
             />
             <CardContent className={classes.cardContent}>
               {display === 'folders'
-                ? <div />
-                : (
+                ? (
+                  <UserFolderList
+                    emptyListPlaceholder={(
+                      <Typography>
+                        {t('dashboard.No folder found', 'No folder found...')}
+                      </Typography>
+                    )}
+                    logoMenuDeployed={logoMenuDeployed}
+                  />
+                ) : (
                   <UserSongList
                     displaySort={displaySort}
                     emptyListPlaceholder={

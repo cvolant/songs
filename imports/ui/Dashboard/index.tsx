@@ -1,5 +1,12 @@
 import Dashboard from './Dashboard';
-import NewSongDialog from './NewSongDialog';
+import CreateNewDialog from './CreateNewDialog';
+import UserFolderList from './UserFolderList';
+import UserSongList from './UserSongList';
 
-export { Dashboard, NewSongDialog };
+export {
+  CreateNewDialog,
+  Dashboard,
+  UserFolderList,
+  UserSongList,
+};
 export default Dashboard;

@@ -65,7 +65,7 @@ interface ITitle {
   edit: boolean;
   editGlobal: boolean;
   details: IDetails;
-  subtitle: string;
+  subtitle?: string;
   title: string;
   handleEditTitle: () => void;
   handleTitleChange: ChangeEventHandler<HTMLInputElement>;

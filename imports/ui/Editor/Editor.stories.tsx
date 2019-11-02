@@ -7,7 +7,7 @@ import {
 } from '@storybook/addon-knobs';
 import Paragraph from './Paragraph';
 import {
-  Meteor, Mongo, Session, song, folders, details, user,
+  Meteor, Mongo, Session, songs, folders, details, users,
 } from '../../stories';
 import Title from './Title';
 import EditorButtons from './EditorButtons';
@@ -27,7 +27,7 @@ export const paragraph = (): JSX.Element => (
     edit={boolean('edit', true)}
     editGlobal={boolean('editGlobal', true)}
     selected={boolean('selected', true)}
-    paragraph={song.pg[0]}
+    paragraph={songs[0].pg[0]}
     handleEditPg={action('handleEditPg')}
     handlePgChange={action('handlePgChange')}
     handleLabelChange={action('handleLabelChange')}
@@ -44,8 +44,8 @@ export const title = (): JSX.Element => (
     edit={boolean('edit', true)}
     editGlobal={boolean('editGlobal', true)}
     details={details}
-    subtitle={song.subtitle}
-    title={song.title}
+    subtitle={songs[0].subtitle}
+    title={songs[0].title}
     handleTitleChange={action('handleTitleChange')}
     handleSubtitleChange={action('handleSubtitleChange')}
     handleDetailChange={action('handleDetailChange')}
@@ -68,7 +68,7 @@ export const editorButtons = (): JSX.Element => (
     isThereParagraphs={boolean('isThereParagraphs', true)}
     isThereSelected={boolean('isThereSelected', false)}
     isThereTitle={boolean('isThereTitle', true)}
-    song={song}
+    song={songs[0]}
     folders={folders}
   />
 );
@@ -81,7 +81,7 @@ editorButtons.story = {
         width: '100%',
       }}
       >
-        <UserProvider user={user}>
+        <UserProvider user={users[0]}>
           {storyFn()}
         </UserProvider>
       </div>
@@ -93,8 +93,8 @@ export const addSongTo = (): JSX.Element => (
   <AddSongTo
     onClose={action('onClose')}
     open={boolean('open', true)}
-    song={song}
+    song={songs[0]}
     folders={folders}
-    user={user}
+    user={users[0]}
   />
 );
