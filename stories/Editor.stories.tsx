@@ -5,20 +5,17 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, boolean,
 } from '@storybook/addon-knobs';
-import Paragraph from './Paragraph';
+import Paragraph from '../imports/ui/Editor/Paragraph';
+import Title from '../imports/ui/Editor/Title';
+import EditorButtons from '../imports/ui/Editor/EditorButtons';
+import AddSongTo from '../imports/ui/Editor/AddSongTo';
+import { UserProvider } from '../imports/state-contexts/app-user-context';
 import {
-  Meteor, Mongo, Session, songs, folders, details, users,
-} from '../../stories';
-import Title from './Title';
-import EditorButtons from './EditorButtons';
-import AddSongTo from './AddSongTo';
-import { UserProvider } from '../../state-contexts/app-user-context';
+  songs, folders, details, users,
+} from '../imports/stories';
 
 export default {
   title: 'Editor',
-  parameters: {
-    Session, Mongo, Meteor,
-  },
   decorators: [withKnobs],
 };
 

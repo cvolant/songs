@@ -13,12 +13,23 @@ function loadStories() {
 configure(loadStories, module); */
 
 import React, { Suspense } from 'react';
-import { configure, addDecorator } from '@storybook/react'
+import { configure, addDecorator, addParameters } from '@storybook/react';
+import '@storybook/addon-console';
+import { themes } from '@storybook/theming';
 import { withI18next } from 'storybook-addon-i18next';
 import { muiTheme } from 'storybook-addon-material-ui';
+import { setConsoleOptions } from '@storybook/addon-console';
 import theme from '../imports/client/theme';
 import i18n from '../imports/i18n';
 
+setConsoleOptions({
+  panelInclude: [/-SbMock-/],
+});
+addParameters({
+  options: {
+    theme: themes.dark,
+  },
+});
 addDecorator(
   withI18next({
     i18n,
@@ -33,4 +44,4 @@ addDecorator((story, context) => (
 ));
 addDecorator(muiTheme(theme));
 
-configure(require.context('../imports', true, /\.stories\.tsx?$/), module)
+configure(require.context('../stories', true, /\.stories\.tsx?$/), module)

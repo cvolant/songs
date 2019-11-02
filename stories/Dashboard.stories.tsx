@@ -5,16 +5,11 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs,
 } from '@storybook/addon-knobs';
-import {
-  Meteor, Mongo, Session,
-} from '../../stories';
-import CreateNewDialog from './CreateNewDialog';
+
+import CreateNewDialog from '../imports/ui/Dashboard/CreateNewDialog';
 
 export default {
   title: 'Dashboard',
-  parameters: {
-    Session, Meteor, Mongo,
-  },
   decorators: [withKnobs],
 };
 

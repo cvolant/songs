@@ -1,14 +1,17 @@
 const webpack = require('webpack');
+const rootPath = '/home/corentin/Dropbox/Professionnel et associatif/Entrepreneuriat/Générateur de livret de célébration/Réalisation/songs';
 
 module.exports = ({ config }) => {
   config.plugins.push(
     new webpack.ProvidePlugin({
       // mock global variables
-      'Meteor': '../../../.storybook/mocks/Meteor',
-      'Mongo': '../../../.storybook/mocks/Mongo',
-      'Songs': '../../../.storybook/mocks/Songs',
+      'Accounts': rootPath + '/.storybook/mocks/Accounts',
+      'Meteor':   rootPath + '/.storybook/mocks/Meteor',
+      'Mongo':    rootPath + '/.storybook/mocks/Mongo',
+      'Session':  rootPath + '/.storybook/mocks/Session',
+      'Songs':    rootPath + '/.storybook/mocks/Songs',
     })
-  )
+  );
   config.module.rules.push({
     test: /\.tsx?$/,
     use: [

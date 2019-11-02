@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface ILogoProps {
-  className: string;
-  fill: string;
+  className?: string;
+  fill?: string;
 }
 
 export const Logo: React.FC<ILogoProps> = ({

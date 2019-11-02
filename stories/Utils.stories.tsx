@@ -5,17 +5,12 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, text, number,
 } from '@storybook/addon-knobs';
-import {
-  Meteor, Mongo, Session,
-} from '../../stories';
-import SnackbarMessage from './SnackBarMessage';
-import Panel from './Panel';
+
+import SnackbarMessage from '../imports/ui/utils/SnackBarMessage';
+import Panel from '../imports/ui/utils/Panel';
 
 export default {
   title: 'Utils',
-  parameters: {
-    Session, Meteor, Mongo,
-  },
   decorators: [withKnobs],
 };
 

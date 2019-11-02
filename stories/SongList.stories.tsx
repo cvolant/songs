@@ -10,15 +10,14 @@ import SongList, {
   SongListItem,
   SongListDefaultEmpty,
   SongListSorting,
-} from '.';
-import { Session, songs, users } from '../../stories';
-import SongListItemLoading from './SongListItemLoading';
+} from '../imports/ui/SongList';
+import SongListItemLoading from '../imports/ui/SongList/SongListItemLoading';
 
-import { ISortSpecifier, ISearch, ISortCriterion } from '../../types';
+import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types';
+import { songs, users } from '../imports/stories';
 
 export default {
   title: 'SongList',
-  parameters: { Session },
   decorators: [withKnobs],
 };
 

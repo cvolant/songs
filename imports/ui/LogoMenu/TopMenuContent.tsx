@@ -68,40 +68,7 @@ interface ITopMenuContentProps {
   isAuthenticated: boolean;
   smallDevice: boolean;
 }
-/* interface INavButtonProps {
-  className: string;
-  key: string;
-  nestedProps: {
-    component: React.Component | undefined;
-    disabled: boolean;
-    onClick: MouseEventHandler;
-    to: string;
-  };
-}
 
-const NavButton: React.FC<
-INavButtonProps
-> = React.forwardRef<any, INavButtonProps>(({
-  className,
-  key,
-  nestedProps: {
-    component,
-    disabled,
-    onClick,
-    to,
-  },
-}, ref) => (
-  <ButtonBase
-    className={className}
-    component={component}
-    disabled={disabled}
-    key={key}
-    onClick={onClick}
-    ref={ref}
-    to={to}
-  />
-));
- */
 export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   handleLogout,
   handleToggleTopMenu,

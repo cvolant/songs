@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ILanguagePickerProps {
-  listClasses: {
-    listItem: string;
+  listClasses?: {
+    listItem?: string;
     listItemText?: string;
   };
 }
@@ -53,7 +53,7 @@ interface ILanguagePickerProps {
 export const LanguagePicker: React.FC<
 ILanguagePickerProps
 > = React.forwardRef<HTMLFormElement, ILanguagePickerProps>(({
-  listClasses,
+  listClasses = {},
 }, ref) => {
   const classes = useStyles();
   const location = useLocation();
