@@ -78,7 +78,11 @@
     "Folder name": "Nom du dossier",
     "Choose this folder": "Choisir ce dossier",
     "Folder settings": "Paramètres du dossier",
-    "Untitled folder": "Dossier sans nom"
+    "Untitled folder": "Dossier sans nom",
+
+    "name": "nom",
+    "updatedAd": "dernière modification",
+    "date": "date"
   },
 
   "infos": {

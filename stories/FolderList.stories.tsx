@@ -12,7 +12,7 @@ import FolderList, {
 } from '../imports/ui/FolderList';
 import FolderListItemLoading from '../imports/ui/FolderList/FolderListItemLoading';
 
-import { ISortSpecifier, ISortCriterion } from '../imports/types';
+import { ISortFolderSpecifier, ISortFolderCriterion } from '../imports/types';
 import { folders } from './fixtures';
 
 export default {
@@ -26,19 +26,18 @@ type IUseKnobs<T> = (k: {
   boolean: (name: string, value: boolean) => boolean;
 }) => T;
 
-const kSort: IUseKnobs<ISortSpecifier> = (k) => ({
-  [k.text('sortCriterion1', 'title')]: k.number('sortValue1 (1 | -1)', 1),
-  [k.text('sortCriterion2', 'subtitle')]: k.number('sortValue2 (1 | -1)', -1),
-}) as unknown as ISortSpecifier;
+const kSort: IUseKnobs<ISortFolderSpecifier> = (k) => ({
+  [k.text('sortCriterion1', 'date')]: k.number('sortValue1 (1 | -1)', 1),
+  [k.text('sortCriterion2', 'name')]: k.number('sortValue2 (1 | -1)', -1),
+}) as unknown as ISortFolderSpecifier;
 const knobs = { text, number, boolean };
 
 export const folderListSorting = (): JSX.Element => {
   const sort = kSort(knobs);
   return (
     <FolderListSorting
-      displayFavorite={boolean('displayFavorite', true)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-      handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleSort={(sortName?: ISortFolderCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
       smallDevice={boolean('smallDevice', true)}
     />
@@ -63,14 +62,20 @@ export const folderListItemLoading = (): JSX.Element => (
   <FolderListItemLoading />
 );
 
-export const folderList = (): JSX.Element => (
-  <FolderList
-    handleSelectFolder={action('handleSelectFolder')}
-    isAuthenticated={boolean('isAuthenticated', true)}
-    loading={boolean('loading', true)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
-    raiseLimit={action('raiseLimit')}
-    smallDevice={boolean('smallDevice', true)}
-    folders={boolean('folders', true) ? folders : []}
-  />
-);
+export const folderList = (): JSX.Element => {
+  const sort = kSort(knobs);
+  return (
+    <FolderList
+      displaySort={boolean('displaySort', true)}
+      handleSelectFolder={action('handleSelectFolder')}
+      handleSort={(sortName?: ISortFolderCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
+      loading={boolean('loading', true)}
+      logoMenuDeployed={boolean('logoMenuDeployed', true)}
+      raiseLimit={action('raiseLimit')}
+      smallDevice={boolean('smallDevice', true)}
+      folders={boolean('folders', true) ? folders : []}
+      sort={sort}
+    />
+  );
+};

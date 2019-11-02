@@ -7,7 +7,12 @@ import Typography from '@material-ui/core/Typography';
 import { Mongo } from 'meteor/mongo';
 import FolderListItem from './FolderListItem';
 import FolderListItemLoading from './FolderListItemLoading';
-import { IFolder } from '../../types';
+import FolderListSorting from './FolderListSorting';
+import {
+  IFolder,
+  ISortFolderSpecifier,
+  ISortFolderCriterion,
+} from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,22 +29,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IFolderListProps {
+  displaySort: boolean;
   emptyListPlaceholder?: ReactNode;
   handleSelectFolder?: (folder: IFolder) => void;
+  handleSort: (sortCriterion: ISortFolderCriterion) => () => void;
+  handleToggleDisplaySort: (open?: boolean) => () => void;
   loading?: boolean;
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
   smallDevice: boolean;
   folders: IFolder[];
+  sort?: ISortFolderSpecifier;
 }
 
 export const FolderList: React.FC<IFolderListProps> = ({
+  displaySort,
   emptyListPlaceholder,
   handleSelectFolder = (): void => { },
+  handleSort,
+  handleToggleDisplaySort,
   loading = false,
   raiseLimit,
   smallDevice,
   folders,
+  sort,
 }) => {
   const listRef = useRef<HTMLElement>();
   const { t } = useTranslation();
@@ -74,6 +87,16 @@ export const FolderList: React.FC<IFolderListProps> = ({
       onScroll={handleListScroll}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ref={listRef as any}
+      subheader={displaySort && (folders.length > 0 || loading)
+        ? (
+          <FolderListSorting
+            handleToggleDisplaySort={handleToggleDisplaySort}
+            handleSort={handleSort}
+            sort={sort}
+            smallDevice={smallDevice}
+          />
+        )
+        : undefined}
     >
       {folders.length === 0 && !loading
         ? (

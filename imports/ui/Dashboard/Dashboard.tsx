@@ -172,15 +172,14 @@ export const Dashboard: React.FC<{}> = () => {
             <CardHeader
               action={(
                 <div>
-                  {display !== 'folders' && (
-                    <IconButton
-                      aria-label={t('search.Sort', 'Sort')}
-                      onClick={handleToggleDisplaySort()}
-                      size="small"
-                    >
-                      <Sort />
-                    </IconButton>
-                  )}
+                  <IconButton
+                    aria-label={t('search.Sort', 'Sort')}
+                    color={displaySort ? 'primary' : undefined}
+                    onClick={handleToggleDisplaySort()}
+                    size="small"
+                  >
+                    <Sort />
+                  </IconButton>
                   {
                     Object.entries(userSongLists).map(([
                       list,
@@ -211,11 +210,13 @@ export const Dashboard: React.FC<{}> = () => {
               {display === 'folders'
                 ? (
                   <UserFolderList
+                    displaySort={displaySort}
                     emptyListPlaceholder={(
                       <Typography>
                         {t('dashboard.No folder found', 'No folder found...')}
                       </Typography>
                     )}
+                    handleToggleDisplaySort={handleToggleDisplaySort}
                     logoMenuDeployed={logoMenuDeployed}
                   />
                 ) : (

@@ -60,7 +60,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
         _id: {
           $in: user ? ((user as IUser)[userSongList] || []) : [],
         },
-      }, { sort: { updatedAt: -1 } }).fetch() as ISong[];
+      }, { sort: sort || { updatedAt: -1 } }).fetch() as ISong[];
       setSongs(updatedSongs);
       console.log('From SongList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length, 'userSongList:', userSongList, 'Songs:', Songs);
       setLoading(false);
@@ -111,13 +111,13 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
 
   return (
     <SongList
+      displayFavorite
       displaySort={displaySort}
       emptyListPlaceholder={emptyListPlaceholder}
       favoriteSongs={favoriteSongs}
       handleSort={handleSort}
       handleToggleDisplaySort={handleToggleDisplaySort}
       handleToggleFavoriteSong={handleToggleFavoriteSong}
-      isAuthenticated
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}

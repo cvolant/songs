@@ -1,5 +1,3 @@
-Repondre a Thomas Mathia
-
 Fix search problem when signed in and already subscribed to favoriteSongs
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.

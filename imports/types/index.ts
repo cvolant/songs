@@ -158,7 +158,8 @@ export interface IFolder {
   userId: string;
   updatedAt: Date;
 }
-
+export type ISortFolderCriterion = 'name' | 'date' | 'updatedAd';
+export type ISortFolderSpecifier = Record<ISortFolderCriterion, ISortSpecifierValue>;
 
 // /////////////// //
 //      User       //

@@ -78,7 +78,11 @@
     "Folder name": "Folder name",
     "Choose this folder": "Choose this folder",
     "Folder settings": "Folder settings",
-    "Untitled folder": "Untitled folder"
+    "Untitled folder": "Untitled folder",
+
+    "name": "name",
+    "updatedAd": "last edit",
+    "date": "date"
   },
 
   "infos": {

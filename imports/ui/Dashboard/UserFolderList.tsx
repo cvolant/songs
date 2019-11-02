@@ -3,13 +3,21 @@ import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
 import FolderList from '../FolderList/FolderList';
-import { IFolder, IUser } from '../../types';
+import {
+  IFolder,
+  ISortCriterion,
+  ISortSpecifier,
+  ISortSpecifierValue,
+  IUser,
+} from '../../types';
 import Folders from '../../api/folders/folders';
 
 const nbItemsPerPage = 20;
 
 interface IUserFolderListProps {
+  displaySort?: boolean;
   emptyListPlaceholder: ReactNode;
+  handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
 }
 interface IUserFolderListWTData {
@@ -19,17 +27,21 @@ interface IWrappedUserFolderListProps
   extends IUserFolderListProps, IUserFolderListWTData { }
 
 export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
+  displaySort = false,
   emptyListPlaceholder,
+  handleToggleDisplaySort,
   logoMenuDeployed,
   user,
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(false);
   const [folders, setFolders] = useState<IFolder[]>([]);
+  const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
   const [subscriptions, setSubscriptions] = useState<Meteor.SubscriptionHandle[]>([]);
 
   const updateSubscription = (newSubscriptionOptions: {
     limit?: number;
+    sort?: ISortSpecifier;
   } = {}): (() => void) => {
     setLoading(true);
     const newSubscriptions = subscriptions;
@@ -39,7 +51,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
         _id: {
           $in: user ? ((user as IUser).folders || []) : [],
         },
-      }, { sort: { updatedAt: -1 } }).fetch() as IFolder[];
+      }, { sort: sort || { updatedAt: -1 } }).fetch() as IFolder[];
       setFolders(updatedFolders);
       console.log('From FolderList, updateSubscription, subscription callback. updatedFolders.length:', updatedFolders.length, 'Folders:', Folders);
       setLoading(false);
@@ -53,7 +65,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     };
   };
 
-  useEffect(updateSubscription, [user && ((user as IUser).folders || []).join()]);
+  useEffect(updateSubscription, [sort, user && ((user as IUser).folders || []).join()]);
 
   const raiseLimit = (): void => {
     console.log('From UserFolderList, raiseLimit. folders.length:', folders.length, 'limit:', limit);
@@ -66,14 +78,31 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     }
   };
 
+  const handleSort = (sortCriterion: ISortCriterion) => (): void => {
+    let sortValue: ISortSpecifierValue;
+    if (sort && sort[sortCriterion]) {
+      sortValue = sort[sortCriterion] === -1 ? undefined : -1;
+    } else {
+      sortValue = 1;
+    }
+    setSort({
+      /* ...sort, // If a multicriteria sorting is needed. */
+      [sortCriterion]: sortValue,
+    } as unknown as ISortSpecifier);
+  };
+
   return (
     <FolderList
+      displaySort={displaySort}
       emptyListPlaceholder={emptyListPlaceholder}
+      handleSort={handleSort}
+      handleToggleDisplaySort={handleToggleDisplaySort}
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
       smallDevice
       folders={folders}
+      sort={sort}
     />
   );
 };

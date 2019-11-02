@@ -16,9 +16,9 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
-import { ISortSpecifier, ISortCriterion } from '../../types';
+import { ISortFolderSpecifier, ISortFolderCriterion } from '../../types';
 
-const sortCriteria: ISortCriterion[] = ['title', 'compositor', 'author', 'year'];
+const sortCriteria: ISortFolderCriterion[] = ['name', 'updatedAd', 'date'];
 
 const useStyles = makeStyles((theme) => {
   const favoritesSpace = (
@@ -96,8 +96,8 @@ const useStyles = makeStyles((theme) => {
 interface IFolderListSortingProps {
   displayFavorite?: boolean;
   handleToggleDisplaySort: (display?: boolean) => () => void;
-  handleSort: (sortName: ISortCriterion) => () => void;
-  sort?: ISortSpecifier;
+  handleSort: (sortName: ISortFolderCriterion) => () => void;
+  sort?: ISortFolderSpecifier;
   smallDevice: boolean;
 }
 
@@ -112,7 +112,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
   const classes = useStyles({ displayFavorite });
   console.log('From FolderListSorting, render. sort:', sort);
 
-  const sortButton = (buttonName: ISortCriterion): JSX.Element => (
+  const sortButton = (buttonName: ISortFolderCriterion): JSX.Element => (
     <Button
       classes={{ root: classes.button, colorInherit: classes.buttonDefaultColor }}
       color={sort && sort[buttonName] ? 'primary' : 'inherit'}
@@ -130,7 +130,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
         )
       }
       />
-      {t(`song.${buttonName}`, buttonName)}
+      {t(`folder.${buttonName}`, buttonName)}
     </Button>
   );
 
@@ -138,7 +138,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
     name?: string;
     value: unknown;
   }>): void => {
-    handleSort(event.target.value as ISortCriterion)();
+    handleSort(event.target.value as ISortFolderCriterion)();
   };
 
   return (
@@ -185,7 +185,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
                           {' '}
                         </span>
                         <span className={classes.sortOptions}>
-                          {value ? `${t('search.by', 'by')} ${t(`song.${value}`, value as string)}` : t('search.none', 'none')}
+                          {value ? `${t('search.by', 'by')} ${t(`folder.${value}`, value as string)}` : t('search.none', 'none')}
                         </span>
                       </Typography>
                     ),
@@ -193,7 +193,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
                 >
                   {sortCriteria.map((option) => (
                     <MenuItem key={option} value={option}>
-                      {t(`song.${option}`, option)}
+                      {t(`folder.${option}`, option)}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -211,7 +211,7 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
                     </span>
                   </Typography>
                   <Typography className={clsx(classes.typography, classes.year)} variant="body1">
-                    {sortButton('year')}
+                    {sortButton('date')}
                   </Typography>
                 </>
               )}

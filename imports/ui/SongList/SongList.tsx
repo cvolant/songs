@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ISongListProps {
+  displayFavorite: boolean;
   displaySort: boolean;
   emptyListPlaceholder?: ReactNode;
   favoriteSongs: Mongo.ObjectID[];
@@ -37,7 +38,6 @@ interface ISongListProps {
   handleSort: (sortCriterion: ISortCriterion) => () => void;
   handleToggleDisplaySort: (open?: boolean) => () => void;
   handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
-  isAuthenticated: boolean;
   loading?: boolean;
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
@@ -48,6 +48,7 @@ interface ISongListProps {
 }
 
 export const SongList: React.FC<ISongListProps> = ({
+  displayFavorite,
   displaySort,
   emptyListPlaceholder,
   favoriteSongs,
@@ -55,7 +56,6 @@ export const SongList: React.FC<ISongListProps> = ({
   handleSort,
   handleToggleDisplaySort,
   handleToggleFavoriteSong,
-  isAuthenticated,
   loading = false,
   raiseLimit,
   smallDevice,
@@ -98,7 +98,7 @@ export const SongList: React.FC<ISongListProps> = ({
       subheader={displaySort && (songs.length > 0 || loading)
         ? (
           <SongListSorting
-            displayFavorite={isAuthenticated}
+            displayFavorite={displayFavorite}
             handleToggleDisplaySort={handleToggleDisplaySort}
             handleSort={handleSort}
             sort={sort}
@@ -125,7 +125,7 @@ export const SongList: React.FC<ISongListProps> = ({
               .indexOf(songId.toHexString()) !== -1 : false;
           return (
             <SongListItem
-              displayFavorite={isAuthenticated}
+              displayFavorite={displayFavorite}
               favorite={favorite}
               handleSelect={handleSelect(song)}
               handleToggleFavorite={

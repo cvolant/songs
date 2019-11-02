@@ -79,13 +79,13 @@ export const songList = (): JSX.Element => {
   const search = kSearch(knobs);
   return (
     <SongList
+      displayFavorite={boolean('displayFavorite', true)}
       displaySort={boolean('displaySort', true)}
       favoriteSongs={users[0].favoriteSongs}
       handleSelectSong={action('handleSelectSong')}
       handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleToggleFavoriteSong={(songId: Mongo.ObjectID, value?: boolean): () => void => action(`handleToggleFavoriteSong(songId: ${songId}, value: ${value})`)}
-      isAuthenticated={boolean('isAuthenticated', true)}
       loading={boolean('loading', true)}
       logoMenuDeployed={boolean('logoMenuDeployed', true)}
       raiseLimit={action('raiseLimit')}
