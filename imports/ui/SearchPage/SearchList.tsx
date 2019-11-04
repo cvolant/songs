@@ -6,14 +6,15 @@ import React, { useState, useEffect } from 'react';
 import SearchField from './SearchField';
 import SongList from '../SongList/SongList';
 import SearchListNoResult from './SearchListNoResult';
+
+import { ISong, IUser } from '../../types';
 import {
   ISearch,
-  ISong,
   ISortSpecifier,
   ISortSpecifierValue,
-  IUser,
   ISortCriterion,
-} from '../../types';
+} from '../../types/searchTypes';
+
 import Songs from '../../api/songs/songs';
 import buildQuery from './buildQuery';
 
@@ -148,6 +149,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         loading={loading}
       />
       <SongList
+        displayFavorite={isAuthenticated}
         displaySort={displaySort}
         emptyListPlaceholder={<SearchListNoResult search={search} />}
         favoriteSongs={favoriteSongs}
@@ -155,7 +157,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         handleSort={handleSort}
         handleToggleDisplaySort={handleToggleDisplaySort}
         handleToggleFavoriteSong={handleToggleFavoriteSong}
-        isAuthenticated={isAuthenticated}
         loading={limitRaised || loading}
         raiseLimit={raiseLimit}
         songs={songs}

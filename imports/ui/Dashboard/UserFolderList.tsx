@@ -3,13 +3,14 @@ import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
 import FolderList from '../FolderList/FolderList';
+
+import { IFolder, IUser } from '../../types';
 import {
-  IFolder,
   ISortCriterion,
   ISortSpecifier,
   ISortSpecifierValue,
-  IUser,
-} from '../../types';
+} from '../../types/searchTypes';
+
 import Folders from '../../api/folders/folders';
 
 const nbItemsPerPage = 20;

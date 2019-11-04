@@ -5,13 +5,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
 import { Folders } from './folders';
-import {
-  SongSchema,
-  ISong,
-  ObjectIDSchema,
-  IFolder,
-  IMethodInvocation,
-} from '../../types';
+
+import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
+import { ISong, SongSchema } from '../../types/songTypes';
+import { IFolder } from '../../types';
 
 const PartialFolderSchema = new SimpleSchema({
   name: {

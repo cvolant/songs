@@ -1,6 +1,11 @@
 import { Session } from 'meteor/session';
 import React, {
-  createRef, useEffect, useState, MouseEventHandler, KeyboardEventHandler, ChangeEventHandler,
+  createRef,
+  useEffect,
+  useState,
+  MouseEventHandler,
+  KeyboardEventHandler,
+  ChangeEventHandler,
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +26,7 @@ import Settings from '@material-ui/icons/Settings';
 import SettingsOutlined from '@material-ui/icons/SettingsOutlined';
 import Search from '@material-ui/icons/Search';
 
-import { ISearch, ISpecificQuery, IFieldsKey } from '../../types';
+import { ISearch, ISpecificQuery, IFieldsKey } from '../../types/searchTypes';
 
 const useStyles = makeStyles((theme) => ({
   adornment: {

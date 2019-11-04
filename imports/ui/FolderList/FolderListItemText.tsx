@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import Songs from '../../api/songs/songs';
+
 import { IFolder } from '../../types';
 
 const useStyles = makeStyles((theme) => ({

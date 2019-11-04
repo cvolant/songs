@@ -4,16 +4,13 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
-import {
-  IUser,
-  IMethodInvocation,
-  ObjectIDSchema,
-  IFolder,
-  SongSchema,
-  ISong,
-} from '../../types';
 import Folders from '../folders/folders';
 import Songs from '../songs/songs';
+
+import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
+import { ISong, SongSchema } from '../../types/songTypes';
+import { IFolder, IUser } from '../../types';
+
 // import Folders from '../folders/folders';
 
 export const toggleFavorite = new ValidatedMethod({

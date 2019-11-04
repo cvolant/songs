@@ -1,19 +1,16 @@
+import { Mongo } from 'meteor/mongo';
 import React, { useRef, useState, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
-import { Mongo } from 'meteor/mongo';
 import SongListItem from './SongListItem';
 import SongListItemLoading from './SongListItemLoading';
 import SongListSorting from './SongListSorting';
-import {
-  ISong,
-  ISortSpecifier,
-  ISearch,
-  ISortCriterion,
-} from '../../types';
+
+import { ISong } from '../../types';
+import { ISortSpecifier, ISearch, ISortCriterion } from '../../types/searchTypes';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -10,6 +10,7 @@ import Translate from '@material-ui/icons/Translate';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import InlineIcon from '../utils/InlineIcon';
+
 import { ISong } from '../../types';
 
 const useStyles = makeStyles((theme) => ({

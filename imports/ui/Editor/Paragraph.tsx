@@ -82,7 +82,6 @@ const Paragraph: React.FC<IParagraphProps> = ({
   paragraph: {
     label,
     pg,
-    index,
   },
   handleEditPg,
   handlePgChange,
@@ -181,6 +180,7 @@ const Paragraph: React.FC<IParagraphProps> = ({
                 autoFocus
               />
             )
+            // eslint-disable-next-line react/no-array-index-key
             : <>{pgText.split(/(\n)/g).map((element: string, mapIndex) => (element === '\n' ? <br key={mapIndex} /> : element))}</>}
           subheaderTypographyProps={edit ? {}
             : { color: 'textPrimary' }}

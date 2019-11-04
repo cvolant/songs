@@ -4,13 +4,14 @@ import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
 import SongList from '../SongList/SongList';
+
+import { ISong, IUser } from '../../types';
 import {
-  ISong,
   ISortCriterion,
   ISortSpecifier,
   ISortSpecifierValue,
-  IUser,
-} from '../../types';
+} from '../../types/searchTypes';
+
 import Songs from '../../api/songs/songs';
 
 const nbItemsPerPage = 20;

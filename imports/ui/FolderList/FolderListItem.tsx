@@ -13,6 +13,7 @@ import Settings from '@material-ui/icons/Settings';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import FolderListItemText from './FolderListItemText';
+
 import { IFolder } from '../../types';
 
 const useStyles = makeStyles((theme) => ({

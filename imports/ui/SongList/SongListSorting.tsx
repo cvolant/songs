@@ -17,7 +17,8 @@ import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
-import { ISortSpecifier, ISortCriterion } from '../../types';
+
+import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 
 const sortCriteria: ISortCriterion[] = ['title', 'compositor', 'author', 'year'];
 

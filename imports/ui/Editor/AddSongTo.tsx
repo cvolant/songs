@@ -27,7 +27,8 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Folder from '@material-ui/icons/Folder';
 
 import SnackbarMessage from '../utils/SnackBarMessage';
-import { IFolder, IUnfetchedSong, IUser } from '../../types';
+import { IFolder, IUser } from '../../types';
+import { IUnfetchedSong } from '../../types/songTypes';
 
 const useStyles = makeStyles((theme) => ({
   buttonBase: {

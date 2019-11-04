@@ -17,7 +17,7 @@ import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
-import { ISortFolderSpecifier, ISortFolderCriterion } from '../../types';
+import { ISortFolderSpecifier, ISortFolderCriterion } from '../../types/folderTypes';
 
 const sortCriteria: ISortFolderCriterion[] = ['name', 'updatedAd', 'date'];
 

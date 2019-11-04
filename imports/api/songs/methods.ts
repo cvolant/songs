@@ -4,11 +4,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
 import Songs from './songs';
-import {
-  SongSchema,
-  ISong,
-  IMethodInvocation,
-} from '../../types';
+
+import { IMethodInvocation } from '../../types/collectionTypes';
+import { ISong, SongSchema } from '../../types/songTypes';
+
 /*
 export const insert = new ValidatedMethod({
   name: 'songs.insert',
@@ -120,3 +119,5 @@ if (Meteor.isServer) {
     connectionId() { return true; },
   }, 5, 1000);
 }
+
+export default update;

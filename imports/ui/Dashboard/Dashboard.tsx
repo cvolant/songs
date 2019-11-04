@@ -21,9 +21,9 @@ import PageLayout from '../utils/PageLayout';
 import Panel from '../utils/Panel';
 import Editor from '../Editor';
 import UserSongList from './UserSongList';
-import { ISong, IUser, IFolder } from '../../types';
 import CreateNewDialog from './CreateNewDialog';
 import UserFolderList from './UserFolderList';
+import { ISong, IUser, IFolder } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   card: {

@@ -15,8 +15,9 @@ import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
 
-import routesPaths from '../../app/routesPaths';
 import { ISong } from '../../types';
+
+import routesPaths from '../../app/routesPaths';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {

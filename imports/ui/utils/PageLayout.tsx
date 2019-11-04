@@ -4,9 +4,11 @@ import { Helmet } from 'react-helmet';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import { ITutorialContentName } from '../Tutorial';
-import LogoMenu from '../LogoMenu';
+
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import LogoMenu from '../LogoMenu';
+
+import { ITutorialContentName } from '../Tutorial';
 
 const Tutorial = React.lazy(() => import('../Tutorial'));
 

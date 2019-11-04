@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
+import { useUser } from '../../state-contexts/app-user-context';
 import PrintSong from '../PrintSong';
 import Paragraph from './Paragraph';
 import Screen from '../Screen';
@@ -18,18 +19,17 @@ import Title from './Title';
 import EditorButtons from './EditorButtons';
 import NoLyrics from './NoLyrics';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
-import { useUser } from '../../state-contexts/app-user-context';
+
+import {
+  IFolder,
+  IParagraph,
+  ISong,
+  IUser,
+} from '../../types';
+import { IPgState, IUnfetchedSong } from '../../types/songTypes';
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
-import {
-  IFolder,
-  IPgState,
-  IParagraph,
-  ISong,
-  IUnfetchedSong,
-  IUser,
-} from '../../types';
 
 
 const useStyles = makeStyles((theme) => ({

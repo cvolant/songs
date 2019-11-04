@@ -1,18 +1,19 @@
+import { Mongo } from 'meteor/mongo';
 import React, { useRef, useState, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
-import { Mongo } from 'meteor/mongo';
 import FolderListItem from './FolderListItem';
 import FolderListItemLoading from './FolderListItemLoading';
 import FolderListSorting from './FolderListSorting';
+
 import {
   IFolder,
   ISortFolderSpecifier,
   ISortFolderCriterion,
-} from '../../types';
+} from '../../types/folderTypes';
 
 const useStyles = makeStyles((theme) => ({
   root: {

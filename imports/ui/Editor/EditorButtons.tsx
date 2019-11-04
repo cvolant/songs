@@ -12,10 +12,12 @@ import Add from '@material-ui/icons/Add';
 import Eye from '@material-ui/icons/RemoveRedEye';
 import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
+
+import { useUser } from '../../state-contexts/app-user-context';
 import AddSongTo from './AddSongTo';
 
-import { IFolder, IUnfetchedSong, IUser } from '../../types';
-import { useUser } from '../../state-contexts/app-user-context';
+import { IFolder, IUser } from '../../types';
+import { IUnfetchedSong } from '../../types/songTypes';
 
 const useStyles = makeStyles((theme) => ({
   actions: {
