@@ -15,12 +15,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Home from '@material-ui/icons/Home';
+import ListIcon from '@material-ui/icons/List';
 import Loupe from '@material-ui/icons/Loupe';
 import Power from '@material-ui/icons/Power';
 import PowerOff from '@material-ui/icons/PowerOff';
 import ScreenShare from '@material-ui/icons/ScreenShare';
 
-import ListIcon from '@material-ui/icons/List';
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import LanguagePicker from './LanguagePicker';
 import routesPaths, { locales } from '../../app/routesPaths';
 
@@ -66,18 +67,17 @@ interface ITopMenuContentProps {
   handleLogout: () => void;
   handleToggleTopMenu: (deploy: boolean | undefined) => EventHandler<MouseEvent | KeyboardEvent>;
   isAuthenticated: boolean;
-  smallDevice: boolean;
 }
 
 export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   handleLogout,
   handleToggleTopMenu,
   isAuthenticated,
-  smallDevice,
 }) => {
   const { t, i18n: { language: lng } } = useTranslation();
   const classes = useStyles();
   const location = useLocation();
+  const smallDevice = useDeviceSize('sm.down');
 
   console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
 

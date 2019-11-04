@@ -6,6 +6,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import { ITutorialContentName } from '../Tutorial';
 import LogoMenu from '../LogoMenu';
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 
 const Tutorial = React.lazy(() => import('../Tutorial'));
 
@@ -72,7 +73,6 @@ interface IPageLayoutProps {
   };
   scrollDown?: () => void;
   sidePanel?: JSX.Element;
-  smallDevice?: boolean;
   title?: string;
   tutorialContentName?: ITutorialContentName;
   viewer?: React.ReactNode;
@@ -84,12 +84,12 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   menuProps,
   scrollDown,
   sidePanel,
-  smallDevice,
   title,
   tutorialContentName,
   viewer,
 }) => {
   const classes = useStyles();
+  const smallDevice = useDeviceSize('sm.down');
   const [showTutorial, setShowTutorial] = useState(false);
 
   const tutorialAvailable = !!tutorialContentName;

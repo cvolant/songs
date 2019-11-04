@@ -16,6 +16,7 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import { ISortSpecifier, ISortCriterion } from '../../types';
 
 const sortCriteria: ISortCriterion[] = ['title', 'compositor', 'author', 'year'];
@@ -98,7 +99,6 @@ interface ISongListSortingProps {
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSort: (sortName: ISortCriterion) => () => void;
   sort?: ISortSpecifier;
-  smallDevice: boolean;
 }
 
 export const SongListSorting: React.FC<ISongListSortingProps> = ({
@@ -106,10 +106,10 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
   handleToggleDisplaySort,
   handleSort,
   sort,
-  smallDevice,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ displayFavorite });
+  const smallDevice = useDeviceSize('sm.down');
   console.log('From SongListSorting, render. sort:', sort);
 
   const sortButton = (buttonName: ISortCriterion): JSX.Element => (
@@ -152,69 +152,67 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
         disableTypography
         primary={(
           <div className={classes.container}>
-            {smallDevice
-              ? (
-                <TextField
-                  select
-                  className={classes.textField}
-                  onChange={handleChange}
-                  value={sort ? Object.keys(sort)[0] : ''}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <ArrowDropUp
-                          className={clsx(
-                            classes.sortIcon,
-                            sort && Object.keys(sort).length && clsx(
-                              classes.sortIconVisible,
-                              sort && Object.values(sort)[0] < 0 && classes.sortIconDown,
-                            ),
-                          )}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                  SelectProps={{
-                    IconComponent: Sort,
-                    displayEmpty: true,
-                    renderValue: (value: unknown): React.ReactNode => (
-                      <Typography className={clsx(classes.typography, classes.sortOptions)}>
-                        <span className={classes.sortBy}>
-                          {t('search.sort', 'sort')}
-                          {t('colon', ':')}
-                          {' '}
-                        </span>
-                        <span className={classes.sortOptions}>
-                          {value ? `${t('search.by', 'by')} ${t(`song.${value}`, value as string)}` : t('search.none', 'none')}
-                        </span>
-                      </Typography>
-                    ),
-                  }}
-                >
-                  {sortCriteria.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {t(`song.${option}`, option)}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )
-              : (
-                <>
-                  <Typography className={clsx(classes.typography, classes.flexGrow)} variant="body1">
-                    <span className={classes.sortBy}>
-                      {t('search.sort by', 'sort by')}
-                    </span>
-                    <span className={clsx(classes.buttons, classes.sortOptions)}>
-                      {sortCriteria
-                        .slice(0, sortCriteria.length - 1)
-                        .map((buttonName) => sortButton(buttonName))}
-                    </span>
-                  </Typography>
-                  <Typography className={clsx(classes.typography, classes.year)} variant="body1">
-                    {sortButton('year')}
-                  </Typography>
-                </>
-              )}
+            {smallDevice ? (
+              <TextField
+                select
+                className={classes.textField}
+                onChange={handleChange}
+                value={sort ? Object.keys(sort)[0] : ''}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <ArrowDropUp
+                        className={clsx(
+                          classes.sortIcon,
+                          sort && Object.keys(sort).length && clsx(
+                            classes.sortIconVisible,
+                            sort && Object.values(sort)[0] < 0 && classes.sortIconDown,
+                          ),
+                        )}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                SelectProps={{
+                  IconComponent: Sort,
+                  displayEmpty: true,
+                  renderValue: (value: unknown): React.ReactNode => (
+                    <Typography className={clsx(classes.typography, classes.sortOptions)}>
+                      <span className={classes.sortBy}>
+                        {t('search.sort', 'sort')}
+                        {t('colon', ':')}
+                        {' '}
+                      </span>
+                      <span className={classes.sortOptions}>
+                        {value ? `${t('search.by', 'by')} ${t(`song.${value}`, value as string)}` : t('search.none', 'none')}
+                      </span>
+                    </Typography>
+                  ),
+                }}
+              >
+                {sortCriteria.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {t(`song.${option}`, option)}
+                  </MenuItem>
+                ))}
+              </TextField>
+            ) : (
+              <>
+                <Typography className={clsx(classes.typography, classes.flexGrow)} variant="body1">
+                  <span className={classes.sortBy}>
+                    {t('search.sort by', 'sort by')}
+                  </span>
+                  <span className={clsx(classes.buttons, classes.sortOptions)}>
+                    {sortCriteria
+                      .slice(0, sortCriteria.length - 1)
+                      .map((buttonName) => sortButton(buttonName))}
+                  </span>
+                </Typography>
+                <Typography className={clsx(classes.typography, classes.year)} variant="body1">
+                  {sortButton('year')}
+                </Typography>
+              </>
+            )}
           </div>
         )}
       />

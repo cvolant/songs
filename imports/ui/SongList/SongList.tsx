@@ -42,7 +42,6 @@ interface ISongListProps {
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
   search?: ISearch;
-  smallDevice: boolean;
   songs: ISong[];
   sort?: ISortSpecifier;
 }
@@ -58,7 +57,6 @@ export const SongList: React.FC<ISongListProps> = ({
   handleToggleFavoriteSong,
   loading = false,
   raiseLimit,
-  smallDevice,
   songs,
   sort,
 }) => {
@@ -102,7 +100,6 @@ export const SongList: React.FC<ISongListProps> = ({
             handleToggleDisplaySort={handleToggleDisplaySort}
             handleSort={handleSort}
             sort={sort}
-            smallDevice={smallDevice}
           />
         )
         : undefined}
@@ -133,7 +130,6 @@ export const SongList: React.FC<ISongListProps> = ({
               }
               handleUnfold={handleUnfold(songId)}
               key={song._id.toHexString()}
-              smallDevice={smallDevice}
               song={song}
               unfolded={unfoldedSong === songId}
             />

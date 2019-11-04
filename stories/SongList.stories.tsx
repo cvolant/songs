@@ -48,14 +48,12 @@ export const songListSorting = (): JSX.Element => {
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
-      smallDevice={boolean('smallDevice', true)}
     />
   );
 };
 
 export const songListItem = (): JSX.Element => (
   <SongListItem
-    smallDevice={boolean('smallDevice', true)}
     favorite={boolean('favorite', true)}
     handleSelect={action('select')}
     handleToggleFavorite={(value?: boolean): () => void => action(`handleToggleFavorite(value: ${value})`)}
@@ -90,7 +88,6 @@ export const songList = (): JSX.Element => {
       logoMenuDeployed={boolean('logoMenuDeployed', true)}
       raiseLimit={action('raiseLimit')}
       search={search}
-      smallDevice={boolean('smallDevice', true)}
       songs={boolean('songs', true) ? songs : []}
       sort={sort}
     />

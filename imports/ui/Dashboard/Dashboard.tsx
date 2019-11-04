@@ -2,8 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -51,8 +50,6 @@ type IUserCollectionName = keyof IUser & 'favoriteSongs' | 'createdSongs' | 'fol
 
 export const Dashboard: React.FC<{}> = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [display, setDisplay] = useState<IUserCollectionName>('favoriteSongs');
   const [displaySort, setDisplaySort] = useState(false);
@@ -156,7 +153,6 @@ export const Dashboard: React.FC<{}> = () => {
 
       title={t('dashboard.Dashboard', 'Dashboard')}
       tutorialContentName={selectedSong ? 'Editor' : 'Dashboard'}
-      smallDevice={smallDevice}
     >
       {selectedSong
         ? (
@@ -172,14 +168,15 @@ export const Dashboard: React.FC<{}> = () => {
             <CardHeader
               action={(
                 <div>
-                  <IconButton
-                    aria-label={t('search.Sort', 'Sort')}
-                    color={displaySort ? 'primary' : undefined}
-                    onClick={handleToggleDisplaySort()}
-                    size="small"
-                  >
-                    <Sort />
-                  </IconButton>
+                  {display !== 'folders' && (
+                    <IconButton
+                      aria-label={t('search.Sort', 'Sort')}
+                      onClick={handleToggleDisplaySort()}
+                      size="small"
+                    >
+                      <Sort />
+                    </IconButton>
+                  )}
                   {
                     Object.entries(userSongLists).map(([
                       list,
@@ -210,7 +207,6 @@ export const Dashboard: React.FC<{}> = () => {
               {display === 'folders'
                 ? (
                   <UserFolderList
-                    displaySort={displaySort}
                     emptyListPlaceholder={(
                       <Typography>
                         {t('dashboard.No folder found', 'No folder found...')}

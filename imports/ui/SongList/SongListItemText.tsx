@@ -8,6 +8,7 @@ import MusicNote from '@material-ui/icons/MusicNote';
 import TextFields from '@material-ui/icons/TextFields';
 import Translate from '@material-ui/icons/Translate';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import InlineIcon from '../utils/InlineIcon';
 import { ISong } from '../../types';
 
@@ -43,16 +44,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ISongListItemTextProps {
-  smallDevice: boolean;
   song: ISong;
   unfolded: boolean;
 }
 
 export const SongListItemText: React.FC<ISongListItemTextProps> = ({
-  smallDevice, song, unfolded,
+  song, unfolded,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const smallDevice = useDeviceSize('sm.down');
 
   const {
     title,

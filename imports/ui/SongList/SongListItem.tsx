@@ -11,6 +11,7 @@ import Check from '@material-ui/icons/Check';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import SongListItemText from './SongListItemText';
 import { ISong } from '../../types';
 
@@ -35,7 +36,6 @@ interface ISongListItemProps {
   handleToggleFavorite: (value?: boolean) => () => void;
   handleUnfold: () => void;
   displayFavorite: boolean;
-  smallDevice: boolean;
   song: ISong;
   unfolded: boolean;
 }
@@ -46,12 +46,12 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
   handleToggleFavorite,
   handleUnfold,
   displayFavorite,
-  smallDevice,
   song,
   unfolded,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ displayFavorite });
+  const smallDevice = useDeviceSize('sm.down');
 
   return (
     <ListItem
@@ -60,16 +60,12 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
       divider
       onClick={handleUnfold}
     >
-      {
-        !smallDevice
-        && (
-          <ListItemIcon className={classes.listIcon}>
-            <QueueMusic />
-          </ListItemIcon>
-        )
-      }
+      {!smallDevice && (
+        <ListItemIcon className={classes.listIcon}>
+          <QueueMusic />
+        </ListItemIcon>
+      )}
       <SongListItemText
-        smallDevice={smallDevice}
         song={song}
         unfolded={unfolded}
       />

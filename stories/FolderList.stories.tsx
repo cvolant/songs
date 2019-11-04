@@ -39,14 +39,12 @@ export const folderListSorting = (): JSX.Element => {
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleSort={(sortName?: ISortFolderCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
-      smallDevice={boolean('smallDevice', true)}
     />
   );
 };
 
 export const folderListItem = (): JSX.Element => (
   <FolderListItem
-    smallDevice={boolean('smallDevice', true)}
     handleSelect={action('select')}
     handleUnfold={action('unfold')}
     folder={folders[0]}
@@ -73,7 +71,6 @@ export const folderList = (): JSX.Element => {
       loading={boolean('loading', true)}
       logoMenuDeployed={boolean('logoMenuDeployed', true)}
       raiseLimit={action('raiseLimit')}
-      smallDevice={boolean('smallDevice', true)}
       folders={boolean('folders', true) ? folders : []}
       sort={sort}
     />

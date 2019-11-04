@@ -11,6 +11,7 @@ import Check from '@material-ui/icons/Check';
 import Folder from '@material-ui/icons/Folder';
 import Settings from '@material-ui/icons/Settings';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import FolderListItemText from './FolderListItemText';
 import { IFolder } from '../../types';
 
@@ -30,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 interface IFolderListItemProps {
   handleSelect: () => void;
   handleUnfold: () => void;
-  smallDevice: boolean;
   folder: IFolder;
   unfolded: boolean;
 }
@@ -38,12 +38,12 @@ interface IFolderListItemProps {
 export const FolderListItem: React.FC<IFolderListItemProps> = ({
   handleSelect,
   handleUnfold,
-  smallDevice,
   folder,
   unfolded,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const smallDevice = useDeviceSize('sm.down');
 
   return (
     <ListItem
@@ -52,16 +52,12 @@ export const FolderListItem: React.FC<IFolderListItemProps> = ({
       divider
       onClick={handleUnfold}
     >
-      {
-        !smallDevice
-        && (
-          <ListItemIcon className={classes.listIcon}>
-            <Folder />
-          </ListItemIcon>
-        )
-      }
+      {!smallDevice && (
+        <ListItemIcon className={classes.listIcon}>
+          <Folder />
+        </ListItemIcon>
+      )}
       <FolderListItemText
-        smallDevice={smallDevice}
         folder={folder}
         unfolded={unfolded}
       />

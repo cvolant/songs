@@ -16,6 +16,7 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import { ISortFolderSpecifier, ISortFolderCriterion } from '../../types';
 
 const sortCriteria: ISortFolderCriterion[] = ['name', 'updatedAd', 'date'];
@@ -98,7 +99,6 @@ interface IFolderListSortingProps {
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSort: (sortName: ISortFolderCriterion) => () => void;
   sort?: ISortFolderSpecifier;
-  smallDevice: boolean;
 }
 
 export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
@@ -106,10 +106,10 @@ export const FolderListSorting: React.FC<IFolderListSortingProps> = ({
   handleToggleDisplaySort,
   handleSort,
   sort,
-  smallDevice,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ displayFavorite });
+  const smallDevice = useDeviceSize('sm.down');
   console.log('From FolderListSorting, render. sort:', sort);
 
   const sortButton = (buttonName: ISortFolderCriterion): JSX.Element => (

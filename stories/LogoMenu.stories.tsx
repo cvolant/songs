@@ -38,7 +38,6 @@ export const topMenuContent = (): JSX.Element => (
     handleLogout={action('handleLogout')}
     handleToggleTopMenu={(deploy?: boolean): () => void => action(`handleToggleTopMenu(display: ${deploy})`)}
     isAuthenticated={boolean('isAuthenticated', true)}
-    smallDevice={boolean('smallDevice', true)}
   />
 );
 
@@ -51,7 +50,6 @@ export const topMenuLarge = (): JSX.Element => (
       handleLogout={action('handleLogout')}
       handleToggleTopMenu={(deploy?: boolean): () => void => action(`handleToggleTopMenu(display: ${deploy})`)}
       isAuthenticated={boolean('isAuthenticated', true)}
-      smallDevice={boolean('smallDevice', true)}
     />
   </TopMenuLarge>
 );
@@ -66,7 +64,6 @@ export const topMenuSmall = (): JSX.Element => (
       handleLogout={action('handleLogout')}
       handleToggleTopMenu={(deploy?: boolean): () => void => action(`handleToggleTopMenu(display: ${deploy})`)}
       isAuthenticated={boolean('isAuthenticated', true)}
-      smallDevice={boolean('smallDevice', true)}
     />
   </TopMenuSmall>
 );

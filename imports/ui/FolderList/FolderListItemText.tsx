@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import Songs from '../../api/songs/songs';
 import { IFolder } from '../../types';
 
@@ -40,16 +41,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IFolderListItemTextProps {
-  smallDevice: boolean;
   folder: IFolder;
   unfolded: boolean;
 }
 
 export const FolderListItemText: React.FC<IFolderListItemTextProps> = ({
-  smallDevice, folder, unfolded,
+  folder, unfolded,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const smallDevice = useDeviceSize('sm.down');
 
   const { date, name, userId } = folder;
 

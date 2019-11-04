@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import Panel from '../utils/Panel';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,14 +40,14 @@ const useStyles = makeStyles((theme) => ({
 interface IInfosSongBySongProps {
   handleCloseInfos: () => void;
   children: React.ReactNode;
-  smallDevice: boolean;
 }
 
 export const InfosSongBySong: React.FC<IInfosSongBySongProps> = ({
-  handleCloseInfos, children, smallDevice,
+  handleCloseInfos, children,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const smallDevice = useDeviceSize('sm.down');
 
   return (
     <Panel className={classes.root} handleClosePanel={handleCloseInfos} closeName={t('infos.Close infos', 'Close infos')}>

@@ -22,6 +22,8 @@ import { setConsoleOptions } from '@storybook/addon-console';
 import theme from '../imports/client/theme';
 import i18n from '../imports/i18n';
 
+import { DeviceSizeProvider } from '../imports/state-contexts/app-device-size-context';
+
 setConsoleOptions({
   panelInclude: [/-SbMock-/],
 });
@@ -40,7 +42,11 @@ addDecorator(
   })
 );
 addDecorator((story, context) => (
-  <Suspense fallback="Loading...">{story(context)}</Suspense>
+  <Suspense fallback="Loading...">
+    <DeviceSizeProvider>
+      {story(context)}
+    </DeviceSizeProvider>
+  </Suspense>
 ));
 addDecorator(muiTheme(theme));
 

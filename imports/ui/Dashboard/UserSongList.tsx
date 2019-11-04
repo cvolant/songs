@@ -121,7 +121,6 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
-      smallDevice
       songs={songs}
       sort={sort}
     />

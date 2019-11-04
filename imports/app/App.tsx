@@ -14,6 +14,7 @@ import { UserProvider } from '../state-contexts/app-user-context';
 import 'normalize.css';
 import '../startup/simple-schema-configuration';
 import theme from '../client/theme';
+import { DeviceSizeProvider } from '../state-contexts/app-device-size-context';
 
 const languages = ['en', 'fr'];
 
@@ -95,7 +96,9 @@ export const App: React.FC<IAppProps> = ({
       <CssBaseline />
       <MuiThemeProvider theme={theme}>
         <UserProvider>
-          <Routes lng={lng} />
+          <DeviceSizeProvider>
+            <Routes lng={lng} />
+          </DeviceSizeProvider>
         </UserProvider>
       </MuiThemeProvider>
     </div>

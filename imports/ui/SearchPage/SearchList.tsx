@@ -23,7 +23,6 @@ interface ISearchListProps {
   handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: ISong) => void;
   logoMenuDeployed?: boolean;
-  smallDevice: boolean;
 }
 interface ISearchListWTData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +40,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   isAuthenticated,
   logoMenuDeployed,
   meteorCall,
-  smallDevice,
 }) => {
   const [displaySort, setDisplaySort] = useState(false);
   const [limit, setLimit] = useState(nbItemsPerPage);
@@ -160,7 +158,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         isAuthenticated={isAuthenticated}
         loading={limitRaised || loading}
         raiseLimit={raiseLimit}
-        smallDevice={smallDevice}
         songs={songs}
         sort={sort}
       />

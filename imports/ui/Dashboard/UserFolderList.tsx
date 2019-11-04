@@ -100,7 +100,6 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
-      smallDevice
       folders={folders}
       sort={sort}
     />

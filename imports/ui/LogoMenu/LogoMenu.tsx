@@ -4,11 +4,9 @@ import React, { SyntheticEvent, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { useTranslation } from 'react-i18next';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
 
 import { useTheme, makeStyles } from '@material-ui/styles';
-
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import Help from '@material-ui/icons/Help';
@@ -17,6 +15,7 @@ import Home from '@material-ui/icons/Home';
 import Menu from '@material-ui/icons/Menu';
 import Person from '@material-ui/icons/Person';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';
@@ -158,7 +157,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const location = useLocation();
-  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const smallDevice = useDeviceSize('sm.down');
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof propsLogoMenuDeployed === 'undefined'
     ? useState(true)
@@ -209,36 +208,32 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
   return (
     <>
-      {
-        smallDevice
-          ? (
-            <TopMenuSmall
-              PaperProps={PaperProps}
+      {smallDevice
+        ? (
+          <TopMenuSmall
+            PaperProps={PaperProps}
+            handleToggleTopMenu={handleToggleTopMenu}
+            topMenuIsOpen={topMenuIsOpen}
+          >
+            <TopMenuContent
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
               handleToggleTopMenu={handleToggleTopMenu}
-              topMenuIsOpen={topMenuIsOpen}
-            >
-              <TopMenuContent
-                isAuthenticated={isAuthenticated}
-                handleLogout={handleLogout}
-                handleToggleTopMenu={handleToggleTopMenu}
-                smallDevice={smallDevice}
-              />
-            </TopMenuSmall>
-          )
-          : (
-            <TopMenuLarge
-              PaperProps={PaperProps}
-              topMenuIsOpen={topMenuIsOpen}
-            >
-              <TopMenuContent
-                isAuthenticated={isAuthenticated}
-                handleLogout={handleLogout}
-                handleToggleTopMenu={handleToggleTopMenu}
-                smallDevice={smallDevice}
-              />
-            </TopMenuLarge>
-          )
-      }
+            />
+          </TopMenuSmall>
+        )
+        : (
+          <TopMenuLarge
+            PaperProps={PaperProps}
+            topMenuIsOpen={topMenuIsOpen}
+          >
+            <TopMenuContent
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
+              handleToggleTopMenu={handleToggleTopMenu}
+            />
+          </TopMenuLarge>
+        )}
       <div className={classes.root}>
         <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)} />
         <ButtonBase

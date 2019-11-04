@@ -4,13 +4,12 @@ import { Mongo } from 'meteor/mongo';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@material-ui/styles';
 import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import SearchList from './SearchList';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
@@ -77,13 +76,12 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   songId,
 }) => {
   const { t, i18n } = useTranslation();
-  const theme = useTheme();
   const history = useHistory();
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
   const [viewer, setViewer] = useState<React.ReactNode | null>(undefined);
-  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const smallDevice = useDeviceSize('sm.down');
   const classes = useStyles();
   const contentAreaRef = createRef<HTMLDivElement>();
 
@@ -124,23 +122,19 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
       sidePanel={showInfos && !Meteor.userId()
         ? (
-          <InfosSongBySong
-            handleCloseInfos={handleCloseInfos}
-            smallDevice={smallDevice}
-          >
-            {smallDevice
-              && (
-                <Fab
-                  variant="extended"
-                  size="small"
-                  aria-label="Continue"
-                  className={classes.continueFab}
-                  onClick={scrollDown}
-                >
-                  <ExpandMore className={classes.continueFabIcon} />
-                  <Typography>{t('Continue')}</Typography>
-                </Fab>
-              )}
+          <InfosSongBySong handleCloseInfos={handleCloseInfos}>
+            {smallDevice && (
+              <Fab
+                variant="extended"
+                size="small"
+                aria-label="Continue"
+                className={classes.continueFab}
+                onClick={scrollDown}
+              >
+                <ExpandMore className={classes.continueFabIcon} />
+                <Typography>{t('Continue')}</Typography>
+              </Fab>
+            )}
           </InfosSongBySong>
         )
         : undefined}
@@ -148,7 +142,6 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       tutorialContentName={selectedSong ? 'Editor' : 'SearchPage'}
       contentAreaRef={contentAreaRef}
       scrollDown={scrollDown}
-      smallDevice={smallDevice}
       viewer={viewer}
     >
       <div className={selectedSong ? classes.hidden : classes.searchPanel}>
@@ -156,7 +149,6 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
           handleFocus={handleFocus}
           handleSelectSong={handleSelectSong}
           logoMenuDeployed={logoMenuDeployed}
-          smallDevice={smallDevice}
         />
       </div>
       {selectedSong

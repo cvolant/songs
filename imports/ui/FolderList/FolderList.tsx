@@ -37,7 +37,6 @@ interface IFolderListProps {
   loading?: boolean;
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
-  smallDevice: boolean;
   folders: IFolder[];
   sort?: ISortFolderSpecifier;
 }
@@ -50,7 +49,6 @@ export const FolderList: React.FC<IFolderListProps> = ({
   handleToggleDisplaySort,
   loading = false,
   raiseLimit,
-  smallDevice,
   folders,
   sort,
 }) => {
@@ -93,7 +91,6 @@ export const FolderList: React.FC<IFolderListProps> = ({
             handleToggleDisplaySort={handleToggleDisplaySort}
             handleSort={handleSort}
             sort={sort}
-            smallDevice={smallDevice}
           />
         )
         : undefined}
@@ -115,7 +112,6 @@ export const FolderList: React.FC<IFolderListProps> = ({
               handleSelect={handleSelect(folder)}
               handleUnfold={handleUnfold(folderId)}
               key={folder._id.toHexString()}
-              smallDevice={smallDevice}
               folder={folder}
               unfolded={unfoldedFolder === folderId}
             />
