@@ -5,7 +5,7 @@ Source: https://github.com/nicu-chiciuc/typed-meteor-methods/blob/master/imports
  */
 
 import { Meteor } from 'meteor/meteor';
-import { KnownMethods } from '../imports/methodTypes';
+import { KnownMethods } from '../imports/types/methodTypes';
 
 declare module 'meteor/meteor' {
   type FirstArgument<T> = T extends (val: infer R) => any ? R : never;
