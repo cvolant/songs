@@ -1,5 +1,6 @@
 {
   "colon": ":",
+  "date 'at'": "at",
 
   "Close": "Close",
   "Continue": "Continue",
@@ -50,11 +51,11 @@
     "Dashboard message": "<0>Yeah!</0> it is <4>translated</4>. It is yet to build...",
     "Close dashboard message": "Close dashboard message",
     "Favorite songs": "Favorite songs",
-    "No favorite song found": "No favorite song found... Click on the favorite icon next to a song to save it here.",
+    "No favorite songs found": "No favorite songs found... Click on the favorite icon next to a song to save it here.",
     "Created songs": "Created songs",
-    "No created song found": "No created song found... Click the new song button below to create one.",
+    "No created songs found": "No created songs found... Click the new song button below to create one.",
     "Folders": "Folders",
-    "No folder found": "No folder found... Click the new folder button below to create one.",
+    "No folders found": "No folders found... Click the new folder button below to create one.",
     "Max 100 characters": "100 characters maximum..."
   },
 
@@ -74,11 +75,14 @@
 
   "folder": {
     "Add folder": "Add folder",
+    "Add song": "Add song",
     "Add song to": "Add song to",
     "Folder name": "Folder name",
     "Choose this folder": "Choose this folder",
     "Folder settings": "Folder settings",
     "Untitled folder": "Untitled folder",
+    "Settings": "Settings",
+    "No songs found in this folder": "No songs found in this folder...",
 
     "name": "name",
     "updatedAd": "last edit",
@@ -117,7 +121,7 @@
     "Advanced search": "Advanced search",
     "Sort": "Sort",
     "Nothing found so far": "Nothing found so far.",
-    "No results try advanced": "No result for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options",
+    "No results try advanced": "No results for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options",
     "Possible to add": "If the song does not exist in the database, you can add it once you logged in.",
     "Search possibilities": "Search by titles, lyrics, authors, editors, classifications. Use the settings button",
     "in the searchfield": "in the search field to open advanced search settings.",

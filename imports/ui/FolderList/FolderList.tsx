@@ -59,6 +59,8 @@ export const FolderList: React.FC<IFolderListProps> = ({
 
   const [unfoldedFolder, setUnfoldedFolder] = useState();
 
+  console.log('From FolderList, render. folders:', folders);
+
   const handleListScroll = (): void => {
     if (!loading && listRef.current) {
       const {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 
 import { makeStyles } from '@material-ui/core/styles';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -49,13 +50,13 @@ interface IFolderListItemTextProps {
 export const FolderListItemText: React.FC<IFolderListItemTextProps> = ({
   folder, unfolded,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
   const smallDevice = useDeviceSize('sm.down');
 
-  const { date, name, userId } = folder;
+  const { date, name, songs } = folder;
 
-  console.log('From FolderListItemText. Songs:', Songs);
+  console.log('From FolderListItem, render. folder:', folder, 'songs:', songs, 'songs.map((song) => song._id):', songs.map((song) => song._id));
 
   return (
     <ListItemText
@@ -65,14 +66,14 @@ export const FolderListItemText: React.FC<IFolderListItemTextProps> = ({
           <Typography className={classes.titles} variant="h6">
             {name || <em>{t('folder.Untitled folder', 'Untitled folder')}</em>}
           </Typography>
-          {date && <Typography className={classes.date} variant="h6">{date.toDateString()}</Typography>}
+          {date && <Typography className={classes.date} variant="h6">{moment(date).locale(i18n.language).calendar().replace(new RegExp(` ${t("date 'at'", 'at')} .+`), '')}</Typography>}
         </div>
       )}
       secondary={(
         <div className={unfolded ? classes.unfolded : classes.folded}>
           {(!smallDevice || unfolded) && (
             <Typography>
-              {Songs.find({ userId }).map((song) => song.title).join(', ')}
+              {Songs.find({ _id: { $in: songs.map((song) => song._id) } }).map((song) => song.title).join(', ')}
             </Typography>
           )}
         </div>

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import { IFolder, FolderSchema } from '../../types';
+import { IFolder, FolderSchema } from '../../types/folderTypes';
 import Songs from '../songs/songs';
 
 class FoldersCollection extends Mongo.Collection<IFolder> {

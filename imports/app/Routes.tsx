@@ -4,7 +4,7 @@ import { Switch } from 'react-router-dom';
 import AuthRoute from './AuthRoute';
 import NotFound from '../ui/NotFound';
 import SearchPage from '../ui/SearchPage';
-import Dashboard from '../ui/Dashboard';
+import DashboardPage from '../ui/Dashboard';
 import SignUp from '../ui/signInUp/SignUp';
 import SignIn from '../ui/signInUp/SignIn';
 
@@ -61,7 +61,7 @@ export const Routes: React.FC<IRoutesProps> = ({
       <AuthRoute
         exact
         path={routesPaths.path(lng, 'dashboard')}
-        component={Dashboard}
+        component={DashboardPage}
         auth
         redirection="home"
       />

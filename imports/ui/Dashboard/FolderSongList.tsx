@@ -13,68 +13,82 @@ import {
 } from '../../types/searchTypes';
 
 import Songs from '../../api/songs/songs';
-import { IUnfetchedSong } from '../../types/songTypes';
-import { IUnfetchedFolder } from '../../types/folderTypes';
 
 const nbItemsPerPage = 20;
 
-type IUserSongListName = 'favoriteSongs' | 'createdSongs' | 'folderSongs';
-interface IUserSongListProps {
+type IFolderSongListName = keyof IUser & 'favoriteSongs' | 'createdSongs';
+interface IFolderSongListProps {
   displaySort?: boolean;
   emptyListPlaceholder: ReactNode;
-  folder?: IUnfetchedFolder;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
-  selectSong: (song: IUnfetchedSong) => void;
-  userSongList?: IUserSongListName;
+  userSongList?: IFolderSongListName;
 }
-interface IUserSongListWTData {
+interface IFolderSongListWTData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meteorCall: (method: string, ...rest: any[]) => void;
   favoriteSongs: Mongo.ObjectID[];
-  songs: ISong[];
+  user: Meteor.User | null;
 }
-interface IWrappedUserSongListProps
-  extends IUserSongListProps, IUserSongListWTData { }
+interface IWrappedFolderSongListProps
+  extends IFolderSongListProps, IFolderSongListWTData { }
 
-export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
+export const WrappedFolderSongList: React.FC<IWrappedFolderSongListProps> = ({
   displaySort = false,
   emptyListPlaceholder,
   favoriteSongs,
-  folder,
   handleToggleDisplaySort,
   logoMenuDeployed,
   meteorCall,
-  selectSong,
-  songs,
   userSongList = 'favoriteSongs',
+  user,
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
+  const [songs, setSongs] = useState<ISong[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Meteor.SubscriptionHandle[]>([]);
 
-  useEffect((): (() => void) => {
+  const updateSubscription = (newSubscriptionOptions: {
+    limit?: number;
+    sort?: ISortSpecifier;
+  } = {}): (() => void) => {
     setLoading(true);
-    const endOfLoading = (): void => {
-      console.log('From UserSongList, useEffect, endOfLoading.');
+    const newSubscriptions = subscriptions;
+    console.log('From FolderSongList, updateSubscription. limit:', limit, 'user:', user || 'no-user', 'user[userSongList]:', user ? (user as IUser)[userSongList] : 'no-user');
+    const newSubscription = Meteor.subscribe(`user.${userSongList}`, newSubscriptionOptions, () => {
+      const updatedSongs = Songs.find({
+        _id: {
+          $in: user ? ((user as IUser)[userSongList] || []) : [],
+        },
+      }, { sort: sort || { updatedAt: -1 } }).fetch() as ISong[];
+      setSongs(updatedSongs);
+      console.log('From SongList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length, 'userSongList:', userSongList, 'Songs:', Songs);
       setLoading(false);
-    };
-    const subscription = userSongList === 'folderSongs' && folder && folder._id
-      ? Meteor.subscribe('songs.inFolder', folder, endOfLoading)
-      : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
-    console.log('From UserSongList, useEffect. userSongList:', userSongList, 'folder:', folder, 'subscription:', subscription);
+    });
+    newSubscriptions.push(newSubscription);
+    setSubscriptions(newSubscriptions);
     return (): void => {
-      subscription.stop();
+      console.log('From FolderSongList, updateSubscription return. Stop subscriptions.');
+      subscriptions.forEach((subscription) => subscription.stop());
+      setSongs([]);
     };
-  }, [sort, userSongList]);
+  };
+
+  useEffect(updateSubscription, [
+    sort,
+    userSongList,
+    user && ((user as IUser)[userSongList] || []).join(),
+  ]);
 
   const raiseLimit = (): void => {
-    console.log('From UserSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
+    console.log('From FolderSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
     if (songs.length === limit) {
       setLoading(true);
       const newLimit = limit + nbItemsPerPage;
-      console.log('From UserSongList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
+      console.log('From FolderSongList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
       setLimit(newLimit);
+      updateSubscription({ limit: newLimit });
     }
   };
 
@@ -92,7 +106,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
   };
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
-    console.log('From UserSongList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
+    console.log('From FolderSongList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
     meteorCall('user.favoriteSong.toggle', { songId, value });
   };
 
@@ -108,26 +122,21 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
-      handleSelectSong={selectSong}
       songs={songs}
       sort={sort}
     />
   );
 };
 
-const UserSongList = withTracker<IUserSongListWTData, IUserSongListProps>(({
-  userSongList = 'favoriteSongs', folder,
-}) => {
+const FolderSongList = withTracker<IFolderSongListWTData, IFolderSongListProps>(() => {
   const user = Meteor.user() as IUser;
-  console.log('From UserSongList, withTracker. folder:', folder, 'folder && folder.songs && folder.songs.map((song) => song._id):', folder && folder.songs && folder.songs.map((song) => song._id), 'Songs:', Songs);
-  const songIds = userSongList === 'folderSongs'
-    ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
-    : (user && user[userSongList]) || [];
-  return {
-    favoriteSongs: user ? user.favoriteSongs : [],
-    meteorCall: Meteor.call,
-    songs: Songs.find({ _id: { $in: songIds } }).fetch(),
-  };
-})(WrappedUserSongList);
+  const favoriteSongs = user && user.favoriteSongs;
 
-export default UserSongList;
+  return {
+    favoriteSongs,
+    meteorCall: Meteor.call,
+    user: Meteor.user(),
+  };
+})(WrappedFolderSongList);
+
+export default FolderSongList;

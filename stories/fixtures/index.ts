@@ -126,7 +126,7 @@ export const details = createDetails({
 export const folders = [
   {
     _id: id('idFolder1'),
-    date: new Date('2020/01/10'),
+    date: new Date(new Date().valueOf() + 300000000),
     name: 'Folder1',
     sharedWith: [users[1]._id || ''],
     songs,

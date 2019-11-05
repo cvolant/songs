@@ -77,7 +77,7 @@ export const CreateNewDialog: React.FC<ICreateNewDialogProps> = ({
           console.error('From CreateNewDialog, handleCreateNew.callback. err:', err);
           setError(err.reason || 'Error, sorry... Cannot create a new one. Please retry!');
         } else {
-          console.log('From Dashboard, handleCreateNew.callback. res:', res);
+          console.log('From CreateNewDialog, handleCreateNew.callback. res:', res);
           handleClose();
         }
       });
