@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import {
-  IUser, ISearch, IQuery, IFieldsKey, ISong, IMongoQueryOptions,
+  IUser, ISearch, IQuery, ISong,
 } from '../../types';
+import { IFieldsKey, IMongoQueryOptions } from '../../types/searchTypes';
 
 type IQueryFields = Record<IFieldsKey, {
   names: string[];
@@ -27,14 +28,8 @@ export const buildQuery = ({
   search?: ISearch;
   options?: IMongoQueryOptions;
 }): {
-  mongo: {
-    query: Mongo.Query<ISong>;
-    options: IMongoQueryOptions;
-  };
-  minimongo: {
-    query: Mongo.Query<ISong>;
-    options: IMongoQueryOptions;
-  };
+  query: Mongo.Query<ISong>;
+  options: IMongoQueryOptions;
 } => {
   const fields: IQueryFields = {
     titles: {
@@ -127,17 +122,8 @@ export const buildQuery = ({
   console.log('From buildQuery. query:', toStr({ $and: queries }), '\noptions:', toStr(options));
 
   return {
-    mongo: {
-      query: queries.length > 0 ? { $and: queries } : {},
-      options,
-    },
-    minimongo: {
-      query: {},
-      options: {
-        limit: options.limit,
-        sort: options.sort && options.sort.score ? { score: -1 } : options.sort,
-      },
-    },
+    query: queries.length > 0 ? { $and: queries } : {},
+    options,
   };
 };
 

@@ -2,32 +2,47 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { publishComposite } from 'meteor/reywood:publish-composite';
 
-import { Folders } from '../../folders/folders';
 import {
   IFolder,
   ISong,
   IUser,
-  IMongoQueryOptions,
 } from '../../../types';
+import { IMongoQueryOptions } from '../../../types/searchTypes';
+
+import { Folders } from '../../folders/folders';
 import Songs from '../../songs/songs';
 
-publishComposite('user.folders', {
+publishComposite('user.folders', (options: IMongoQueryOptions) => ({
   find(this: { userId: string }): Mongo.Cursor<IUser> {
     return Meteor.users.find({ _id: this.userId }, { fields: { folders: 1 } });
   },
 
   children: [{
     find(user: IUser): Mongo.Cursor<IFolder> {
-      return Folders.find({ _id: { $in: user.folders } }, { fields: { name: 1, songs: 1 } });
+      return Folders.find(
+        { _id: { $in: user.folders } },
+        {
+          fields: {
+            name: 1,
+            date: 1,
+            updatedAt: 1,
+            songs: 1,
+          },
+          ...options,
+        },
+      );
     },
 
     children: [{
       find(folder: IFolder): Mongo.Cursor<ISong> {
-        return Songs.find({ _id: { $in: folder.songs.map((song) => song._id) } });
+        return Songs.find(
+          { _id: { $in: folder.songs.map((song) => song._id) } },
+          { fields: { title: 1 } },
+        );
       },
     }],
   }],
-});
+}));
 
 publishComposite('user.favoriteSongs', (options: IMongoQueryOptions) => ({
   find(this: { userId: string }): Mongo.Cursor<IUser> {

@@ -25,7 +25,7 @@ interface IUserSongListProps {
   folder?: IUnfetchedFolder;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
-  selectSong: (song: IUnfetchedSong) => void;
+  handleSelectSong: (song: IUnfetchedSong) => void;
   userSongList?: IUserSongListName;
 }
 interface IUserSongListWTData {
@@ -45,7 +45,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
   handleToggleDisplaySort,
   logoMenuDeployed,
   meteorCall,
-  selectSong,
+  handleSelectSong,
   songs,
   userSongList = 'favoriteSongs',
 }) => {
@@ -60,7 +60,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       setLoading(false);
     };
     const subscription = userSongList === 'folderSongs' && folder && folder._id
-      ? Meteor.subscribe('songs.inFolder', folder, endOfLoading)
+      ? Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }, endOfLoading)
       : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
     console.log('From UserSongList, useEffect. userSongList:', userSongList, 'folder:', folder, 'subscription:', subscription);
     return (): void => {
@@ -108,7 +108,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       loading={loading}
       logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
-      handleSelectSong={selectSong}
+      handleSelectSong={handleSelectSong}
       songs={songs}
       sort={sort}
     />

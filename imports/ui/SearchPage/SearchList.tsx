@@ -3,6 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { useState, useEffect } from 'react';
 
+import { makeStyles } from '@material-ui/core';
+
 import SearchField from './SearchField';
 import SongList from '../SongList/SongList';
 import SearchListNoResult from './SearchListNoResult';
@@ -20,16 +22,32 @@ import buildQuery from './buildQuery';
 
 const nbItemsPerPage = 20;
 
+const useStyles = makeStyles(() => ({
+  hidden: {
+    display: 'none',
+  },
+  root: {
+    backgroundColor: 'inherit',
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '0 auto',
+    overflow: 'hidden',
+    width: '100%',
+  },
+}));
+
 interface ISearchListProps {
   handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: ISong) => void;
+  hidden?: boolean;
   logoMenuDeployed?: boolean;
 }
 interface ISearchListWTData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  meteorCall: (method: string, ...rest: any[]) => void;
   favoriteSongs: Mongo.ObjectID[];
   isAuthenticated: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  meteorCall: (method: string, ...rest: any[]) => void;
+  songs: ISong[];
 }
 interface IWrappedSearchListProps
   extends ISearchListProps, ISearchListWTData { }
@@ -38,80 +56,65 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   favoriteSongs,
   handleFocus,
   handleSelectSong,
+  hidden = false,
   isAuthenticated,
   logoMenuDeployed,
   meteorCall,
+  songs,
 }) => {
+  const classes = useStyles();
+
   const [displaySort, setDisplaySort] = useState(false);
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [limitRaised, setLimitRaised] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
   const [search, setSearch] = useState();
-  const [songs, setSongs] = useState<ISong[]>([]);
-  const [subscriptions, setSubscriptions] = useState<Meteor.SubscriptionHandle[]>([]);
 
-  const updateSubscription = (newSubscriptionOptions: {
-    limit?: number;
-    sort?: ISortSpecifier;
-  } = {}): (() => void) => {
-    const newSubscriptions = subscriptions;
-    console.log('From SearchList, updateSubscription. limit:', limit);
-    const {
-      mongo: { query, options },
-      minimongo,
-    } = buildQuery({ search, options: newSubscriptionOptions });
-    console.log('From SearchList, updateSubscription. { query, options }:', { query, options });
-    const newSubscription = Meteor.subscribe('songs', { query, options }, () => {
-      const updatedSongs = Songs.find(minimongo.query, minimongo.options).fetch() as ISong[];
-      setSongs(updatedSongs);
-      console.log('From SearchList, updateSubscription, subscription callback. updatedSongs.length:', updatedSongs.length, 'Songs:', Songs, 'query:', query, 'options:', options, 'minimongo:', minimongo);
-      setLoading(false);
-      setLimitRaised(false);
-    });
-    newSubscriptions.push(newSubscription);
-    setSubscriptions(newSubscriptions);
-    return (): void => {
-      console.log('From SearchList, updateSubscription return. Stop subscriptions.');
-      subscriptions.forEach((subscription) => subscription.stop());
-      setSongs([]);
-    };
-  };
+  console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
 
-  useEffect(updateSubscription, [sort]);
   useEffect(() => {
-    console.log('From SearchList, useEffect[search].');
-    setLimit(nbItemsPerPage);
     if (search
       && (search.globalQuery
         || (search.specificQueries && Object.keys(search.specificQueries).length)
       )
     ) {
-      setLoading(true);
-      return updateSubscription();
+      const { query, options } = buildQuery({ search, options: { limit, sort } });
+
+      console.log('From SearchList, useEffect[search, sort]: subscription with { query, options }:', JSON.stringify({ query, options }));
+
+      const subscription = Meteor.subscribe('songs', { query, options }, () => {
+        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false).');
+        setLoading(false);
+        setLimitRaised(false);
+      });
+      return (): void => {
+        console.log('From SearchList, useEffect[search, sort] return. Stop subscriptions.');
+        subscription.stop();
+      };
     }
-    console.log('From Songlist, useEffect. empty search. stopLoading().');
+    console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
     return (): void => { };
+  }, [search, sort]);
+
+  useEffect(() => {
+    setLimit(nbItemsPerPage);
   }, [search]);
 
   const raiseLimit = (): void => {
-    console.log('From SearchList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
     if (songs.length === limit) {
+      console.log(`From SearchList, raiseLimit: setLimitRaised(true) + setLimit(${limit + nbItemsPerPage}). exlimit:`, limit);
       setLimitRaised(true);
-      const newLimit = limit + nbItemsPerPage;
-      console.log('From SearchList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
-      setLimit(newLimit);
-      updateSubscription({ limit: newLimit });
+      setLimit(limit + nbItemsPerPage);
     }
   };
 
   const handleNewSearch = (newSearch: ISearch): void => {
-    console.log('From SearchPage, handleNewSearch. newSearch:', newSearch, 'search:', search);
     if (JSON.stringify(newSearch) !== JSON.stringify(search)) {
+      console.log('From SearchList, handleNewSearch : setLoading(true) + setSearch(', JSON.stringify(newSearch), ').');
       setLoading(true);
       setSearch(newSearch);
-      console.log('From SearchPage, handleNewSearch. newSearch. loading:', loading, 'search:', search);
     }
   };
 
@@ -139,7 +142,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   };
 
   return (
-    <>
+    <div className={hidden ? classes.hidden : classes.root}>
       <SearchField
         displaySort={displaySort}
         logoMenuDeployed={logoMenuDeployed || false}
@@ -162,22 +165,18 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         songs={songs}
         sort={sort}
       />
-    </>
+    </div>
   );
 };
 
 const SearchList = withTracker<ISearchListWTData, ISearchListProps>(() => {
-  const isAuthenticated = !!Meteor.userId();
-  if (isAuthenticated) {
-    Meteor.subscribe('user.favoriteSongs');
-  }
   const user = Meteor.user() as IUser;
-  const favoriteSongs = user && user.favoriteSongs;
 
   return {
-    favoriteSongs,
-    isAuthenticated,
+    favoriteSongs: user ? user.favoriteSongs : [],
+    isAuthenticated: !!user,
     meteorCall: Meteor.call,
+    songs: Songs.find({}).fetch(),
   };
 })(WrappedSearchList);
 

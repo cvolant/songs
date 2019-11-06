@@ -20,6 +20,10 @@ import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+    padding: theme.spacing(1, 1.5),
+  },
   card: {
     position: 'relative',
     width: '100%',
@@ -29,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     position: 'absolute',
+    width: '100%',
   },
   cardContent: {
     paddingTop: 0,
@@ -46,11 +51,12 @@ interface IFolderEditorProps {
   folder: IUnfetchedFolder;
   goBack: () => void;
   logoMenuDeployed: boolean;
-  selectSong: (song: IUnfetchedSong) => void;
+  handleAddSong: () => void;
+  handleSelectSong: (song: IUnfetchedSong) => void;
 }
 
 export const FolderEditor: React.FC<IFolderEditorProps> = ({
-  folder, goBack, logoMenuDeployed, selectSong,
+  folder, goBack, logoMenuDeployed, handleAddSong, handleSelectSong,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
@@ -61,7 +67,6 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
     setDisplaySort(newDisplaySort === undefined ? !displaySort : newDisplaySort);
   };
 
-  const handleAddSong = (): void => {};
   const handleEditSettings = (): void => {};
 
   return (
@@ -97,12 +102,13 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           folder={folder}
           handleToggleDisplaySort={handleToggleDisplaySort}
           logoMenuDeployed={logoMenuDeployed}
-          selectSong={selectSong}
+          handleSelectSong={handleSelectSong}
           userSongList="folderSongs"
         />
       </CardContent>
       <CardActions className={classes.cardAction}>
         <Button
+          className={classes.button}
           color="primary"
           onClick={goBack}
           size="large"
@@ -113,6 +119,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         </Button>
         <div>
           <Button
+            className={classes.button}
             color="primary"
             onClick={handleAddSong}
             size="large"
@@ -122,6 +129,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
             {t('folder.Add song', 'Add song')}
           </Button>
           <Button
+            className={classes.button}
             color="primary"
             onClick={handleEditSettings}
             size="large"

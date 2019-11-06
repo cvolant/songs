@@ -50,11 +50,11 @@ interface IMainDashboardProps {
   handleChangeDisplay: (newDisplay?: IUserCollectionName) => () => void;
   logoMenuDeployed: boolean;
   selectFolder: (folder: IUnfetchedFolder) => void;
-  selectSong: (song: IUnfetchedSong) => void;
+  handleSelectSong: (song: IUnfetchedSong) => void;
 }
 
 export const MainDashboard: React.FC<IMainDashboardProps> = ({
-  display, handleChangeDisplay, logoMenuDeployed, selectFolder, selectSong,
+  display, handleChangeDisplay, logoMenuDeployed, selectFolder, handleSelectSong,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
@@ -84,7 +84,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
     Meteor.call('user.createdSongs.insert', { song: { title: songTitle } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
       callback(err, res);
       if (res) {
-        selectSong({ _id: res, title: songTitle });
+        handleSelectSong({ _id: res, title: songTitle });
       }
     });
   };
@@ -173,7 +173,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
               }
               handleToggleDisplaySort={handleToggleDisplaySort}
               logoMenuDeployed={logoMenuDeployed}
-              selectSong={selectSong}
+              handleSelectSong={handleSelectSong}
               userSongList={display}
             />
           )}

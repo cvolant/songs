@@ -163,23 +163,3 @@ users[0].favoriteSongs = songs.map((song) => song._id);
 users[1].favoriteSongs = [songs[0]._id];
 users[0].createdSongs = [songs[1]._id];
 users[1].createdSongs = [songs[0]._id];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const specialLog = (name: string) => (args: any): void => {
-  console.log(`-------StorybookLog------- ${name}:`, args);
-};
-
-export const Session = {
-  set: specialLog('Session.set:'),
-  get: specialLog('Session.get:'),
-};
-
-export const Meteor = {
-  subscribe: specialLog('Meteor.subscribe'),
-  userId: (): string | undefined => users[0]._id,
-  call: specialLog('Meteor.call:'),
-};
-
-export const Mongo = {
-  Collection: specialLog('Mongo.Collection:'),
-};

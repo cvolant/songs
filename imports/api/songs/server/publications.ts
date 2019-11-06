@@ -22,8 +22,10 @@ Meteor.publish('songs', ({
 }) => Songs.find(query, options as IMongoQueryOptions));
 
 publishComposite('songs.inFolder', function songsInFolder(
-  this: { userId: string },
-  folder: IUnfetchedFolder,
+  this: { userId: string }, { folder, options }: {
+    folder: IUnfetchedFolder;
+    options: IMongoQueryOptions;
+  },
 ) {
   console.log('From songs.inFolder. Before schema validation.');
   Folders.schema.validate(folder);
@@ -31,7 +33,7 @@ publishComposite('songs.inFolder', function songsInFolder(
   const { _id } = folder;
   const { userId } = this;
 
-  console.log('From songs.inFolder. _id:', _id, 'userId:', userId);
+  console.log('From songs.inFolder. _id:', _id, 'userId:', userId, '\nfolder:', folder, '\noptions:', options);
 
   return {
     find: (): Mongo.Cursor<IFolder> => Folders.find(
@@ -44,6 +46,7 @@ publishComposite('songs.inFolder', function songsInFolder(
         console.log('$in:', foundFolder.songs.map((song) => song._id));
         return Songs.find(
           { _id: { $in: foundFolder.songs.map((song) => song._id) } },
+          options,
         );
       },
     }],

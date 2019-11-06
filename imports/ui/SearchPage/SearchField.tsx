@@ -1,4 +1,3 @@
-import { Session } from 'meteor/session';
 import React, {
   createRef,
   useEffect,
@@ -26,7 +25,7 @@ import Settings from '@material-ui/icons/Settings';
 import SettingsOutlined from '@material-ui/icons/SettingsOutlined';
 import Search from '@material-ui/icons/Search';
 
-import { ISearch, ISpecificQuery, IFieldsKey } from '../../types/searchTypes';
+import { ISearch, ISpecificQuery } from '../../types/searchTypes';
 
 const useStyles = makeStyles((theme) => ({
   adornment: {
@@ -94,10 +93,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type IAdvancedFields = Record<IFieldsKey, {
+interface IAdvancedField {
   name: string;
+  localName: string;
   placeholder: string;
-}>
+}
 interface ISearchFieldProps {
   displaySort?: boolean;
   handleFocus: (focus?: boolean) => () => void;
@@ -119,40 +119,48 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const advancedFields: IAdvancedFields = {
-    titles: {
-      name: t('song.titles', 'titles'),
+  const advancedFields: IAdvancedField[] = [
+    {
+      name: 'titles',
+      localName: t('song.titles', 'titles'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
-    authors: {
-      name: t('song.authors', 'authors'),
+    {
+      name: 'authors',
+      localName: t('song.authors', 'authors'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
-    editor: {
-      name: t('song.editor', 'editor'),
+    {
+      name: 'editor',
+      localName: t('song.editor', 'editor'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
-    classifications: {
-      name: t('song.classifications', 'classifications'),
+    {
+      name: 'classifications',
+      localName: t('song.classifications', 'classifications'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
-    lyrics: {
-      name: t('song.lyrics', 'lyrics'),
+    {
+      name: 'lyrics',
+      localName: t('song.lyrics', 'lyrics'),
       placeholder: t('search.placeholder. ??? ', ' ??? '),
     },
-    before: {
-      name: t('song.before', 'before'),
+    {
+      name: 'before',
+      localName: t('song.before', 'before'),
       placeholder: t('search.placeholder. year ', ' year '),
     },
-    after: {
-      name: t('song.after', 'after'),
+    {
+      name: 'after',
+      localName: t('song.after', 'after'),
       placeholder: t('search.placeholder. year ', ' year '),
     },
-    favorites: {
-      name: t('song.favorites', 'favorites'),
+    {
+      name: 'favorites',
+      localName: t('song.favorites', 'favorites'),
       placeholder: t('search.placeholder.yes', 'yes'),
     },
-  };
+  ];
 
   const inputRef = createRef<HTMLInputElement>();
   const classes = useStyles({ logoMenuDeployed });
@@ -183,18 +191,22 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       specificEntries.forEach((specificEntry) => {
         const queryFirstChar = specificEntry.indexOf('[') + 1;
         const queryLastChar = specificEntry[specificEntry.length - 1] === ']' ? specificEntry.length - 1 : specificEntry.length;
-        const field = specificEntry.substring(1, queryFirstChar - 1);
-        const query = specificEntry.substring(queryFirstChar, queryLastChar).replace(/(\W\w\W)|\W+/g, ' ').trim();
-        const queryWords = query.split(' ');
-        queryWords.forEach((queryWord) => specificQueries.push({ [field]: queryWord }));
-        newUrlSearchElements.push(`${field}=${encodeURI(query)}`);
+        const fieldName = specificEntry.substring(1, queryFirstChar - 1);
+        const query = specificEntry.substring(queryFirstChar, queryLastChar);
+        const { name: field, placeholder } = advancedFields
+          .find((advancedField) => advancedField.localName === fieldName)
+          || {};
+        if (field && placeholder !== query) {
+          const cleanQuery = query.replace(/(\W\w\W)|\W+/g, ' ').trim();
+          const queryWords = cleanQuery.split(' ');
+          queryWords.forEach((queryWord) => specificQueries.push({ [field]: queryWord }));
+          newUrlSearchElements.push(`${fieldName}=${encodeURI(cleanQuery)}`);
+        }
       });
       console.log('From SearchField, handleSearch. specificQueries:', specificQueries);
     }
 
     console.log('From SearchField, handleSearch. newSearch:', newSearch);
-    Session.set('search', newSearch);
-    console.log("From SearchField, Session.get('search'):", Session.get('search'));
     handleNewSearch(newSearch);
     const newUrlSearch = `?${newUrlSearchElements.join('&')}`;
     console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
@@ -205,10 +217,10 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   };
 
   useEffect(() => {
-    const formerSearch = location.search || Session.get('search');
-    if (formerSearch) {
-      console.log('From SearchField, useEffect[]. search on mount. location.search:', location.search);
-      const query = location.search.substring(1).replace('global=', '').split('&').map((q) => {
+    const urlSearchQuery = location.search;
+    if (urlSearchQuery) {
+      console.log('From SearchField, useEffect[]. search on mount. location.search:', urlSearchQuery);
+      const query = urlSearchQuery.substring(1).replace('global=', '').split('&').map((q) => {
         const egal = q.indexOf('=');
         return egal === -1 ? decodeURI(q) : `$${q.substring(0, egal)}[${decodeURI(q.substring(egal + 1))}]`;
       })
@@ -244,11 +256,11 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   };
 
   const handleAdvancedButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    console.log('From SearchFiel, handleAdvancedButtonClick. e:', e, 'e.currentTarget:', e.currentTarget, 'e.currentTarget:', e.currentTarget);
+    console.log('From SearchFiel, handleAdvancedButtonClick. e:', e, 'e.target:', e.target, 'e.currentTarget:', e.currentTarget);
     if (inputRef.current) {
       const {
         currentTarget: {
-          value: fieldKey,
+          value: fieldName,
         },
       } = e;
       const {
@@ -259,36 +271,51 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         },
       } = inputRef;
 
-      const field = advancedFields[fieldKey as IFieldsKey];
+      const field = advancedFields.find((advancedField) => advancedField.name === fieldName);
 
-      if (selectionStart
-        && selectionEnd
-        && field
-        && field.name
-        && field.placeholder) {
-        let newSelectionStart = selectionStart;
-        let newSelectionEnd = selectionEnd;
+      if (field) {
+        let newSelectionEnd = typeof selectionEnd === 'number' ? selectionEnd : inputValue.length;
+        let newSelectionStart = typeof selectionStart === 'number' ? selectionStart : newSelectionEnd;
+        console.log('From SearchField, handleAdvancedButtonClick. newSelectionStart:', newSelectionStart, 'newSelectionEnd:', newSelectionEnd);
 
-        if (selectionStart === selectionEnd
-          && selectionStart !== 0
-          && selectionEnd !== inputValue.length) {
-          console.log('From SearchField, handleAdvancedButtonClick. value:', inputValue, 'value.substring(selectionStart - 1, selectionEnd + 1):', inputValue.substring(selectionStart - 1, selectionEnd + 1));
-          if (!inputValue.substring(selectionStart - 1, selectionEnd + 1).match(/.\W|[^$\w]./g)) {
-            newSelectionStart = inputValue.length;
-            newSelectionEnd = inputValue.length;
-          }
+        // A 'clean place' is:
+        const cursorInCleanPlace = (pos: number): boolean => false
+          // || either the start of the string
+          || pos === 0
+          // || either the end of the string
+          || pos === inputValue.length
+          // || either...
+          || (true
+            // && next to a space
+            && !!inputValue.substr(pos - 1, 2).match(/.\s|\s./g)
+            // && outsite of brackets
+            && !inputValue.substring(0, newSelectionStart).match(/\[[^\]]*$/g)
+          );
+
+        // If the start or the end of selection is not in a clean place
+        if (!cursorInCleanPlace(newSelectionStart) || !cursorInCleanPlace(newSelectionEnd)) {
+          // Then let's put the cursor at the end
+          newSelectionStart = inputValue.length;
+          newSelectionEnd = inputValue.length;
+          console.log('From SearchField, handleAdvancedButtonClick. Cursor is not in a clean place.');
         }
 
-        const stringParts = [];
+        // Build the resulting searchEntry string
+        const stringParts: string[] = []; // Parts of the string
+        // 1st part: up to newSelectionStart
         stringParts.push(inputValue.substring(0, newSelectionStart).trim());
+        // 2nd part: with placeholder if nothing is selected, otherwise with selection
         if (newSelectionStart === newSelectionEnd) {
-          stringParts.push(`$${field.name}[${field.placeholder}]`);
+          stringParts.push(`$${field.localName}[${field.placeholder}]`);
         } else {
-          stringParts.push(`$${field.name}[${inputValue.substring(newSelectionStart, newSelectionEnd).trim()}]`);
+          stringParts.push(`$${field.localName}[${inputValue.substring(newSelectionStart, newSelectionEnd).trim()}]`);
         }
+        // 3rd part: from newSelectionEnd to the end
         stringParts.push(inputValue.substring(newSelectionEnd).trim());
-        newSelectionStart = stringParts[0].length + fieldKey.length + 3;
-        newSelectionEnd = (stringParts[0] + stringParts[1]).length;
+
+        // Set new selection
+        newSelectionStart = stringParts[0].length + field.localName.length + 3; // From after the [
+        newSelectionEnd = (stringParts[0] + stringParts[1]).length; // To before the ]
         setSelectionRange({
           selectionStart: newSelectionStart,
           selectionEnd: newSelectionEnd,
@@ -297,9 +324,9 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         setSearchEntry(newSearchString);
         inputFocus(true)();
         handleSearch(newSearchString);
-        console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'fieldKey:', fieldKey, 'inputValue:', inputValue, 'stringParts:', stringParts);
+        console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'inputValue:', inputValue, 'stringParts:', stringParts);
       } else {
-        console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field object.');
+        console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field name.');
       }
     }
   };
@@ -367,11 +394,11 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
               color="primary"
               variant="contained"
             >
-              {Object.entries(advancedFields).map(([fieldKey, fieldValues]) => {
-                if (fieldKey === 'favorites' && !isAuthenticated) return undefined;
+              {advancedFields.map(({ name, localName }) => {
+                if (name === 'favorites' && !isAuthenticated) return undefined;
                 return (
-                  <Button value={fieldKey} key={fieldKey} onClick={handleAdvancedButtonClick}>
-                    {fieldValues.name.replace(/(^|\s)\w/g, (l) => l.toUpperCase())}
+                  <Button value={name} key={name} onClick={handleAdvancedButtonClick}>
+                    {localName.replace(/(^|\s)\w/g, (l) => l.toUpperCase())}
                   </Button>
                 );
               })}

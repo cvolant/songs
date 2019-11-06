@@ -40,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(1),
     },
   },
-  hidden: {
-    display: 'none',
-  },
   pageContent: {
     flexGrow: 1,
     height: '100%',
@@ -58,14 +55,6 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     padding: theme.spacing(2),
     width: '100vw',
-  },
-  searchPanel: {
-    backgroundColor: 'inherit',
-    display: 'flex',
-    flexDirection: 'column',
-    margin: '0 auto',
-    overflow: 'hidden',
-    width: '100%',
   },
 }));
 
@@ -145,13 +134,12 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       scrollDown={scrollDown}
       viewer={viewer}
     >
-      <div className={selectedSong ? classes.hidden : classes.searchPanel}>
-        <SearchList
-          handleFocus={handleFocus}
-          handleSelectSong={handleSelectSong}
-          logoMenuDeployed={logoMenuDeployed}
-        />
-      </div>
+      <SearchList
+        handleFocus={handleFocus}
+        handleSelectSong={handleSelectSong}
+        hidden={!!selectedSong}
+        logoMenuDeployed={logoMenuDeployed}
+      />
       {selectedSong
         ? (
           <Editor

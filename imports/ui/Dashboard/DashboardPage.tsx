@@ -13,6 +13,7 @@ import MainDashboard, { IUserCollectionName } from './MainDashboard';
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 import FolderEditor from './FolderEditor';
+import { SearchList } from '../SearchPage';
 
 export const DashboardPage: React.FC<{}> = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export const DashboardPage: React.FC<{}> = () => {
   const [display, setDisplay] = useState<IUserCollectionName>('favoriteSongs');
   const [folder, setFolder] = useState<IUnfetchedFolder | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
+  const [search, setSearch] = useState(false);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
   const [showPanel, setShowPanel] = useState(true);
 
@@ -37,14 +39,28 @@ export const DashboardPage: React.FC<{}> = () => {
     setter(undefined);
   };
 
-  const handleClosePanel = (): void => setShowPanel(false);
+  const handleAddSong = (): void => {
+    setSearch(true);
+  };
+
+  const handleClosePanel = (): void => {
+    setShowPanel(false);
+  };
+
+  const handleFocus = (focus?: boolean) => (): void => {
+    setLogoMenuDeployed(!focus);
+  };
 
   const selectFolder = (newFolder: IUnfetchedFolder): void => {
     setFolder(newFolder);
   };
 
-  const selectSong = (newSong: IUnfetchedSong): void => {
+  const handleSelectSong = (newSong: IUnfetchedSong): void => {
     setSong(newSong);
+    if (search && folder) {
+      setSearch(false);
+      Meteor.call('folders.update.songs.insert', { folderId: folder._id, songId: newSong._id });
+    }
   };
 
   return (
@@ -93,13 +109,23 @@ export const DashboardPage: React.FC<{}> = () => {
             />
           );
         }
+        if (search) {
+          return (
+            <SearchList
+              handleFocus={handleFocus}
+              handleSelectSong={handleSelectSong}
+              logoMenuDeployed={logoMenuDeployed}
+            />
+          );
+        }
         if (folder) {
           return (
             <FolderEditor
               folder={folder}
               goBack={goBack(setFolder)}
               logoMenuDeployed={logoMenuDeployed}
-              selectSong={selectSong}
+              handleSelectSong={handleSelectSong}
+              handleAddSong={handleAddSong}
             />
           );
         }
@@ -109,7 +135,7 @@ export const DashboardPage: React.FC<{}> = () => {
             handleChangeDisplay={handleChangeDisplay}
             logoMenuDeployed={logoMenuDeployed}
             selectFolder={selectFolder}
-            selectSong={selectSong}
+            handleSelectSong={handleSelectSong}
           />
         );
       })()}
