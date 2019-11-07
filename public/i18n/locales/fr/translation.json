@@ -116,15 +116,16 @@
   },
 
   "search": {
-    "Search songs": "Recherche de chants",
-    "Search field": "Champs de recherche",
     "Advanced search": "Recherche avancée",
-    "Sort": "Tri",
+    "Details": "Details",
     "Nothing found so far": "Aucun résultat pour le moment.",
     "No results try advanced": "Aucun résultat pour cette recherche : veuillez essayer autre chose, peut-être en utilisant des mots-clés moins spécifiques. N'oubliez pas que différents critères de recherches peuvent vous aider dans les options de recherche avancée",
     "Possible to add": "Si le chant que vous recherchez n'existe pas dans la base de données, vous pouvez l'ajouter lorsque vous êtes connecté à un compte.",
+    "Search field": "Champs de recherche",
     "Search possibilities": "Recherche par titres, paroles, auteurs, editeurs, cotes. Utilisez le bouton de réglage",
     "in the searchfield": "dans le champs de recherche pour ouvrir les options de recherche avancée.",
+    "Search songs": "Recherche de chants",
+    "Sort": "Tri",
 
     "Mark as favorite": "Marquer comme favori",
     "Unmark as favorite": "Enlever des favoris",

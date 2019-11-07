@@ -22,94 +22,87 @@ import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 
 const sortCriteria: ISortCriterion[] = ['title', 'compositor', 'author', 'year'];
 
-const useStyles = makeStyles((theme) => {
-  const favoritesSpace = (
-    { displayFavorite }: { displayFavorite?: boolean },
-  ): number => theme.spacing(displayFavorite ? 10 : 4);
-  return ({
-    button: {
-      textTransform: 'none',
-    },
-    buttonDefaultColor: {
-      color: theme.palette.font.color.black,
-      opacity: theme.palette.font.opacity.light,
-    },
-    buttons: {
-      display: 'flex',
-      justifyContent: 'space-around',
-      flexGrow: 1,
-    },
-    container: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      marginRight: theme.spacing(2),
-      whiteSpace: 'nowrap',
-    },
-    flexGrow: {
-      flexGrow: 1,
-    },
-    invisible: {
-      opacity: 0,
-    },
-    listIcon: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    sortBy: {
-      fontStyle: 'italic',
-    },
-    sortOptions: {
-      margin: theme.spacing(0, 1),
-    },
-    sortIcon: {
-      transitionProperty: 'transform, opacity',
-      transitionDuration: `${theme.transitions.duration.standard}`,
-      opacity: 0,
-    },
-    sortIconVisible: {
-      opacity: 1,
-    },
-    sortIconDown: {
-      transform: 'rotate(180deg)',
-    },
-    textField: {
-      width: '100%',
-    },
-    typography: {
-      alignItems: 'center',
-      display: 'flex',
-      fontSize: 'small',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    root: {
-      backgroundColor: 'inherit',
-      display: 'flex',
-      padding: 0,
-      paddingRight: favoritesSpace,
-    },
-    year: {
-      flexShrink: 0,
-      marginLeft: theme.spacing(2),
-    },
-  });
-});
+const useStyles = makeStyles((theme) => ({
+  button: {
+    textTransform: 'none',
+  },
+  buttonDefaultColor: {
+    color: theme.palette.font.color.black,
+    opacity: theme.palette.font.opacity.light,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    flexGrow: 1,
+  },
+  container: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginRight: theme.spacing(2),
+    whiteSpace: 'nowrap',
+  },
+  flexGrow: {
+    flexGrow: 1,
+  },
+  invisible: {
+    opacity: 0,
+  },
+  listIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sortBy: {
+    fontStyle: 'italic',
+  },
+  sortOptions: {
+    margin: theme.spacing(0, 1),
+  },
+  sortIcon: {
+    transitionProperty: 'transform, opacity',
+    transitionDuration: `${theme.transitions.duration.standard}`,
+    opacity: 0,
+  },
+  sortIconVisible: {
+    opacity: 1,
+  },
+  sortIconDown: {
+    transform: 'rotate(180deg)',
+  },
+  textField: {
+    width: '100%',
+  },
+  typography: {
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: 'small',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  root: {
+    backgroundColor: 'inherit',
+    display: 'flex',
+    padding: 0,
+    paddingRight: theme.spacing(4),
+  },
+  year: {
+    flexShrink: 0,
+    marginLeft: theme.spacing(2),
+  },
+}));
 
 interface ISongListSortingProps {
-  displayFavorite?: boolean;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSort: (sortName: ISortCriterion) => () => void;
   sort?: ISortSpecifier;
 }
 
 export const SongListSorting: React.FC<ISongListSortingProps> = ({
-  displayFavorite,
   handleToggleDisplaySort,
   handleSort,
   sort,
 }) => {
   const { t } = useTranslation();
-  const classes = useStyles({ displayFavorite });
+  const classes = useStyles();
   const smallDevice = useDeviceSize('sm.down');
   console.log('From SongListSorting, render. sort:', sort);
 

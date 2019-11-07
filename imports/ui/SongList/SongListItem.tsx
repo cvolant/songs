@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler, useState, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,10 +6,10 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import QueueMusic from '@material-ui/icons/QueueMusic';
-import Check from '@material-ui/icons/Check';
+import Eye from '@material-ui/icons/RemoveRedEye';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import QueueMusic from '@material-ui/icons/QueueMusic';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import SongListItemText from './SongListItemText';
@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: 0,
     paddingRight: (
-      { displayFavorite }: { displayFavorite: boolean | undefined },
-    ): number => theme.spacing(displayFavorite ? 11 : 5),
+      { nbRightIcons }: { nbRightIcons: number },
+    ): number => theme.spacing([1, 5, 12][nbRightIcons]),
   },
   secondaryAction: {
     right: 0,
@@ -37,6 +37,7 @@ interface ISongListItemProps {
   handleToggleFavorite: (value?: boolean) => () => void;
   handleUnfold: () => void;
   displayFavorite: boolean;
+  rightIconButton?: ReactElement;
   song: ISong;
   unfolded: boolean;
 }
@@ -47,12 +48,24 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
   handleToggleFavorite,
   handleUnfold,
   displayFavorite,
+  rightIconButton,
   song,
   unfolded,
 }) => {
   const { t } = useTranslation();
-  const classes = useStyles({ displayFavorite });
+  const classes = useStyles({
+    nbRightIcons: (displayFavorite ? 1 : 0) + (rightIconButton ? 1 : 0),
+  });
   const smallDevice = useDeviceSize('sm.down');
+  const [hover, setHover] = useState(false);
+
+  const handleMouseEnter: MouseEventHandler<HTMLDivElement> = () => {
+    setHover(true);
+  };
+
+  const handleMouseLeave: MouseEventHandler<HTMLDivElement> = () => {
+    setHover(false);
+  };
 
   return (
     <ListItem
@@ -60,10 +73,22 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
       className={classes.root}
       divider
       onClick={handleUnfold}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {!smallDevice && (
         <ListItemIcon className={classes.listIcon}>
-          <QueueMusic />
+          {
+            hover || unfolded
+              ? (
+                <IconButton
+                  aria-label={t('search.Details', 'Details')}
+                  onClick={handleSelect}
+                >
+                  <Eye />
+                </IconButton>
+              ) : <QueueMusic />
+          }
         </ListItemIcon>
       )}
       <SongListItemText
@@ -80,9 +105,7 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
               {favorite ? <Favorite color="primary" /> : <FavoriteBorder />}
             </IconButton>
           )}
-        <IconButton aria-label={t('search.Choose this song', 'Choose this song')} onClick={handleSelect}>
-          <Check />
-        </IconButton>
+        {rightIconButton}
       </ListItemSecondaryAction>
     </ListItem>
   );

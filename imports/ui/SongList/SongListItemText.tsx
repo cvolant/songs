@@ -66,7 +66,12 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
     traductor,
   } = song;
   const details = [];
-  const lyrics = pg && pg[0] && pg[0].pg ? pg[0].pg.replace(/<br\/>/g, ' ') : '';
+  const lyrics = pg && pg[0] && pg[0].pg
+    ? pg[0].pg
+      .replace(/(<br\/>|\s)+/g, ' ')
+      .substr(0, 130)
+      .replace(/\s\S*$/g, ' ...')
+    : '';
 
   if (compositor) {
     details.push({

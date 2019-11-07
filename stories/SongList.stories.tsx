@@ -1,5 +1,9 @@
 import { Mongo } from 'meteor/mongo';
 import React from 'react';
+
+import IconButton from '@material-ui/core/IconButton';
+import Check from '@material-ui/icons/Check';
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -13,7 +17,7 @@ import SongList, {
 } from '../imports/ui/SongList';
 import SongListItemLoading from '../imports/ui/SongList/SongListItemLoading';
 
-import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types';
+import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types/searchTypes';
 import { songs, users } from './fixtures';
 
 export default {
@@ -44,7 +48,6 @@ export const songListSorting = (): JSX.Element => {
   const sort = kSort(knobs);
   return (
     <SongListSorting
-      displayFavorite={boolean('displayFavorite', true)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
@@ -59,6 +62,12 @@ export const songListItem = (): JSX.Element => (
     handleToggleFavorite={(value?: boolean): () => void => action(`handleToggleFavorite(value: ${value})`)}
     handleUnfold={action('unfold')}
     displayFavorite={boolean('displayFavorite', true)}
+    rightIconButton={boolean('rightIconButton', true)
+      ? (
+        <IconButton>
+          <Check />
+        </IconButton>
+      ) : undefined}
     song={songs[0]}
     unfolded={boolean('unfolded', true)}
   />
@@ -84,9 +93,15 @@ export const songList = (): JSX.Element => {
       handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleToggleFavoriteSong={(songId: Mongo.ObjectID, value?: boolean): () => void => action(`handleToggleFavoriteSong(songId: ${songId}, value: ${value})`)}
-      loading={boolean('loading', true)}
+      loading={boolean('loading', false)}
       logoMenuDeployed={boolean('logoMenuDeployed', true)}
       raiseLimit={action('raiseLimit')}
+      rightIconButton={boolean('rightIconButton', true)
+        ? (
+          <IconButton>
+            <Check />
+          </IconButton>
+        ) : undefined}
       search={search}
       songs={boolean('songs', true) ? songs : []}
       sort={sort}

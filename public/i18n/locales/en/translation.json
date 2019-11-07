@@ -116,15 +116,16 @@
   },
 
   "search": {
-    "Search songs": "Search songs",
-    "Search field": "Search field",
     "Advanced search": "Advanced search",
-    "Sort": "Sort",
-    "Nothing found so far": "Nothing found so far.",
+    "Details": "Details",
     "No results try advanced": "No results for this search: please try another one. You can use less specific keywords. Different criteria can help you in the advanced search options",
+    "Nothing found so far": "Nothing found so far.",
     "Possible to add": "If the song does not exist in the database, you can add it once you logged in.",
+    "Search field": "Search field",
     "Search possibilities": "Search by titles, lyrics, authors, editors, classifications. Use the settings button",
     "in the searchfield": "in the search field to open advanced search settings.",
+    "Search songs": "Search songs",
+    "Sort": "Sort",
 
     "Mark as favorite": "Mark as favorite",
     "Unmark as favorite": "Unmark as favorite",

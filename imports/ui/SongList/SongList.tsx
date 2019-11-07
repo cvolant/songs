@@ -1,5 +1,10 @@
 import { Mongo } from 'meteor/mongo';
-import React, { useRef, useState, ReactNode } from 'react';
+import React, {
+  useRef,
+  useState,
+  ReactElement,
+  ReactNode,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -20,6 +25,18 @@ const useStyles = makeStyles((theme) => ({
     overflowScrolling: 'touch',
     overflowY: 'auto',
     width: '100%',
+
+    '& li': {
+      transition: theme.transitions.create('margin-right'),
+    },
+
+    '& li:first-child': {
+      marginRight: (
+        (
+          { logoMenuDeployed }: { logoMenuDeployed: boolean },
+        ): string | undefined => (logoMenuDeployed ? '3rem' : undefined)
+      ) as unknown as string | undefined,
+    },
   },
   emptyItemContainer: {
     padding: theme.spacing(2),
@@ -38,6 +55,7 @@ interface ISongListProps {
   loading?: boolean;
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
+  rightIconButton?: ReactElement;
   search?: ISearch;
   songs: ISong[];
   sort?: ISortSpecifier;
@@ -53,13 +71,15 @@ export const SongList: React.FC<ISongListProps> = ({
   handleToggleDisplaySort,
   handleToggleFavoriteSong,
   loading = false,
+  logoMenuDeployed = false,
   raiseLimit,
+  rightIconButton,
   songs,
   sort,
 }) => {
   const listRef = useRef<HTMLElement>();
   const { t } = useTranslation();
-  const classes = useStyles();
+  const classes = useStyles({ logoMenuDeployed });
 
   const [unfoldedSong, setUnfoldedSong] = useState();
 
@@ -93,7 +113,6 @@ export const SongList: React.FC<ISongListProps> = ({
       subheader={displaySort && (songs.length > 0 || loading)
         ? (
           <SongListSorting
-            displayFavorite={displayFavorite}
             handleToggleDisplaySort={handleToggleDisplaySort}
             handleSort={handleSort}
             sort={sort}
@@ -127,6 +146,7 @@ export const SongList: React.FC<ISongListProps> = ({
               }
               handleUnfold={handleUnfold(songId)}
               key={song._id.toHexString()}
+              rightIconButton={rightIconButton}
               song={song}
               unfolded={unfoldedSong === songId}
             />
