@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 interface IPrintSongProps {
   song: {
-    title: string;
-    subtitle: string;
-    pg: IParagraph[];
+    title?: string;
+    subtitle?: string;
+    pg?: IParagraph[];
   };
   zoom: number;
 }
@@ -51,7 +51,7 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
         <Typography className={classes.subtitle} variant="subtitle1">{song.subtitle}</Typography>
       </Grid>
       <div className={classes.return} />
-      {song.pg.map((paragraph) => {
+      {song.pg && song.pg.map((paragraph) => {
         const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e) => (e === '<br/>\n' ? <br key={paragraph.index} /> : e));
         return (
           <Grid item xs={12} sm={6} md={4} xl={3}>

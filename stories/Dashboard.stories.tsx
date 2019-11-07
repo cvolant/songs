@@ -6,14 +6,14 @@ import {
   withKnobs,
 } from '@storybook/addon-knobs';
 
-import CreateNewDialog from '../imports/ui/Dashboard/CreateNewDialog';
+import { CreateNewDialog } from '../imports/ui/Dashboard';
 
 export default {
   title: 'Dashboard',
   decorators: [withKnobs],
 };
 
-export const newSongDialog = (): JSX.Element => (
+export const createNewDialog = (): JSX.Element => (
   <CreateNewDialog
     buttonText="New Stuff"
     dialogText="Enter stuff name"

@@ -1,8 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 import React from 'react';
 
-import IconButton from '@material-ui/core/IconButton';
-import Check from '@material-ui/icons/Check';
+import Add from '@material-ui/icons/Add';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
@@ -18,6 +17,7 @@ import SongList, {
 import SongListItemLoading from '../imports/ui/SongList/SongListItemLoading';
 
 import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types/searchTypes';
+import { IUnfetchedSong } from '../imports/types/songTypes';
 import { songs, users } from './fixtures';
 
 export default {
@@ -62,12 +62,13 @@ export const songListItem = (): JSX.Element => (
     handleToggleFavorite={(value?: boolean): () => void => action(`handleToggleFavorite(value: ${value})`)}
     handleUnfold={action('unfold')}
     displayFavorite={boolean('displayFavorite', true)}
-    rightIconButton={boolean('rightIconButton', true)
-      ? (
-        <IconButton>
-          <Check />
-        </IconButton>
-      ) : undefined}
+    rightIconProps={boolean('rightIconProps', true)
+      ? {
+        ariaLabel: 'rightIcon aria label',
+        Icon: Add,
+        onClick: (song: IUnfetchedSong): () => void => action(`rightIconClick(song.title: ${song.title})`),
+      }
+      : undefined}
     song={songs[0]}
     unfolded={boolean('unfolded', true)}
   />
@@ -96,12 +97,13 @@ export const songList = (): JSX.Element => {
       loading={boolean('loading', false)}
       logoMenuDeployed={boolean('logoMenuDeployed', true)}
       raiseLimit={action('raiseLimit')}
-      rightIconButton={boolean('rightIconButton', true)
-        ? (
-          <IconButton>
-            <Check />
-          </IconButton>
-        ) : undefined}
+      rightIconProps={boolean('rightIconProps', true)
+        ? {
+          ariaLabel: 'rightIcon aria label',
+          Icon: Add,
+          onClick: (song: IUnfetchedSong): () => void => action(`rightIconClick(song.title: ${song.title})`),
+        }
+        : undefined}
       search={search}
       songs={boolean('songs', true) ? songs : []}
       sort={sort}

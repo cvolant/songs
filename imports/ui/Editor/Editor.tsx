@@ -12,9 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
 import { useUser } from '../../state-contexts/app-user-context';
-import PrintSong from '../PrintSong';
 import Paragraph from './Paragraph';
-import Screen from '../Screen';
 import Title from './Title';
 import EditorButtons from './EditorButtons';
 import NoLyrics from './NoLyrics';
@@ -27,6 +25,7 @@ import {
   IUser,
 } from '../../types';
 import { IPgState, IUnfetchedSong } from '../../types/songTypes';
+import { IIconButtonProps } from '../../types/otherTypes';
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
@@ -83,11 +82,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorProps {
+  actionIconButtonProps?: IIconButtonProps;
   edit?: boolean;
   goBack: () => void;
   logoMenuDeployed: boolean;
   song: IUnfetchedSong;
-  viewer?: (content: JSX.Element | null) => void;
 }
 interface IEditorWTData {
   folders: IFolder[];
@@ -110,6 +109,7 @@ const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
 };
 
 export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
+  actionIconButtonProps,
   edit: initEdit = false,
   folders,
   goBack,
@@ -117,7 +117,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   meteorCall,
   song,
   user,
-  viewer,
 }) => {
   const classes = useStyles();
 
@@ -139,10 +138,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   ): number => array
     .map((element) => element[Object.keys(objectProperty)[0]])
     .indexOf(Object.values(objectProperty)[0]);
-
-  const handleCloseScreen = (): void => {
-    if (viewer) viewer(null);
-  };
 
   const handleDelete = (): void => {
     meteorCall('songs.remove', song._id.toHexString());
@@ -224,30 +219,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     ];
     console.log('From Editor => handleMove. After. pgStates:', pgStates);
     setPgStates(newPgStates);
-  };
-
-  const handleOpenScreen = (): void => {
-    console.log('From Editor, handleOpenScreen. title:', title, 'pgStates:', pgStates);
-    if (viewer) {
-      viewer(
-        <Screen
-          closeScreen={handleCloseScreen}
-          print={(zoom: number): JSX.Element => (
-            <PrintSong
-              zoom={zoom}
-              song={{
-                title,
-                subtitle,
-                pg: pgStates
-                  .filter((pgState) => pgState.selected)
-                  .map((pgState) => (pg[pgState.pgIndex])),
-                ...details,
-              }}
-            />
-          )}
-        />,
-      );
-    }
   };
 
   const handlePgCancel = (pgIndex: number): void => {
@@ -530,18 +501,20 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
               )}
           </div>
           <EditorButtons
+            actionIconButtonProps={actionIconButtonProps}
             edit={edit}
             folders={folders}
             goBack={goBack}
             handleCancelAll={handleCancelAll}
             handleDelete={handleDelete}
             handleEditSong={handleEditSong}
-            handleOpenScreen={handleOpenScreen}
             handleSaveAll={handleSaveAll}
             handleToggleSelectAll={handleToggleSelectAll}
             isThereParagraphs={!!pgStates.length}
-            isThereSelected={!!pgStates.filter((pgState) => pgState.selected).length}
             isThereTitle={!!title}
+            selectedPg={pgStates
+              .filter((pgState) => pgState.selected)
+              .map((pgState) => (pg[pgState.pgIndex]))}
             song={song}
             user={user}
           />

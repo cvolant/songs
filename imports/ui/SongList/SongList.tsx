@@ -2,14 +2,15 @@ import { Mongo } from 'meteor/mongo';
 import React, {
   useRef,
   useState,
-  ReactElement,
   ReactNode,
+  MouseEventHandler,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
+import { IIconButtonProps } from '../../types/otherTypes';
 import SongListItem from './SongListItem';
 import SongListItemLoading from './SongListItemLoading';
 import SongListSorting from './SongListSorting';
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
       marginRight: (
         (
           { logoMenuDeployed }: { logoMenuDeployed: boolean },
-        ): string | undefined => (logoMenuDeployed ? '3rem' : undefined)
+        ): string | undefined => (logoMenuDeployed ? '4rem' : undefined)
       ) as unknown as string | undefined,
     },
   },
@@ -55,7 +56,7 @@ interface ISongListProps {
   loading?: boolean;
   logoMenuDeployed?: boolean;
   raiseLimit: () => void;
-  rightIconButton?: ReactElement;
+  rightIconProps?: IIconButtonProps;
   search?: ISearch;
   songs: ISong[];
   sort?: ISortSpecifier;
@@ -73,7 +74,7 @@ export const SongList: React.FC<ISongListProps> = ({
   loading = false,
   logoMenuDeployed = false,
   raiseLimit,
-  rightIconButton,
+  rightIconProps,
   songs,
   sort,
 }) => {
@@ -101,7 +102,14 @@ export const SongList: React.FC<ISongListProps> = ({
   };
 
   const handleSelect = (song: ISong) => (): void => handleSelectSong(song);
-  const handleUnfold = (songId: Mongo.ObjectID) => (): void => setUnfoldedSong(songId);
+  const handleUnfold = (songId: Mongo.ObjectID): MouseEventHandler<HTMLDivElement> => (e): void => {
+    console.log('From SongList, handleUnfold. e.target.localName:', e.target.localName, '\ne.target:', e.target, '\ne.currentTarget:', e.currentTarget);
+    if (songId === unfoldedSong) {
+      setUnfoldedSong(undefined);
+    } else {
+      setUnfoldedSong(songId);
+    }
+  };
 
   return (
     <List
@@ -146,7 +154,7 @@ export const SongList: React.FC<ISongListProps> = ({
               }
               handleUnfold={handleUnfold(songId)}
               key={song._id.toHexString()}
-              rightIconButton={rightIconButton}
+              rightIconProps={rightIconProps}
               song={song}
               unfolded={unfoldedSong === songId}
             />

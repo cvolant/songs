@@ -8,14 +8,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Eye from '@material-ui/icons/RemoveRedEye';
 
 import { useDeviceSize } from '../../state-contexts/app-device-size-context';
-import SearchList from './SearchList';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
+import PrintSong from '../PrintSong';
+import Screen from '../Screen';
+import SearchList from './SearchList';
 
-import { ISong } from '../../types';
+import { ISong, IUnfetchedSong } from '../../types/songTypes';
 
 import routesPaths from '../../app/routesPaths';
 
@@ -70,16 +73,37 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
-  const [viewer, setViewer] = useState<React.ReactNode | null>(undefined);
+  const [viewer, setViewer] = useState<React.ReactNode>(undefined);
   const smallDevice = useDeviceSize('sm.down');
   const classes = useStyles();
   const contentAreaRef = createRef<HTMLDivElement>();
 
-  const handleCloseInfos = (): void => { setShowInfos(false); };
+  const handleCloseInfos = (): void => {
+    setShowInfos(false);
+  };
+
+  const handleCloseScreen = (): void => {
+    setViewer(undefined);
+  };
 
   const handleGoBackFromEditor = (): void => {
     setSelectedSong(undefined);
     history.push(routesPaths.translatePath('/en/search/', i18n.language));
+  };
+
+  const handleOpenScreen = (song: IUnfetchedSong) => (): void => {
+    console.log('From SearchPage, handleOpenScreen. song:', song);
+    setViewer(
+      <Screen
+        closeScreen={handleCloseScreen}
+        print={(zoom: number): JSX.Element => (
+          <PrintSong
+            zoom={zoom}
+            song={song}
+          />
+        )}
+      />,
+    );
   };
 
   const handleSelectSong = (song: ISong): void => {
@@ -143,10 +167,16 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       {selectedSong
         ? (
           <Editor
+            actionIconButtonProps={{
+              ariaLabel: t('editor.View', 'View'),
+              Icon: Eye,
+              onClick: handleOpenScreen,
+              color: 'primary',
+              disable: (isThereSelected: boolean): boolean => !isThereSelected,
+            }}
+            goBack={handleGoBackFromEditor}
             logoMenuDeployed={logoMenuDeployed}
             song={selectedSong}
-            goBack={handleGoBackFromEditor}
-            viewer={setViewer}
           />
         )
         : null}

@@ -9,7 +9,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Add from '@material-ui/icons/Add';
-import Eye from '@material-ui/icons/RemoveRedEye';
 import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
 
@@ -17,7 +16,8 @@ import { useUser } from '../../state-contexts/app-user-context';
 import AddSongTo from './AddSongTo';
 
 import { IFolder, IUser } from '../../types';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IUnfetchedSong, IParagraph } from '../../types/songTypes';
+import { IIconButtonProps } from '../../types/otherTypes';
 
 const useStyles = makeStyles((theme) => ({
   actions: {
@@ -86,35 +86,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorButtonsProps {
+  actionIconButtonProps?: IIconButtonProps;
   edit: boolean;
   folders: IFolder[];
   goBack: () => void;
   handleCancelAll: () => void;
   handleDelete: () => void;
   handleEditSong: () => void;
-  handleOpenScreen: () => void;
   handleSaveAll: () => void;
   handleToggleSelectAll: () => void;
   isThereParagraphs: boolean;
-  isThereSelected: boolean;
   isThereTitle: boolean;
+  selectedPg: IParagraph[];
   song: IUnfetchedSong;
   user?: IUser;
 }
 
 const EditorButtons: React.FC<IEditorButtonsProps> = ({
+  actionIconButtonProps,
   edit,
   folders,
   goBack,
   handleCancelAll,
   handleDelete,
   handleEditSong,
-  handleOpenScreen,
   handleSaveAll,
   handleToggleSelectAll,
   isThereParagraphs,
-  isThereSelected,
   isThereTitle,
+  selectedPg,
   song,
 }) => {
   const { t } = useTranslation();
@@ -207,19 +207,28 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
                     onClick={handleToggleSelectAll}
                     variant="extended"
                   >
-                    {isThereSelected
+                    {selectedPg.length
                       ? t('editor.Unselect all', 'Unselect all')
                       : t('editor.Select all', 'Select all')}
                   </Fab>
-                  <Fab
-                    aria-label={t('editor.View', 'View')}
-                    className={classes.bottomFab}
-                    color="primary"
-                    disabled={!isThereSelected}
-                    onClick={handleOpenScreen}
-                  >
-                    <Eye />
-                  </Fab>
+                  {actionIconButtonProps && (({
+                    ariaLabel, className, color, disable, Icon, onClick,
+                  }): JSX.Element => (
+                    <Fab
+                      aria-label={ariaLabel}
+                      className={className}
+                      color={color || 'default'}
+                      disabled={disable
+                        ? disable(!!selectedPg.length)
+                        : false}
+                      onClick={onClick({
+                        ...song,
+                        pg: selectedPg,
+                      })}
+                    >
+                      <Icon />
+                    </Fab>
+                  ))(actionIconButtonProps)}
                 </div>
               </div>
             </div>

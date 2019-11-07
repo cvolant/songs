@@ -1,4 +1,7 @@
 import React from 'react';
+
+import Check from '@material-ui/icons/Check';
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -16,6 +19,7 @@ import { UserProvider } from '../imports/state-contexts/app-user-context';
 import {
   songs, folders, details, users,
 } from './fixtures';
+import { IUnfetchedSong } from '../imports/types/songTypes';
 
 export default {
   title: 'Editor',
@@ -27,6 +31,14 @@ export default {
       </UserProvider>
     ),
   ],
+};
+
+const actionIconButtonProps = {
+  ariaLabel: 'action icon button aria label',
+  Icon: Check,
+  onClick: (): void => {},
+  color: 'primary' as 'primary' | 'default',
+  disable: (): boolean => false,
 };
 
 export const paragraph = (): JSX.Element => (
@@ -64,17 +76,22 @@ export const title = (): JSX.Element => (
 
 export const editorButtons = (): JSX.Element => (
   <EditorButtons
+    actionIconButtonProps={boolean('actionIconButtonProps', true)
+      ? {
+        ...actionIconButtonProps,
+        onClick: (song: IUnfetchedSong): () => void => action(`actionIconButtonClick. song.title: ${song.title}`),
+        disable: (): boolean => boolean('disable', false),
+      } : undefined}
     edit={boolean('edit', false)}
     goBack={action('goBack')}
     handleCancelAll={action('handleCancelAll')}
     handleDelete={action('handleDelete')}
     handleEditSong={action('handleEditSong')}
-    handleOpenScreen={action('handleOpenScreen')}
     handleSaveAll={action('handleSaveAll')}
     handleToggleSelectAll={action('handleToggleSelectAll')}
     isThereParagraphs={boolean('isThereParagraphs', true)}
-    isThereSelected={boolean('isThereSelected', false)}
     isThereTitle={boolean('isThereTitle', true)}
+    selectedPg={songs[0].pg.reverse()}
     song={songs[0]}
     folders={folders}
   />

@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import Add from '@material-ui/icons/Add';
 
 import PageLayout from '../utils/PageLayout';
 import Panel from '../utils/Panel';
@@ -24,6 +25,14 @@ export const DashboardPage: React.FC<{}> = () => {
   const [search, setSearch] = useState(false);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
   const [showPanel, setShowPanel] = useState(true);
+
+  const addThisSong = (newSong: IUnfetchedSong) => (): void => {
+    if (newSong && newSong._id && folder && folder._id) {
+      setSearch(false);
+      setSong(undefined);
+      Meteor.call('folders.update.songs.insert', { folderId: folder._id, songId: newSong._id });
+    }
+  };
 
   const handleChangeDisplay = (newDisplay?: IUserCollectionName) => (): void => {
     setDisplay(newDisplay || 'favoriteSongs');
@@ -56,11 +65,8 @@ export const DashboardPage: React.FC<{}> = () => {
   };
 
   const handleSelectSong = (newSong: IUnfetchedSong): void => {
+    console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
-    if (search && folder) {
-      setSearch(false);
-      Meteor.call('folders.update.songs.insert', { folderId: folder._id, songId: newSong._id });
-    }
   };
 
   return (
@@ -102,6 +108,14 @@ export const DashboardPage: React.FC<{}> = () => {
         if (song) {
           return (
             <Editor
+              actionIconButtonProps={folder && search
+                ? {
+                  ariaLabel: t('folder.Add song', 'Add song'),
+                  Icon: Add,
+                  onClick: addThisSong,
+                  color: 'primary',
+                  disable: (): boolean => false,
+                } : undefined}
               edit={song.userId === Meteor.userId() && !song.pg}
               goBack={goBack(setSong)}
               logoMenuDeployed={logoMenuDeployed}
@@ -115,6 +129,11 @@ export const DashboardPage: React.FC<{}> = () => {
               handleFocus={handleFocus}
               handleSelectSong={handleSelectSong}
               logoMenuDeployed={logoMenuDeployed}
+              rightIconProps={{
+                ariaLabel: t('folder.Add song', 'Add song'),
+                Icon: Add,
+                onClick: addThisSong,
+              }}
             />
           );
         }

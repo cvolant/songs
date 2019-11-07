@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState, ReactElement } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,7 @@ import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import SongListItemText from './SongListItemText';
 
 import { ISong } from '../../types';
+import { IIconButtonProps } from '../../types/otherTypes';
 
 const useStyles = makeStyles((theme) => ({
   listIcon: {
@@ -35,9 +36,9 @@ interface ISongListItemProps {
   favorite?: boolean;
   handleSelect: () => void;
   handleToggleFavorite: (value?: boolean) => () => void;
-  handleUnfold: () => void;
+  handleUnfold: MouseEventHandler<HTMLDivElement>;
   displayFavorite: boolean;
-  rightIconButton?: ReactElement;
+  rightIconProps?: IIconButtonProps;
   song: ISong;
   unfolded: boolean;
 }
@@ -48,13 +49,13 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
   handleToggleFavorite,
   handleUnfold,
   displayFavorite,
-  rightIconButton,
+  rightIconProps,
   song,
   unfolded,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({
-    nbRightIcons: (displayFavorite ? 1 : 0) + (rightIconButton ? 1 : 0),
+    nbRightIcons: (displayFavorite ? 1 : 0) + (rightIconProps ? 1 : 0),
   });
   const smallDevice = useDeviceSize('sm.down');
   const [hover, setHover] = useState(false);
@@ -69,7 +70,7 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
 
   return (
     <ListItem
-      button={!unfolded}
+      button
       className={classes.root}
       divider
       onClick={handleUnfold}
@@ -96,16 +97,22 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
         unfolded={unfolded}
       />
       <ListItemSecondaryAction className={classes.secondaryAction}>
-        {displayFavorite
-          && (
-            <IconButton
-              aria-label={favorite ? t('search.Unmark as favorite', 'Unmark as favorite') : t('search.Mark as favorite', 'Mark as favorite')}
-              onClick={handleToggleFavorite()}
-            >
-              {favorite ? <Favorite color="primary" /> : <FavoriteBorder />}
-            </IconButton>
-          )}
-        {rightIconButton}
+        {displayFavorite && (
+          <IconButton
+            aria-label={favorite ? t('search.Unmark as favorite', 'Unmark as favorite') : t('search.Mark as favorite', 'Mark as favorite')}
+            onClick={handleToggleFavorite()}
+          >
+            {favorite ? <Favorite color="primary" /> : <FavoriteBorder />}
+          </IconButton>
+        )}
+        {rightIconProps && (
+          <IconButton
+            aria-label={rightIconProps.ariaLabel}
+            onClick={rightIconProps.onClick(song)}
+          >
+            <rightIconProps.Icon />
+          </IconButton>
+        )}
       </ListItemSecondaryAction>
     </ListItem>
   );

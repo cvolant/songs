@@ -16,6 +16,7 @@ import {
   ISortSpecifierValue,
   ISortCriterion,
 } from '../../types/searchTypes';
+import { IIconButtonProps } from '../../types/otherTypes';
 
 import Songs from '../../api/songs/songs';
 import buildQuery from './buildQuery';
@@ -41,6 +42,7 @@ interface ISearchListProps {
   handleSelectSong: (song: ISong) => void;
   hidden?: boolean;
   logoMenuDeployed?: boolean;
+  rightIconProps?: IIconButtonProps;
 }
 interface ISearchListWTData {
   favoriteSongs: Mongo.ObjectID[];
@@ -60,6 +62,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   isAuthenticated,
   logoMenuDeployed,
   meteorCall,
+  rightIconProps,
   songs,
 }) => {
   const classes = useStyles();
@@ -162,6 +165,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         handleToggleFavoriteSong={handleToggleFavoriteSong}
         loading={limitRaised || loading}
         raiseLimit={raiseLimit}
+        rightIconProps={rightIconProps}
         songs={songs}
         sort={sort}
       />
