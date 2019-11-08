@@ -1,22 +1,25 @@
-import React, { ChangeEventHandler } from 'react';
+import React, { ChangeEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Cancel from '@material-ui/icons/Cancel';
 import Check from '@material-ui/icons/Check';
 import Edit from '@material-ui/icons/Edit';
-
+import Eye from '@material-ui/icons/RemoveRedEye';
 import { CSSProperties } from '@material-ui/styles';
 
+import { useDeviceSize } from '../../state-contexts/app-device-size-context';
 import Detail, { IDetails, IDetailTarget } from './Detail';
 
 const useStyles = makeStyles((theme) => ({
-  actionButtonColumn: {
+  actionButtonsColumn: {
     display: 'flex',
     flexDirection: 'column',
   },
@@ -31,12 +34,17 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(1.5),
     paddingRight: (
       { logoMenuDeployed }: { logoMenuDeployed: boolean },
-    ): string => `${logoMenuDeployed ? 5 : 10}rem`,
+    ): string => `${logoMenuDeployed ? 10 : 5}rem`,
   } as unknown as () => CSSProperties,
   cardHeaderAction: {
     order: -1,
     marginRight: 0,
     marginLeft: theme.spacing(-1),
+  },
+  detailsButton: {
+    width: '100%',
+    textAlign: 'start',
+    display: 'block',
   },
   logoSpace: {
     height: '1px',
@@ -45,19 +53,14 @@ const useStyles = makeStyles((theme) => ({
     ): string => (logoMenuDeployed ? '7rem' : ''),
     float: 'right',
   } as unknown as () => CSSProperties,
-  rightIcon: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+  root: {
+    flexShrink: 0,
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
-  },
-  title: {
-    flexGrow: 1,
-    margin: theme.spacing(1),
   },
 }));
 
@@ -92,14 +95,20 @@ const Title: React.FC<ITitle> = ({
 
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
+  const smallDevice = useDeviceSize('sm.down');
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleToggleDetails = (): void => {
+    setShowDetails(!showDetails);
+  };
 
   return (
-    <Card elevation={0}>
+    <Card elevation={0} className={classes.root}>
       <CardHeader
         action={
           editGlobal
             ? (
-              <div className={classes.actionButtonColumn}>
+              <div className={classes.actionButtonsColumn}>
                 <IconButton
                   color={titleEdit ? 'primary' : 'default'}
                   onClick={handleEditTitle}
@@ -150,22 +159,26 @@ const Title: React.FC<ITitle> = ({
           : subtitle}
       />
       <CardContent className={classes.cardContent}>
-        {
-          [
-            <div className={classes.logoSpace} key={-1} />,
-            Object.keys(details).map(
-              (key) => (
-                <Detail
-                  key={key}
-                  keyname={key}
-                  detail={details[key as keyof IDetails]}
-                  edit={titleEdit}
-                  handleDetailChange={handleDetailChange}
-                />
+        <Button className={classes.detailsButton} onClick={handleToggleDetails}>
+          {(!smallDevice || showDetails)
+            ? [
+              <div className={classes.logoSpace} key={-1} />,
+              Object.keys(details).map(
+                (key) => (
+                  <Detail
+                    key={key}
+                    keyname={key}
+                    detail={details[key as keyof IDetails]}
+                    edit={titleEdit}
+                    handleDetailChange={handleDetailChange}
+                  />
+                ),
               ),
-            ),
-          ]
-        }
+            ]
+            : (
+              <Chip icon={<Eye />} label={t('song.Show details', 'Show details')} />
+            )}
+        </Button>
       </CardContent>
     </Card>
   );

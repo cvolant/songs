@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import CardActions from '@material-ui/core/CardActions';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Add from '@material-ui/icons/Add';
 import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
@@ -20,10 +18,6 @@ import { IUnfetchedSong, IParagraph } from '../../types/songTypes';
 import { IIconButtonProps } from '../../types/otherTypes';
 
 const useStyles = makeStyles((theme) => ({
-  actions: {
-    justifyContent: 'space-between',
-    position: 'relative',
-  },
   bottomFab: {
     margin: theme.spacing(0.5),
   },
@@ -56,32 +50,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  circularProgress: {
-    width: '6rem',
-    height: '6rem',
-    position: 'relative',
-    top: 'calc(50% - 6rem)',
-    left: 'calc(50% - 6rem)',
-  },
   instructions: {
     flexGrow: 1,
     textAlign: 'center',
-  },
-  shadowTop: {
-    position: 'absolute',
-    height: 0,
-    width: '100%',
-    top: 0,
-    left: 0,
-
-    '& > div': {
-      position: 'absolute',
-      bottom: 0,
-      height: theme.spacing(0.5),
-      background: `linear-gradient(to top, ${theme.palette.grey['500']}, transparent)`,
-      width: '100%',
-      borderRadius: theme.spacing(0, 0, 0.5, 0.5),
-    },
   },
 }));
 
@@ -89,7 +60,6 @@ interface IEditorButtonsProps {
   actionIconButtonProps?: IIconButtonProps;
   edit: boolean;
   folders: IFolder[];
-  goBack: () => void;
   handleCancelAll: () => void;
   handleDelete: () => void;
   handleEditSong: () => void;
@@ -106,7 +76,6 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
   actionIconButtonProps,
   edit,
   folders,
-  goBack,
   handleCancelAll,
   handleDelete,
   handleEditSong,
@@ -133,8 +102,7 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
   };
 
   return (
-    <CardActions className={classes.actions}>
-      <div className={classes.shadowTop}><div /></div>
+    <>
       {edit
         ? (
           <>
@@ -165,15 +133,6 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
         )
         : (
           <>
-            <Button
-              color="primary"
-              onClick={goBack}
-              size="large"
-              variant="outlined"
-            >
-              <ArrowBackIos />
-              {t('editor.Return', 'Return')}
-            </Button>
             <Typography variant="body1" className={classes.instructions}>
               {isThereParagraphs
                 ? t('editor.Select paragraphs', 'Select paragraphs')
@@ -241,7 +200,7 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
             />
           </>
         )}
-    </CardActions>
+    </>
   );
 };
 

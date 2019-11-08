@@ -88,8 +88,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     transition: theme.transitions.create('width'),
     width: (
-      { logoMenuDeployed }: { logoMenuDeployed?: boolean },
-    ): string => `calc(100% - 15rem + ${logoMenuDeployed ? 0 : 5}rem)`,
+      { shortSearchField }: { shortSearchField?: boolean },
+    ): string => `calc(100% - 15rem + ${shortSearchField ? 0 : 5}rem)`,
   },
 }));
 
@@ -105,7 +105,7 @@ interface ISearchFieldProps {
   handleToggleDisplaySort: (display?: boolean) => () => void;
   isAuthenticated?: boolean;
   loading?: boolean;
-  logoMenuDeployed: boolean;
+  shortSearchField: boolean;
 }
 
 export const SearchField: React.FC<ISearchFieldProps> = ({
@@ -115,7 +115,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   handleToggleDisplaySort,
   isAuthenticated,
   loading,
-  logoMenuDeployed,
+  shortSearchField,
 }) => {
   const { t } = useTranslation();
 
@@ -163,7 +163,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   ];
 
   const inputRef = createRef<HTMLInputElement>();
-  const classes = useStyles({ logoMenuDeployed });
+  const classes = useStyles({ shortSearchField });
   const history = useHistory();
   const location = useLocation();
   const [searchEntry, setSearchEntry] = useState('');

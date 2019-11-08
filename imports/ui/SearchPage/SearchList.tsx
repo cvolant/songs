@@ -41,7 +41,8 @@ interface ISearchListProps {
   handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: ISong) => void;
   hidden?: boolean;
-  logoMenuDeployed?: boolean;
+  shortFirstItem?: boolean;
+  shortSearchField?: boolean;
   rightIconProps?: IIconButtonProps;
 }
 interface ISearchListWTData {
@@ -60,7 +61,8 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   handleSelectSong,
   hidden = false,
   isAuthenticated,
-  logoMenuDeployed,
+  shortFirstItem = false,
+  shortSearchField = false,
   meteorCall,
   rightIconProps,
   songs,
@@ -148,7 +150,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     <div className={hidden ? classes.hidden : classes.root}>
       <SearchField
         displaySort={displaySort}
-        logoMenuDeployed={logoMenuDeployed || false}
+        shortSearchField={shortSearchField}
         handleFocus={handleFocus}
         handleNewSearch={handleNewSearch}
         handleToggleDisplaySort={handleToggleDisplaySort}
@@ -164,6 +166,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         handleToggleDisplaySort={handleToggleDisplaySort}
         handleToggleFavoriteSong={handleToggleFavoriteSong}
         loading={limitRaised || loading}
+        shortFirstItem={shortFirstItem}
         raiseLimit={raiseLimit}
         rightIconProps={rightIconProps}
         songs={songs}

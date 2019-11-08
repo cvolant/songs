@@ -162,7 +162,8 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
         handleFocus={handleFocus}
         handleSelectSong={handleSelectSong}
         hidden={!!selectedSong}
-        logoMenuDeployed={logoMenuDeployed}
+        shortFirstItem={false}
+        shortSearchField={logoMenuDeployed}
       />
       {selectedSong
         ? (

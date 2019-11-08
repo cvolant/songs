@@ -11,9 +11,6 @@ import InlineIcon from '../utils/InlineIcon';
 import { ISearch } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    padding: theme.spacing(2),
-  },
   divider: {
     margin: theme.spacing(2),
   },
@@ -35,7 +32,7 @@ export const SearchListNoResult: React.FC<ISearchListNoResultProps> = ({
   return (
     <>
       <Divider className={classes.divider} />
-      <div className={classes.container}>
+      <div>
         {search && (search.globalQuery || (search.specificQueries && search.specificQueries.length))
           ? (
             <span>

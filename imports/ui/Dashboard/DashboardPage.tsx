@@ -14,7 +14,7 @@ import MainDashboard, { IUserCollectionName } from './MainDashboard';
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 import FolderEditor from './FolderEditor';
-import { SearchList } from '../SearchPage';
+import { CardSearchList } from '../SearchPage/CardSearchList';
 
 export const DashboardPage: React.FC<{}> = () => {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ export const DashboardPage: React.FC<{}> = () => {
   const [display, setDisplay] = useState<IUserCollectionName>('favoriteSongs');
   const [folder, setFolder] = useState<IUnfetchedFolder | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [search, setSearch] = useState(false);
+  const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
   const [showPanel, setShowPanel] = useState(true);
 
@@ -42,9 +42,7 @@ export const DashboardPage: React.FC<{}> = () => {
     setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : oc);
   };
 
-  const goBack = (
-    setter: React.Dispatch<React.SetStateAction<IUnfetchedFolder | IUnfetchedSong | undefined>>,
-  ) => (): void => {
+  const goBack = <T, >(setter: React.Dispatch<React.SetStateAction<T | undefined>>) => (): void => {
     setter(undefined);
   };
 
@@ -125,10 +123,12 @@ export const DashboardPage: React.FC<{}> = () => {
         }
         if (search) {
           return (
-            <SearchList
+            <CardSearchList
+              goBack={goBack(setSearch)}
               handleFocus={handleFocus}
               handleSelectSong={handleSelectSong}
-              logoMenuDeployed={logoMenuDeployed}
+              shortFirstItem={logoMenuDeployed}
+              shortSearchField={logoMenuDeployed}
               rightIconProps={{
                 ariaLabel: t('folder.Add song', 'Add song'),
                 Icon: Add,

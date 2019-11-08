@@ -77,7 +77,7 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {!smallDevice && (
+      {(!smallDevice || unfolded) && (
         <ListItemIcon className={classes.listIcon}>
           {
             hover || unfolded

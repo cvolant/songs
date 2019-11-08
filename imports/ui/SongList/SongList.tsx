@@ -27,16 +27,14 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'auto',
     width: '100%',
 
-    '& li': {
+    '& > li, & > div': {
       transition: theme.transitions.create('margin-right'),
     },
 
-    '& li:first-child': {
-      marginRight: (
-        (
-          { logoMenuDeployed }: { logoMenuDeployed: boolean },
-        ): string | undefined => (logoMenuDeployed ? '4rem' : undefined)
-      ) as unknown as string | undefined,
+    '& > li:first-child, & > div:first-child': {
+      marginRight: ((
+        { shortFirstItem }: { shortFirstItem: boolean },
+      ): string => (shortFirstItem ? '4rem' : '0')) as unknown as string,
     },
   },
   emptyItemContainer: {
@@ -54,7 +52,7 @@ interface ISongListProps {
   handleToggleDisplaySort: (open?: boolean) => () => void;
   handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
   loading?: boolean;
-  logoMenuDeployed?: boolean;
+  shortFirstItem?: boolean;
   raiseLimit: () => void;
   rightIconProps?: IIconButtonProps;
   search?: ISearch;
@@ -72,7 +70,7 @@ export const SongList: React.FC<ISongListProps> = ({
   handleToggleDisplaySort,
   handleToggleFavoriteSong,
   loading = false,
-  logoMenuDeployed = false,
+  shortFirstItem = false,
   raiseLimit,
   rightIconProps,
   songs,
@@ -80,7 +78,7 @@ export const SongList: React.FC<ISongListProps> = ({
 }) => {
   const listRef = useRef<HTMLElement>();
   const { t } = useTranslation();
-  const classes = useStyles({ logoMenuDeployed });
+  const classes = useStyles({ shortFirstItem });
 
   const [unfoldedSong, setUnfoldedSong] = useState();
 

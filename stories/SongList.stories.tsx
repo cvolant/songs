@@ -95,7 +95,7 @@ export const songList = (): JSX.Element => {
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
       handleToggleFavoriteSong={(songId: Mongo.ObjectID, value?: boolean): () => void => action(`handleToggleFavoriteSong(songId: ${songId}, value: ${value})`)}
       loading={boolean('loading', false)}
-      logoMenuDeployed={boolean('logoMenuDeployed', true)}
+      shortFirstItem={boolean('shortFistItem', true)}
       raiseLimit={action('raiseLimit')}
       rightIconProps={boolean('rightIconProps', true)
         ? {

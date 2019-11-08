@@ -37,7 +37,7 @@ export const searchField = (): JSX.Element => (
   <SearchField
     handleNewSearch={action('handleNewSearch')}
     handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort. focus: ${display}`)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
+    shortSearchField={boolean('shortSearchField', true)}
     handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
   />
 );
@@ -46,10 +46,11 @@ export const wrappedSearchList = (): JSX.Element => (
   <WrappedSearchList
     handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
     handleSelectSong={action('handleSelectSong')}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
     meteorCall={action('meteorCall')}
     favoriteSongs={[]}
     isAuthenticated={boolean('isAuthenticated', true)}
+    shortFirstItem={boolean('shortFirstItem', true)}
+    shortSearchField={boolean('shortSearchField', true)}
     songs={songs}
   />
 );

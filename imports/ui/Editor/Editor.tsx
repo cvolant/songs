@@ -5,17 +5,16 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
 import { useUser } from '../../state-contexts/app-user-context';
+import EditorButtons from './EditorButtons';
+import FullCardLayout from '../utils/FullCardLayout';
+import NoLyrics from './NoLyrics';
 import Paragraph from './Paragraph';
 import Title from './Title';
-import EditorButtons from './EditorButtons';
-import NoLyrics from './NoLyrics';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
 
 import {
@@ -32,6 +31,9 @@ import Folders from '../../api/folders/folders';
 
 
 const useStyles = makeStyles((theme) => ({
+  actions: {
+    paddingBottom: 0,
+  },
   button: {
     margin: theme.spacing(1),
     padding: theme.spacing(1, 1.5),
@@ -42,17 +44,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     top: 'calc(50% - 6rem)',
     left: 'calc(50% - 6rem)',
-  },
-  container: {
-    backgroundColor: 'white',
-    width: '100%',
-    height: '100%',
-    overflowY: 'scroll',
-    overflowScrolling: 'touch',
-    borderWidth: '0 0 1px 0',
-    borderColor: 'transparent',
-    borderStyle: 'solid',
-    borderImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), gray, rgba(0, 0, 0, 0)) 100% 0%',
   },
   content: {
     display: 'flex',
@@ -75,9 +66,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       margin: theme.spacing(-2),
     },
-  },
-  waitingContent: {
-    height: '100%',
+    width: '100%',
   },
 }));
 
@@ -438,87 +427,85 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         <Helmet>
           <title>{`Alleluia.plus - ${title}`}</title>
         </Helmet>
-        <Card className={classes.root}>
-          <div className={classes.container}>
-            {title
-              ? (
-                <CardContent className={classes.content}>
-                  <Title
-                    edit={editTitle}
-                    editGlobal={edit}
-                    details={details}
-                    title={title}
-                    subtitle={subtitle}
-                    handleEditTitle={handleEditTitle}
-                    handleTitleChange={handleTitleChange}
-                    handleSubtitleChange={handleSubtitleChange}
-                    handleDetailChange={handleDetailChange}
-                    handleTitleCancel={handleTitleCancel}
-                    logoMenuDeployed={logoMenuDeployed}
-                  />
-                  <Grid className={classes.lyrics} container spacing={1}>
-                    {pg.length > 0
-                      ? pgStates.map(
-                        (pgState) => (
-                          <Paragraph
-                            key={pgState.pgIndex}
-                            paragraph={pg[pgState.pgIndex]}
-                            editGlobal={edit}
-                            edit={pgState.edit}
-                            selected={pgState.selected}
-                            handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
-                            handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
-                            handleLabelChange={(e): void => {
-                              handlePgChange(e.currentTarget, pgState.pgIndex, 'label');
-                            }}
-                            handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
-                            handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
-                            handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
-                            handlePgChange={(e): void => {
-                              handlePgChange(e.currentTarget, pgState.pgIndex, 'pg');
-                            }}
-                            handleSelect={(e): void => {
-                              handleSelect(e.currentTarget, pgState.pgIndex);
-                            }}
-                          />
-                        ),
-                      )
-                      : <NoLyrics />}
-                  </Grid>
-                  <Button
-                    variant="contained"
-                    className={`${classes.button} ${edit ? '' : classes.displayNone}`}
-                    onClick={handleAddPg}
-                  >
-                    <Add />
-                  </Button>
-                </CardContent>
-              )
-              : (
-                <CardContent className={classes.waitingContent}>
-                  <CircularProgress className={classes.circularProgress} />
-                </CardContent>
-              )}
-          </div>
-          <EditorButtons
-            actionIconButtonProps={actionIconButtonProps}
-            edit={edit}
-            folders={folders}
-            goBack={goBack}
-            handleCancelAll={handleCancelAll}
-            handleDelete={handleDelete}
-            handleEditSong={handleEditSong}
-            handleSaveAll={handleSaveAll}
-            handleToggleSelectAll={handleToggleSelectAll}
-            isThereParagraphs={!!pgStates.length}
-            isThereTitle={!!title}
-            selectedPg={pgStates
-              .filter((pgState) => pgState.selected)
-              .map((pgState) => (pg[pgState.pgIndex]))}
-            song={song}
-            user={user}
-          />
-        </Card>
+        <FullCardLayout
+          actions={(
+            <EditorButtons
+              actionIconButtonProps={actionIconButtonProps}
+              edit={edit}
+              folders={folders}
+              handleCancelAll={handleCancelAll}
+              handleDelete={handleDelete}
+              handleEditSong={handleEditSong}
+              handleSaveAll={handleSaveAll}
+              handleToggleSelectAll={handleToggleSelectAll}
+              isThereParagraphs={!!pgStates.length}
+              isThereTitle={!!title}
+              selectedPg={pgStates
+                .filter((pgState) => pgState.selected)
+                .map((pgState) => (pg[pgState.pgIndex]))}
+              song={song}
+              user={user}
+            />
+          )}
+          actionsProps={{ className: classes.actions }}
+          className={classes.root}
+          contentProps={{ className: classes.content }}
+          handleReturn={edit ? undefined : goBack}
+        >
+          {title
+            ? [
+              <Title
+                edit={editTitle}
+                editGlobal={edit}
+                details={details}
+                title={title}
+                subtitle={subtitle}
+                handleEditTitle={handleEditTitle}
+                handleTitleChange={handleTitleChange}
+                handleSubtitleChange={handleSubtitleChange}
+                handleDetailChange={handleDetailChange}
+                handleTitleCancel={handleTitleCancel}
+                logoMenuDeployed={logoMenuDeployed}
+              />,
+              <Grid className={classes.lyrics} container spacing={1}>
+                {pg.length > 0
+                  ? pgStates.map(
+                    (pgState) => (
+                      <Paragraph
+                        key={pgState.pgIndex}
+                        paragraph={pg[pgState.pgIndex]}
+                        editGlobal={edit}
+                        edit={pgState.edit}
+                        selected={pgState.selected}
+                        handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
+                        handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
+                        handleLabelChange={(e): void => {
+                          handlePgChange(e.currentTarget, pgState.pgIndex, 'label');
+                        }}
+                        handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
+                        handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
+                        handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
+                        handlePgChange={(e): void => {
+                          handlePgChange(e.currentTarget, pgState.pgIndex, 'pg');
+                        }}
+                        handleSelect={(e): void => {
+                          handleSelect(e.currentTarget, pgState.pgIndex);
+                        }}
+                      />
+                    ),
+                  )
+                  : <NoLyrics />}
+              </Grid>,
+              <Button
+                variant="contained"
+                className={`${classes.button} ${edit ? '' : classes.displayNone}`}
+                onClick={handleAddPg}
+              >
+                <Add />
+              </Button>,
+            ]
+            : <CircularProgress className={classes.circularProgress} />}
+        </FullCardLayout>
       </>
     );
   }
