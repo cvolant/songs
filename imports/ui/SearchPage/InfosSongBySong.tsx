@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Panel from '../utils/Panel';
 
 const useStyles = makeStyles((theme) => ({

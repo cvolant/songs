@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SongListItemLoading: React.FC<{}> = () => {
+export const ListLayoutItemLoading: React.FC<{}> = () => {
   const classes = useStyles();
 
   return (
@@ -24,4 +24,4 @@ export const SongListItemLoading: React.FC<{}> = () => {
   );
 };
 
-export default SongListItemLoading;
+export default ListLayoutItemLoading;

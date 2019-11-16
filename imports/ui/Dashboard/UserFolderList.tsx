@@ -2,15 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
-import FolderList from '../FolderList/FolderList';
+import FolderList from '../Folders/FolderList';
 
-import { ISortSpecifierValue } from '../../types/searchTypes';
 import {
-  IFolder,
-  IUnfetchedFolder,
-  ISortFolderCriterion,
-  ISortFolderSpecifier,
-} from '../../types/folderTypes';
+  ISortSpecifierValue,
+  ISortCriterion,
+  ISortSpecifier,
+} from '../../types/searchTypes';
+import { IFolder, IUnfetchedFolder } from '../../types/folderTypes';
 
 import Folders from '../../api/folders/folders';
 
@@ -39,7 +38,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState<ISortFolderSpecifier | undefined>(undefined);
+  const [sort, setSort] = useState<ISortSpecifier<IFolder> | undefined>(undefined);
 
   useEffect((): (() => void) => {
     setLoading(true);
@@ -61,7 +60,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     }
   };
 
-  const handleSort = (sortCriterion: ISortFolderCriterion) => (): void => {
+  const handleSort = (sortCriterion: ISortCriterion<IFolder>) => (): void => {
     let sortValue: ISortSpecifierValue;
     if (sort && sort[sortCriterion]) {
       sortValue = sort[sortCriterion] === -1 ? undefined : -1;
@@ -71,20 +70,20 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    } as unknown as ISortFolderSpecifier);
+    } as unknown as ISortSpecifier<IFolder>);
   };
 
   return (
     <FolderList
       displaySort={displaySort}
       emptyListPlaceholder={emptyListPlaceholder}
+      folders={folders}
+      handleSelectFolder={selectFolder}
       handleSort={handleSort}
       handleToggleDisplaySort={handleToggleDisplaySort}
       loading={loading}
-      logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
-      folders={folders}
-      handleSelectFolder={selectFolder}
+      shortFirstItem={logoMenuDeployed}
       sort={sort}
     />
   );

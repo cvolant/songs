@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   actionButtons: {
-    flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
   },
@@ -101,9 +100,9 @@ export const FullCardLayout: React.FC<IFullCardLayoutProps> = ({
         <CardHeader
           {...headerProps}
           action={headerAction}
+          className={clsx(classes.header, headerProps && headerProps.className)}
           subheader={headerSubheader}
           title={headerTitle}
-          className={clsx(classes.header, headerProps && headerProps.className)}
         >
           {header}
         </CardHeader>
@@ -131,6 +130,7 @@ export const FullCardLayout: React.FC<IFullCardLayoutProps> = ({
               <Button
                 className={classes.button}
                 color="primary"
+                key="return"
                 onClick={handleReturn}
                 size="large"
                 variant="outlined"

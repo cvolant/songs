@@ -162,7 +162,7 @@ export const folders = [
     date: new Date('2019/12/11'),
     name: 'Folder3',
     sharedWith: [],
-    songs: [songs[0]],
+    songs: [songs[1]],
     updatedAt: new Date('2019/11/01'),
     userId: users[0]._id || '',
   },

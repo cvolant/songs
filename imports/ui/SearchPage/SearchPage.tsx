@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Eye from '@material-ui/icons/RemoveRedEye';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
@@ -19,6 +19,7 @@ import Screen from '../Screen';
 import SearchList from './SearchList';
 
 import { ISong, IUnfetchedSong } from '../../types/songTypes';
+import { IIconColor } from '../../types/iconButtonTypes';
 
 import routesPaths from '../../app/routesPaths';
 
@@ -171,9 +172,12 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
             actionIconButtonProps={{
               ariaLabel: t('editor.View', 'View'),
               Icon: Eye,
-              onClick: handleOpenScreen,
-              color: 'primary',
-              disable: (isThereSelected: boolean): boolean => !isThereSelected,
+              onClick: { build: handleOpenScreen },
+              color: 'primary' as IIconColor,
+              disabled: (
+                _song: IUnfetchedSong,
+                params?: { isThereSelected?: boolean },
+              ): boolean => !(params && params.isThereSelected),
             }}
             goBack={handleGoBackFromEditor}
             logoMenuDeployed={logoMenuDeployed}

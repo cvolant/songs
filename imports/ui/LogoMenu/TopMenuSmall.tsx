@@ -1,5 +1,4 @@
 import React, { ReactNode, SyntheticEvent } from 'react';
-import PropTypes from 'prop-types';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import { PaperProps as IPaperProps } from '@material-ui/core/Paper';
 
@@ -28,10 +27,5 @@ export const TopMenuSmall: React.FC<ITopMenuSmallProps> = ({
     </SwipeableDrawer>
   </>
 );
-
-TopMenuSmall.propTypes = {
-  handleToggleTopMenu: PropTypes.func.isRequired,
-  topMenuIsOpen: PropTypes.bool.isRequired,
-};
 
 export default TopMenuSmall;

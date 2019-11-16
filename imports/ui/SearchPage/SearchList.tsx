@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 
 import SearchField from './SearchField';
-import SongList from '../SongList/SongList';
+import SongList from '../Songs/SongList';
 import SearchListNoResult from './SearchListNoResult';
 
 import { ISong, IUser } from '../../types';
@@ -16,7 +16,7 @@ import {
   ISortSpecifierValue,
   ISortCriterion,
 } from '../../types/searchTypes';
-import { IIconButtonProps } from '../../types/otherTypes';
+import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
 import buildQuery from './buildQuery';
@@ -43,7 +43,7 @@ interface ISearchListProps {
   hidden?: boolean;
   shortFirstItem?: boolean;
   shortSearchField?: boolean;
-  rightIconProps?: IIconButtonProps;
+  secondaryActions?: IArrayIconButtonProps[];
 }
 interface ISearchListWTData {
   favoriteSongs: Mongo.ObjectID[];
@@ -64,7 +64,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   shortFirstItem = false,
   shortSearchField = false,
   meteorCall,
-  rightIconProps,
+  secondaryActions,
   songs,
 }) => {
   const classes = useStyles();
@@ -73,7 +73,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [limitRaised, setLimitRaised] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
+  const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
   const [search, setSearch] = useState();
 
   console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
@@ -123,7 +123,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     }
   };
 
-  const handleSort = (sortCriterion: ISortCriterion) => (): void => {
+  const handleSort = (sortCriterion: ISortCriterion<ISong>) => (): void => {
     let sortValue: ISortSpecifierValue;
     if (sort && sort[sortCriterion]) {
       sortValue = sort[sortCriterion] === -1 ? undefined : -1;
@@ -133,7 +133,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    } as unknown as ISortSpecifier);
+    } as unknown as ISortSpecifier<ISong>);
   };
 
   const handleToggleDisplaySort = (open?: boolean) => (): void => {
@@ -168,7 +168,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         loading={limitRaised || loading}
         shortFirstItem={shortFirstItem}
         raiseLimit={raiseLimit}
-        rightIconProps={rightIconProps}
+        secondaryActions={secondaryActions}
         songs={songs}
         sort={sort}
       />

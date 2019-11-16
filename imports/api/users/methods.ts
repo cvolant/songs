@@ -133,8 +133,12 @@ export const insertFolder = new ValidatedMethod({
       type: String,
       max: 100,
     },
+    date: {
+      type: Date,
+      optional: true,
+    },
   }).validator(),
-  run(this: IMethodInvocation, { name }: { name: string }): void {
+  run(this: IMethodInvocation, { name, date }: { name: string; date: Date }): void {
     console.log('From user.folders.insert. this.userId:', this.userId);
 
     if (!this.userId) {
@@ -146,6 +150,7 @@ export const insertFolder = new ValidatedMethod({
 
     const folderId = Folders.insert({
       name,
+      date,
       userId: this.userId,
       songs: [],
     } as unknown as IFolder);

@@ -9,15 +9,12 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, boolean, text, number,
 } from '@storybook/addon-knobs';
-import SongList, {
-  SongListItem,
-  SongListDefaultEmpty,
-  SongListSorting,
-} from '../imports/ui/SongList';
-import SongListItemLoading from '../imports/ui/SongList/SongListItemLoading';
+import SongList, { SongListItem } from '../imports/ui/Songs';
+import SongListSorting from '../imports/ui/ListLayout/ListLayoutSorting';
+import SongListItemLoading from '../imports/ui/ListLayout/ListLayoutItemLoading';
 
-import { ISortSpecifier, ISearch, ISortCriterion } from '../imports/types/searchTypes';
-import { IUnfetchedSong } from '../imports/types/songTypes';
+import { ISortSpecifier, ISortCriterion } from '../imports/types/searchTypes';
+import { ISong } from '../imports/types';
 import { songs, users } from './fixtures';
 
 export default {
@@ -31,17 +28,10 @@ type IUseKnobs<T> = (k: {
   boolean: (name: string, value: boolean) => boolean;
 }) => T;
 
-const kSort: IUseKnobs<ISortSpecifier> = (k) => ({
+const kSort: IUseKnobs<ISortSpecifier<ISong>> = (k) => ({
   [k.text('sortCriterion1', 'title')]: k.number('sortValue1 (1 | -1)', 1),
   [k.text('sortCriterion2', 'subtitle')]: k.number('sortValue2 (1 | -1)', -1),
-}) as unknown as ISortSpecifier;
-const kSearch: IUseKnobs<ISearch> = (k) => ({
-  globalQuery: k.text('globalQuery', 'truc bidule'),
-  specificQueries: [
-    { [k.text('specificCriterion1', 'title')]: k.text('specificValue1', 'machin') },
-    { [k.text('specificCriterion2', 'subtitle')]: k.text('specificValue2', 'chouette') },
-  ],
-});
+}) as unknown as ISortSpecifier<ISong>;
 const knobs = { text, number, boolean };
 
 export const songListSorting = (): JSX.Element => {
@@ -49,8 +39,13 @@ export const songListSorting = (): JSX.Element => {
   return (
     <SongListSorting
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-      handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleSort={(sortName?: ISortCriterion<ISong>): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
+      sortCriteria={(['title', 'compositor', 'author', 'year'] as ISortCriterion<ISong>[])
+        .map((sortCriterion) => ({
+          criterion: sortCriterion,
+          localCriterionName: sortCriterion,
+        }))}
     />
   );
 };
@@ -62,20 +57,17 @@ export const songListItem = (): JSX.Element => (
     handleToggleFavorite={(value?: boolean): () => void => action(`handleToggleFavorite(value: ${value})`)}
     handleUnfold={action('unfold')}
     displayFavorite={boolean('displayFavorite', true)}
-    rightIconProps={boolean('rightIconProps', true)
-      ? {
+    secondaryActions={boolean('secondaryActions', true)
+      ? [{
         ariaLabel: 'rightIcon aria label',
         Icon: Add,
-        onClick: (song: IUnfetchedSong): () => void => action(`rightIconClick(song.title: ${song.title})`),
-      }
+        key: 'rightIcon',
+        onClick: action('rightIconClick'),
+      }]
       : undefined}
     song={songs[0]}
-    unfolded={boolean('unfolded', true)}
+    unfolded={boolean('unfolded', false)}
   />
-);
-
-export const songListEmptyItem = (): JSX.Element => (
-  <SongListDefaultEmpty />
 );
 
 export const songListItemLoading = (): JSX.Element => (
@@ -84,27 +76,26 @@ export const songListItemLoading = (): JSX.Element => (
 
 export const songList = (): JSX.Element => {
   const sort = kSort(knobs);
-  const search = kSearch(knobs);
   return (
     <SongList
       displayFavorite={boolean('displayFavorite', true)}
       displaySort={boolean('displaySort', true)}
       favoriteSongs={users[0].favoriteSongs}
       handleSelectSong={action('handleSelectSong')}
-      handleSort={(sortName?: ISortCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleSort={(sortName?: ISortCriterion<ISong>): () => void => action(`handleSort(sortName: ${sortName})`)}
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-      handleToggleFavoriteSong={(songId: Mongo.ObjectID, value?: boolean): () => void => action(`handleToggleFavoriteSong(songId: ${songId}, value: ${value})`)}
+      handleToggleFavoriteSong={(songId: Mongo.ObjectID, value?: boolean): () => void => action(`handleToggleFavoriteSong(songId: ${songId.toHexString()}, value: ${value})`)}
       loading={boolean('loading', false)}
       shortFirstItem={boolean('shortFistItem', true)}
       raiseLimit={action('raiseLimit')}
-      rightIconProps={boolean('rightIconProps', true)
-        ? {
+      secondaryActions={boolean('secondaryActions', true)
+        ? [{
           ariaLabel: 'rightIcon aria label',
           Icon: Add,
-          onClick: (song: IUnfetchedSong): () => void => action(`rightIconClick(song.title: ${song.title})`),
-        }
+          key: 'rightIcon key',
+          onClick: action('rightIconClick'),
+        }]
         : undefined}
-      search={search}
       songs={boolean('songs', true) ? songs : []}
       sort={sort}
     />

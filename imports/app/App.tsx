@@ -9,12 +9,12 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Routes from './Routes';
 import routesPaths from './routesPaths';
-import { UserProvider } from '../state-contexts/app-user-context';
+import { UserProvider } from '../hooks/contexts/app-user-context';
 
 import 'normalize.css';
 import '../startup/simple-schema-configuration';
 import theme from '../client/theme';
-import { DeviceSizeProvider } from '../state-contexts/app-device-size-context';
+import { DeviceSizeProvider } from '../hooks/contexts/app-device-size-context';
 
 const languages = ['en', 'fr'];
 

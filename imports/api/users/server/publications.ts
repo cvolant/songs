@@ -12,6 +12,13 @@ import { IMongoQueryOptions } from '../../../types/searchTypes';
 import { Folders } from '../../folders/folders';
 import Songs from '../../songs/songs';
 
+Meteor.publish('user', function publishUser() {
+  return Meteor.users.find(
+    { _id: this.userId },
+    { fields: { favoriteSongs: 1, createdSongs: 1, folders: 1 } },
+  );
+});
+
 publishComposite('user.folders', (options: IMongoQueryOptions) => ({
   find(this: { userId: string }): Mongo.Cursor<IUser> {
     return Meteor.users.find({ _id: this.userId }, { fields: { folders: 1 } });

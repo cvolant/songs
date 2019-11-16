@@ -8,17 +8,17 @@ import {
   withKnobs, boolean,
 } from '@storybook/addon-knobs';
 
-import { UserProvider } from '../imports/state-contexts/app-user-context';
+import { UserProvider } from '../imports/hooks/contexts/app-user-context';
 import { WrappedSearchList } from '../imports/ui/SearchPage/SearchList';
 import { SearchListNoResult, SearchField } from '../imports/ui/SearchPage';
-import { songs, users } from './fixtures';
+import { songs } from './fixtures';
 
 export default {
   title: 'Search',
   decorators: [
     withKnobs,
     (storyFn: () => JSX.Element): JSX.Element => (
-      <UserProvider user={users[0]}>
+      <UserProvider>
         <BrowserRouter>
           <Route>
             {storyFn()}

@@ -10,12 +10,12 @@ import Add from '@material-ui/icons/Add';
 import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
 
-import { useUser } from '../../state-contexts/app-user-context';
+import { useUser } from '../../hooks/contexts/app-user-context';
 import AddSongTo from './AddSongTo';
 
 import { IFolder, IUser } from '../../types';
 import { IUnfetchedSong, IParagraph } from '../../types/songTypes';
-import { IIconButtonProps } from '../../types/otherTypes';
+import { IIconButtonProps } from '../../types/iconButtonTypes';
 
 const useStyles = makeStyles((theme) => ({
   bottomFab: {
@@ -171,23 +171,24 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
                       : t('editor.Select all', 'Select all')}
                   </Fab>
                   {actionIconButtonProps && (({
-                    ariaLabel, className, color, disable, Icon, onClick,
-                  }): JSX.Element => (
-                    <Fab
-                      aria-label={ariaLabel}
-                      className={className}
-                      color={color || 'default'}
-                      disabled={disable
-                        ? disable(!!selectedPg.length)
-                        : false}
-                      onClick={onClick({
-                        ...song,
-                        pg: selectedPg,
-                      })}
-                    >
-                      <Icon />
-                    </Fab>
-                  ))(actionIconButtonProps)}
+                    ariaLabel, className, color, disabled, Icon, onClick,
+                  }): JSX.Element => {
+                    const IconButtonIcon = 'build' in Icon ? Icon.build(song) : Icon;
+                    return (
+                      <Fab
+                        aria-label={typeof ariaLabel === 'function' ? ariaLabel(song) : ariaLabel || ''}
+                        className={typeof className === 'function' ? className(song) : className}
+                        color={typeof color === 'function' ? color(song) : color}
+                        disabled={typeof disabled === 'function' ? disabled(song, { isThereSelected: !!selectedPg.length }) : disabled || false}
+                        onClick={'build' in onClick ? onClick.build({
+                          ...song,
+                          pg: selectedPg,
+                        }) : onClick}
+                      >
+                        <IconButtonIcon />
+                      </Fab>
+                    );
+                  })(actionIconButtonProps)}
                 </div>
               </div>
             </div>
@@ -196,7 +197,6 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
               open={open}
               onClose={handleClose}
               song={song}
-              user={user}
             />
           </>
         )}

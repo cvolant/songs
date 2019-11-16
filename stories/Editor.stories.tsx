@@ -15,18 +15,18 @@ import {
   Title,
 } from '../imports/ui/Editor';
 import { WrappedEditor } from '../imports/ui/Editor/Editor';
-import { UserProvider } from '../imports/state-contexts/app-user-context';
+import { UserProvider } from '../imports/hooks/contexts/app-user-context';
 import {
   songs, folders, details, users,
 } from './fixtures';
-import { IUnfetchedSong } from '../imports/types/songTypes';
+import { IIconColor } from '../imports/types/iconButtonTypes';
 
 export default {
   title: 'Editor',
   decorators: [
     withKnobs,
     (storyFn: () => JSX.Element): JSX.Element => (
-      <UserProvider user={users[0]}>
+      <UserProvider>
         {storyFn()}
       </UserProvider>
     ),
@@ -37,7 +37,7 @@ const actionIconButtonProps = {
   ariaLabel: 'action icon button aria label',
   Icon: Check,
   onClick: (): void => {},
-  color: 'primary' as 'primary' | 'default',
+  color: 'primary' as IIconColor,
   disable: (): boolean => false,
 };
 
@@ -79,11 +79,10 @@ export const editorButtons = (): JSX.Element => (
     actionIconButtonProps={boolean('actionIconButtonProps', true)
       ? {
         ...actionIconButtonProps,
-        onClick: (song: IUnfetchedSong): () => void => action(`actionIconButtonClick. song.title: ${song.title}`),
-        disable: (): boolean => boolean('disable', false),
+        onClick: action('actionIconButtonClick'),
+        disabled: boolean('disable', false),
       } : undefined}
     edit={boolean('edit', false)}
-    goBack={action('goBack')}
     handleCancelAll={action('handleCancelAll')}
     handleDelete={action('handleDelete')}
     handleEditSong={action('handleEditSong')}
@@ -117,7 +116,6 @@ export const addSongTo = (): JSX.Element => (
     open={boolean('open', true)}
     song={songs[0]}
     folders={folders}
-    user={users[0]}
   />
 );
 

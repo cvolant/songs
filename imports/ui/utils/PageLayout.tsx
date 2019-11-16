@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LogoMenu from '../LogoMenu';
 
 import { ITutorialContentName } from '../Tutorial';

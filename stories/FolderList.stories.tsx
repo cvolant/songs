@@ -5,14 +5,13 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, boolean, text, number,
 } from '@storybook/addon-knobs';
-import FolderList, {
-  FolderListItem,
-  FolderListDefaultEmpty,
-  FolderListSorting,
-} from '../imports/ui/FolderList';
-import FolderListItemLoading from '../imports/ui/FolderList/FolderListItemLoading';
+import FolderList, { FolderListItem } from '../imports/ui/Folders';
+import FolderListSorting from '../imports/ui/ListLayout/ListLayoutSorting';
+import FolderListItemLoading from '../imports/ui/ListLayout/ListLayoutItemLoading';
 
-import { ISortFolderSpecifier, ISortFolderCriterion } from '../imports/types';
+import { ISortSpecifier, ISortCriterion } from '../imports/types/searchTypes';
+import { IFolder } from '../imports/types';
+
 import { folders } from './fixtures';
 
 export default {
@@ -26,10 +25,10 @@ type IUseKnobs<T> = (k: {
   boolean: (name: string, value: boolean) => boolean;
 }) => T;
 
-const kSort: IUseKnobs<ISortFolderSpecifier> = (k) => ({
+const kSort: IUseKnobs<ISortSpecifier<IFolder>> = (k) => ({
   [k.text('sortCriterion1', 'date')]: k.number('sortValue1 (1 | -1)', 1),
   [k.text('sortCriterion2', 'name')]: k.number('sortValue2 (1 | -1)', -1),
-}) as unknown as ISortFolderSpecifier;
+}) as unknown as ISortSpecifier<IFolder>;
 const knobs = { text, number, boolean };
 
 export const folderListSorting = (): JSX.Element => {
@@ -37,8 +36,13 @@ export const folderListSorting = (): JSX.Element => {
   return (
     <FolderListSorting
       handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-      handleSort={(sortName?: ISortFolderCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleSort={(sortName?: ISortCriterion<IFolder>): () => void => action(`handleSort(sortName: ${sortName})`)}
       sort={sort}
+      sortCriteria={(['name', 'updatedAd', 'date'] as ISortCriterion<IFolder>[])
+        .map((sortCriterion) => ({
+          criterion: sortCriterion,
+          localCriterionName: sortCriterion,
+        }))}
     />
   );
 };
@@ -48,12 +52,8 @@ export const folderListItem = (): JSX.Element => (
     handleSelect={action('select')}
     handleUnfold={action('unfold')}
     folder={folders[0]}
-    unfolded={boolean('unfolded', true)}
+    unfolded={boolean('unfolded', false)}
   />
-);
-
-export const folderListEmptyItem = (): JSX.Element => (
-  <FolderListDefaultEmpty />
 );
 
 export const folderListItemLoading = (): JSX.Element => (
@@ -65,13 +65,13 @@ export const folderList = (): JSX.Element => {
   return (
     <FolderList
       displaySort={boolean('displaySort', true)}
-      handleSelectFolder={action('handleSelectFolder')}
-      handleSort={(sortName?: ISortFolderCriterion): () => void => action(`handleSort(sortName: ${sortName})`)}
-      handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-      loading={boolean('loading', true)}
-      logoMenuDeployed={boolean('logoMenuDeployed', true)}
-      raiseLimit={action('raiseLimit')}
       folders={boolean('folders', true) ? folders : []}
+      handleSelectFolder={action('handleSelectFolder')}
+      handleSort={(sortName?: ISortCriterion<IFolder>): () => void => action(`handleSort(sortName: ${sortName})`)}
+      handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
+      loading={boolean('loading', false)}
+      raiseLimit={action('raiseLimit')}
+      shortFirstItem={boolean('shortFirstItem', true)}
       sort={sort}
     />
   );

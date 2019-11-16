@@ -9,7 +9,7 @@ import FullCardLayout from '../utils/FullCardLayout';
 import SearchList from './SearchList';
 
 import { IUnfetchedSong } from '../../types/songTypes';
-import { IIconButtonProps } from '../../types/otherTypes';
+import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -24,7 +24,7 @@ interface ICardSearchListProps {
   shortSearchField?: boolean;
   handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
-  rightIconProps: IIconButtonProps;
+  secondaryActions: IArrayIconButtonProps[];
 }
 
 export const CardSearchList: React.FC<ICardSearchListProps> = ({
@@ -33,7 +33,7 @@ export const CardSearchList: React.FC<ICardSearchListProps> = ({
   shortSearchField,
   handleFocus,
   handleSelectSong,
-  rightIconProps,
+  secondaryActions,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -58,7 +58,7 @@ export const CardSearchList: React.FC<ICardSearchListProps> = ({
         handleSelectSong={handleSelectSong}
         shortFirstItem={shortFirstItem}
         shortSearchField={shortSearchField}
-        rightIconProps={rightIconProps}
+        secondaryActions={secondaryActions}
       />
     </FullCardLayout>
   );

@@ -1,5 +1,3 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,27 +9,37 @@ import Folder from '@material-ui/icons/Folder';
 import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-import CreateNewDialog from './CreateNewDialog';
+import { useUser } from '../../hooks/contexts/app-user-context';
+import FolderDialog from '../Folders/CreateNewFolder';
+import SongDialog from '../Songs/SongDialog';
 import FullCardLayout from '../utils/FullCardLayout';
 import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
+import UserCollectionName from './UserCollectionName';
 
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 
 export type IUserCollectionName = 'favoriteSongs' | 'createdSongs' | 'folders';
 interface IMainDashboardProps {
-  display: IUserCollectionName;
-  handleChangeDisplay: (newDisplay?: IUserCollectionName) => () => void;
+  display: UserCollectionName;
+  handleChangeDisplay: (newDisplay?: UserCollectionName) => () => void;
   logoMenuDeployed: boolean;
   selectFolder: (folder: IUnfetchedFolder) => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
 }
 
 export const MainDashboard: React.FC<IMainDashboardProps> = ({
-  display, handleChangeDisplay, logoMenuDeployed, selectFolder, handleSelectSong,
+  display,
+  handleChangeDisplay,
+  handleSelectSong,
+  logoMenuDeployed,
+  selectFolder,
 }) => {
   const { t } = useTranslation();
+  const [user] = useUser();
+
+  console.log('From MainDashboard, render. user:', user);
 
   const [displaySort, setDisplaySort] = useState(false);
 
@@ -39,32 +47,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
     setDisplaySort(newDisplaySort === undefined ? !displaySort : newDisplaySort);
   };
 
-  const handleNewFolder = (
-    folderName: string,
-    callback: (err: Meteor.Error, res: Mongo.ObjectID) => void,
-  ): void => {
-    Meteor.call('user.folders.insert', { name: folderName }, (err: Meteor.Error, res: Mongo.ObjectID) => {
-      callback(err, res);
-      if (res) {
-        selectFolder({ _id: res, name: folderName });
-      }
-    });
-  };
-
-  const handleNewSong = (
-    songTitle: string,
-    callback: (err: Meteor.Error, res: Mongo.ObjectID) => void,
-  ): void => {
-    Meteor.call('user.createdSongs.insert', { song: { title: songTitle } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
-      callback(err, res);
-      if (res) {
-        handleSelectSong({ _id: res, title: songTitle });
-      }
-    });
-  };
-
-
-  const userSongLists: Record<IUserCollectionName, {
+  const userSongLists: Record<UserCollectionName, {
     title: string;
     notFound: string;
     Icon: React.FunctionComponent<SvgIconProps>;
@@ -89,20 +72,8 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   return (
     <FullCardLayout
       actions={[
-        <CreateNewDialog
-          buttonText={t('dashboard.New song', 'New song')}
-          dialogText={t('dashboard.Enter title', 'Enter title')}
-          handleCreateNew={handleNewSong}
-          inputLabel={t('song.Title', 'Title')}
-          key="New song"
-        />,
-        <CreateNewDialog
-          buttonText={t('dashboard.New folder', 'New folder')}
-          dialogText={t('dashboard.Enter folder name', 'Enter folder name')}
-          handleCreateNew={handleNewFolder}
-          inputLabel={t('folder.Folder name', 'Folder name')}
-          key="New folder"
-        />,
+        <SongDialog key="newSong" handleSelectSong={handleSelectSong} />,
+        <FolderDialog key="newFolder" handleSelectFolder={handleSelectSong} />,
       ]}
       headerAction={(
         <div>
@@ -122,8 +93,8 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
               <IconButton
                 aria-label={title}
                 color={list === display ? 'primary' : undefined}
-                key={title}
-                onClick={handleChangeDisplay(list as IUserCollectionName)}
+                key={list}
+                onClick={handleChangeDisplay(list as UserCollectionName)}
                 size="small"
               >
                 <Icon />
@@ -162,6 +133,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
             handleToggleDisplaySort={handleToggleDisplaySort}
             logoMenuDeployed={logoMenuDeployed}
             handleSelectSong={handleSelectSong}
+            user={user}
             userSongList={display}
           />
         )}

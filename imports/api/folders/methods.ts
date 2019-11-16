@@ -8,32 +8,13 @@ import { Folders } from './folders';
 
 import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
-import { IFolder } from '../../types';
-
-const PartialFolderSchema = new SimpleSchema({
-  name: {
-    type: String,
-    max: 100,
-    optional: true,
-  },
-  songs: {
-    type: Array,
-    optional: true,
-  },
-  'songs.$': SongSchema,
-});
+import { FolderSchema, IUnfetchedFolder } from '../../types/folderTypes';
 
 export const update = new ValidatedMethod({
   name: 'folders.update',
-  validate: new SimpleSchema({
-    folderId: String,
-    updates: PartialFolderSchema,
-  }).validator(),
-  run(this: IMethodInvocation, { folderId, updates }: {
-    folderId: string;
-    updates: Partial<IFolder>;
-  }): void {
-    const folder = Folders.findOne(folderId);
+  validate: FolderSchema.validator(),
+  run(this: IMethodInvocation, folderUpdates: IUnfetchedFolder): void {
+    const folder = Folders.findOne(folderUpdates._id);
 
     if (folder) {
       if (folder.userId !== this.userId) {
@@ -43,15 +24,15 @@ export const update = new ValidatedMethod({
         );
       }
 
-      Folders.update(folderId, {
-        $set: { ...updates },
+      Folders.update(folderUpdates._id, {
+        $set: { ...folderUpdates },
       });
     }
   },
 });
 
 export const updateInsertSong = new ValidatedMethod({
-  name: 'folders.update.songs.insert',
+  name: 'folders.songs.insert',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
     songId: ObjectIDSchema,
@@ -79,7 +60,7 @@ export const updateInsertSong = new ValidatedMethod({
 });
 
 export const updateUpdateSong = new ValidatedMethod({
-  name: 'folders.update.songs.update',
+  name: 'folders.songs.update',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
     songUpdates: SongSchema,
@@ -114,7 +95,7 @@ export const updateUpdateSong = new ValidatedMethod({
 });
 
 export const updateRemoveSong = new ValidatedMethod({
-  name: 'folders.update.songs.remove',
+  name: 'folders.songs.remove',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
     songId: ObjectIDSchema,

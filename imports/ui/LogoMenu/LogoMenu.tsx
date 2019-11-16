@@ -15,7 +15,7 @@ import Home from '@material-ui/icons/Home';
 import Menu from '@material-ui/icons/Menu';
 import Person from '@material-ui/icons/Person';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';

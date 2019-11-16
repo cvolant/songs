@@ -3,7 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
-import SongList from '../SongList/SongList';
+import SongList from '../Songs/SongList';
+import UserCollectionName from './UserCollectionName';
 
 import { ISong, IUser } from '../../types';
 import {
@@ -15,18 +16,20 @@ import {
 import Songs from '../../api/songs/songs';
 import { IUnfetchedSong } from '../../types/songTypes';
 import { IUnfetchedFolder } from '../../types/folderTypes';
+import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 const nbItemsPerPage = 20;
 
-type IUserSongListName = 'favoriteSongs' | 'createdSongs' | 'folderSongs';
 interface IUserSongListProps {
   displaySort?: boolean;
   emptyListPlaceholder: ReactNode;
   folder?: IUnfetchedFolder;
   handleToggleDisplaySort: (display?: boolean) => () => void;
-  logoMenuDeployed?: boolean;
   handleSelectSong: (song: IUnfetchedSong) => void;
-  userSongList?: IUserSongListName;
+  logoMenuDeployed?: boolean;
+  secondaryActions?: IArrayIconButtonProps[];
+  user: IUser | null;
+  userSongList?: UserCollectionName;
 }
 interface IUserSongListWTData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,12 +49,13 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
   logoMenuDeployed,
   meteorCall,
   handleSelectSong,
+  secondaryActions,
   songs,
-  userSongList = 'favoriteSongs',
+  userSongList = UserCollectionName.FavoriteSongs,
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
+  const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
 
   useEffect((): (() => void) => {
     setLoading(true);
@@ -59,7 +63,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       console.log('From UserSongList, useEffect, endOfLoading.');
       setLoading(false);
     };
-    const subscription = userSongList === 'folderSongs' && folder && folder._id
+    const subscription = userSongList === UserCollectionName.Folders && folder && folder._id
       ? Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }, endOfLoading)
       : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
     console.log('From UserSongList, useEffect. userSongList:', userSongList, 'folder:', folder, 'subscription:', subscription);
@@ -78,7 +82,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
     }
   };
 
-  const handleSort = (sortCriterion: ISortCriterion) => (): void => {
+  const handleSort = (sortCriterion: ISortCriterion<ISong>) => (): void => {
     let sortValue: ISortSpecifierValue;
     if (sort && sort[sortCriterion]) {
       sortValue = sort[sortCriterion] === -1 ? undefined : -1;
@@ -88,7 +92,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    } as unknown as ISortSpecifier);
+    } as unknown as ISortSpecifier<ISong>);
   };
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
@@ -106,9 +110,10 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       handleToggleDisplaySort={handleToggleDisplaySort}
       handleToggleFavoriteSong={handleToggleFavoriteSong}
       loading={loading}
-      shortFirstItem={logoMenuDeployed}
       raiseLimit={raiseLimit}
       handleSelectSong={handleSelectSong}
+      secondaryActions={secondaryActions}
+      shortFirstItem={logoMenuDeployed}
       songs={songs}
       sort={sort}
     />
@@ -116,15 +121,15 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
 };
 
 const UserSongList = withTracker<IUserSongListWTData, IUserSongListProps>(({
-  userSongList = 'favoriteSongs', folder,
+  userSongList = UserCollectionName.FavoriteSongs, folder, user,
 }) => {
-  const user = Meteor.user() as IUser;
-  console.log('From UserSongList, withTracker. folder:', folder, 'folder && folder.songs && folder.songs.map((song) => song._id):', folder && folder.songs && folder.songs.map((song) => song._id), 'Songs:', Songs);
-  const songIds = userSongList === 'folderSongs'
+  const songIds = userSongList === UserCollectionName.Folders
     ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
     : (user && user[userSongList]) || [];
+  const favoriteSongs = (user && user.favoriteSongs) || [];
+  console.log('From UserSongList, withTracker. folder:', folder, 'favoriteSongs:', favoriteSongs, 'user:', user);
   return {
-    favoriteSongs: user ? user.favoriteSongs : [],
+    favoriteSongs,
     meteorCall: Meteor.call,
     songs: Songs.find({ _id: { $in: songIds } }).fetch(),
   };

@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, ReactElement } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
@@ -16,11 +16,10 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 
 import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
-
-const sortCriteria: ISortCriterion[] = ['title', 'compositor', 'author', 'year'];
+import { ISong, IFolder } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -90,23 +89,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ISongListSortingProps {
+interface IListLayoutSortingProps<T extends ISong | IFolder> {
   handleToggleDisplaySort: (display?: boolean) => () => void;
-  handleSort: (sortName: ISortCriterion) => () => void;
-  sort?: ISortSpecifier;
+  handleSort: (sortCriterion: ISortCriterion<T>) => () => void;
+  sort?: ISortSpecifier<T>;
+  sortCriteria: {
+    criterion: ISortCriterion<T>;
+    localCriterionName: string;
+  }[];
 }
 
-export const SongListSorting: React.FC<ISongListSortingProps> = ({
+export const ListLayoutSorting = <T extends ISong | IFolder>({
   handleToggleDisplaySort,
   handleSort,
   sort,
-}) => {
+  sortCriteria,
+}: IListLayoutSortingProps<T>): ReactElement | null => {
   const { t } = useTranslation();
   const classes = useStyles();
   const smallDevice = useDeviceSize('sm.down');
-  console.log('From SongListSorting, render. sort:', sort);
 
-  const sortButton = (buttonName: ISortCriterion): JSX.Element => (
+  const [sortCriterion = '', sortValue = ''] = Object.entries(sort || {})[0];
+
+  console.log('From ListLayoutSorting, render. sort:', sort, 'sortCriterion:', sortCriterion, 'sortValue:', sortValue);
+
+  const sortButton = (buttonName: ISortCriterion<T>): JSX.Element => (
     <Button
       classes={{ root: classes.button, colorInherit: classes.buttonDefaultColor }}
       color={sort && sort[buttonName] ? 'primary' : 'inherit'}
@@ -124,7 +131,7 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
         )
       }
       />
-      {t(`song.${buttonName}`, buttonName)}
+      {(sortCriteria.find((foundCriterion) => foundCriterion.criterion === buttonName) || {}).localCriterionName || ''}
     </Button>
   );
 
@@ -132,7 +139,7 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
     name?: string;
     value: unknown;
   }>): void => {
-    handleSort(event.target.value as ISortCriterion)();
+    handleSort(event.target.value as ISortCriterion<T>)();
   };
 
   return (
@@ -151,16 +158,16 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
                 select
                 className={classes.textField}
                 onChange={handleChange}
-                value={sort ? Object.keys(sort)[0] : ''}
+                value={sortCriterion}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <ArrowDropUp
                         className={clsx(
                           classes.sortIcon,
-                          sort && Object.keys(sort).length && clsx(
+                          sortValue && clsx(
                             classes.sortIconVisible,
-                            sort && Object.values(sort)[0] < 0 && classes.sortIconDown,
+                            typeof sortValue === 'number' && sortValue < 0 && classes.sortIconDown,
                           ),
                         )}
                       />
@@ -178,15 +185,24 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
                         {' '}
                       </span>
                       <span className={classes.sortOptions}>
-                        {value ? `${t('search.by', 'by')} ${t(`song.${value}`, value as string)}` : t('search.none', 'none')}
+                        {((): string => {
+                          if (value) {
+                            const criterion = sortCriteria
+                              .find((foundCriterion) => foundCriterion.criterion === value);
+                            if (criterion) {
+                              return `${t('search.by', 'by')} ${criterion.localCriterionName}`;
+                            }
+                          }
+                          return t('search.none', 'none');
+                        })()}
                       </span>
                     </Typography>
                   ),
                 }}
               >
-                {sortCriteria.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {t(`song.${option}`, option)}
+                {sortCriteria.map((criterion) => (
+                  <MenuItem key={criterion.criterion} value={criterion.criterion}>
+                    {criterion.localCriterionName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -199,11 +215,11 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
                   <span className={clsx(classes.buttons, classes.sortOptions)}>
                     {sortCriteria
                       .slice(0, sortCriteria.length - 1)
-                      .map((buttonName) => sortButton(buttonName))}
+                      .map((criterion) => sortButton(criterion.criterion))}
                   </span>
                 </Typography>
                 <Typography className={clsx(classes.typography, classes.year)} variant="body1">
-                  {sortButton('year')}
+                  {sortButton(sortCriteria[sortCriteria.length - 1].criterion)}
                 </Typography>
               </>
             )}
@@ -214,4 +230,4 @@ export const SongListSorting: React.FC<ISongListSortingProps> = ({
   );
 };
 
-export default SongListSorting;
+export default ListLayoutSorting;

@@ -1,8 +1,5 @@
-// FIXME: we can't use ES6 imports in mocks, not sure why
-const specialLog = (name, returnValue) => (args) => {
-  console.log(`-SbMock- ${name}:`, args || returnValue);
-  return returnValue;
-};
+const { users } = require('../../stories/fixtures');
+const specialLog = require('./specialLog').default;
 
 module.exports = {
   isClient: () => specialLog('Meteor.isClient', true)(),
@@ -11,8 +8,9 @@ module.exports = {
   subscribe: (args) => specialLog('Meteor.subscribe', {
     stop: () => specialLog('Subscription.stop')(args),
   })(args),
-  userId: () => specialLog('Meteor.userId', 'idUser1')(),
-  call: (args) => specialLog('Meteor.call:')(args),
+  user: () => specialLog('Meteor.user', users[0])(),
+  userId: () => specialLog('Meteor.userId', users[0]._id)(),
+  call: (args) => specialLog('Meteor.call')(args),
 };
 
 /*

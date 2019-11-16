@@ -52,9 +52,9 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
       </Grid>
       <div className={classes.return} />
       {song.pg && song.pg.map((paragraph) => {
-        const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e) => (e === '<br/>\n' ? <br key={paragraph.index} /> : e));
+        const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e) => (e === '<br/>\n' ? <br /> : e));
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3}>
+          <Grid key={paragraph.index} item xs={12} sm={6} md={4} xl={3}>
             <Typography key={paragraph.index} className={classes.paragraph} variant="body1">
               {pgText}
             </Typography>

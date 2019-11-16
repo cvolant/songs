@@ -1,22 +1,6 @@
-// FIXME: we can't use ES6 imports in mocks, not sure why
-const specialLog = (name, returnValue) => (args) => {
-  console.log(`-SbMock- ${name}:`, args || returnValue);
-  return returnValue;
-};
+const { songs } = require('../../stories/fixtures');
+const specialLog = require('./specialLog').default;
 
 module.exports = {
-  find: (args) => specialLog('Songs.find', [
-    {
-      _id: 'idSong1',
-      title: 'Song1',
-    },
-    {
-      _id: 'idSong2',
-      title: 'Song2',
-    },
-    {
-      _id: 'idSong3',
-      title: 'Song3',
-    },
-  ])(args),
+  find: (args) => specialLog('Songs.find', songs)(args),
 }

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
@@ -9,33 +10,61 @@ import Add from '@material-ui/icons/Add';
 import PageLayout from '../utils/PageLayout';
 import Panel from '../utils/Panel';
 import Editor from '../Editor';
-import MainDashboard, { IUserCollectionName } from './MainDashboard';
+import MainDashboard from './MainDashboard';
+
+import FolderEditor from './FolderEditor';
+import { CardSearchList } from '../SearchPage/CardSearchList';
+import UserCollectionName from './UserCollectionName';
 
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
-import FolderEditor from './FolderEditor';
-import { CardSearchList } from '../SearchPage/CardSearchList';
+import { IIconColor } from '../../types/iconButtonTypes';
 
-export const DashboardPage: React.FC<{}> = () => {
-  const { t } = useTranslation();
+import routesPaths from '../../app/routesPaths';
 
-  const [display, setDisplay] = useState<IUserCollectionName>('favoriteSongs');
+interface IDashboardPageProps {
+  urlCollection?: string;
+}
+
+export const DashboardPage: React.FC<IDashboardPageProps> = ({
+  urlCollection,
+}) => {
+  const { i18n, t } = useTranslation();
+  const history = useHistory();
+
+  const setDisplayFromUrl = (): UserCollectionName | undefined => (
+    Object.values(UserCollectionName).find((value) => value === urlCollection)
+  );
+
+  const [display, setDisplay] = useState<UserCollectionName>(
+    setDisplayFromUrl() || UserCollectionName.FavoriteSongs,
+  );
   const [folder, setFolder] = useState<IUnfetchedFolder | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
   const [showPanel, setShowPanel] = useState(true);
 
+  useEffect(() => {
+    const newDisplay = setDisplayFromUrl();
+    if (newDisplay) {
+      setDisplay(newDisplay);
+    }
+  }, [urlCollection]);
+
   const addThisSong = (newSong: IUnfetchedSong) => (): void => {
     if (newSong && newSong._id && folder && folder._id) {
       setSearch(false);
       setSong(undefined);
-      Meteor.call('folders.update.songs.insert', { folderId: folder._id, songId: newSong._id });
+      Meteor.call('folders.songs.insert', { folderId: folder._id, songId: newSong._id });
     }
   };
 
-  const handleChangeDisplay = (newDisplay?: IUserCollectionName) => (): void => {
-    setDisplay(newDisplay || 'favoriteSongs');
+  const handleChangeDisplay = (newDisplay?: UserCollectionName) => (): void => {
+    setDisplay(newDisplay || UserCollectionName.FavoriteSongs);
+    if (newDisplay) {
+      history.push(routesPaths.path(i18n.language, 'dashboard', newDisplay));
+    }
   };
 
   const handleToggleLogoMenu = (oc?: boolean) => (): void => {
@@ -110,9 +139,9 @@ export const DashboardPage: React.FC<{}> = () => {
                 ? {
                   ariaLabel: t('folder.Add song', 'Add song'),
                   Icon: Add,
-                  onClick: addThisSong,
-                  color: 'primary',
-                  disable: (): boolean => false,
+                  onClick: { build: addThisSong },
+                  color: 'primary' as IIconColor,
+                  disabled: false,
                 } : undefined}
               edit={song.userId === Meteor.userId() && !song.pg}
               goBack={goBack(setSong)}
@@ -129,11 +158,12 @@ export const DashboardPage: React.FC<{}> = () => {
               handleSelectSong={handleSelectSong}
               shortFirstItem={logoMenuDeployed}
               shortSearchField={logoMenuDeployed}
-              rightIconProps={{
+              secondaryActions={[{
                 ariaLabel: t('folder.Add song', 'Add song'),
                 Icon: Add,
-                onClick: addThisSong,
-              }}
+                key: 'addSong',
+                onClick: { build: addThisSong },
+              }]}
             />
           );
         }

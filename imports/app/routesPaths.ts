@@ -58,6 +58,29 @@ export const routesPaths: {
             [Locale.en]: 'dashboard',
             [Locale.fr]: 'espace-personnel',
           },
+          children: [
+            {
+              name: 'favoriteSongs',
+              pathPartValues: {
+                [Locale.en]: 'favorite-songs',
+                [Locale.fr]: 'chants-favoris',
+              },
+            },
+            {
+              name: 'createdSongs',
+              pathPartValues: {
+                [Locale.en]: 'created-songs',
+                [Locale.fr]: 'chants-crees',
+              },
+            },
+            {
+              name: 'folders',
+              pathPartValues: {
+                [Locale.en]: 'folders',
+                [Locale.fr]: 'dossiers',
+              },
+            },
+          ],
         },
         {
           name: 'search',
@@ -136,7 +159,7 @@ export const routesPaths: {
           && Object.values(pathPartValues).includes(pathPart);
         if (containValue || branch.any === pathPart || branch.variable) {
           if (containValue) {
-            translatedPart = pathPartValues[Locale[newLng]] || pathPartValues[Locale.en];
+            translatedPart = (pathPartValues && (pathPartValues[Locale[newLng]] || pathPartValues[Locale.en])) || '';
           } else {
             translatedPart = pathPart;
           }

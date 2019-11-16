@@ -1,12 +1,14 @@
 {
   "colon": ":",
   "date 'at'": "at",
+  "date format": "MM-DD-YYYY",
 
+  "Add": "Add",
   "Close": "Close",
   "Continue": "Continue",
   "Cancel": "Cancel",
-  "Add": "Add",
   "Confirm": "Confirm",
+  "Delete": "Delete",
   "Submit": "Submit",
   "Next": "Next",
   "Back": "Back",
@@ -74,6 +76,8 @@
   },
 
   "folder": {
+    "Name": "Name",
+    "Date scheduled": "Date scheduled?",
     "Add folder": "Add folder",
     "Add song": "Add song",
     "Add song to": "Add song to",

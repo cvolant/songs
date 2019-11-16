@@ -9,7 +9,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 
-import { useUser } from '../../state-contexts/app-user-context';
 import EditorButtons from './EditorButtons';
 import FullCardLayout from '../utils/FullCardLayout';
 import NoLyrics from './NoLyrics';
@@ -24,7 +23,7 @@ import {
   IUser,
 } from '../../types';
 import { IPgState, IUnfetchedSong } from '../../types/songTypes';
-import { IIconButtonProps } from '../../types/otherTypes';
+import { IIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
@@ -116,10 +115,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   const [pgStates, setPgStates] = useState<IPgState[]>([]);
   const [title, setTitle] = useState(song.title || '');
   const [subtitle, setSubtitle] = useState(song.title || '');
-
-  const [, setUser] = useUser();
-
-  setUser(user);
 
   const indexOfObject = (
     array: Record<string | number, number | string | boolean>[],
@@ -421,6 +416,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     return (): void => { };
   }, [song._id.toHexString()]);
 
+  console.log('From Editor. pg:', pg, 'pgStates:', pgStates);
+
   if (song._id.toHexString()) {
     return (
       <>
@@ -458,17 +455,18 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                 edit={editTitle}
                 editGlobal={edit}
                 details={details}
-                title={title}
-                subtitle={subtitle}
                 handleEditTitle={handleEditTitle}
                 handleTitleChange={handleTitleChange}
                 handleSubtitleChange={handleSubtitleChange}
                 handleDetailChange={handleDetailChange}
                 handleTitleCancel={handleTitleCancel}
+                key="title"
                 logoMenuDeployed={logoMenuDeployed}
+                subtitle={subtitle}
+                title={title}
               />,
-              <Grid className={classes.lyrics} container spacing={1}>
-                {pg.length > 0
+              <Grid className={classes.lyrics} container key="lyrics" spacing={1}>
+                {pgStates.length > 0
                   ? pgStates.map(
                     (pgState) => (
                       <Paragraph
@@ -497,9 +495,10 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                   : <NoLyrics />}
               </Grid>,
               <Button
-                variant="contained"
                 className={`${classes.button} ${edit ? '' : classes.displayNone}`}
+                key="addParagraph"
                 onClick={handleAddPg}
+                variant="contained"
               >
                 <Add />
               </Button>,

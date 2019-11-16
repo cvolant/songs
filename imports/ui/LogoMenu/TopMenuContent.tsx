@@ -21,7 +21,7 @@ import Power from '@material-ui/icons/Power';
 import PowerOff from '@material-ui/icons/PowerOff';
 import ScreenShare from '@material-ui/icons/ScreenShare';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LanguagePicker from './LanguagePicker';
 import routesPaths, { locales } from '../../app/routesPaths';
 

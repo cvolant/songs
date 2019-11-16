@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
-import SongList from '../SongList/SongList';
+import SongList from '../Songs/SongList';
 
 import { ISong, IUser } from '../../types';
 import {
@@ -45,13 +45,13 @@ export const WrappedFolderSongList: React.FC<IWrappedFolderSongListProps> = ({
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState<ISortSpecifier | undefined>(undefined);
+  const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
   const [songs, setSongs] = useState<ISong[]>([]);
   const [subscriptions, setSubscriptions] = useState<Meteor.SubscriptionHandle[]>([]);
 
   const updateSubscription = (newSubscriptionOptions: {
     limit?: number;
-    sort?: ISortSpecifier;
+    sort?: ISortSpecifier<ISong>;
   } = {}): (() => void) => {
     setLoading(true);
     const newSubscriptions = subscriptions;
@@ -92,7 +92,7 @@ export const WrappedFolderSongList: React.FC<IWrappedFolderSongListProps> = ({
     }
   };
 
-  const handleSort = (sortCriterion: ISortCriterion) => (): void => {
+  const handleSort = (sortCriterion: ISortCriterion<ISong>) => (): void => {
     let sortValue: ISortSpecifierValue;
     if (sort && sort[sortCriterion]) {
       sortValue = sort[sortCriterion] === -1 ? undefined : -1;
@@ -102,7 +102,7 @@ export const WrappedFolderSongList: React.FC<IWrappedFolderSongListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    } as unknown as ISortSpecifier);
+    } as unknown as ISortSpecifier<ISong>);
   };
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
@@ -120,8 +120,8 @@ export const WrappedFolderSongList: React.FC<IWrappedFolderSongListProps> = ({
       handleToggleDisplaySort={handleToggleDisplaySort}
       handleToggleFavoriteSong={handleToggleFavoriteSong}
       loading={loading}
-      logoMenuDeployed={logoMenuDeployed}
       raiseLimit={raiseLimit}
+      shortFirstItem={logoMenuDeployed}
       songs={songs}
       sort={sort}
     />

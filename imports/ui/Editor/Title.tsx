@@ -15,7 +15,7 @@ import Edit from '@material-ui/icons/Edit';
 import Eye from '@material-ui/icons/RemoveRedEye';
 import { CSSProperties } from '@material-ui/styles';
 
-import { useDeviceSize } from '../../state-contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Detail, { IDetails, IDetailTarget } from './Detail';
 
 const useStyles = makeStyles((theme) => ({
@@ -102,6 +102,8 @@ const Title: React.FC<ITitle> = ({
     setShowDetails(!showDetails);
   };
 
+  const DetailsContainer = smallDevice ? Button : React.Fragment;
+
   return (
     <Card elevation={0} className={classes.root}>
       <CardHeader
@@ -159,7 +161,13 @@ const Title: React.FC<ITitle> = ({
           : subtitle}
       />
       <CardContent className={classes.cardContent}>
-        <Button className={classes.detailsButton} onClick={handleToggleDetails}>
+        <DetailsContainer
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...smallDevice ? {
+            className: classes.detailsButton,
+            onClick: handleToggleDetails,
+          } : {}}
+        >
           {(!smallDevice || showDetails)
             ? [
               <div className={classes.logoSpace} key={-1} />,
@@ -178,7 +186,7 @@ const Title: React.FC<ITitle> = ({
             : (
               <Chip icon={<Eye />} label={t('song.Show details', 'Show details')} />
             )}
-        </Button>
+        </DetailsContainer>
       </CardContent>
     </Card>
   );

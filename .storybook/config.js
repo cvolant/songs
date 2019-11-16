@@ -1,17 +1,3 @@
-/* 
-import { configure, addDecorator } from "@storybook/react";
-import { withInfo } from "@storybook/addon-info";
-
-// automatically import all files ending in *.stories.tsx
-const req = require.context("../imports", true, /.stories.tsx$/);
-
-function loadStories() {
-  addDecorator(withInfo);
-  req.keys().forEach(req);
-}
-
-configure(loadStories, module); */
-
 import React, { Suspense } from 'react';
 import { configure, addDecorator, addParameters } from '@storybook/react';
 import '@storybook/addon-console';
@@ -31,6 +17,11 @@ addParameters({
   options: {
     theme: themes.dark,
   },
+  backgrounds: [
+    { name: 'default', value: theme.palette.background.default, default: true },
+    { name: 'page', value: theme.palette.background.page },
+    { name: 'paper', value: theme.palette.background.paper },
+  ],
 });
 addDecorator(
   withI18next({

@@ -26,8 +26,9 @@ import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Folder from '@material-ui/icons/Folder';
 
+import { useUser } from '../../hooks/contexts/app-user-context';
 import SnackbarMessage from '../utils/SnackBarMessage';
-import { IFolder, IUser } from '../../types';
+import { IFolder } from '../../types';
 import { IUnfetchedSong } from '../../types/songTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +72,6 @@ interface IAddSongToProps {
   onClose: () => void;
   open?: boolean;
   song: IUnfetchedSong;
-  user?: IUser;
 }
 
 export const AddSongTo: React.FC<IAddSongToProps> = ({
@@ -79,8 +79,8 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   onClose,
   open = false,
   song,
-  user,
 }) => {
+  const [user] = useUser();
   const favorite = user && user.favoriteSongs && user.favoriteSongs
     .map((favoriteSong) => favoriteSong.toHexString())
     .includes(song._id.toHexString());
@@ -106,7 +106,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   };
 
   const handleListItemClick = (folderId: Mongo.ObjectID) => (): void => {
-    Meteor.call('folders.update.songs.insert', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
+    Meteor.call('folders.songs.insert', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
       if (!res || res[0] === 0) {
         setError((err && err.reason) || (res && res[1]));
       }
@@ -114,7 +114,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   };
 
   const handleRemove = (folderId: Mongo.ObjectID) => (): void => {
-    Meteor.call('folders.update.songs.remove', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
+    Meteor.call('folders.songs.remove', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
       if (!res || res[0] === 0) {
         setError((err && err.reason) || (res && res[1]));
       }

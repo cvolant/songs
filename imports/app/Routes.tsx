@@ -9,6 +9,7 @@ import SignUp from '../ui/signInUp/SignUp';
 import SignIn from '../ui/signInUp/SignIn';
 
 import routesPaths from './routesPaths';
+import UserCollectionName from '../ui/Dashboard/UserCollectionName';
 
 interface IRoutesProps {
   lng: string;
@@ -62,6 +63,33 @@ export const Routes: React.FC<IRoutesProps> = ({
         exact
         path={routesPaths.path(lng, 'dashboard')}
         component={DashboardPage}
+        auth
+        redirection="home"
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'dashboard', UserCollectionName.FavoriteSongs)}
+        render={(): React.ReactElement => (
+          <DashboardPage urlCollection={UserCollectionName.FavoriteSongs} />
+        )}
+        auth
+        redirection="home"
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'dashboard', UserCollectionName.CreatedSongs)}
+        render={(): React.ReactElement => (
+          <DashboardPage urlCollection={UserCollectionName.CreatedSongs} />
+        )}
+        auth
+        redirection="home"
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'dashboard', UserCollectionName.Folders)}
+        render={(): React.ReactElement => (
+          <DashboardPage urlCollection={UserCollectionName.Folders} />
+        )}
         auth
         redirection="home"
       />

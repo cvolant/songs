@@ -2,19 +2,22 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
 import { IEditedSong, SongSchema } from './songTypes';
-import { ISortSpecifierValue } from './searchTypes';
 import ObjectIDSchema from './collectionTypes';
 
 export const FolderSchema = new SimpleSchema({
   _id: ObjectIDSchema,
-  userId: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-    optional: true,
-  },
   name: {
     type: String,
     max: 100,
+    optional: true,
+  },
+  date: {
+    type: Date,
+    optional: true,
+  },
+  userId: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
     optional: true,
   },
   sharedWith: {
@@ -44,8 +47,6 @@ export interface IFolder {
   userId: string;
   updatedAt: Date;
 }
-export type ISortFolderCriterion = 'name' | 'date' | 'updatedAd';
-export type ISortFolderSpecifier = Record<ISortFolderCriterion, ISortSpecifierValue>;
 export interface IUnfetchedFolder extends Partial<IFolder> {
   _id: Mongo.ObjectID;
 }
