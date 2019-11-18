@@ -10,6 +10,7 @@ import {
 } from '@storybook/addon-knobs';
 import {
   AddSongTo,
+  Editor,
   EditorButtons,
   Paragraph,
   Title,
@@ -128,5 +129,14 @@ export const wrappedEditor = (): JSX.Element => (
     folders={folders}
     meteorCall={action('meteorCall')}
     user={users[0]}
+  />
+);
+
+export const editor = (): JSX.Element => (
+  <Editor
+    edit={boolean('edit', false)}
+    goBack={action('goBack')}
+    logoMenuDeployed={boolean('logoMenuDeployed', true)}
+    song={songs[0]}
   />
 );

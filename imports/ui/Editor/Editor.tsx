@@ -513,11 +513,14 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 
 export const Editor = withTracker<IEditorWTData, IEditorProps>(({
   song: propsSong,
-}: { song: IUnfetchedSong }) => ({
-  meteorCall: Meteor.call,
-  song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
-  user: Meteor.user() as IUser | undefined,
-  folders: Folders.find({}).fetch(),
-}))(WrappedEditor);
+}: { song: IUnfetchedSong }) => {
+  console.log('From Editor, withTracker. Songs:', Songs);
+  return ({
+    meteorCall: Meteor.call,
+    song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
+    user: Meteor.user() as IUser | undefined,
+    folders: Folders.find({}).fetch(),
+  });
+})(WrappedEditor);
 
 export default Editor;

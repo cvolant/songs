@@ -34,17 +34,21 @@ export const toggleFavorite = new ValidatedMethod({
     }
 
     let write = true;
-    const { favoriteSongs } = Meteor.users.findOne(this.userId) as IUser;
-    const index = favoriteSongs
-      .map((favoriteSong) => favoriteSong.toHexString())
-      .indexOf(songId.toHexString());
+    let { favoriteSongs } = Meteor.users.findOne(this.userId) as IUser;
+    if (favoriteSongs) {
+      const index = favoriteSongs
+        .map((favoriteSong) => favoriteSong.toHexString())
+        .indexOf(songId.toHexString());
 
-    if (index < 0 && (value || value === undefined)) {
-      favoriteSongs.unshift(songId);
-    } else if (index >= 0 && !value) {
-      favoriteSongs.splice(index, 1);
+      if (index < 0 && (value || value === undefined)) {
+        favoriteSongs.unshift(songId);
+      } else if (index >= 0 && !value) {
+        favoriteSongs.splice(index, 1);
+      } else {
+        write = false;
+      }
     } else {
-      write = false;
+      favoriteSongs = [songId];
     }
 
     if (write) {
@@ -79,7 +83,7 @@ export const insertCreatedSong = new ValidatedMethod({
 
     Meteor.users.update(this.userId, {
       $set: {
-        createdSongs: [songId, ...createdSongs],
+        createdSongs: [songId, ...createdSongs || []],
       },
     });
 
@@ -159,7 +163,7 @@ export const insertFolder = new ValidatedMethod({
 
     const res = Meteor.users.update(this.userId, {
       $set: {
-        folders: [folderId, ...folders],
+        folders: [folderId, ...folders || []],
       },
     });
 
@@ -198,7 +202,7 @@ export const removeFolder = new ValidatedMethod({
 
 const USERS_METHODS = [
   toggleFavorite,
-  //  insertCreatedSong,
+  insertCreatedSong,
   removeCreatedSong,
   insertFolder,
   removeFolder,

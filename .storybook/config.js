@@ -8,7 +8,7 @@ import { setConsoleOptions } from '@storybook/addon-console';
 import theme from '../imports/client/theme';
 import i18n from '../imports/i18n';
 
-import { DeviceSizeProvider } from '../imports/state-contexts/app-device-size-context';
+import { DeviceSizeProvider } from '../imports/hooks/contexts/app-device-size-context';
 
 setConsoleOptions({
   panelInclude: [/-SbMock-/],

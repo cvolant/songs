@@ -9,7 +9,7 @@ import {
 } from '@storybook/addon-knobs';
 
 import { UserProvider } from '../imports/hooks/contexts/app-user-context';
-import { WrappedSearchList } from '../imports/ui/SearchPage/SearchList';
+import SearchList, { WrappedSearchList } from '../imports/ui/SearchPage/SearchList';
 import { SearchListNoResult, SearchField } from '../imports/ui/SearchPage';
 import { songs } from './fixtures';
 
@@ -52,5 +52,14 @@ export const wrappedSearchList = (): JSX.Element => (
     shortFirstItem={boolean('shortFirstItem', true)}
     shortSearchField={boolean('shortSearchField', true)}
     songs={songs}
+  />
+);
+
+export const searchList = (): JSX.Element => (
+  <SearchList
+    handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
+    handleSelectSong={action('handleSelectSong')}
+    shortFirstItem={boolean('shortFirstItem', true)}
+    shortSearchField={boolean('shortSearchField', true)}
   />
 );

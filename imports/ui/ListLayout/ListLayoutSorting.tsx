@@ -111,7 +111,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
 
   const [sortCriterion = '', sortValue = ''] = Object.entries(sort || {})[0];
 
-  console.log('From ListLayoutSorting, render. sort:', sort, 'sortCriterion:', sortCriterion, 'sortValue:', sortValue);
+  console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort, 'sortCriterion:', sortCriterion, 'sortValue:', sortValue, 'handleToggleDisplaySort:', handleToggleDisplaySort, 'handleSort:', handleSort);
 
   const sortButton = (buttonName: ISortCriterion<T>): JSX.Element => (
     <Button
@@ -131,7 +131,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
         )
       }
       />
-      {(sortCriteria.find((foundCriterion) => foundCriterion.criterion === buttonName) || {}).localCriterionName || ''}
+      {(sortCriteria.find((findCriterion) => findCriterion.criterion === buttonName) || {}).localCriterionName || ''}
     </Button>
   );
 
@@ -188,7 +188,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
                         {((): string => {
                           if (value) {
                             const criterion = sortCriteria
-                              .find((foundCriterion) => foundCriterion.criterion === value);
+                              .find((findCriterion) => findCriterion.criterion === value);
                             if (criterion) {
                               return `${t('search.by', 'by')} ${criterion.localCriterionName}`;
                             }

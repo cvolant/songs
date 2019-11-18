@@ -17,10 +17,10 @@ const nbItemsPerPage = 20;
 
 interface IUserFolderListProps {
   displaySort?: boolean;
-  emptyListPlaceholder: ReactNode;
+  emptyListPlaceholder?: ReactNode;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
-  selectFolder: (song: IUnfetchedFolder) => void;
+  selectFolder: (folder: IUnfetchedFolder) => void;
 }
 interface IUserFolderListWTData {
   folders: IFolder[];
@@ -70,7 +70,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     setSort({
       /* ...sort, // If a multicriteria sorting is needed. */
       [sortCriterion]: sortValue,
-    } as unknown as ISortSpecifier<IFolder>);
+    } as ISortSpecifier<IFolder>);
   };
 
   return (

@@ -1,14 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import Typography from '@material-ui/core/Typography';
-import DashboardIcon from '@material-ui/icons/Dashboard';
 import Add from '@material-ui/icons/Add';
 
 import PageLayout from '../utils/PageLayout';
-import Panel from '../utils/Panel';
 import Editor from '../Editor';
 import MainDashboard from './MainDashboard';
 
@@ -43,7 +40,6 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
-  const [showPanel, setShowPanel] = useState(true);
 
   useEffect(() => {
     const newDisplay = setDisplayFromUrl();
@@ -79,10 +75,6 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
     setSearch(true);
   };
 
-  const handleClosePanel = (): void => {
-    setShowPanel(false);
-  };
-
   const handleFocus = (focus?: boolean) => (): void => {
     setLogoMenuDeployed(!focus);
   };
@@ -99,30 +91,6 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   return (
     <PageLayout
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
-      sidePanel={showPanel
-        ? (
-          <Panel
-            handleClosePanel={handleClosePanel}
-            closeName={t('dashboard.Close dashboard message', 'Close dashboard message')}
-          >
-            <Typography>
-              {t('dashboard.Dashboard welcome', 'Welcome')}
-              <DashboardIcon />
-            </Typography>
-            <Typography>
-              <Trans i18nKey="dashboard.Dashboard message">
-                <span>Sorry,</span>
-                {' '}
-                it is
-                {' '}
-                <span>empty</span>
-                . It is yet to build.
-              </Trans>
-            </Typography>
-          </Panel>
-        )
-        : undefined}
-
       title={t('dashboard.Dashboard', 'Dashboard')}
       tutorialContentName={(): 'Editor' | 'Folder' | 'Dashboard' => {
         if (song) return 'Editor';

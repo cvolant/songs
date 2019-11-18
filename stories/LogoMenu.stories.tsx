@@ -13,7 +13,7 @@ import {
   TopMenuLarge,
   TopMenuSmall,
 } from '../imports/ui/LogoMenu';
-import { WrappedLogoMenu } from '../imports/ui/LogoMenu/LogoMenu';
+import LogoMenu, { WrappedLogoMenu } from '../imports/ui/LogoMenu/LogoMenu';
 
 export default {
   title: 'LogoMenu',
@@ -81,5 +81,15 @@ export const wrappedLogoMenu = (): JSX.Element => (
     tutorialAvailable={boolean('tutorialAvailable', true)}
     isAuthenticated={boolean('isAuthenticated', true)}
     handleLogout={action('handleLogout')}
+  />
+);
+
+export const logoMenu = (): JSX.Element => (
+  <LogoMenu
+    handleToggleLogoMenu={(deploy?: boolean): () => void => action(`handleToggleLogoMenu(display: ${deploy})`)}
+    handleToggleTutorial={(open?: boolean): () => void => action(`handleToggleTutorial(display: ${open})`)}
+    logoMenuDeployed={boolean('logoMenuDeployed', true)}
+    showTutorial={boolean('showTutorial', true)}
+    tutorialAvailable={boolean('tutorialAvailable', true)}
   />
 );
