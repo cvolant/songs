@@ -46,7 +46,6 @@ export const wrappedSearchList = (): JSX.Element => (
   <WrappedSearchList
     handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
     handleSelectSong={action('handleSelectSong')}
-    meteorCall={action('meteorCall')}
     favoriteSongs={[]}
     isAuthenticated={boolean('isAuthenticated', true)}
     shortFirstItem={boolean('shortFirstItem', true)}

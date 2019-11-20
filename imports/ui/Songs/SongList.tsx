@@ -21,6 +21,8 @@ import {
 } from '../../types/iconButtonTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 
+import { userToggleFavorite } from '../../api/users/methods';
+
 interface ISongListProps {
   displayFavorite: boolean;
   displaySort: boolean;
@@ -70,12 +72,12 @@ export const SongList: React.FC<ISongListProps> = ({
 
   const handleToggleFavoriteSong = (
     song: IUnfetchedSong,
-    callback?: (err: Meteor.Error, res: object) => void,
+    callback?: (err: Meteor.Error, res: void) => void,
     params?: { value?: boolean },
   ) => (): void => {
     const value = (params && params.value) || undefined;
     console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId: song._id, value });
-    Meteor.call('user.favoriteSong.toggle', { songId: song._id, value }, callback);
+    userToggleFavorite.call({ songId: song._id, value }, callback);
   };
 
   console.log('From SongList, render. favoriteSongs', favoriteSongs);
@@ -106,8 +108,6 @@ export const SongList: React.FC<ISongListProps> = ({
           ? !!favoriteSongs
             .find((favoriteSong) => favoriteSong.toHexString() === songId.toHexString())
           : false;
-
-        console.log('From SongList, return, ListLayoutItem. song.title:', song.title, 'favorite?', favorite, 'song._id:', song._id);
         const unfolded = unfoldedSong === songId;
         return (
           <ListLayoutItem

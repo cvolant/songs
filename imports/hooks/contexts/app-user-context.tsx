@@ -8,18 +8,14 @@ import React, {
 } from 'react';
 import { IUser } from '../../types';
 
-type IUserContext = [
-  IUser | null,
-];
+const UserContext = createContext<IUser | null>(null);
 
-const UserContext = createContext<IUserContext | undefined>(undefined);
-
-const useUser = (): IUserContext => {
+const useUser = (): IUser | null => {
   const context = useContext(UserContext);
 
-  if (!context) {
+  /* if (context === undefined) {
     throw new Error('useUser must be used within a UserProvider');
-  }
+  } */
 
   return context;
 };
@@ -45,7 +41,7 @@ const WrappedUserProvider: React.FC<IWrappedUserProviderProps> = ({
   }, []);
 
   return (
-    <UserContext.Provider value={[user as IUser]}>
+    <UserContext.Provider value={user as IUser}>
       {children}
     </UserContext.Provider>
   );

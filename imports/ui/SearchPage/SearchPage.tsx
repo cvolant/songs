@@ -154,7 +154,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
         )
         : undefined}
       title={t('search.Search songs', 'Search songs')}
-      tutorialContentName={selectedSong ? 'Editor' : 'SearchPage'}
+      tutorialContentName={selectedSong ? 'Editor' : 'Search'}
       contentAreaRef={contentAreaRef}
       scrollDown={scrollDown}
       viewer={viewer}

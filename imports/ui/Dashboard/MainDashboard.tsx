@@ -37,7 +37,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   selectFolder,
 }) => {
   const { t } = useTranslation();
-  const [user] = useUser();
+  const user = useUser();
 
   console.log('From MainDashboard, render. user:', user);
 

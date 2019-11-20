@@ -5,33 +5,32 @@ Source: https://github.com/nicu-chiciuc/typed-meteor-methods/blob/master/imports
  */
 
 import {
-  ValidatedMethod,
   ValidatedMethodAsFunc,
 } from 'meteor/mdg:validated-method';
 import {
-  update as updateFolder,
-  updateInsertSong,
-  updateRemoveSong,
-  updateUpdateSong,
+  folderUpdate,
+  folderUpdateInsertSong,
+  folderUpdateRemoveSong,
+  folderUpdateUpdateSong,
 } from '../api/folders/methods';
 import {
-  update as updateSong,
+  songUpdate,
 } from '../api/songs/methods';
 import {
-  toggleFavorite,
-  insertCreatedSong,
-  removeCreatedSong,
-  insertFolder,
-  removeFolder,
+  userToggleFavorite,
+  userInsertCreatedSong,
+  userRemoveCreatedSong,
+  userInsertFolder,
+  userRemoveFolder,
 } from '../api/users/methods';
 
-export type KnownMethods = ValidatedMethodAsFunc<typeof updateFolder>
-& ValidatedMethodAsFunc<typeof updateInsertSong>
-& ValidatedMethodAsFunc<typeof updateRemoveSong>
-& ValidatedMethodAsFunc<typeof updateUpdateSong>
-& ValidatedMethodAsFunc<typeof updateSong>
-& ValidatedMethodAsFunc<typeof toggleFavorite>
-& ValidatedMethodAsFunc<typeof insertCreatedSong>
-& ValidatedMethodAsFunc<typeof removeCreatedSong>
-& ValidatedMethodAsFunc<typeof insertFolder>
-& ValidatedMethodAsFunc<typeof removeFolder>;
+export type KnownMethods = ValidatedMethodAsFunc<typeof folderUpdate>
+& ValidatedMethodAsFunc<typeof folderUpdateInsertSong>
+& ValidatedMethodAsFunc<typeof folderUpdateRemoveSong>
+& ValidatedMethodAsFunc<typeof folderUpdateUpdateSong>
+& ValidatedMethodAsFunc<typeof songUpdate>
+& ValidatedMethodAsFunc<typeof userToggleFavorite>
+& ValidatedMethodAsFunc<typeof userInsertCreatedSong>
+& ValidatedMethodAsFunc<typeof userRemoveCreatedSong>
+& ValidatedMethodAsFunc<typeof userInsertFolder>
+& ValidatedMethodAsFunc<typeof userRemoveFolder>;

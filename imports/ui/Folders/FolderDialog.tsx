@@ -20,6 +20,9 @@ import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FormDialog from '../utils/FormDialog';
 import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
 
+import { userInsertFolder } from '../../api/users/methods';
+import { folderUpdate } from '../../api/folders/methods';
+
 const MuiPickersUtilsProvider = lazy(() => import('@material-ui/pickers/MuiPickersUtilsProvider'));
 const KeyboardDatePicker = lazy(() => import('@material-ui/pickers/DatePicker').then((module) => ({ default: module.KeyboardDatePicker })));
 
@@ -78,26 +81,37 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   };
 
   const handleSubmit = (callback: (err: Meteor.Error, res: Mongo.ObjectID) => void): void => {
-    console.log('From FormDialog, handleSubmit.');
-    Meteor.call(
-      folder ? 'folders.update' : 'user.folders.insert',
-      folder
-        ? {
-          _id: folder._id,
-          name,
-          date: dateEnabled ? date.toDate() : null,
-        } : {
-          name,
-          date: dateEnabled ? date.toDate() : null,
-        },
-      (err: Meteor.Error, res: Mongo.ObjectID) => {
-        console.log('From FormDialog, handleSubmit, callback.');
-        callback(err, res);
+    let cbErr: Meteor.Error;
+    let cbRes: Mongo.ObjectID;
+
+    if (folder) {
+      folderUpdate.call({
+        _id: folder._id,
+        name,
+        date: dateEnabled ? date.toDate() : undefined,
+      }, (err: Meteor.Error): void => {
+        if (!err) {
+          handleSelectFolder({ _id: folder._id, name });
+          cbRes = folder._id;
+        } else {
+          cbErr = err;
+        }
+        callback(cbErr, cbRes);
+      });
+    } else {
+      userInsertFolder.call({
+        name,
+        date: dateEnabled ? date.toDate() : undefined,
+      }, (err: Meteor.Error, res: Mongo.ObjectID): void => {
         if (res) {
           handleSelectFolder({ _id: res, name });
+          cbRes = res;
+        } else {
+          cbErr = err;
         }
-      },
-    );
+        callback(cbErr, cbRes);
+      });
+    }
   };
 
   return (

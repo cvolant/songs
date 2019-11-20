@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
 Trying to get types for ValidatedMethod...
 Attempt on 2019/10/22
@@ -43,8 +44,11 @@ declare module 'meteor/mdg:validated-method' {
     run: (this: DDPCommon.MethodInvocation, arg: TRunArg) => TRunReturn;
   };
 
-  export class ValidatedMethod<TRunArg, TRunReturn, TName extends string> {
+  export default class ValidatedMethod<TRunArg, TRunReturn, TName extends string> {
+    constructor(options: ValidatedMethodOptions<TRunArg, TRunReturn, TName>);
+
     name: TName;
+
     mixins?: Function[];
 
     // 'ddp-rate-limiter-mixin', might be defined completely in a different file and imported here
@@ -58,6 +62,7 @@ declare module 'meteor/mdg:validated-method' {
 
     validate: ((args: TRunArg) => void) | null;
     //    returned from SimpleSchemaInstance.validator() method;
+
     applyOptions?: {
       noRetry: boolean;
       returnStubValue: boolean;
@@ -65,14 +70,13 @@ declare module 'meteor/mdg:validated-method' {
       onResultReceived: (result: any) => void;
       [key: string]: any;
     };
-    constructor(options: ValidatedMethodOptions<TRunArg, TRunReturn, TName>);
-    
+
     run: (this: DDPCommon.MethodInvocation, arg: TRunArg) => TRunReturn;
 
     call(args: TRunArg): TRunReturn;
 
     // eslint-disable-next-line no-dupe-class-members
-    call(args: TRunArg, callback: (error: Meteor.Error, result: TRunReturn) => void): void;
+    call(args: TRunArg, callback?: (error: Meteor.Error, result: TRunReturn) => void): void;
 
     _execute(context: { [key: string]: any }, args: TRunArg): void;
   }

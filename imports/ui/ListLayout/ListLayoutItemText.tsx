@@ -62,10 +62,10 @@ export const ListLayoutItemText: React.FC<IListLayoutItemTextProps> = ({
       onClick={handleUnfold}
       primary={(
         <div className={classes.container}>
-          <Typography className={classes.titles} variant="h6">
+          <Typography className={classes.titles} key="primary" variant="h6">
             {primary}
           </Typography>
-          {rightSide && <Typography className={classes.rightSide} variant="h6">{rightSide}</Typography>}
+          {rightSide && <Typography className={classes.rightSide} key="secondary" variant="h6">{rightSide}</Typography>}
         </div>
       )}
       secondary={(

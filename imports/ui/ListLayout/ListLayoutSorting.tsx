@@ -109,9 +109,9 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
   const classes = useStyles();
   const smallDevice = useDeviceSize('sm.down');
 
-  const [sortCriterion = '', sortValue = ''] = Object.entries(sort || {})[0];
+  console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort);
+  const [[sortCriterion, sortValue]] = Object.entries(sort || { '': '' });
 
-  console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort, 'sortCriterion:', sortCriterion, 'sortValue:', sortValue, 'handleToggleDisplaySort:', handleToggleDisplaySort, 'handleSort:', handleSort);
 
   const sortButton = (buttonName: ISortCriterion<T>): JSX.Element => (
     <Button

@@ -19,6 +19,8 @@ import {
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
+import { userToggleFavorite } from '../../api/users/methods';
+
 import buildQuery from './buildQuery';
 
 const nbItemsPerPage = 20;
@@ -48,8 +50,6 @@ interface ISearchListProps {
 interface ISearchListWTData {
   favoriteSongs: Mongo.ObjectID[];
   isAuthenticated: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  meteorCall: (method: string, ...rest: any[]) => void;
   songs: ISong[];
 }
 interface IWrappedSearchListProps
@@ -63,7 +63,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
   isAuthenticated,
   shortFirstItem = false,
   shortSearchField = false,
-  meteorCall,
   secondaryActions,
   songs,
 }) => {
@@ -143,7 +142,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
     console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
-    meteorCall('user.favoriteSong.toggle', { songId, value });
+    userToggleFavorite.call({ songId, value });
   };
 
   return (
@@ -182,7 +181,6 @@ const SearchList = withTracker<ISearchListWTData, ISearchListProps>(() => {
   return {
     favoriteSongs: user ? user.favoriteSongs : [],
     isAuthenticated: !!user,
-    meteorCall: Meteor.call,
     songs: Songs.find({}).fetch(),
   };
 })(WrappedSearchList);

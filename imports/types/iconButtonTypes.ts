@@ -15,7 +15,7 @@ export type IFn<T> = (element: IElement, params?: object) => T;
 export interface IFnFn<T> {
   build: (
     element: IElement,
-    callback?: (err: Meteor.Error, res: object) => void,
+    callback?: (err: Meteor.Error, res: void) => void,
     params?: object,
   ) => T;
 }
@@ -43,7 +43,7 @@ export const fn = <T extends (string | IIconColor | boolean | undefined)>(
 export const fnFn = <T>(
   stuff: T | IFnFn<T>,
   element: IElement,
-  callback?: (err: Meteor.Error, res: object) => void,
+  callback?: (err: Meteor.Error, res: void) => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: object,
 ): T => (stuff && 'build' in stuff ? stuff.build(element, callback, params) : stuff);

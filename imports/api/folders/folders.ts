@@ -27,7 +27,6 @@ class FoldersCollection extends Mongo.Collection<IFolder> {
 interface IFolderCollection extends Mongo.Collection<IFolder> {
   schema: SimpleSchema;
   attachSchema: (schema: SimpleSchema) => void;
-  publicFields: Record<string, 1 | 0>;
   helpers: (args: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [name: string]: (this: IFolder) => any;

@@ -13,7 +13,7 @@ import { IFolder, IUser } from '../../types';
 
 // import Folders from '../folders/folders';
 
-export const toggleFavorite = new ValidatedMethod({
+export const userToggleFavorite = new ValidatedMethod({
   name: 'user.favoriteSong.toggle',
   validate: new SimpleSchema({
     songId: ObjectIDSchema,
@@ -61,7 +61,7 @@ export const toggleFavorite = new ValidatedMethod({
   },
 });
 
-export const insertCreatedSong = new ValidatedMethod({
+export const userInsertCreatedSong = new ValidatedMethod({
   name: 'user.createdSongs.insert',
   validate: new SimpleSchema({ song: SongSchema }).validator(),
   run(this: IMethodInvocation, { song }: { song: Partial<ISong> }): Mongo.ObjectID {
@@ -93,7 +93,7 @@ export const insertCreatedSong = new ValidatedMethod({
   },
 });
 
-export const removeCreatedSong = new ValidatedMethod({
+export const userRemoveCreatedSong = new ValidatedMethod({
   name: 'user.createdSongs.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
   run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
@@ -130,7 +130,7 @@ export const removeCreatedSong = new ValidatedMethod({
   },
 });
 
-export const insertFolder = new ValidatedMethod({
+export const userInsertFolder = new ValidatedMethod({
   name: 'user.folders.insert',
   validate: new SimpleSchema({
     name: {
@@ -142,7 +142,7 @@ export const insertFolder = new ValidatedMethod({
       optional: true,
     },
   }).validator(),
-  run(this: IMethodInvocation, { name, date }: { name: string; date: Date }): void {
+  run(this: IMethodInvocation, { name, date }: { name: string; date?: Date }): Mongo.ObjectID {
     console.log('From user.folders.insert. this.userId:', this.userId);
 
     if (!this.userId) {
@@ -157,7 +157,7 @@ export const insertFolder = new ValidatedMethod({
       date,
       userId: this.userId,
       songs: [],
-    } as unknown as IFolder);
+    } as unknown as IFolder) as unknown as Mongo.ObjectID;
 
     const { folders } = Meteor.users.findOne(this.userId) as IUser;
 
@@ -168,10 +168,11 @@ export const insertFolder = new ValidatedMethod({
     });
 
     console.log('From user.folders.insert. folders:', folders, 'res:', res);
+    return folderId;
   },
 });
 
-export const removeFolder = new ValidatedMethod({
+export const userRemoveFolder = new ValidatedMethod({
   name: 'user.folders.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
   run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
@@ -201,11 +202,11 @@ export const removeFolder = new ValidatedMethod({
 });
 
 const USERS_METHODS = [
-  toggleFavorite,
-  insertCreatedSong,
-  removeCreatedSong,
-  insertFolder,
-  removeFolder,
+  userToggleFavorite,
+  userInsertCreatedSong,
+  userRemoveCreatedSong,
+  userInsertFolder,
+  userRemoveFolder,
 ].map((method) => method.name);
 
 if (Meteor.isServer) {

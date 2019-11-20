@@ -82,7 +82,7 @@ export const wrappedUserSongList = (): JSX.Element => (
         onClick: {
           build: (
             song: IUnfetchedSong,
-            callback?: (err: Meteor.Error, res: object) => void,
+            callback?: (err: Meteor.Error, res: void) => void,
           ): (
             ) => void => action(`handleDeleteSong(song: ${song}, callback: ${callback})`),
         },
@@ -90,7 +90,6 @@ export const wrappedUserSongList = (): JSX.Element => (
     ]}
     userSongList={UserCollectionName.Folders}
     user={users[0]}
-    meteorCall={action('meteorCall')}
     favoriteSongs={users[0].favoriteSongs}
     songs={songs}
   />

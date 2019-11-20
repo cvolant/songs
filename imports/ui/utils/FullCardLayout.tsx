@@ -45,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     overflowY: 'auto',
     overflowScrolling: 'touch',
-    paddingTop: 0,
+    paddingTop: (
+      {
+        contentPaddingTop,
+      }: {
+        shortHeader: boolean;
+        contentPaddingTop: boolean;
+      },
+    ): number | undefined => (contentPaddingTop ? undefined : 0),
   },
   flexEnd: {
     justifyContent: 'flex-end',
@@ -53,7 +60,12 @@ const useStyles = makeStyles((theme) => ({
   header: {
     paddingBottom: 0,
     paddingRight: (
-      { shortHeader }: { shortHeader: boolean },
+      {
+        shortHeader,
+      }: {
+        shortHeader: boolean;
+        contentPaddingTop: boolean;
+      },
     ): number | string => theme.spacing(shortHeader ? 16 : 10),
     transition: theme.transitions.create('padding-right'),
   },
@@ -91,12 +103,16 @@ export const FullCardLayout: React.FC<IFullCardLayoutProps> = ({
   handleReturn,
   shortHeader = false,
 }) => {
-  const classes = useStyles({ shortHeader });
+  const headerExists = !!(header || headerAction || headerProps || headerSubheader || headerTitle);
+  const classes = useStyles({
+    shortHeader,
+    contentPaddingTop: !headerExists,
+  });
   const { t } = useTranslation();
 
   return (
     <Card className={clsx(classes.card, className)}>
-      {(header || headerAction || headerProps || headerSubheader || headerTitle) && (
+      {headerExists && (
         <CardHeader
           {...headerProps}
           action={headerAction}

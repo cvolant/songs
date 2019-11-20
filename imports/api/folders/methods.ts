@@ -10,7 +10,7 @@ import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 import { FolderSchema, IUnfetchedFolder } from '../../types/folderTypes';
 
-export const update = new ValidatedMethod({
+export const folderUpdate = new ValidatedMethod({
   name: 'folders.update',
   validate: FolderSchema.validator(),
   run(this: IMethodInvocation, folderUpdates: IUnfetchedFolder): void {
@@ -31,7 +31,7 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const updateInsertSong = new ValidatedMethod({
+export const folderUpdateInsertSong = new ValidatedMethod({
   name: 'folders.songs.insert',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
@@ -55,11 +55,13 @@ export const updateInsertSong = new ValidatedMethod({
       Folders.update(folderId, {
         $set: { songs: [{ _id: songId }, ...songs] },
       });
+
+      console.log('From folders.songs.insert. song inserted.');
     }
   },
 });
 
-export const updateUpdateSong = new ValidatedMethod({
+export const folderUpdateUpdateSong = new ValidatedMethod({
   name: 'folders.songs.update',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
@@ -94,14 +96,14 @@ export const updateUpdateSong = new ValidatedMethod({
   },
 });
 
-export const updateRemoveSong = new ValidatedMethod({
+export const folderUpdateRemoveSong = new ValidatedMethod({
   name: 'folders.songs.remove',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
     songId: ObjectIDSchema,
   }).validator(),
   run(this: IMethodInvocation, { folderId, songId }: {
-    folderId: string;
+    folderId: Mongo.ObjectID;
     songId: Mongo.ObjectID;
   }): void {
     const folder = Folders.findOne(folderId);
@@ -125,9 +127,10 @@ export const updateRemoveSong = new ValidatedMethod({
 });
 
 const FOLDERS_METHODS = [
-  updateInsertSong,
-  updateUpdateSong,
-  updateRemoveSong,
+  folderUpdate,
+  folderUpdateInsertSong,
+  folderUpdateUpdateSong,
+  folderUpdateRemoveSong,
 ].map((method) => method.name);
 
 if (Meteor.isServer) {

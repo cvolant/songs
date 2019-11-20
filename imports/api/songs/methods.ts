@@ -34,12 +34,12 @@ export const insert = new ValidatedMethod({
   },
 });
  */
-export const update = new ValidatedMethod({
+export const songUpdate = new ValidatedMethod({
   name: 'songs.update',
   validate: new SimpleSchema({
-    song: SongSchema,
+    songUpdates: SongSchema,
   }).validator(),
-  run(this: IMethodInvocation, { song: updates }: { song: ISong }): void {
+  run(this: IMethodInvocation, { songUpdates }: { songUpdates: ISong }): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.songs.insert.accessDenied',
@@ -47,7 +47,7 @@ export const update = new ValidatedMethod({
       );
     }
 
-    const song = Songs.findOne(updates._id);
+    const song = Songs.findOne(songUpdates._id);
 
     if (song) {
       if (song.userId !== this.userId) {
@@ -59,13 +59,15 @@ export const update = new ValidatedMethod({
 
       Songs.update(song._id, {
         $set: {
-          ...updates,
+          ...songUpdates,
           userId: song.userId,
         },
       });
     }
   },
 });
+
+export default songUpdate;
 /*
 export const remove = new ValidatedMethod({
   name: 'songs.remove',
@@ -104,7 +106,7 @@ export const remove = new ValidatedMethod({
  */
 const SONGS_METHODS = [
   // insert,
-  update,
+  songUpdate,
   // remove,
 ].map((method) => method.name);
 
@@ -119,5 +121,3 @@ if (Meteor.isServer) {
     connectionId() { return true; },
   }, 5, 1000);
 }
-
-export default update;

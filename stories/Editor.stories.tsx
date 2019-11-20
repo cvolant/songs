@@ -127,7 +127,6 @@ export const wrappedEditor = (): JSX.Element => (
     logoMenuDeployed={boolean('logoMenuDeployed', true)}
     song={songs[0]}
     folders={folders}
-    meteorCall={action('meteorCall')}
     user={users[0]}
   />
 );

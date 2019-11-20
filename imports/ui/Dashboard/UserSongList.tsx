@@ -18,6 +18,8 @@ import { IUnfetchedSong } from '../../types/songTypes';
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
+import { userToggleFavorite } from '../../api/users/methods';
+
 const nbItemsPerPage = 20;
 
 interface IUserSongListProps {
@@ -32,8 +34,6 @@ interface IUserSongListProps {
   userSongList?: UserCollectionName;
 }
 interface IUserSongListWTData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  meteorCall: (method: string, ...rest: any[]) => void;
   favoriteSongs: Mongo.ObjectID[];
   songs: ISong[];
 }
@@ -47,7 +47,6 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
   folder,
   handleToggleDisplaySort,
   logoMenuDeployed,
-  meteorCall,
   handleSelectSong,
   secondaryActions,
   songs,
@@ -97,7 +96,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
     console.log('From UserSongList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
-    meteorCall('user.favoriteSong.toggle', { songId, value });
+    userToggleFavorite.call({ songId, value });
   };
 
   return (
@@ -130,7 +129,6 @@ const UserSongList = withTracker<IUserSongListWTData, IUserSongListProps>(({
   console.log('From UserSongList, withTracker. folder:', folder, 'favoriteSongs:', favoriteSongs, 'user:', user);
   return {
     favoriteSongs,
-    meteorCall: Meteor.call,
     songs: Songs.find({ _id: { $in: songIds } }).fetch(),
   };
 })(WrappedUserSongList);

@@ -20,5 +20,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': [2, { prefixWithI: "always" }],
     'react/prop-types': 0,
     'no-console': 0,  // Remove when ready to go to prod
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "error",
   },
 };

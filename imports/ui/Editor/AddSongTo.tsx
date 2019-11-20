@@ -31,6 +31,15 @@ import SnackbarMessage from '../utils/SnackBarMessage';
 import { IFolder } from '../../types';
 import { IUnfetchedSong } from '../../types/songTypes';
 
+import {
+  userToggleFavorite,
+  userInsertFolder,
+} from '../../api/users/methods';
+import {
+  folderUpdateInsertSong,
+  folderUpdateRemoveSong,
+} from '../../api/folders/methods';
+
 const useStyles = makeStyles((theme) => ({
   buttonBase: {
     flexGrow: 1,
@@ -80,7 +89,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   open = false,
   song,
 }) => {
-  const [user] = useUser();
+  const user = useUser();
   const favorite = user && user.favoriteSongs && user.favoriteSongs
     .map((favoriteSong) => favoriteSong.toHexString())
     .includes(song._id.toHexString());
@@ -101,22 +110,22 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   };
 
   const handleFavoriteClick = (): void => {
-    Meteor.call('user.favoriteSong.toggle', song._id, !localFavorite);
+    userToggleFavorite.call({ songId: song._id, value: !localFavorite });
     setLocalFavorite(!localFavorite);
   };
 
   const handleListItemClick = (folderId: Mongo.ObjectID) => (): void => {
-    Meteor.call('folders.songs.insert', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
-      if (!res || res[0] === 0) {
-        setError((err && err.reason) || (res && res[1]));
+    folderUpdateInsertSong.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
+      if (err) {
+        setError(err.reason || 'Error');
       }
     });
   };
 
   const handleRemove = (folderId: Mongo.ObjectID) => (): void => {
-    Meteor.call('folders.songs.remove', { folderId, songId: song._id }, (err: Meteor.Error, res: [0 | 1, string]) => {
-      if (!res || res[0] === 0) {
-        setError((err && err.reason) || (res && res[1]));
+    folderUpdateRemoveSong.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
+      if (err) {
+        setError(err.reason || 'Error');
       }
     });
   };
@@ -134,7 +143,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
     e.preventDefault();
     console.log('From AddSongTo, onSubmit. e:', e);
     setLoading(true);
-    Meteor.call('user.folders.insert', { name }, () => {
+    userInsertFolder.call({ name }, () => {
       setName('');
       setNewFolder(false);
       setLoading(false);

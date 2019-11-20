@@ -8,8 +8,10 @@ import { Meteor } from 'meteor/meteor';
 import { KnownMethods } from '../imports/types/methodTypes';
 
 declare module 'meteor/meteor' {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type FirstArgument<T> = T extends (val: infer R) => any ? R : never;
 
+  // eslint-disable-next-line no-shadow
   namespace Meteor {
     function call<K extends keyof KnownMethods = keyof KnownMethods>(
       methodName: K,

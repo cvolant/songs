@@ -12,7 +12,7 @@ import Panel from '../utils/Panel';
 import TutorialStepContent, { IStepName } from './TutorialStepContent';
 
 const steps: ISteps = {
-  SearchPage: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
+  Search: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
   Editor: ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
   SignIn: ['signIn', 'notSignedUp'],
   SignUp: ['signUp', 'alreadySignedUp'],
@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export type ITutorialContentName = 'SearchPage'
+export type ITutorialContentName =
+| 'Search'
 | 'Editor'
 | 'SignIn'
 | 'SignUp';

@@ -10,6 +10,8 @@ import Add from '@material-ui/icons/Add';
 import FormDialog from '../utils/FormDialog';
 import { IUnfetchedSong } from '../../types/songTypes';
 
+import { userInsertCreatedSong } from '../../api/users/methods';
+
 interface ISongDialogProps {
   handleSelectSong: (song: IUnfetchedSong) => void;
 }
@@ -43,7 +45,7 @@ export const SongDialog: React.FC<ISongDialogProps> = ({
   };
 
   const handleNewSong = (callback: (err: Meteor.Error, res: Mongo.ObjectID) => void): void => {
-    Meteor.call('user.createdSongs.insert', { song: { title } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
+    userInsertCreatedSong.call({ song: { title } }, (err: Meteor.Error, res: Mongo.ObjectID) => {
       callback(err, res);
       if (res) {
         handleSelectSong({ _id: res, title });

@@ -88,8 +88,7 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  console.log('From EditorButtons. useUser():', useUser());
-  const [user] = useUser();
+  const user = useUser();
   const [open, setOpen] = useState(false);
 
 

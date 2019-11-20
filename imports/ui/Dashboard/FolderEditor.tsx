@@ -19,35 +19,46 @@ import UserCollectionName from './UserCollectionName';
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 
+import { folderUpdateRemoveSong } from '../../api/folders/methods';
+
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
     padding: theme.spacing(1, 1.5),
+  },
+  hidden: {
+    display: 'none',
   },
 }));
 
 interface IFolderEditorProps {
   folder: IUnfetchedFolder;
   goBack: () => void;
-  logoMenuDeployed: boolean;
-  handleAddSong: () => void;
+  handleSongsAdding: () => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
+  hidden?: boolean;
+  logoMenuDeployed: boolean;
 }
 
 export const FolderEditor: React.FC<IFolderEditorProps> = ({
-  folder, goBack, logoMenuDeployed, handleAddSong, handleSelectSong,
+  folder,
+  goBack,
+  handleSongsAdding,
+  handleSelectSong,
+  hidden = false,
+  logoMenuDeployed,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
-  const [user] = useUser();
+  const user = useUser();
 
   const [displaySort, setDisplaySort] = useState(false);
 
   const handleDeleteSong = (
     song: IUnfetchedSong,
-    callback?: (err: Meteor.Error, res: object) => void,
+    callback?: (err: Meteor.Error, res: void) => void,
   ): void => {
-    Meteor.call('folders.songs.remove', { folderId: folder._id, songId: song._id }, callback);
+    folderUpdateRemoveSong.call({ folderId: folder._id, songId: song._id }, callback);
   };
 
   const handleToggleDisplaySort = (newDisplaySort?: boolean) => (): void => {
@@ -62,16 +73,18 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         <Button
           className={classes.button}
           color="primary"
-          onClick={handleAddSong}
+          key="add"
+          onClick={handleSongsAdding}
           size="large"
           variant="contained"
         >
           <Add />
-          {t('folder.Add song', 'Add song')}
+          {t('folder.Add songs', 'Add songs')}
         </Button>,
         <Button
           className={classes.button}
           color="primary"
+          key="settings"
           onClick={handleEditSettings}
           size="large"
           variant="outlined"
@@ -80,6 +93,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           {t('folder.Settings', 'Settings')}
         </Button>,
       ]}
+      className={hidden ? classes.hidden : undefined}
       handleReturn={goBack}
       headerAction={(
         <IconButton
@@ -116,7 +130,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
             onClick: {
               build: (
                 song: IUnfetchedSong,
-                callback?: (err: Meteor.Error, res: object) => void,
+                callback?: (err: Meteor.Error, res: void) => void,
               ) => (): void => handleDeleteSong(song, callback),
             },
           },

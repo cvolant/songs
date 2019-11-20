@@ -3,21 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import Add from '@material-ui/icons/Add';
-
 import PageLayout from '../utils/PageLayout';
 import Editor from '../Editor';
 import MainDashboard from './MainDashboard';
 
-import FolderEditor from './FolderEditor';
-import { CardSearchList } from '../SearchPage/CardSearchList';
 import UserCollectionName from './UserCollectionName';
 
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
-import { IIconColor } from '../../types/iconButtonTypes';
 
 import routesPaths from '../../app/routesPaths';
+import FolderDashboard from './FolderDashboard';
+import { ITutorialContentName } from '../Tutorial';
 
 interface IDashboardPageProps {
   urlCollection?: string;
@@ -38,8 +35,11 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   );
   const [folder, setFolder] = useState<IUnfetchedFolder | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
+  const [
+    tutorialContentName,
+    setTutorialContentName,
+  ] = useState<ITutorialContentName>('Dashboard');
 
   useEffect(() => {
     const newDisplay = setDisplayFromUrl();
@@ -47,14 +47,6 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
       setDisplay(newDisplay);
     }
   }, [urlCollection]);
-
-  const addThisSong = (newSong: IUnfetchedSong) => (): void => {
-    if (newSong && newSong._id && folder && folder._id) {
-      setSearch(false);
-      setSong(undefined);
-      Meteor.call('folders.songs.insert', { folderId: folder._id, songId: newSong._id });
-    }
-  };
 
   const handleChangeDisplay = (newDisplay?: UserCollectionName) => (): void => {
     setDisplay(newDisplay || UserCollectionName.FavoriteSongs);
@@ -69,80 +61,46 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
 
   const goBack = <T, >(setter: React.Dispatch<React.SetStateAction<T | undefined>>) => (): void => {
     setter(undefined);
-  };
-
-  const handleAddSong = (): void => {
-    setSearch(true);
-  };
-
-  const handleFocus = (focus?: boolean) => (): void => {
-    setLogoMenuDeployed(!focus);
+    setTutorialContentName('Dashboard');
   };
 
   const selectFolder = (newFolder: IUnfetchedFolder): void => {
     setFolder(newFolder);
+    setTutorialContentName('Folder');
   };
 
   const handleSelectSong = (newSong: IUnfetchedSong): void => {
     console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
+    setTutorialContentName('Editor');
   };
 
   return (
     <PageLayout
       menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
       title={t('dashboard.Dashboard', 'Dashboard')}
-      tutorialContentName={(): 'Editor' | 'Folder' | 'Dashboard' => {
-        if (song) return 'Editor';
-        if (folder) return 'Folder';
-        return 'Dashboard';
-      }}
+      tutorialContentName={tutorialContentName}
     >
       {((): React.ReactElement => {
         console.log('From DashboardPage, return. song:', song, 'folder:', folder);
+        if (folder) {
+          return (
+            <FolderDashboard
+              folder={folder}
+              goBack={goBack(setFolder)}
+              logoMenuDeployed={logoMenuDeployed}
+              handleToggleLogoMenu={handleToggleLogoMenu}
+              setTutorialContentName={setTutorialContentName}
+            />
+          );
+        }
         if (song) {
           return (
             <Editor
-              actionIconButtonProps={folder && search
-                ? {
-                  ariaLabel: t('folder.Add song', 'Add song'),
-                  Icon: Add,
-                  onClick: { build: addThisSong },
-                  color: 'primary' as IIconColor,
-                  disabled: false,
-                } : undefined}
               edit={song.userId === Meteor.userId() && !song.pg}
               goBack={goBack(setSong)}
               logoMenuDeployed={logoMenuDeployed}
               song={song}
-            />
-          );
-        }
-        if (search) {
-          return (
-            <CardSearchList
-              goBack={goBack(setSearch)}
-              handleFocus={handleFocus}
-              handleSelectSong={handleSelectSong}
-              shortFirstItem={logoMenuDeployed}
-              shortSearchField={logoMenuDeployed}
-              secondaryActions={[{
-                ariaLabel: t('folder.Add song', 'Add song'),
-                Icon: Add,
-                key: 'addSong',
-                onClick: { build: addThisSong },
-              }]}
-            />
-          );
-        }
-        if (folder) {
-          return (
-            <FolderEditor
-              folder={folder}
-              goBack={goBack(setFolder)}
-              logoMenuDeployed={logoMenuDeployed}
-              handleSelectSong={handleSelectSong}
-              handleAddSong={handleAddSong}
             />
           );
         }

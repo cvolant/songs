@@ -27,6 +27,8 @@ import { IIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
+import { userRemoveCreatedSong } from '../../api/users/methods';
+import { songUpdate } from '../../api/songs/methods';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -78,8 +80,6 @@ interface IEditorProps {
 }
 interface IEditorWTData {
   folders: IFolder[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  meteorCall: (method: string, ...rest: any[]) => void;
   song: IUnfetchedSong;
   user?: IUser;
 }
@@ -102,7 +102,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   folders,
   goBack,
   logoMenuDeployed,
-  meteorCall,
   song,
   user,
 }) => {
@@ -124,7 +123,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     .indexOf(Object.values(objectProperty)[0]);
 
   const handleDelete = (): void => {
-    meteorCall('songs.remove', song._id.toHexString());
+    userRemoveCreatedSong.call({ _id: song._id });
     goBack();
   };
 
@@ -233,7 +232,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       for (let i = 0; i < pgStates.length; i += 1) {
         newPg.push(pg[pgStates[i].pgIndex]);
       }
-      const updates = {
+      const songUpdates = {
+        _id: song._id,
         pg: newPg,
         year: details.year.value,
         author: details.author.value,
@@ -246,8 +246,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         subtitle,
         title,
       };
-      console.log('From Editor, handleSaveAll. details:', updates);
-      meteorCall('songs.update', song._id.toHexString(), updates);
+      console.log('From Editor, handleSaveAll. details:', songUpdates);
+      songUpdate.call({ songUpdates });
       setEdit(false);
     }
   };
@@ -516,7 +516,6 @@ export const Editor = withTracker<IEditorWTData, IEditorProps>(({
 }: { song: IUnfetchedSong }) => {
   console.log('From Editor, withTracker. Songs:', Songs);
   return ({
-    meteorCall: Meteor.call,
     song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
     user: Meteor.user() as IUser | undefined,
     folders: Folders.find({}).fetch(),
