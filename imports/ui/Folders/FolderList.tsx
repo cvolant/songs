@@ -15,6 +15,7 @@ import { IFolder } from '../../types';
 import { ISortCriterion, ISortSpecifier } from '../../types/searchTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 import FolderListItemText from './FolderListItemText';
+import { IUnfetchedFolder } from '../../types/folderTypes';
 
 interface IFolderListProps {
   displaySort: boolean;
@@ -25,7 +26,7 @@ interface IFolderListProps {
   handleToggleDisplaySort: (open?: boolean) => () => void;
   loading?: boolean;
   raiseLimit: () => void;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedFolder>[];
   shortFirstItem?: boolean;
   sort?: ISortSpecifier<IFolder>;
 }
@@ -91,7 +92,7 @@ export const FolderList: React.FC<IFolderListProps> = ({
           const folderId = folder._id;
           const unfolded = unfoldedFolder === folderId;
           return (
-            <ListLayoutItem
+            <ListLayoutItem<IFolder>
               element={folder}
               key={folderId.toHexString()}
               listItemText={(
@@ -102,18 +103,17 @@ export const FolderList: React.FC<IFolderListProps> = ({
                 />
               )}
               primaryAction={{
-                ariaLabel: t('search.Details', 'Details'),
                 Icon: Eye,
+                label: t('search.Details', 'Details'),
                 onClick: handleSelect(folder),
               }}
               primaryIcon={<Folder />}
               secondaryActions={[
                 {
-                  ariaLabel: t('folder.Settings', 'Settings'),
                   color: 'default',
                   Icon: Settings,
                   key: 'settings',
-                  // eslint-disable-next-line no-alert, no-undef
+                  label: t('folder.Settings', 'Settings'),
                   onClick: handleOpenSettings(folder),
                 },
                 ...secondaryActions || [],

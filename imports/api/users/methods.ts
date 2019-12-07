@@ -13,7 +13,7 @@ import { IFolder, IUser } from '../../types';
 
 // import Folders from '../folders/folders';
 
-export const userToggleFavorite = new ValidatedMethod({
+export const userFavoriteToggle = new ValidatedMethod({
   name: 'user.favoriteSong.toggle',
   validate: new SimpleSchema({
     songId: ObjectIDSchema,
@@ -61,7 +61,7 @@ export const userToggleFavorite = new ValidatedMethod({
   },
 });
 
-export const userInsertCreatedSong = new ValidatedMethod({
+export const userCreatedSongInsert = new ValidatedMethod({
   name: 'user.createdSongs.insert',
   validate: new SimpleSchema({ song: SongSchema }).validator(),
   run(this: IMethodInvocation, { song }: { song: Partial<ISong> }): Mongo.ObjectID {
@@ -93,7 +93,7 @@ export const userInsertCreatedSong = new ValidatedMethod({
   },
 });
 
-export const userRemoveCreatedSong = new ValidatedMethod({
+export const userCreatedSongRemove = new ValidatedMethod({
   name: 'user.createdSongs.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
   run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
@@ -130,7 +130,7 @@ export const userRemoveCreatedSong = new ValidatedMethod({
   },
 });
 
-export const userInsertFolder = new ValidatedMethod({
+export const userFoldersInsert = new ValidatedMethod({
   name: 'user.folders.insert',
   validate: new SimpleSchema({
     name: {
@@ -172,7 +172,7 @@ export const userInsertFolder = new ValidatedMethod({
   },
 });
 
-export const userRemoveFolder = new ValidatedMethod({
+export const userFoldersRemove = new ValidatedMethod({
   name: 'user.folders.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
   run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
@@ -202,11 +202,11 @@ export const userRemoveFolder = new ValidatedMethod({
 });
 
 const USERS_METHODS = [
-  userToggleFavorite,
-  userInsertCreatedSong,
-  userRemoveCreatedSong,
-  userInsertFolder,
-  userRemoveFolder,
+  userFavoriteToggle,
+  userCreatedSongInsert,
+  userCreatedSongRemove,
+  userFoldersInsert,
+  userFoldersRemove,
 ].map((method) => method.name);
 
 if (Meteor.isServer) {

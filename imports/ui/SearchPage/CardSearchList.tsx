@@ -12,7 +12,7 @@ interface ICardSearchListProps {
   shortSearchField?: boolean;
   handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
-  secondaryActions: IArrayIconButtonProps[];
+  secondaryActions: IArrayIconButtonProps<IUnfetchedSong>[];
 }
 
 export const CardSearchList: React.FC<ICardSearchListProps> = ({

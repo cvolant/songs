@@ -41,7 +41,7 @@ const useDeviceSize = (sizeName: string): boolean | undefined => {
   return context[size][dir];
 };
 
-const DeviceSizeProvider: React.FC<IDeviceSizeProviderProps> = (props) => {
+const DeviceSizeProvider: React.FC<IDeviceSizeProviderProps> = ({ children }) => {
   const theme = useTheme();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const value = {} as any;
@@ -52,6 +52,10 @@ const DeviceSizeProvider: React.FC<IDeviceSizeProviderProps> = (props) => {
     });
   });
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <DeviceSizeContext.Provider value={value as IDeviceSize | undefined} {...props} />;
+  return (
+    <DeviceSizeContext.Provider value={value as IDeviceSize | undefined}>
+      {children}
+    </DeviceSizeContext.Provider>
+  );
 };
 export { DeviceSizeProvider, useDeviceSize };

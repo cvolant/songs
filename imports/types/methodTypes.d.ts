@@ -8,29 +8,29 @@ import {
   ValidatedMethodAsFunc,
 } from 'meteor/mdg:validated-method';
 import {
-  folderUpdate,
-  folderUpdateInsertSong,
-  folderUpdateRemoveSong,
-  folderUpdateUpdateSong,
+  foldersUpdate,
+  foldersUpdateSongsInsert,
+  foldersUpdateSongsRemove,
+  foldersUpdateSongsUpdate,
 } from '../api/folders/methods';
 import {
-  songUpdate,
+  songsUpdate,
 } from '../api/songs/methods';
 import {
-  userToggleFavorite,
-  userInsertCreatedSong,
-  userRemoveCreatedSong,
-  userInsertFolder,
-  userRemoveFolder,
+  userFavoriteToggle,
+  userCreatedSongInsert,
+  userCreatedSongRemove,
+  userFoldersInsert,
+  userFoldersRemove,
 } from '../api/users/methods';
 
-export type KnownMethods = ValidatedMethodAsFunc<typeof folderUpdate>
-& ValidatedMethodAsFunc<typeof folderUpdateInsertSong>
-& ValidatedMethodAsFunc<typeof folderUpdateRemoveSong>
-& ValidatedMethodAsFunc<typeof folderUpdateUpdateSong>
-& ValidatedMethodAsFunc<typeof songUpdate>
-& ValidatedMethodAsFunc<typeof userToggleFavorite>
-& ValidatedMethodAsFunc<typeof userInsertCreatedSong>
-& ValidatedMethodAsFunc<typeof userRemoveCreatedSong>
-& ValidatedMethodAsFunc<typeof userInsertFolder>
-& ValidatedMethodAsFunc<typeof userRemoveFolder>;
+export type KnownMethods = ValidatedMethodAsFunc<typeof foldersUpdate>
+& ValidatedMethodAsFunc<typeof foldersUpdateSongsInsert>
+& ValidatedMethodAsFunc<typeof foldersUpdateSongsRemove>
+& ValidatedMethodAsFunc<typeof foldersUpdateSongsUpdate>
+& ValidatedMethodAsFunc<typeof songsUpdate>
+& ValidatedMethodAsFunc<typeof userFavoriteToggle>
+& ValidatedMethodAsFunc<typeof userCreatedSongInsert>
+& ValidatedMethodAsFunc<typeof userCreatedSongRemove>
+& ValidatedMethodAsFunc<typeof userFoldersInsert>
+& ValidatedMethodAsFunc<typeof userFoldersRemove>;

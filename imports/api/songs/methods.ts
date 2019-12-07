@@ -34,7 +34,7 @@ export const insert = new ValidatedMethod({
   },
 });
  */
-export const songUpdate = new ValidatedMethod({
+export const songsUpdate = new ValidatedMethod({
   name: 'songs.update',
   validate: new SimpleSchema({
     songUpdates: SongSchema,
@@ -67,7 +67,7 @@ export const songUpdate = new ValidatedMethod({
   },
 });
 
-export default songUpdate;
+export default songsUpdate;
 /*
 export const remove = new ValidatedMethod({
   name: 'songs.remove',
@@ -106,7 +106,7 @@ export const remove = new ValidatedMethod({
  */
 const SONGS_METHODS = [
   // insert,
-  songUpdate,
+  songsUpdate,
   // remove,
 ].map((method) => method.name);
 

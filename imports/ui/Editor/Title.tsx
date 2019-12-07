@@ -45,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     textAlign: 'start',
     display: 'block',
+    textTransform: 'none',
+    fontWeight: 'inherit',
   },
   logoSpace: {
     height: '1px',
@@ -102,7 +104,10 @@ const Title: React.FC<ITitle> = ({
     setShowDetails(!showDetails);
   };
 
-  const DetailsContainer = smallDevice ? Button : React.Fragment;
+  const detailsArray = Object.entries(details);
+  console.log('From Title, render. detailsArray:', detailsArray);
+
+  const DetailsContainer = smallDevice && !titleEdit ? Button : React.Fragment;
 
   return (
     <Card elevation={0} className={classes.root}>
@@ -161,32 +166,34 @@ const Title: React.FC<ITitle> = ({
           : subtitle}
       />
       <CardContent className={classes.cardContent}>
-        <DetailsContainer
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...smallDevice ? {
-            className: classes.detailsButton,
-            onClick: handleToggleDetails,
-          } : {}}
-        >
-          {(!smallDevice || showDetails)
-            ? [
-              <div className={classes.logoSpace} key={-1} />,
-              Object.keys(details).map(
-                (key) => (
-                  <Detail
-                    key={key}
-                    keyname={key}
-                    detail={details[key as keyof IDetails]}
-                    edit={titleEdit}
-                    handleDetailChange={handleDetailChange}
-                  />
+        {(titleEdit || detailsArray.find(([, detailValue]) => detailValue.value)) && (
+          <DetailsContainer
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...smallDevice && !titleEdit ? {
+              className: classes.detailsButton,
+              onClick: handleToggleDetails,
+            } : {}}
+          >
+            {(!smallDevice || showDetails || titleEdit)
+              ? [
+                <div className={classes.logoSpace} key={-1} />,
+                detailsArray.map(
+                  ([key, detailValue]) => (
+                    <Detail
+                      key={key}
+                      keyname={key}
+                      detail={detailValue}
+                      edit={titleEdit}
+                      handleDetailChange={handleDetailChange}
+                    />
+                  ),
                 ),
-              ),
-            ]
-            : (
-              <Chip icon={<Eye />} label={t('song.Show details', 'Show details')} />
-            )}
-        </DetailsContainer>
+              ]
+              : (
+                <Chip icon={<Eye />} label={t('song.Show details', 'Show details')} />
+              )}
+          </DetailsContainer>
+        )}
       </CardContent>
     </Card>
   );

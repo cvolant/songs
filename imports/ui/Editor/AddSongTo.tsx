@@ -32,12 +32,12 @@ import { IFolder } from '../../types';
 import { IUnfetchedSong } from '../../types/songTypes';
 
 import {
-  userToggleFavorite,
-  userInsertFolder,
+  userFavoriteToggle,
+  userFoldersInsert,
 } from '../../api/users/methods';
 import {
-  folderUpdateInsertSong,
-  folderUpdateRemoveSong,
+  foldersUpdateSongsInsert,
+  foldersUpdateSongsRemove,
 } from '../../api/folders/methods';
 
 const useStyles = makeStyles((theme) => ({
@@ -106,16 +106,18 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   useEffect((): void => { setLocalFavorite(favorite); }, [favorite]);
 
   const handleClose = (): void => {
+    setError('');
     onClose();
   };
 
   const handleFavoriteClick = (): void => {
-    userToggleFavorite.call({ songId: song._id, value: !localFavorite });
+    userFavoriteToggle.call({ songId: song._id, value: !localFavorite });
     setLocalFavorite(!localFavorite);
   };
 
   const handleListItemClick = (folderId: Mongo.ObjectID) => (): void => {
-    folderUpdateInsertSong.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
+    setError('');
+    foldersUpdateSongsInsert.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
       if (err) {
         setError(err.reason || 'Error');
       }
@@ -123,7 +125,8 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   };
 
   const handleRemove = (folderId: Mongo.ObjectID) => (): void => {
-    folderUpdateRemoveSong.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
+    setError('');
+    foldersUpdateSongsRemove.call({ folderId, songId: song._id }, (err: Meteor.Error) => {
       if (err) {
         setError(err.reason || 'Error');
       }
@@ -136,14 +139,16 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
   };
 
   const handleNewFolder = (): void => {
+    setError('');
     setNewFolder(true);
   };
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault();
     console.log('From AddSongTo, onSubmit. e:', e);
+    setError('');
     setLoading(true);
-    userInsertFolder.call({ name }, () => {
+    userFoldersInsert.call({ name }, () => {
       setName('');
       setNewFolder(false);
       setLoading(false);
@@ -239,12 +244,11 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
           color="primary"
           onClick={handleClose}
           size="small"
-          variant="outlined"
         >
           {t('Close')}
         </Button>
       </DialogActions>
-      <SnackbarMessage message={error} variant="error" />
+      {<SnackbarMessage message={error} variant="error" />}
     </Dialog>
   );
 };

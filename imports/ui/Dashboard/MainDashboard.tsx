@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Add from '@material-ui/icons/Add';
 import Build from '@material-ui/icons/Build';
 import Favorite from '@material-ui/icons/Favorite';
 import Folder from '@material-ui/icons/Folder';
@@ -10,31 +11,33 @@ import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
-import FolderDialog from '../Folders/CreateNewFolder';
+import FolderDialog from '../Folders/FolderDialog';
 import SongDialog from '../Songs/SongDialog';
 import FullCardLayout from '../utils/FullCardLayout';
 import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
-import { IUnfetchedFolder } from '../../types/folderTypes';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
+import { IUnfetchedSong, ISong } from '../../types/songTypes';
+import { IIconColor } from '../../types/iconButtonTypes';
 
-export type IUserCollectionName = 'favoriteSongs' | 'createdSongs' | 'folders';
 interface IMainDashboardProps {
   display: UserCollectionName;
   handleChangeDisplay: (newDisplay?: UserCollectionName) => () => void;
   logoMenuDeployed: boolean;
-  selectFolder: (folder: IUnfetchedFolder) => void;
+  handleSelectFolder: (folder: IUnfetchedFolder) => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
 }
+
+type IDialog = 'folder' | 'song' | '';
 
 export const MainDashboard: React.FC<IMainDashboardProps> = ({
   display,
   handleChangeDisplay,
   handleSelectSong,
   logoMenuDeployed,
-  selectFolder,
+  handleSelectFolder,
 }) => {
   const { t } = useTranslation();
   const user = useUser();
@@ -42,9 +45,14 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   console.log('From MainDashboard, render. user:', user);
 
   const [displaySort, setDisplaySort] = useState(false);
+  const [dialog, setDialog] = useState<IDialog>('');
 
   const handleToggleDisplaySort = (newDisplaySort?: boolean) => (): void => {
     setDisplaySort(newDisplaySort === undefined ? !displaySort : newDisplaySort);
+  };
+
+  const handleDialog = (newDialog: IDialog) => (): void => {
+    setDialog(newDialog);
   };
 
   const userSongLists: Record<UserCollectionName, {
@@ -70,74 +78,92 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   };
 
   return (
-    <FullCardLayout
-      actions={[
-        <SongDialog key="newSong" handleSelectSong={handleSelectSong} />,
-        <FolderDialog key="newFolder" handleSelectFolder={handleSelectSong} />,
-      ]}
-      headerAction={(
-        <div>
-          <IconButton
-            aria-label={t('search.Sort', 'Sort')}
-            onClick={handleToggleDisplaySort()}
-            size="small"
-            color={displaySort ? 'primary' : 'default'}
-          >
-            <Sort />
-          </IconButton>
-          {
-            Object.entries(userSongLists).map(([
-              list,
-              { title, Icon },
-            ]) => (
-              <IconButton
-                aria-label={title}
-                color={list === display ? 'primary' : undefined}
-                key={list}
-                onClick={handleChangeDisplay(list as UserCollectionName)}
-                size="small"
-              >
-                <Icon />
-              </IconButton>
-            ))
-          }
-        </div>
-      )}
-      headerTitle={(
-        <Typography variant="h4">
-          {userSongLists[display].title}
-        </Typography>
-      )}
-      headerProps={{ disableTypography: true }}
-      shortHeader={logoMenuDeployed}
-    >
-      {display === 'folders'
-        ? (
-          <UserFolderList
-            displaySort={displaySort}
-            emptyListPlaceholder={(
-              <Typography>
-                {t('dashboard.No folders found', 'No folders found...')}
-              </Typography>
-            )}
-            handleToggleDisplaySort={handleToggleDisplaySort}
-            logoMenuDeployed={logoMenuDeployed}
-            selectFolder={selectFolder}
-          />
-        ) : (
-          <UserSongList
-            displaySort={displaySort}
-            emptyListPlaceholder={
-              <Typography>{userSongLists[display].notFound}</Typography>
+    <>
+      <FullCardLayout<typeof display extends 'folders' ? IFolder : ISong>
+        fab={{
+          color: 'primary' as IIconColor,
+          Icon: Add,
+          label: display === 'folders'
+            ? t('dashboard.New folder', 'New folder')
+            : t('dashboard.New song', 'New song'),
+          onClick: handleDialog(display === 'folders' ? 'folder' : 'song'),
+        }}
+        headerAction={(
+          <div>
+            <IconButton
+              aria-label={t('search.Sort', 'Sort')}
+              onClick={handleToggleDisplaySort()}
+              size="small"
+              color={displaySort ? 'primary' : 'default'}
+            >
+              <Sort />
+            </IconButton>
+            {
+              Object.entries(userSongLists).map(([
+                list,
+                { title, Icon },
+              ]) => (
+                <IconButton
+                  aria-label={title}
+                  color={list === display ? 'primary' : undefined}
+                  key={list}
+                  onClick={handleChangeDisplay(list as UserCollectionName)}
+                  size="small"
+                >
+                  <Icon />
+                </IconButton>
+              ))
             }
-            handleToggleDisplaySort={handleToggleDisplaySort}
-            logoMenuDeployed={logoMenuDeployed}
-            handleSelectSong={handleSelectSong}
-            user={user}
-            userSongList={display}
-          />
+          </div>
         )}
-    </FullCardLayout>
+        headerTitle={(
+          <Typography variant="h4">
+            {userSongLists[display].title}
+          </Typography>
+        )}
+        headerProps={{ disableTypography: true }}
+        shortHeader={logoMenuDeployed}
+      >
+        {display === 'folders'
+          ? (
+            <UserFolderList
+              displaySort={displaySort}
+              emptyListPlaceholder={(
+                <Typography>
+                  {t('dashboard.No folders found', 'No folders found...')}
+                </Typography>
+              )}
+              handleToggleDisplaySort={handleToggleDisplaySort}
+              logoMenuDeployed={logoMenuDeployed}
+              handleSelectFolder={handleSelectFolder}
+            />
+          ) : (
+            <UserSongList
+              displaySort={displaySort}
+              emptyListPlaceholder={
+                <Typography>{userSongLists[display].notFound}</Typography>
+              }
+              handleToggleDisplaySort={handleToggleDisplaySort}
+              logoMenuDeployed={logoMenuDeployed}
+              handleSelectSong={handleSelectSong}
+              user={user}
+              userSongList={display}
+            />
+          )}
+      </FullCardLayout>
+      <FolderDialog
+        handleClose={handleDialog('')}
+        handleSelectFolder={handleSelectFolder}
+        open={dialog === 'folder'}
+        title={t('dashboard.New folder', 'New folder')}
+      />
+      <SongDialog
+        handleClose={handleDialog('')}
+        handleSelectSong={handleSelectSong}
+        open={dialog === 'song'}
+        title={t('dashboard.New song', 'New song')}
+      />
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 import { FolderSchema, IUnfetchedFolder } from '../../types/folderTypes';
 
-export const folderUpdate = new ValidatedMethod({
+export const foldersUpdate = new ValidatedMethod({
   name: 'folders.update',
   validate: FolderSchema.validator(),
   run(this: IMethodInvocation, folderUpdates: IUnfetchedFolder): void {
@@ -31,7 +31,7 @@ export const folderUpdate = new ValidatedMethod({
   },
 });
 
-export const folderUpdateInsertSong = new ValidatedMethod({
+export const foldersUpdateSongsInsert = new ValidatedMethod({
   name: 'folders.songs.insert',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
@@ -41,10 +41,11 @@ export const folderUpdateInsertSong = new ValidatedMethod({
     folderId: Mongo.ObjectID;
     songId: Mongo.ObjectID;
   }): void {
-    const folder = Folders.findOne(folderId);
+    const folder = Folders.findOne(folderId, { fields: { userId: 1, songs: 1 } });
 
     if (folder) {
       if (folder.userId !== this.userId) {
+        console.log('From folders.songs.insert. folder.userId !== this.userId... Folders:', Folders, 'folder:', folder, 'folder.userId:', folder.userId, 'this.userId:', this.userId);
         throw new Meteor.Error(
           'api.folders.update.newSong.accessDenied',
           'Cannot add songs in a folder that is not yours',
@@ -53,7 +54,10 @@ export const folderUpdateInsertSong = new ValidatedMethod({
 
       const { songs } = folder;
       Folders.update(folderId, {
-        $set: { songs: [{ _id: songId }, ...songs] },
+        $set: {
+          songs: [{ _id: songId }, ...songs],
+          updatedAt: new Date(),
+        },
       });
 
       console.log('From folders.songs.insert. song inserted.');
@@ -61,7 +65,7 @@ export const folderUpdateInsertSong = new ValidatedMethod({
   },
 });
 
-export const folderUpdateUpdateSong = new ValidatedMethod({
+export const foldersUpdateSongsUpdate = new ValidatedMethod({
   name: 'folders.songs.update',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
@@ -96,7 +100,7 @@ export const folderUpdateUpdateSong = new ValidatedMethod({
   },
 });
 
-export const folderUpdateRemoveSong = new ValidatedMethod({
+export const foldersUpdateSongsRemove = new ValidatedMethod({
   name: 'folders.songs.remove',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
@@ -127,10 +131,10 @@ export const folderUpdateRemoveSong = new ValidatedMethod({
 });
 
 const FOLDERS_METHODS = [
-  folderUpdate,
-  folderUpdateInsertSong,
-  folderUpdateUpdateSong,
-  folderUpdateRemoveSong,
+  foldersUpdate,
+  foldersUpdateSongsInsert,
+  foldersUpdateSongsUpdate,
+  foldersUpdateSongsRemove,
 ].map((method) => method.name);
 
 if (Meteor.isServer) {

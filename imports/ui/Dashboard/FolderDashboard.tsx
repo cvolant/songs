@@ -20,13 +20,13 @@ import { CardSearchList } from '../SearchPage/CardSearchList';
 
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
-import { IIconColor, IIcon } from '../../types/iconButtonTypes';
+import { IIcon, IIconButtonCallback } from '../../types/iconButtonTypes';
 import { ITutorialContentName } from '../Tutorial';
 
 import Folders from '../../api/folders/folders';
 import {
-  folderUpdateInsertSong,
-  folderUpdateRemoveSong,
+  foldersUpdateSongsInsert,
+  foldersUpdateSongsRemove,
 } from '../../api/folders/methods';
 
 interface IFolderDashboardProps {
@@ -64,22 +64,22 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     };
   }, []);
 
-  const addThisSong = (
+  const handleAddSong = (
     newSong: IUnfetchedSong,
     callback?: (err: Meteor.Error, res: void) => void,
   ) => (): void => {
-    console.log('From FolderDashboard, addThisSong. newSong:', newSong, 'callback:', callback);
+    console.log('From FolderDashboard, handleAddSong. newSong:', newSong, 'callback:', callback);
     if (newSong && newSong._id && folder && folder._id) {
-      folderUpdateInsertSong.call({ folderId: folder._id, songId: newSong._id }, callback);
+      foldersUpdateSongsInsert.call({ folderId: folder._id, songId: newSong._id }, callback);
     }
   };
 
-  const removeThisSong = (
+  const handleRemoveSong = (
     formerSong: IUnfetchedSong,
     callback?: (err: Meteor.Error, res: void) => void,
   ) => (): void => {
     if (formerSong && formerSong._id && folder && folder._id) {
-      folderUpdateRemoveSong.call({ folderId: folder._id, songId: formerSong._id }, callback);
+      foldersUpdateSongsRemove.call({ folderId: folder._id, songId: formerSong._id }, callback);
     }
   };
 
@@ -109,32 +109,31 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     (folderSong) => folderSong._id.toHexString(),
   );
   const addRemoveButton = {
-    ariaLabel: (searchedSong: IUnfetchedSong): string => (
-      folderSongIdStrings.includes(searchedSong._id.toHexString())
-        ? t('folder.Remove this song', 'Remove this song')
-        : t('folder.Add this song', 'Add this song')
-    ),
-    color: (searchedSong: IUnfetchedSong): IIconColor => (
-      folderSongIdStrings.includes(searchedSong._id.toHexString())
-        ? 'primary'
-        : 'default'
-    ),
     Icon: {
-      build: (searchedSong: IUnfetchedSong): IIcon => (
-        folderSongIdStrings.includes(searchedSong._id.toHexString())
+      build: ({ element }: { element?: IUnfetchedSong}): IIcon => (
+        element && folderSongIdStrings.includes(element._id.toHexString())
           ? RemoveCircleOutline
           : Add
       ),
     },
     key: 'addSong',
+    label: {
+      build: ({ element }: { element?: IUnfetchedSong }): string => (
+        element && folderSongIdStrings.includes(element._id.toHexString())
+          ? t('folder.Remove this song', 'Remove this song')
+          : t('folder.Add this song', 'Add this song')
+      ),
+    },
     onClick: {
-      build: (
-        searchedSong: IUnfetchedSong,
-        callback?: (err: Meteor.Error, res: void) => void,
-      ): MouseEventHandler => (
-        folderSongIdStrings.includes(searchedSong._id.toHexString())
-          ? removeThisSong(searchedSong, callback)
-          : addThisSong(searchedSong, callback)
+      build: ({ element, callback }: {
+        element?: IUnfetchedSong;
+        callback?: IIconButtonCallback;
+      }): MouseEventHandler => (
+        (element && (
+          folderSongIdStrings.includes(element._id.toHexString())
+            ? handleRemoveSong(element, callback)
+            : handleAddSong(element, callback)
+        )) || ((): void => {})
       ),
     },
   };
@@ -143,8 +142,8 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   if (song) {
     return (
       <Editor
-        actionIconButtonProps={folder && search ? addRemoveButton : undefined}
-        edit={song.userId === Meteor.userId() && !song.pg}
+        fab={folder && search ? addRemoveButton : undefined}
+        edit={song.userId === Meteor.userId() && !song.lyrics}
         goBack={goBackToFolders(setSong)}
         logoMenuDeployed={logoMenuDeployed}
         song={song}

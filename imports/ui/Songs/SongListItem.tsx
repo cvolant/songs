@@ -7,7 +7,7 @@ import QueueMusic from '@material-ui/icons/QueueMusic';
 import SongListItemText from './SongListItemText';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 
-import { ISong } from '../../types';
+import { ISong, IUnfetchedSong } from '../../types/songTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 interface ISongListItemProps {
@@ -16,7 +16,7 @@ interface ISongListItemProps {
   handleToggleFavorite: (value?: boolean) => () => void;
   handleUnfold: MouseEventHandler<HTMLDivElement>;
   displayFavorite: boolean;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
   song: ISong;
   unfolded: boolean;
 }
@@ -31,7 +31,7 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
   const { t } = useTranslation();
 
   return (
-    <ListLayoutItem
+    <ListLayoutItem<ISong>
       element={song}
       listItemText={(
         <SongListItemText
@@ -41,8 +41,8 @@ export const SongListItem: React.FC<ISongListItemProps> = ({
         />
       )}
       primaryAction={{
-        ariaLabel: t('search.Details', 'Details'),
         Icon: Eye,
+        label: t('search.Details', 'Details'),
         onClick: handleSelect,
       }}
       primaryIcon={<QueueMusic />}

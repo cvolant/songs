@@ -59,9 +59,9 @@ export const songListItem = (): JSX.Element => (
     displayFavorite={boolean('displayFavorite', true)}
     secondaryActions={boolean('secondaryActions', true)
       ? [{
-        ariaLabel: 'rightIcon aria label',
         Icon: Add,
         key: 'rightIcon',
+        label: 'rightIcon aria label',
         onClick: action('rightIconClick'),
       }]
       : undefined}
@@ -90,9 +90,9 @@ export const songList = (): JSX.Element => {
       raiseLimit={action('raiseLimit')}
       secondaryActions={boolean('secondaryActions', true)
         ? [{
-          ariaLabel: 'rightIcon aria label',
           Icon: Add,
           key: 'rightIcon key',
+          label: 'rightIcon aria label',
           onClick: action('rightIconClick'),
         }]
         : undefined}

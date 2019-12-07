@@ -5,9 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
-import Edit from '@material-ui/icons/Edit';
 import Delete from '@material-ui/icons/Delete';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
@@ -57,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorButtonsProps {
-  actionIconButtonProps?: IIconButtonProps;
+  actionIconButtonProps?: IIconButtonProps<IUnfetchedSong>;
   edit: boolean;
   folders: IFolder[];
   handleCancelAll: () => void;
@@ -90,7 +88,6 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
   const classes = useStyles();
   const user = useUser();
   const [open, setOpen] = useState(false);
-
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -132,22 +129,8 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
         )
         : (
           <>
-            <Typography variant="body1" className={classes.instructions}>
-              {isThereParagraphs
-                ? t('editor.Select paragraphs', 'Select paragraphs')
-                : ''}
-            </Typography>
             <div className={classes.bottomFabs}>
               <div>
-                {user && user._id && user._id === song.userId && (
-                  <Fab
-                    aria-label={t('editor.Edit', 'Edit')}
-                    className={classes.bottomFab}
-                    onClick={handleEditSong}
-                  >
-                    <Edit />
-                  </Fab>
-                )}
                 {user && user._id && (
                   <Fab
                     aria-label={t('Add')}
@@ -157,38 +140,6 @@ const EditorButtons: React.FC<IEditorButtonsProps> = ({
                     <Add />
                   </Fab>
                 )}
-                <div className={classes.choiceFabs}>
-                  <Fab
-                    aria-label={t('editor.Select or unselect all', 'Select or unselect all')}
-                    disabled={!isThereParagraphs}
-                    className={classes.bottomFab}
-                    onClick={handleToggleSelectAll}
-                    variant="extended"
-                  >
-                    {selectedPg.length
-                      ? t('editor.Unselect all', 'Unselect all')
-                      : t('editor.Select all', 'Select all')}
-                  </Fab>
-                  {actionIconButtonProps && (({
-                    ariaLabel, className, color, disabled, Icon, onClick,
-                  }): JSX.Element => {
-                    const IconButtonIcon = 'build' in Icon ? Icon.build(song) : Icon;
-                    return (
-                      <Fab
-                        aria-label={typeof ariaLabel === 'function' ? ariaLabel(song) : ariaLabel || ''}
-                        className={typeof className === 'function' ? className(song) : className}
-                        color={typeof color === 'function' ? color(song) : color}
-                        disabled={typeof disabled === 'function' ? disabled(song, { isThereSelected: !!selectedPg.length }) : disabled || false}
-                        onClick={'build' in onClick ? onClick.build({
-                          ...song,
-                          pg: selectedPg,
-                        }) : onClick}
-                      >
-                        <IconButtonIcon />
-                      </Fab>
-                    );
-                  })(actionIconButtonProps)}
-                </div>
               </div>
             </div>
             <AddSongTo

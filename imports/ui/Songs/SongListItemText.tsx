@@ -30,12 +30,12 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
     year,
     author,
     compositor,
-    pg,
+    lyrics,
     traductor,
   } = song;
   const details = [];
-  const lyrics = pg && pg[0] && pg[0].pg
-    ? pg[0].pg
+  const excerpt = lyrics && lyrics[0] && lyrics[0].pg
+    ? lyrics[0].pg
       .replace(/(<br\/>|\s)+/g, ' ')
       .substr(0, 130)
       .replace(/\s\S*$/g, ' ...')
@@ -107,14 +107,14 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
               </span>
             ))}
             {!smallDevice && !unfolded && (
-              <span key="lyrics">
-                —
-                {lyrics}
+              <span key="excerpt">
+                {' — '}
+                {excerpt}
               </span>
             )}
           </Typography>
         ),
-        (smallDevice || unfolded) && <Typography key="lyrics">{lyrics}</Typography>,
+        (smallDevice || unfolded) && <Typography key="excerpt">{excerpt}</Typography>,
       ]}
       unfolded={unfolded}
     />

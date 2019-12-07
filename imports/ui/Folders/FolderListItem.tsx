@@ -9,14 +9,14 @@ import Settings from '@material-ui/icons/Settings';
 import FolderListItemText from './FolderListItemText';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 
-import { IFolder } from '../../types';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
+import { IFolder, IUnfetchedFolder } from '../../types/folderTypes';
 
 interface IFolderListItemProps {
   folder: IFolder;
   handleSelect: () => void;
   handleUnfold: () => void;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedFolder>[];
   unfolded: boolean;
 }
 
@@ -30,7 +30,7 @@ export const FolderListItem: React.FC<IFolderListItemProps> = ({
   const { t } = useTranslation();
 
   return (
-    <ListLayoutItem
+    <ListLayoutItem<IFolder>
       element={folder}
       listItemText={(
         <FolderListItemText
@@ -40,16 +40,16 @@ export const FolderListItem: React.FC<IFolderListItemProps> = ({
         />
       )}
       primaryAction={{
-        ariaLabel: t('search.Details', 'Details'),
         Icon: Eye,
+        label: t('search.Details', 'Details'),
         onClick: handleSelect,
       }}
       primaryIcon={<Folder />}
       secondaryActions={[
         {
-          ariaLabel: t('folder.Settings', 'Settings'),
           Icon: Settings,
           key: 'settings',
+          label: t('folder.Settings', 'Settings'),
           // eslint-disable-next-line no-alert
           onClick: (): void => alert('Still undefined'),
         },

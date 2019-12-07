@@ -5,9 +5,14 @@ module.exports = {
   isClient: () => specialLog('Meteor.isClient', true)(),
   isServer: () => specialLog('Meteor.isServer', false)(),
   isStorybook: () => specialLog('Meteor.isStorybook', true)(),
-  subscribe: (args) => specialLog('Meteor.subscribe', {
-    stop: () => specialLog('Subscription.stop')(args),
-  })(args),
+  subscribe: (subscriptionName, options, callback) => {
+    if (callback) callback();   // Needs a setTimeout, but it does not work: '"exports" is readonly'...
+    // setTimeout(callback, 5000);
+    // setTimeout.__promisify__(5000).then(callback);
+    return specialLog('Meteor.subscribe', {
+      stop: () => specialLog('Subscription.stop')(subscriptionName),
+    })(subscriptionName, options);
+  },
   user: () => specialLog('Meteor.user', users[0])(),
   userId: () => specialLog('Meteor.userId', users[0]._id)(),
   call: (args) => specialLog('Meteor.call')(args),

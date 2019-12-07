@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef, useState, MouseEventHandler } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { useHistory } from 'react-router-dom';
@@ -92,19 +92,20 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
     history.push(routesPaths.translatePath('/en/search/', i18n.language));
   };
 
-  const handleOpenScreen = (song: IUnfetchedSong) => (): void => {
-    console.log('From SearchPage, handleOpenScreen. song:', song);
-    setViewer(
-      <Screen
-        closeScreen={handleCloseScreen}
-        print={(zoom: number): JSX.Element => (
-          <PrintSong
-            zoom={zoom}
-            song={song}
-          />
-        )}
-      />,
-    );
+  const handleOpenScreen = (song?: IUnfetchedSong) => (): void => {
+    if (song) {
+      setViewer(
+        <Screen
+          closeScreen={handleCloseScreen}
+          print={(zoom: number): JSX.Element => (
+            <PrintSong
+              zoom={zoom}
+              song={song}
+            />
+          )}
+        />,
+      );
+    }
   };
 
   const handleSelectSong = (song: ISong): void => {
@@ -126,7 +127,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   };
 
   const handleFocus = (focus?: boolean) => (): void => {
-    if (smallDevice) handleToggleLogoMenu(!focus)();
+    if (smallDevice) setTimeout(handleToggleLogoMenu(!focus), 100);
     if (showInfos && smallDevice) scrollDown();
   };
 
@@ -169,16 +170,27 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
       {selectedSong
         ? (
           <Editor
-            actionIconButtonProps={{
-              ariaLabel: t('editor.View', 'View'),
+            actionIconButtonsProps={[{
               Icon: Eye,
-              onClick: { build: handleOpenScreen },
+              onClick: {
+                build: ({ element }: {
+                  element?: IUnfetchedSong;
+                }): MouseEventHandler => (
+                  element
+                    ? handleOpenScreen(element)
+                    : (): void => {}
+                ),
+              },
               color: 'primary' as IIconColor,
-              disabled: (
-                _song: IUnfetchedSong,
-                params?: { isThereSelected?: boolean },
-              ): boolean => !(params && params.isThereSelected),
-            }}
+              disabled: {
+                build: ({ otherParams }: {
+                  otherParams?: { isThereSelected?: boolean };
+                }): boolean => !(otherParams && otherParams.isThereSelected),
+              },
+              key: 'view',
+              label: t('editor.View', 'View'),
+              labelVisible: !smallDevice,
+            }]}
             goBack={handleGoBackFromEditor}
             logoMenuDeployed={logoMenuDeployed}
             song={selectedSong}

@@ -32,7 +32,7 @@ interface IPrintSongProps {
   song: {
     title?: string;
     subtitle?: string;
-    pg?: IParagraph[];
+    lyrics?: IParagraph[];
   };
   zoom: number;
 }
@@ -51,7 +51,7 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
         <Typography className={classes.subtitle} variant="subtitle1">{song.subtitle}</Typography>
       </Grid>
       <div className={classes.return} />
-      {song.pg && song.pg.map((paragraph) => {
+      {song.lyrics && song.lyrics.map((paragraph) => {
         const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e) => (e === '<br/>\n' ? <br /> : e));
         return (
           <Grid key={paragraph.index} item xs={12} sm={6} md={4} xl={3}>

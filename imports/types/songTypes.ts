@@ -72,11 +72,11 @@ const SongSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  pg: {
+  lyrics: {
     type: Array,
     optional: true,
   },
-  'pg.$': ParagraphSchema,
+  'lyrics.$': ParagraphSchema,
   updatedAt: {
     type: Date,
     optional: true,
@@ -103,7 +103,7 @@ export interface ISong {
   year?: number;
   subtitle?: string;
   title: string;
-  pg?: IParagraph[];
+  lyrics?: IParagraph[];
   updatedAt?: Date;
   userId?: string;
 }

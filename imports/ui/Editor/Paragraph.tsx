@@ -97,12 +97,12 @@ const Paragraph: React.FC<IParagraphProps> = ({
 
   const edit = propsEdit && editGlobal;
   const types = [
-    t('pg.paragraph', 'paragraph'),
-    t('pg.verse', 'verse'),
-    t('pg.chorus', 'chorus'),
-    t('pg.main chorus', 'main chorus'),
-    t('pg.stanza', 'stanza'),
-    t('pg.bridge', 'bridge'),
+    'paragraph',
+    'verse',
+    'chorus',
+    'main chorus',
+    'stanza',
+    'bridge',
   ];
 
   const pgText = pg.replace(/(<br\/>\n)/g, '\n');
@@ -143,21 +143,21 @@ const Paragraph: React.FC<IParagraphProps> = ({
             ? (
               <TextField
                 select
-                label={t('pg.Type', 'Type')}
+                label={t('lyrics.Type', 'Type')}
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
-                value={t(`pg.${label}`)}
+                value={label}
                 onChange={handleLabelChange}
               >
                 {types.map((option) => (
                   <MenuItem key={option} value={option}>
-                    {option}
+                    {t(`lyrics.${option}`)}
                   </MenuItem>
                 ))}
               </TextField>
             )
-            : t(`pg.${label}`) === t('pg.paragraph', 'paragraph') ? undefined : t(`pg.${label}`, label)}
+            : t(`lyrics.${label}`) === t('lyrics.paragraph', 'paragraph') ? undefined : t(`lyrics.${label}`, label)}
           titleTypographyProps={edit
             ? {
               variant: 'body1',
@@ -170,7 +170,7 @@ const Paragraph: React.FC<IParagraphProps> = ({
           subheader={edit
             ? (
               <TextField
-                label={t('pg.Content', 'Content')}
+                label={t('lyrics.Content', 'Content')}
                 multiline
                 className={classes.textField}
                 margin="normal"

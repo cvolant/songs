@@ -30,7 +30,11 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button
+        aria-label={title || t('dashboard.New folder', 'New folder')}
+        color="primary"
+        onClick={handleOpen}
+      >
         <Add />
         {title || t('dashboard.New folder', 'New folder')}
       </Button>

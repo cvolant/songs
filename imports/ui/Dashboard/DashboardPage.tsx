@@ -64,7 +64,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
     setTutorialContentName('Dashboard');
   };
 
-  const selectFolder = (newFolder: IUnfetchedFolder): void => {
+  const handleSelectFolder = (newFolder: IUnfetchedFolder): void => {
     setFolder(newFolder);
     setTutorialContentName('Folder');
   };
@@ -97,7 +97,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
         if (song) {
           return (
             <Editor
-              edit={song.userId === Meteor.userId() && !song.pg}
+              edit={song.userId === Meteor.userId() && !song.lyrics}
               goBack={goBack(setSong)}
               logoMenuDeployed={logoMenuDeployed}
               song={song}
@@ -109,7 +109,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
             display={display}
             handleChangeDisplay={handleChangeDisplay}
             logoMenuDeployed={logoMenuDeployed}
-            selectFolder={selectFolder}
+            handleSelectFolder={handleSelectFolder}
             handleSelectSong={handleSelectSong}
           />
         );

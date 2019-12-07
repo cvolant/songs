@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import { Typography } from '@material-ui/core';
 
-import { IIconButtonProps } from '../../types/iconButtonTypes';
 import ListLayoutItemLoading from './ListLayoutItemLoading';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +40,6 @@ interface IListLayoutProps {
   loading?: boolean;
   shortFirstItem?: boolean;
   raiseLimit: () => void;
-  secondaryActions?: IIconButtonProps;
 }
 
 export const ListLayout: React.FC<IListLayoutProps> = ({

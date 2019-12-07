@@ -18,10 +18,11 @@ import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 import {
   IIconColor,
   IArrayIconButtonProps,
+  IIconButtonBuildWithCallbackProps,
 } from '../../types/iconButtonTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
 
-import { userToggleFavorite } from '../../api/users/methods';
+import { userFavoriteToggle } from '../../api/users/methods';
 
 interface ISongListProps {
   displayFavorite: boolean;
@@ -34,7 +35,7 @@ interface ISongListProps {
   handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
   loading?: boolean;
   raiseLimit: () => void;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
   shortFirstItem?: boolean;
   songs?: ISong[];
   sort?: ISortSpecifier<ISong>;
@@ -77,7 +78,7 @@ export const SongList: React.FC<ISongListProps> = ({
   ) => (): void => {
     const value = (params && params.value) || undefined;
     console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId: song._id, value });
-    userToggleFavorite.call({ songId: song._id, value }, callback);
+    userFavoriteToggle.call({ songId: song._id, value }, callback);
   };
 
   console.log('From SongList, render. favoriteSongs', favoriteSongs);
@@ -110,7 +111,7 @@ export const SongList: React.FC<ISongListProps> = ({
           : false;
         const unfolded = unfoldedSong === songId;
         return (
-          <ListLayoutItem
+          <ListLayoutItem<ISong>
             element={song}
             key={songId.toHexString()}
             listItemText={(
@@ -121,19 +122,28 @@ export const SongList: React.FC<ISongListProps> = ({
               />
             )}
             primaryAction={{
-              ariaLabel: t('search.Details', 'Details'),
               Icon: Eye,
+              label: t('search.Details', 'Details'),
               onClick: handleSelect(song),
             }}
             primaryIcon={<QueueMusic />}
             secondaryActions={[
               ...displayFavorite
                 ? [{
-                  ariaLabel: favorite ? t('search.Unmark as favorite', 'Unmark as favorite') : t('search.Mark as favorite', 'Mark as favorite'),
                   color: favorite ? 'primary' : 'default' as IIconColor,
                   Icon: favorite ? Favorite : FavoriteBorder,
                   key: 'toggleFavorite',
-                  onClick: { build: handleToggleFavoriteSong },
+                  label: favorite ? t('search.Unmark as favorite', 'Unmark as favorite') : t('search.Mark as favorite', 'Mark as favorite'),
+                  onClick: {
+                    build: ({
+                      element, callback, otherParams,
+                    }: IIconButtonBuildWithCallbackProps<IUnfetchedSong>): () => void => (
+                      element
+                        ? handleToggleFavoriteSong(element, callback, otherParams)
+                        : (): void => {}
+                    ),
+                    callback: true as true,
+                  },
                 }]
                 : [],
               ...secondaryActions || [],

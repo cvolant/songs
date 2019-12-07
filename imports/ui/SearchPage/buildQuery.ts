@@ -45,7 +45,7 @@ export const buildQuery = ({
       names: ['classification', 'newClassification'],
     },
     lyrics: {
-      names: ['pg.pg'],
+      names: ['lyrics.pg'],
     },
     before: {
       names: ['year'],

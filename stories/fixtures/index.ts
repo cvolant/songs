@@ -49,7 +49,7 @@ export const songs = [
     year: 2000,
     subtitle: 'Chant 1 (Sous-titre)',
     title: "Une chanson qui emmerde les gens mais qui n'est pas une chanson monotone même si elle emmerde les gens",
-    pg: [
+    lyrics: [
       {
         label: 'Couplet',
         pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
@@ -86,7 +86,7 @@ export const songs = [
     year: 1980,
     subtitle: 'Chant 2 (Sous-titre)',
     title: 'Frère Jacques (Titre)',
-    pg: [
+    lyrics: [
       {
         label: 'refrain',
         pg: 'Frere Jacques ! Frere Jacques !',

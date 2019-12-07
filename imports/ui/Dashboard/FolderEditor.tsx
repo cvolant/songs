@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
-import Delete from '@material-ui/icons/Delete';
+import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 import Settings from '@material-ui/icons/Settings';
 import Sort from '@material-ui/icons/Sort';
 
@@ -18,8 +18,9 @@ import UserCollectionName from './UserCollectionName';
 
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IUnfetchedSong } from '../../types/songTypes';
+import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
-import { folderUpdateRemoveSong } from '../../api/folders/methods';
+import { foldersUpdateSongsRemove } from '../../api/folders/methods';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -58,7 +59,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
     song: IUnfetchedSong,
     callback?: (err: Meteor.Error, res: void) => void,
   ): void => {
-    folderUpdateRemoveSong.call({ folderId: folder._id, songId: song._id }, callback);
+    foldersUpdateSongsRemove.call({ folderId: folder._id, songId: song._id }, callback);
   };
 
   const handleToggleDisplaySort = (newDisplaySort?: boolean) => (): void => {
@@ -124,14 +125,17 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         handleSelectSong={handleSelectSong}
         secondaryActions={[
           {
-            ariaLabel: t('Delete'),
-            Icon: Delete,
-            key: 'delete',
+            Icon: RemoveCircleOutline,
+            key: 'remove',
+            label: t('Remove'),
             onClick: {
-              build: (
-                song: IUnfetchedSong,
-                callback?: (err: Meteor.Error, res: void) => void,
-              ) => (): void => handleDeleteSong(song, callback),
+              build: ({ element, callback }: {
+                element?: IUnfetchedSong;
+                callback?: IIconButtonCallback;
+              }): () => void => (element
+                ? (): void => handleDeleteSong(element, callback)
+                : (): void => {}),
+              callback: true,
             },
           },
         ]}

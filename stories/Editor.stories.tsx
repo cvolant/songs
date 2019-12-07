@@ -35,11 +35,11 @@ export default {
 };
 
 const actionIconButtonProps = {
-  ariaLabel: 'action icon button aria label',
-  Icon: Check,
-  onClick: (): void => {},
   color: 'primary' as IIconColor,
   disable: (): boolean => false,
+  Icon: Check,
+  label: 'action icon button aria label',
+  onClick: (): void => {},
 };
 
 export const paragraph = (): JSX.Element => (
@@ -47,7 +47,7 @@ export const paragraph = (): JSX.Element => (
     edit={boolean('edit', true)}
     editGlobal={boolean('editGlobal', true)}
     selected={boolean('selected', true)}
-    paragraph={songs[0].pg[0]}
+    paragraph={songs[0].lyrics[0]}
     handleEditPg={action('handleEditPg')}
     handlePgChange={action('handlePgChange')}
     handleLabelChange={action('handleLabelChange')}
@@ -91,7 +91,7 @@ export const editorButtons = (): JSX.Element => (
     handleToggleSelectAll={action('handleToggleSelectAll')}
     isThereParagraphs={boolean('isThereParagraphs', true)}
     isThereTitle={boolean('isThereTitle', true)}
-    selectedPg={songs[0].pg.reverse()}
+    selectedPg={songs[0].lyrics.reverse()}
     song={songs[0]}
     folders={folders}
   />

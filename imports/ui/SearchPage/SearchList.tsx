@@ -9,7 +9,8 @@ import SearchField from './SearchField';
 import SongList from '../Songs/SongList';
 import SearchListNoResult from './SearchListNoResult';
 
-import { ISong, IUser } from '../../types';
+import { IUser } from '../../types';
+import { ISong, IUnfetchedSong } from '../../types/songTypes';
 import {
   ISearch,
   ISortSpecifier,
@@ -19,7 +20,7 @@ import {
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
-import { userToggleFavorite } from '../../api/users/methods';
+import { userFavoriteToggle } from '../../api/users/methods';
 
 import buildQuery from './buildQuery';
 
@@ -45,7 +46,7 @@ interface ISearchListProps {
   hidden?: boolean;
   shortFirstItem?: boolean;
   shortSearchField?: boolean;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
 }
 interface ISearchListWTData {
   favoriteSongs: Mongo.ObjectID[];
@@ -142,7 +143,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
     console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
-    userToggleFavorite.call({ songId, value });
+    userFavoriteToggle.call({ songId, value });
   };
 
   return (

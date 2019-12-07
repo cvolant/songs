@@ -18,7 +18,7 @@ import { IUnfetchedSong } from '../../types/songTypes';
 import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
-import { userToggleFavorite } from '../../api/users/methods';
+import { userFavoriteToggle } from '../../api/users/methods';
 
 const nbItemsPerPage = 20;
 
@@ -29,7 +29,7 @@ interface IUserSongListProps {
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSelectSong: (song: IUnfetchedSong) => void;
   logoMenuDeployed?: boolean;
-  secondaryActions?: IArrayIconButtonProps[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
   user: IUser | null;
   userSongList?: UserCollectionName;
 }
@@ -96,7 +96,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
     console.log('From UserSongList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
-    userToggleFavorite.call({ songId, value });
+    userFavoriteToggle.call({ songId, value });
   };
 
   return (

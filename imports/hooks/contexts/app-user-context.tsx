@@ -10,15 +10,7 @@ import { IUser } from '../../types';
 
 const UserContext = createContext<IUser | null>(null);
 
-const useUser = (): IUser | null => {
-  const context = useContext(UserContext);
-
-  /* if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
-  } */
-
-  return context;
-};
+const useUser = (): IUser | null => useContext(UserContext);
 
 interface IUserProviderProps {
   children: ReactElement | ReactElement[];

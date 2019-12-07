@@ -20,8 +20,8 @@ import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FormDialog from '../utils/FormDialog';
 import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
 
-import { userInsertFolder } from '../../api/users/methods';
-import { folderUpdate } from '../../api/folders/methods';
+import { userFoldersInsert } from '../../api/users/methods';
+import { foldersUpdate } from '../../api/folders/methods';
 
 const MuiPickersUtilsProvider = lazy(() => import('@material-ui/pickers/MuiPickersUtilsProvider'));
 const KeyboardDatePicker = lazy(() => import('@material-ui/pickers/DatePicker').then((module) => ({ default: module.KeyboardDatePicker })));
@@ -48,13 +48,6 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   const [dateEnabled, setDateEnabled] = useState(folder && !!folder.date);
   const [date, setDate] = useState<dayjs.Dayjs>(dayjs(((folder && folder.date) || '') || undefined));
   const [error, setError] = useState('');
-
-  const closeDialog = (): void => {
-    /* setName('');
-    setDateEnabled(false);
-    setDate(dayjs()); */
-    handleClose();
-  };
 
   const handleDateEnabledChange = (
     _event: object,
@@ -85,7 +78,7 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
     let cbRes: Mongo.ObjectID;
 
     if (folder) {
-      folderUpdate.call({
+      foldersUpdate.call({
         _id: folder._id,
         name,
         date: dateEnabled ? date.toDate() : undefined,
@@ -99,26 +92,29 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
         callback(cbErr, cbRes);
       });
     } else {
-      userInsertFolder.call({
-        name,
-        date: dateEnabled ? date.toDate() : undefined,
-      }, (err: Meteor.Error, res: Mongo.ObjectID): void => {
-        if (res) {
-          handleSelectFolder({ _id: res, name });
-          cbRes = res;
-        } else {
-          cbErr = err;
-        }
-        callback(cbErr, cbRes);
-      });
+      userFoldersInsert.call(
+        {
+          name,
+          date: dateEnabled ? date.toDate() : undefined,
+        },
+        (err: Meteor.Error, res: Mongo.ObjectID): void => {
+          if (res) {
+            handleSelectFolder({ _id: res, name });
+            cbRes = res;
+          } else {
+            cbErr = err;
+          }
+          callback(cbErr, cbRes);
+        },
+      );
     }
   };
 
   return (
     <FormDialog
-      error={error}
       dialogTitle={title || t('dashboard.New folder', 'New folder')}
-      handleClose={closeDialog}
+      error={error}
+      handleClose={handleClose}
       handleSubmit={handleSubmit}
       open={open}
     >

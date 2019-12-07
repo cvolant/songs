@@ -20,7 +20,7 @@ interface IUserFolderListProps {
   emptyListPlaceholder?: ReactNode;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
-  selectFolder: (folder: IUnfetchedFolder) => void;
+  handleSelectFolder: (folder: IUnfetchedFolder) => void;
 }
 interface IUserFolderListWTData {
   folders: IFolder[];
@@ -34,7 +34,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
   folders,
   handleToggleDisplaySort,
   logoMenuDeployed,
-  selectFolder,
+  handleSelectFolder,
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
       displaySort={displaySort}
       emptyListPlaceholder={emptyListPlaceholder}
       folders={folders}
-      handleSelectFolder={selectFolder}
+      handleSelectFolder={handleSelectFolder}
       handleSort={handleSort}
       handleToggleDisplaySort={handleToggleDisplaySort}
       loading={loading}

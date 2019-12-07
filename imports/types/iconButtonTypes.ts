@@ -1,49 +1,110 @@
+/*
+<summary>
+</summary>
+
+<usage>
+  <usage title="From parent (content giver)">
+    <code>
+    </code>
+    <remarks>
+      IFn are functions which return the required type.
+      Those functions can take the element (ISong or IFolder) as parameter.
+      <exemple from={FolderDashboard}>
+        label: (searchedSong: IUnfetchedSong): string => (
+          folderSongIdStrings.includes(searchedSong._id.toHexString())
+            ? t('folder.Remove this song', 'Remove this song')
+            : t('folder.Add this song', 'Add this song')
+        ),
+      </exemple>
+      This function can optionaly take an optional extra object parameter.
+    </remarks>
+    <remarks>
+      Icon and onClick use IFnFn instead of IFn. IFnFn are objects with a
+      'build' property, to make type checking easier.
+      The build property is a IFn function with a callback parameter
+      in 2nd position.
+    </remarks>
+  </usage>
+
+  <usage title="From child component (layout builder)">
+    <see cref={ListLayoutItem}
+<remarks>
+  <see cref="IIcon" />
+</remarks>
+</usage>
+*/
 import { Meteor } from 'meteor/meteor';
 import { MouseEventHandler } from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { IUnfetchedFolder } from './folderTypes';
-import { IUnfetchedSong } from './songTypes';
+import { IUnfetchedFolder, IFolder } from './folderTypes';
+import { IUnfetchedSong, ISong } from './songTypes';
 
-type IElement = IUnfetchedSong | IUnfetchedFolder;
-
+export type IElement = ISong | IUnfetchedSong | IFolder | IUnfetchedFolder | undefined;
 export type IIconColor = 'inherit' | 'primary' | 'secondary' | 'default';
-
 export type IIcon = (props: SvgIconProps) => JSX.Element;
+export type IButtonVariant = 'text' | 'outlined' | 'contained' | 'extended';
+export type IIconButtonCallback = (err: Meteor.Error, res: void) => void;
 
-export type IFn<T> = (element: IElement, params?: object) => T;
-
-export interface IFnFn<T> {
-  build: (
-    element: IElement,
-    callback?: (err: Meteor.Error, res: void) => void,
-    params?: object,
-  ) => T;
+export interface IIconButtonBuildProps<E> {
+  element?: E;
+  otherParams?: object;
+}
+export interface IIconButtonBuildWithCallbackProps<E> extends IIconButtonBuildProps<E> {
+  callback: IIconButtonCallback;
 }
 
-export interface IIconButtonProps {
-  ariaLabel?: string | IFn<string>;
-  className?: string | IFn<string>;
-  color?: IIconColor | IFn<IIconColor>;
-  disabled?: boolean | IFn<boolean>;
-  Icon: IIcon | IFnFn<IIcon>;
-  onClick: MouseEventHandler | IFnFn<MouseEventHandler>;
+export type IFn<E, T> = {
+  build: (props: IIconButtonBuildProps<E>) => T;
+} | {
+  build: (props: IIconButtonBuildWithCallbackProps<E>) => T;
+  callback: true;
 }
 
-export interface IArrayIconButtonProps extends IIconButtonProps {
+/**
+ IconButtonsProps are used in generic layout components as prop objects
+ to build styled icon buttons, whom content is passed from parent.
+
+ In parent component:
+ ```
+    <LayoutComponent<E>
+      iconButton={{
+        className?: string | IFn<E, string>;
+        color?: IIconColor | IFn<E, IIconColor>;
+        disabled?: boolean | IFn<E, boolean>;
+        Icon: IIcon | IFnFn<E, IIcon>;
+        label: string | IFn<E, string>;
+        labelVisible?: boolean | IFn<E, boolean>;
+        onClick: MouseEventHandler | IFnFn<E, MouseEventHandler>;
+      }}
+    />
+ ```
+ See the [[IFn]] interface for more details.
+
+ In layout component:
+ See the ListItemIcon and ListItemSecondaryAction
+ in {@link ListLayoutItem.render | ListLayoutItem}
+*/
+export interface IIconButtonProps<E> {
+  className?: string | IFn<E, string>;
+  color?: IIconColor | IFn<E, IIconColor>;
+  disabled?: boolean | IFn<E, boolean>;
+  Icon?: IIcon | IFn<E, IIcon>;
+  label: string | IFn<E, string>;
+  labelVisible?: boolean | IFn<E, boolean>;
+  onClick: MouseEventHandler | IFn<E, MouseEventHandler>;
+  variant?: IButtonVariant | IFn<E, IButtonVariant>;
+}
+
+export interface IArrayIconButtonProps<E> extends IIconButtonProps<E> {
   key: string;
 }
 
-export const fn = <T extends (string | IIconColor | boolean | undefined)>(
-  stuff: T | IFn<T>,
-  element: IElement,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  params?: object,
-): T | undefined => (typeof stuff === 'function' ? stuff(element, params) : stuff);
-
-export const fnFn = <T>(
-  stuff: T | IFnFn<T>,
-  element: IElement,
+// ): T => (typeof stuff === 'function' ? stuff(element, params) : stuff);
+/*
+export const fnFn = <E extends IElement, T extends (IIcon | MouseEventHandler | undefined)>(
+  stuff: T | IFnFn<E, T>,
+  element?: E,
   callback?: (err: Meteor.Error, res: void) => void,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: object,
 ): T => (stuff && 'build' in stuff ? stuff.build(element, callback, params) : stuff);
+*/

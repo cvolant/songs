@@ -28,15 +28,7 @@ publishComposite('user.folders', (options: IMongoQueryOptions) => ({
     find(user: IUser): Mongo.Cursor<IFolder> {
       return Folders.find(
         { _id: { $in: user.folders } },
-        {
-          fields: {
-            name: 1,
-            date: 1,
-            updatedAt: 1,
-            songs: 1,
-          },
-          ...options,
-        },
+        options,
       );
     },
 
