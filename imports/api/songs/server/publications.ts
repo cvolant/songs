@@ -2,9 +2,8 @@ import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import { publishComposite } from 'meteor/reywood:publish-composite';
 
-import { ISong } from '../../../types';
+import { IFolder, ISong, IUnfetched } from '../../../types';
 import { IMongoQueryOptions } from '../../../types/searchTypes';
-import { IUnfetchedFolder, IFolder } from '../../../types/folderTypes';
 
 import Songs from '../songs';
 import Folders from '../../folders/folders';
@@ -23,7 +22,7 @@ Meteor.publish('songs', ({
 
 publishComposite('songs.inFolder', function songsInFolder(
   this: { userId: string }, { folder, options }: {
-    folder: IUnfetchedFolder;
+    folder: IUnfetched<IFolder>;
     options: IMongoQueryOptions;
   },
 ) {

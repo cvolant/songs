@@ -111,9 +111,6 @@ export interface IEditedSong extends Partial<ISong> {
   _id: Mongo.ObjectID;
   pgStates?: IPgState[];
 }
-export interface IUnfetchedSong extends Partial<ISong> {
-  _id: Mongo.ObjectID;
-}
 
 export {
   ParagraphSchema,

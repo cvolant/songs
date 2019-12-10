@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
 import { ISong, SongSchema } from '../../types/songTypes';
+import { ICollection } from '../../types';
 
 class SongsCollection extends Mongo.Collection<ISong> {
   insert(doc: ISong, callback?: Function): string {
@@ -24,17 +24,7 @@ class SongsCollection extends Mongo.Collection<ISong> {
   }
 }
 
-interface ISongCollection extends Mongo.Collection<ISong> {
-  schema: SimpleSchema;
-  attachSchema: (schema: SimpleSchema) => void;
-  publicFields: Record<string, 1 | 0>;
-  helpers: (args: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [name: string]: (this: ISong) => any;
-  }) => void;
-}
-
-export const Songs = new SongsCollection('songs', { idGeneration: 'MONGO' }) as unknown as ISongCollection;
+export const Songs = new SongsCollection('songs', { idGeneration: 'MONGO' }) as unknown as ICollection<ISong>;
 
 Songs.deny({
   insert() { return true; },

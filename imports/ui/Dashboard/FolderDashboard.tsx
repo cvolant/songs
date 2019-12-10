@@ -18,8 +18,7 @@ import Editor from '../Editor';
 import FolderEditor from './FolderEditor';
 import { CardSearchList } from '../SearchPage/CardSearchList';
 
-import { IUnfetchedFolder } from '../../types/folderTypes';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIcon, IIconButtonCallback } from '../../types/iconButtonTypes';
 import { ITutorialContentName } from '../Tutorial';
 
@@ -30,14 +29,14 @@ import {
 } from '../../api/folders/methods';
 
 interface IFolderDashboardProps {
-  folder: IUnfetchedFolder;
+  folder: IUnfetched<IFolder>;
   goBack: () => void;
   handleToggleLogoMenu: (oc?: boolean) => () => void;
   logoMenuDeployed?: boolean;
   setTutorialContentName: Dispatch<SetStateAction<ITutorialContentName>>;
 }
 interface IFolderDashboardWTData {
-  folder: IUnfetchedFolder;
+  folder: IUnfetched<IFolder>;
 }
 interface IWrappedFolderDashboardProps
   extends IFolderDashboardProps, IFolderDashboardWTData { }
@@ -52,7 +51,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   const { t } = useTranslation();
 
   const [search, setSearch] = useState<boolean | undefined>(undefined);
-  const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
+  const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
 
   useEffect(() => {
     const subscription = Meteor.subscribe('folder', folder._id, () => {
@@ -65,7 +64,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   }, []);
 
   const handleAddSong = (
-    newSong: IUnfetchedSong,
+    newSong: IUnfetched<ISong>,
     callback?: (err: Meteor.Error, res: void) => void,
   ) => (): void => {
     console.log('From FolderDashboard, handleAddSong. newSong:', newSong, 'callback:', callback);
@@ -75,7 +74,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   };
 
   const handleRemoveSong = (
-    formerSong: IUnfetchedSong,
+    formerSong: IUnfetched<ISong>,
     callback?: (err: Meteor.Error, res: void) => void,
   ) => (): void => {
     if (formerSong && formerSong._id && folder && folder._id) {
@@ -97,7 +96,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     setTutorialContentName('Search');
   };
 
-  const handleSelectSong = (newSong: IUnfetchedSong): void => {
+  const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
     console.log('From FolderDashboard, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
     setTutorialContentName('Editor');
@@ -110,7 +109,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   );
   const addRemoveButton = {
     Icon: {
-      build: ({ element }: { element?: IUnfetchedSong}): IIcon => (
+      build: ({ element }: { element?: IUnfetched<ISong>}): IIcon => (
         element && folderSongIdStrings.includes(element._id.toHexString())
           ? RemoveCircleOutline
           : Add
@@ -118,7 +117,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     },
     key: 'addSong',
     label: {
-      build: ({ element }: { element?: IUnfetchedSong }): string => (
+      build: ({ element }: { element?: IUnfetched<ISong> }): string => (
         element && folderSongIdStrings.includes(element._id.toHexString())
           ? t('folder.Remove this song', 'Remove this song')
           : t('folder.Add this song', 'Add this song')
@@ -126,7 +125,7 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     },
     onClick: {
       build: ({ element, callback }: {
-        element?: IUnfetchedSong;
+        element?: IUnfetched<ISong>;
         callback?: IIconButtonCallback;
       }): MouseEventHandler => (
         (element && (

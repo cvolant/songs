@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FormDialog from '../utils/FormDialog';
-import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
+import { IFolder, IUnfetched } from '../../types';
 
 import { userFoldersInsert } from '../../api/users/methods';
 import { foldersUpdate } from '../../api/folders/methods';
@@ -29,7 +29,7 @@ const KeyboardDatePicker = lazy(() => import('@material-ui/pickers/DatePicker').
 interface IFolderDialogProps {
   folder?: IFolder;
   handleClose: () => void;
-  handleSelectFolder: (folder: IUnfetchedFolder) => void;
+  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
   open?: boolean;
   title?: string;
 }

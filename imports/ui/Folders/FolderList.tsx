@@ -11,11 +11,10 @@ import ListLayout from '../ListLayout/ListLayout';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 import ListLayoutSorting from '../ListLayout/ListLayoutSorting';
 
-import { IFolder } from '../../types';
+import { IFolder, IUnfetched } from '../../types';
 import { ISortCriterion, ISortSpecifier } from '../../types/searchTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 import FolderListItemText from './FolderListItemText';
-import { IUnfetchedFolder } from '../../types/folderTypes';
 
 interface IFolderListProps {
   displaySort: boolean;
@@ -26,7 +25,7 @@ interface IFolderListProps {
   handleToggleDisplaySort: (open?: boolean) => () => void;
   loading?: boolean;
   raiseLimit: () => void;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedFolder>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<IFolder>>[];
   shortFirstItem?: boolean;
   sort?: ISortSpecifier<IFolder>;
 }

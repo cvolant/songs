@@ -27,9 +27,10 @@ import {
   IFolder,
   IParagraph,
   ISong,
+  IUnfetched,
   IUser,
 } from '../../types';
-import { IPgState, IUnfetchedSong } from '../../types/songTypes';
+import { IPgState } from '../../types/songTypes';
 import {
   IArrayIconButtonProps,
   IIconButtonProps,
@@ -83,16 +84,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorProps {
-  actionIconButtonsProps?: IArrayIconButtonProps<IUnfetchedSong>[];
+  actionIconButtonsProps?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   edit?: boolean;
-  fab?: IIconButtonProps<IUnfetchedSong>;
+  fab?: IIconButtonProps<IUnfetched<ISong>>;
   goBack: () => void;
   logoMenuDeployed: boolean;
-  song: IUnfetchedSong;
+  song: IUnfetched<ISong>;
 }
 interface IEditorWTData {
   folders: IFolder[];
-  song: IUnfetchedSong;
+  song: IUnfetched<ISong>;
   user?: IUser;
 }
 interface IWrappedEditorProps
@@ -326,7 +327,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     setTitle(newTitle);
   };
 
-  const initSong = (songToInit: IUnfetchedSong): {
+  const initSong = (songToInit: IUnfetched<ISong>): {
     details: IDetails;
     edit: boolean;
     lyrics: IParagraph[];
@@ -451,7 +452,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         <Helmet>
           <title>{`Alleluia.plus - ${title}`}</title>
         </Helmet>
-        <FullCardLayout<IUnfetchedSong>
+        <FullCardLayout<IUnfetched<ISong>>
           actions={[
             undefined && {/* <EditorButtons
               actionIconButtonsProps={actionIconButtonsProps}
@@ -607,7 +608,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 
 export const Editor = withTracker<IEditorWTData, IEditorProps>(({
   song: propsSong,
-}: { song: IUnfetchedSong }) => {
+}: { song: IUnfetched<ISong> }) => {
   console.log('From Editor, withTracker. Songs:', Songs);
   return ({
     song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },

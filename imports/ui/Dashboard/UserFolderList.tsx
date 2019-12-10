@@ -9,7 +9,7 @@ import {
   ISortCriterion,
   ISortSpecifier,
 } from '../../types/searchTypes';
-import { IFolder, IUnfetchedFolder } from '../../types/folderTypes';
+import { IFolder, IUnfetched } from '../../types';
 
 import Folders from '../../api/folders/folders';
 
@@ -20,7 +20,7 @@ interface IUserFolderListProps {
   emptyListPlaceholder?: ReactNode;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   logoMenuDeployed?: boolean;
-  handleSelectFolder: (folder: IUnfetchedFolder) => void;
+  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
 }
 interface IUserFolderListWTData {
   folders: IFolder[];

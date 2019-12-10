@@ -3,7 +3,7 @@ import React from 'react';
 import FullCardLayout from '../utils/FullCardLayout';
 import SearchList from './SearchList';
 
-import { IUnfetchedSong } from '../../types/songTypes';
+import { ISong, IUnfetched } from '../../types';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 interface ICardSearchListProps {
@@ -11,8 +11,8 @@ interface ICardSearchListProps {
   shortFirstItem?: boolean;
   shortSearchField?: boolean;
   handleFocus: (focus?: boolean) => () => void;
-  handleSelectSong: (song: IUnfetchedSong) => void;
-  secondaryActions: IArrayIconButtonProps<IUnfetchedSong>[];
+  handleSelectSong: (song: IUnfetched<ISong>) => void;
+  secondaryActions: IArrayIconButtonProps<IUnfetched<ISong>>[];
 }
 
 export const CardSearchList: React.FC<ICardSearchListProps> = ({

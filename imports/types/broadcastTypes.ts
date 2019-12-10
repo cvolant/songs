@@ -1,31 +1,16 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-import { IEditedSong, SongSchema } from './songTypes';
 import ObjectIDSchema from './collectionTypes';
+import { SongSchema, IEditedSong } from './songTypes';
 
-export const FolderSchema = new SimpleSchema({
+export const BroadcastSchema = new SimpleSchema({
   _id: ObjectIDSchema,
-  name: {
-    type: String,
-    max: 100,
-    optional: true,
-  },
-  date: {
-    type: Date,
-    optional: true,
-  },
   userId: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
     optional: true,
   },
-  sharedWith: {
-    type: Array,
-    defaultValue: [],
-    optional: true,
-  },
-  'sharedWith.$': String,
   songs: {
     type: Array,
     defaultValue: [],
@@ -38,13 +23,10 @@ export const FolderSchema = new SimpleSchema({
     optional: true,
   },
 });
-export interface IFolder {
+export interface IBroadcast {
   _id: Mongo.ObjectID;
-  date?: Date;
-  name: string;
-  sharedWith: string[];
   songs: IEditedSong[];
   userId: string;
   updatedAt: Date;
 }
-export default FolderSchema;
+export default BroadcastSchema;

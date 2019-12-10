@@ -9,8 +9,7 @@ import SearchField from './SearchField';
 import SongList from '../Songs/SongList';
 import SearchListNoResult from './SearchListNoResult';
 
-import { IUser } from '../../types';
-import { ISong, IUnfetchedSong } from '../../types/songTypes';
+import { ISong, IUser, IUnfetched } from '../../types';
 import {
   ISearch,
   ISortSpecifier,
@@ -46,7 +45,7 @@ interface ISearchListProps {
   hidden?: boolean;
   shortFirstItem?: boolean;
   shortSearchField?: boolean;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
 }
 interface ISearchListWTData {
   favoriteSongs: Mongo.ObjectID[];

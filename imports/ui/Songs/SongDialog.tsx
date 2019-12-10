@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import TextField from '@material-ui/core/TextField';
 
 import FormDialog from '../utils/FormDialog';
-import { IUnfetchedSong, ISong } from '../../types/songTypes';
+import { ISong, IUnfetched } from '../../types';
 
 import { userCreatedSongInsert } from '../../api/users/methods';
 
 interface ISongDialogProps {
   handleClose: () => void;
-  handleSelectSong: (song: IUnfetchedSong) => void;
+  handleSelectSong: (song: IUnfetched<ISong>) => void;
   open?: boolean;
   song?: ISong;
   title?: string;

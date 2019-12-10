@@ -7,7 +7,7 @@ import QueueMusic from '@material-ui/icons/QueueMusic';
 import SongListItemText from './SongListItemText';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 
-import { ISong, IUnfetchedSong } from '../../types/songTypes';
+import { ISong, IUnfetched } from '../../types';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 interface ISongListItemProps {
@@ -16,7 +16,7 @@ interface ISongListItemProps {
   handleToggleFavorite: (value?: boolean) => () => void;
   handleUnfold: MouseEventHandler<HTMLDivElement>;
   displayFavorite: boolean;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   song: ISong;
   unfolded: boolean;
 }

@@ -18,16 +18,15 @@ import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
-import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
-import { IUnfetchedSong, ISong } from '../../types/songTypes';
+import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
 
 interface IMainDashboardProps {
   display: UserCollectionName;
   handleChangeDisplay: (newDisplay?: UserCollectionName) => () => void;
   logoMenuDeployed: boolean;
-  handleSelectFolder: (folder: IUnfetchedFolder) => void;
-  handleSelectSong: (song: IUnfetchedSong) => void;
+  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
+  handleSelectSong: (song: IUnfetched<ISong>) => void;
 }
 
 type IDialog = 'folder' | 'song' | '';

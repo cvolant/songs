@@ -9,14 +9,14 @@ import Settings from '@material-ui/icons/Settings';
 import FolderListItemText from './FolderListItemText';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 
+import { IFolder, IUnfetched } from '../../types';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
-import { IFolder, IUnfetchedFolder } from '../../types/folderTypes';
 
 interface IFolderListItemProps {
   folder: IFolder;
   handleSelect: () => void;
   handleUnfold: () => void;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedFolder>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<IFolder>>[];
   unfolded: boolean;
 }
 

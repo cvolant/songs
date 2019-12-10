@@ -6,7 +6,12 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import SongList from '../Songs/SongList';
 import UserCollectionName from './UserCollectionName';
 
-import { ISong, IUser } from '../../types';
+import {
+  IFolder,
+  ISong,
+  IUnfetched,
+  IUser,
+} from '../../types';
 import {
   ISortCriterion,
   ISortSpecifier,
@@ -14,8 +19,6 @@ import {
 } from '../../types/searchTypes';
 
 import Songs from '../../api/songs/songs';
-import { IUnfetchedSong } from '../../types/songTypes';
-import { IUnfetchedFolder } from '../../types/folderTypes';
 import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 import { userFavoriteToggle } from '../../api/users/methods';
@@ -25,11 +28,11 @@ const nbItemsPerPage = 20;
 interface IUserSongListProps {
   displaySort?: boolean;
   emptyListPlaceholder: ReactNode;
-  folder?: IUnfetchedFolder;
+  folder?: IUnfetched<IFolder>;
   handleToggleDisplaySort: (display?: boolean) => () => void;
-  handleSelectSong: (song: IUnfetchedSong) => void;
+  handleSelectSong: (song: IUnfetched<ISong>) => void;
   logoMenuDeployed?: boolean;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   user: IUser | null;
   userSongList?: UserCollectionName;
 }

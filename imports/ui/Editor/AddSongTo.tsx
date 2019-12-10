@@ -28,8 +28,7 @@ import Folder from '@material-ui/icons/Folder';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
 import SnackbarMessage from '../utils/SnackBarMessage';
-import { IFolder } from '../../types';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IFolder, ISong, IUnfetched } from '../../types';
 
 import {
   userFavoriteToggle,
@@ -80,7 +79,7 @@ interface IAddSongToProps {
   folders: IFolder[];
   onClose: () => void;
   open?: boolean;
-  song: IUnfetchedSong;
+  song: IUnfetched<ISong>;
 }
 
 export const AddSongTo: React.FC<IAddSongToProps> = ({

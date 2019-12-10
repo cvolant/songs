@@ -20,7 +20,7 @@ import FolderEditor from '../imports/ui/Dashboard/FolderEditor';
 import FolderDashboard from '../imports/ui/Dashboard/FolderDashboard';
 import MainDashboard from '../imports/ui/Dashboard/MainDashboard';
 
-import { IUnfetchedSong } from '../imports/types/songTypes';
+import { ISong, IUnfetched } from '../imports/types';
 
 import { folders, songs, users } from './fixtures';
 
@@ -39,7 +39,10 @@ export const createNewDialog = (): JSX.Element => (
 );
 
 export const songDialog = (): JSX.Element => (
-  <SongDialog handleSelectSong={action('handleSelectSong')} />
+  <SongDialog
+    handleClose={action('handleClose')}
+    handleSelectSong={action('handleSelectSong')}
+  />
 );
 
 export const folderDialog = (): JSX.Element => (
@@ -96,11 +99,11 @@ export const wrappedUserSongList = (): JSX.Element => (
         key: 'delete',
         label: 'Delete',
         onClick: {
-          build: (
-            song: IUnfetchedSong,
-            callback?: (err: Meteor.Error, res: void) => void,
-          ): (
-            ) => void => action(`handleDeleteSong(song: ${song}, callback: ${callback})`),
+          build: ({ element, callback }: {
+            element?: IUnfetched<ISong>;
+            callback?: (err: Meteor.Error, res: void) => void;
+          }): () => void => action(`handleDeleteSong(song: ${element}, callback: ${callback})`),
+          callback: true,
         },
       },
     ]}
@@ -129,11 +132,11 @@ export const userSongList = (): JSX.Element => (
         key: 'delete',
         label: 'Delete',
         onClick: {
-          build: (
-            song: IUnfetchedSong,
-            callback?: (err: Meteor.Error, res: void) => void,
-          ): (
-            ) => void => action(`handleDeleteSong(song: ${song}, callback: ${callback})`),
+          build: ({ element, callback }: {
+            element?: IUnfetched<ISong>;
+            callback?: (err: Meteor.Error, res: void) => void;
+          }): () => void => action(`handleDeleteSong(song: ${element}, callback: ${callback})`),
+          callback: true,
         },
       },
     ]}

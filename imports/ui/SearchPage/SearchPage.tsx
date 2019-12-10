@@ -18,7 +18,7 @@ import PrintSong from '../PrintSong';
 import Screen from '../Screen';
 import SearchList from './SearchList';
 
-import { ISong, IUnfetchedSong } from '../../types/songTypes';
+import { ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
 
 import routesPaths from '../../app/routesPaths';
@@ -92,7 +92,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
     history.push(routesPaths.translatePath('/en/search/', i18n.language));
   };
 
-  const handleOpenScreen = (song?: IUnfetchedSong) => (): void => {
+  const handleOpenScreen = (song?: IUnfetched<ISong>) => (): void => {
     if (song) {
       setViewer(
         <Screen
@@ -174,7 +174,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
               Icon: Eye,
               onClick: {
                 build: ({ element }: {
-                  element?: IUnfetchedSong;
+                  element?: IUnfetched<ISong>;
                 }): MouseEventHandler => (
                   element
                     ? handleOpenScreen(element)

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
 import { IFolder, FolderSchema } from '../../types/folderTypes';
+import { ICollection } from '../../types';
 import Songs from '../songs/songs';
 
 class FoldersCollection extends Mongo.Collection<IFolder> {
@@ -9,7 +9,7 @@ class FoldersCollection extends Mongo.Collection<IFolder> {
     const ourDoc = doc;
     ourDoc.updatedAt = ourDoc.updatedAt || new Date();
     const result = super.insert(ourDoc, callback);
-    console.log('From api.folders.inset. result:', result);
+    console.log('From api.folders.insert. result:', result);
     return result;
   }
 
@@ -24,16 +24,7 @@ class FoldersCollection extends Mongo.Collection<IFolder> {
   }
 }
 
-interface IFolderCollection extends Mongo.Collection<IFolder> {
-  schema: SimpleSchema;
-  attachSchema: (schema: SimpleSchema) => void;
-  helpers: (args: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [name: string]: (this: IFolder) => any;
-  }) => void;
-}
-
-export const Folders = new FoldersCollection('folders', { idGeneration: 'MONGO' }) as unknown as IFolderCollection;
+export const Folders = new FoldersCollection('folders', { idGeneration: 'MONGO' }) as unknown as ICollection<IFolder>;
 
 Folders.deny({
   insert() { return true; },

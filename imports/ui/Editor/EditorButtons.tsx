@@ -11,8 +11,8 @@ import Delete from '@material-ui/icons/Delete';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import AddSongTo from './AddSongTo';
 
-import { IFolder, IUser } from '../../types';
-import { IUnfetchedSong, IParagraph } from '../../types/songTypes';
+import { IFolder, IUnfetched, IUser } from '../../types';
+import { IParagraph, ISong } from '../../types/songTypes';
 import { IIconButtonProps } from '../../types/iconButtonTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IEditorButtonsProps {
-  actionIconButtonProps?: IIconButtonProps<IUnfetchedSong>;
+  actionIconButtonProps?: IIconButtonProps<IUnfetched<ISong>>;
   edit: boolean;
   folders: IFolder[];
   handleCancelAll: () => void;
@@ -66,7 +66,7 @@ interface IEditorButtonsProps {
   isThereParagraphs: boolean;
   isThereTitle: boolean;
   selectedPg: IParagraph[];
-  song: IUnfetchedSong;
+  song: IUnfetched<ISong>;
   user?: IUser;
 }
 

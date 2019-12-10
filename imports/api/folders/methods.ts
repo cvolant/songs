@@ -6,14 +6,14 @@ import SimpleSchema from 'simpl-schema';
 
 import { Folders } from './folders';
 
-import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
+import { IMethodInvocation, ObjectIDSchema, IUnfetched } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
-import { FolderSchema, IUnfetchedFolder } from '../../types/folderTypes';
+import { FolderSchema, IFolder } from '../../types/folderTypes';
 
 export const foldersUpdate = new ValidatedMethod({
   name: 'folders.update',
   validate: FolderSchema.validator(),
-  run(this: IMethodInvocation, folderUpdates: IUnfetchedFolder): void {
+  run(this: IMethodInvocation, folderUpdates: IUnfetched<IFolder>): void {
     const folder = Folders.findOne(folderUpdates._id);
 
     if (folder) {

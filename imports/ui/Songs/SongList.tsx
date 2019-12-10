@@ -13,14 +13,13 @@ import ListLayout from '../ListLayout/ListLayout';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 import ListLayoutSorting from '../ListLayout/ListLayoutSorting';
 
-import { ISong } from '../../types';
+import { ISong, IUnfetched } from '../../types';
 import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 import {
   IIconColor,
   IArrayIconButtonProps,
   IIconButtonBuildWithCallbackProps,
 } from '../../types/iconButtonTypes';
-import { IUnfetchedSong } from '../../types/songTypes';
 
 import { userFavoriteToggle } from '../../api/users/methods';
 
@@ -35,7 +34,7 @@ interface ISongListProps {
   handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
   loading?: boolean;
   raiseLimit: () => void;
-  secondaryActions?: IArrayIconButtonProps<IUnfetchedSong>[];
+  secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   shortFirstItem?: boolean;
   songs?: ISong[];
   sort?: ISortSpecifier<ISong>;
@@ -72,7 +71,7 @@ export const SongList: React.FC<ISongListProps> = ({
   };
 
   const handleToggleFavoriteSong = (
-    song: IUnfetchedSong,
+    song: IUnfetched<ISong>,
     callback?: (err: Meteor.Error, res: void) => void,
     params?: { value?: boolean },
   ) => (): void => {
@@ -137,7 +136,7 @@ export const SongList: React.FC<ISongListProps> = ({
                   onClick: {
                     build: ({
                       element, callback, otherParams,
-                    }: IIconButtonBuildWithCallbackProps<IUnfetchedSong>): () => void => (
+                    }: IIconButtonBuildWithCallbackProps<IUnfetched<ISong>>): () => void => (
                       element
                         ? handleToggleFavoriteSong(element, callback, otherParams)
                         : (): void => {}

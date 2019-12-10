@@ -1,4 +1,6 @@
-Fix search problem when signed in and already subscribed to favoriteSongs
+Rajouter un bouton 'Plus de resultats'
+Rajouter un bouton 'Rechercher'
+Documenter le code avec Tsdoc
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

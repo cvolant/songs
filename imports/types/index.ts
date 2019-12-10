@@ -7,3 +7,5 @@ export { IParagraph, ISong } from './songTypes';
 export { IFolder } from './folderTypes';
 
 export { IUser } from './userTypes';
+
+export { ICollection, IUnfetched } from './collectionTypes';

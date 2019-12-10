@@ -10,7 +10,7 @@
       IFn are functions which return the required type.
       Those functions can take the element (ISong or IFolder) as parameter.
       <exemple from={FolderDashboard}>
-        label: (searchedSong: IUnfetchedSong): string => (
+        label: (searchedSong: IUnfetched<ISong>): string => (
           folderSongIdStrings.includes(searchedSong._id.toHexString())
             ? t('folder.Remove this song', 'Remove this song')
             : t('folder.Add this song', 'Add this song')
@@ -36,10 +36,9 @@
 import { Meteor } from 'meteor/meteor';
 import { MouseEventHandler } from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { IUnfetchedFolder, IFolder } from './folderTypes';
-import { IUnfetchedSong, ISong } from './songTypes';
+import { IFolder, ISong, IUnfetched } from '.';
 
-export type IElement = ISong | IUnfetchedSong | IFolder | IUnfetchedFolder | undefined;
+export type IElement = ISong | IUnfetched<ISong> | IFolder | IUnfetched<IFolder> | undefined;
 export type IIconColor = 'inherit' | 'primary' | 'secondary' | 'default';
 export type IIcon = (props: SvgIconProps) => JSX.Element;
 export type IButtonVariant = 'text' | 'outlined' | 'contained' | 'extended';
@@ -98,13 +97,3 @@ export interface IIconButtonProps<E> {
 export interface IArrayIconButtonProps<E> extends IIconButtonProps<E> {
   key: string;
 }
-
-// ): T => (typeof stuff === 'function' ? stuff(element, params) : stuff);
-/*
-export const fnFn = <E extends IElement, T extends (IIcon | MouseEventHandler | undefined)>(
-  stuff: T | IFnFn<E, T>,
-  element?: E,
-  callback?: (err: Meteor.Error, res: void) => void,
-  params?: object,
-): T => (stuff && 'build' in stuff ? stuff.build(element, callback, params) : stuff);
-*/

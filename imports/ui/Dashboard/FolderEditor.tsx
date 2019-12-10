@@ -16,8 +16,7 @@ import FullCardLayout from '../utils/FullCardLayout';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
-import { IUnfetchedFolder } from '../../types/folderTypes';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove } from '../../api/folders/methods';
@@ -33,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IFolderEditorProps {
-  folder: IUnfetchedFolder;
+  folder: IUnfetched<IFolder>;
   goBack: () => void;
   handleSongsAdding: () => void;
-  handleSelectSong: (song: IUnfetchedSong) => void;
+  handleSelectSong: (song: IUnfetched<ISong>) => void;
   hidden?: boolean;
   logoMenuDeployed: boolean;
 }
@@ -56,7 +55,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   const [displaySort, setDisplaySort] = useState(false);
 
   const handleDeleteSong = (
-    song: IUnfetchedSong,
+    song: IUnfetched<ISong>,
     callback?: (err: Meteor.Error, res: void) => void,
   ): void => {
     foldersUpdateSongsRemove.call({ folderId: folder._id, songId: song._id }, callback);
@@ -130,7 +129,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
             label: t('Remove'),
             onClick: {
               build: ({ element, callback }: {
-                element?: IUnfetchedSong;
+                element?: IUnfetched<ISong>;
                 callback?: IIconButtonCallback;
               }): () => void => (element
                 ? (): void => handleDeleteSong(element, callback)

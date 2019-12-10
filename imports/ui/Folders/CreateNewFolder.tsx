@@ -5,11 +5,11 @@ import Button from '@material-ui/core/Button';
 import Add from '@material-ui/icons/Add';
 
 import FormDialog from './FolderDialog';
-import { IUnfetchedFolder, IFolder } from '../../types/folderTypes';
+import { IFolder, IUnfetched } from '../../types';
 
 interface IFolderDialogProps {
   folder?: IFolder;
-  handleSelectFolder: (folder: IUnfetchedFolder) => void;
+  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
   title?: string;
 }
 

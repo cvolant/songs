@@ -9,8 +9,7 @@ import MainDashboard from './MainDashboard';
 
 import UserCollectionName from './UserCollectionName';
 
-import { IUnfetchedFolder } from '../../types/folderTypes';
-import { IUnfetchedSong } from '../../types/songTypes';
+import { IFolder, ISong, IUnfetched } from '../../types';
 
 import routesPaths from '../../app/routesPaths';
 import FolderDashboard from './FolderDashboard';
@@ -33,9 +32,9 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   const [display, setDisplay] = useState<UserCollectionName>(
     setDisplayFromUrl() || UserCollectionName.FavoriteSongs,
   );
-  const [folder, setFolder] = useState<IUnfetchedFolder | undefined>(undefined);
+  const [folder, setFolder] = useState<IUnfetched<IFolder> | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [song, setSong] = useState<IUnfetchedSong | undefined>(undefined);
+  const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
   const [
     tutorialContentName,
     setTutorialContentName,
@@ -64,12 +63,12 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
     setTutorialContentName('Dashboard');
   };
 
-  const handleSelectFolder = (newFolder: IUnfetchedFolder): void => {
+  const handleSelectFolder = (newFolder: IUnfetched<IFolder>): void => {
     setFolder(newFolder);
     setTutorialContentName('Folder');
   };
 
-  const handleSelectSong = (newSong: IUnfetchedSong): void => {
+  const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
     console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
     setTutorialContentName('Editor');
