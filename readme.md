@@ -12,10 +12,3 @@ meteor npm install
 ```
 meteor
 ```
-
-## Running the Tests
-
-Run the following commands to run the tests :
-```
-npm run test
-```
