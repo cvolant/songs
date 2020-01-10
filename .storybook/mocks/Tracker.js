@@ -9,5 +9,6 @@ module.exports = {
     }
     return React.createElement(WrappedComponent, newProps);
   },
+  useTracker: (func) => func(),
 };
  

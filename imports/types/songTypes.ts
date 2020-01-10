@@ -110,6 +110,7 @@ export interface ISong {
 export interface IEditedSong extends Partial<ISong> {
   _id: Mongo.ObjectID;
   pgStates?: IPgState[];
+  pinChorus?: boolean;
 }
 
 export {

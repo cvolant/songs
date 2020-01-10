@@ -21,6 +21,7 @@ addParameters({
     { name: 'default', value: theme.palette.background.default, default: true },
     { name: 'page', value: theme.palette.background.page },
     { name: 'paper', value: theme.palette.background.paper },
+    { name: 'black', value: theme.palette.background.black },
   ],
 });
 addDecorator(

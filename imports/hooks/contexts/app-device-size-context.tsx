@@ -7,29 +7,23 @@ import { useMediaQuery, useTheme } from '@material-ui/core';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 type ISizeDirName = 'down' | 'only' | 'up';
+type ISizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 interface ISizeDir {
   [key: string]: boolean;
   down: boolean;
   only: boolean;
   up: boolean;
 }
-interface IDeviceSize {
-  [key: string]: ISizeDir;
-  xs: ISizeDir;
-  sm: ISizeDir;
-  md: ISizeDir;
-  lg: ISizeDir;
-  xl: ISizeDir;
-}
+type IDeviceSize = Record<ISizeName, ISizeDir>;
+
 interface IDeviceSizeProviderProps {
   children?: ReactNode;
 }
 
 const DeviceSizeContext = createContext<IDeviceSize | undefined>(undefined);
 
-const useDeviceSize = (sizeName: string): boolean | undefined => {
+const useDeviceSize = (size: ISizeName, dir: ISizeDirName): boolean | undefined => {
   const context = useContext(DeviceSizeContext);
-  const [size, dir] = sizeName.split('.');
 
   if (!context) {
     throw new Error('useDeviceSize must be used within a DeviceSizeProvider');

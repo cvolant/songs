@@ -45,17 +45,18 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
   console.log('From PrintSong. song:', song);
 
   return (
-    <Grid container spacing={8}>
-      <Grid item xs={12}>
+    <Grid container spacing={4}>
+      {/* <Grid item xs={12}>
         <Typography className={classes.title} variant="h1">{song.title}</Typography>
         <Typography className={classes.subtitle} variant="subtitle1">{song.subtitle}</Typography>
       </Grid>
-      <div className={classes.return} />
-      {song.lyrics && song.lyrics.map((paragraph) => {
-        const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e) => (e === '<br/>\n' ? <br /> : e));
+      <div className={classes.return} /> */}
+      {song.lyrics && song.lyrics.map((paragraph, index) => {
+        // eslint-disable-next-line react/no-array-index-key
+        const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, ind) => (e === '<br/>\n' ? <br key={ind} /> : e));
         return (
-          <Grid key={paragraph.index} item xs={12} sm={6} md={4} xl={3}>
-            <Typography key={paragraph.index} className={classes.paragraph} variant="body1">
+          <Grid key={paragraph.index || index} item xs={12} sm={6} md={4} xl={3}>
+            <Typography className={classes.paragraph} variant="body1">
               {pgText}
             </Typography>
           </Grid>

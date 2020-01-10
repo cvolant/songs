@@ -6,6 +6,10 @@ import ObjectIDSchema from './collectionTypes';
 
 export const FolderSchema = new SimpleSchema({
   _id: ObjectIDSchema,
+  broadcastOwnerId: {
+    type: String,
+    optional: true,
+  },
   name: {
     type: String,
     max: 100,
@@ -40,6 +44,7 @@ export const FolderSchema = new SimpleSchema({
 });
 export interface IFolder {
   _id: Mongo.ObjectID;
+  broadcastOwnerId?: string;
   date?: Date;
   name: string;
   sharedWith: string[];

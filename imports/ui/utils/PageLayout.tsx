@@ -1,14 +1,20 @@
-import React, { Suspense, useState, ReactNode } from 'react';
+import React, {
+  Suspense,
+  useState,
+  ReactNode,
+  MouseEventHandler,
+} from 'react';
 import { Helmet } from 'react-helmet';
+import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import LogoMenu from '../LogoMenu';
+import LogoMenu, { ILogoMenuClasses } from '../LogoMenu/LogoMenu';
 
-import { ITutorialContentName } from '../Tutorial';
+import { ITutorialContentName } from '../Tutorial/Tutorial';
 
 const Tutorial = React.lazy(() => import('../Tutorial'));
 
@@ -22,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'inherit',
     flexGrow: 1,
     height: '100%',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     overflowScrolling: 'touch',
 
     '& > *': {
@@ -69,9 +75,14 @@ const useStyles = makeStyles((theme) => ({
 interface IPageLayoutProps {
   children: ReactNode;
   contentAreaRef?: React.RefObject<HTMLDivElement>;
+  className?: string;
+  disableLogoMenu?: boolean;
   menuProps?: {
-    logoMenuDeployed: boolean;
-    handleToggleLogoMenu: (deploy?: boolean) => () => void;
+    classes?: ILogoMenuClasses;
+    handleToggleLogoMenu?: (deploy?: boolean) => () => void;
+    logoMenuDeployed?: boolean;
+    onMouseEnter?: MouseEventHandler;
+    onMouseLeave?: MouseEventHandler;
   };
   scrollDown?: () => void;
   sidePanel?: JSX.Element;
@@ -82,7 +93,9 @@ interface IPageLayoutProps {
 
 export const PageLayout: React.FC<IPageLayoutProps> = ({
   children,
+  className,
   contentAreaRef,
+  disableLogoMenu,
   menuProps,
   scrollDown,
   sidePanel,
@@ -91,7 +104,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   viewer,
 }) => {
   const classes = useStyles();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
   const [showTutorial, setShowTutorial] = useState(false);
 
   const tutorialAvailable = !!tutorialContentName;
@@ -103,17 +116,19 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   };
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       <Helmet>
         <title>{`Alleluia.plus - ${title}`}</title>
       </Helmet>
-      <LogoMenu
-        handleToggleTutorial={handleToggleTutorial}
-        showTutorial={showTutorial}
-        tutorialAvailable={tutorialAvailable}
-        logoMenuDeployed={menuProps && menuProps.logoMenuDeployed}
-        handleToggleLogoMenu={menuProps && menuProps.handleToggleLogoMenu}
-      />
+      {!disableLogoMenu && (
+        <LogoMenu
+          handleToggleTutorial={handleToggleTutorial}
+          showTutorial={showTutorial}
+          tutorialAvailable={tutorialAvailable}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...menuProps}
+        />
+      )}
       <Grid
         container
         spacing={4}

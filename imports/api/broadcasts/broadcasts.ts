@@ -3,12 +3,13 @@ import SimpleSchema from 'simpl-schema';
 import { IBroadcast, BroadcastSchema } from '../../types/broadcastTypes';
 
 class BroadcastsCollection extends Mongo.Collection<IBroadcast> {
-  insert(doc: IBroadcast, callback?: Function | undefined): string {
+  insert(doc: IBroadcast, callback?: Function): string {
     const ourDoc = doc;
     ourDoc.updatedAt = ourDoc.updatedAt || new Date();
     const result = super.insert(ourDoc, callback);
     console.log('From api.broadcasts.insert. result:', result);
     return result;
+    // /!\ result is not a string but an ObjectID!!!
   }
 
   update(selector: string | Mongo.Query<IBroadcast>, modifier: Mongo.Modifier<IBroadcast>): number {
@@ -20,6 +21,25 @@ class BroadcastsCollection extends Mongo.Collection<IBroadcast> {
     const result = super.remove(selector);
     return result;
   }
+
+  /* conditionalFields(
+    selector: string | Mongo.Query<IBroadcast>,
+    options: {
+      fields: [
+        Mongo.Query<IBroadcast>,
+        Mongo.FieldSpecifier,
+        Mongo.FieldSpecifier,
+      ];
+    },
+  ): Mongo.Cursor<IBroadcast> {
+    return this.find(
+      selector,
+      {
+        ...options,
+        fields: options.fields[0] ? options.fields[1] : options.fields[2],
+      },
+    );
+  } */
 }
 
 interface IBroadcastCollection extends Mongo.Collection<IBroadcast> {

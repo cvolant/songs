@@ -14,12 +14,16 @@ const useStyles = makeStyles((theme) => ({
 
 interface ITopMenuLargeProps {
   children: ReactNode;
+  className?: string;
   PaperProps?: Partial<IPaperProps>;
   topMenuIsOpen: boolean;
 }
 
 export const TopMenuLarge: React.FC<ITopMenuLargeProps> = ({
-  children, PaperProps, topMenuIsOpen,
+  children,
+  className,
+  PaperProps,
+  topMenuIsOpen,
 }) => {
   const classes = useStyles({ topMenuIsOpen });
 
@@ -27,6 +31,7 @@ export const TopMenuLarge: React.FC<ITopMenuLargeProps> = ({
     <>
       <Drawer
         anchor="top"
+        className={className}
         open={topMenuIsOpen}
         PaperProps={PaperProps}
         variant="persistent"

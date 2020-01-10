@@ -44,7 +44,7 @@ declare module 'meteor/mdg:validated-method' {
     run: (this: DDPCommon.MethodInvocation, arg: TRunArg) => TRunReturn;
   };
 
-  export default class ValidatedMethod<TRunArg, TRunReturn, TName extends string> {
+  export class ValidatedMethod<TRunArg, TRunReturn, TName extends string> {
     constructor(options: ValidatedMethodOptions<TRunArg, TRunReturn, TName>);
 
     name: TName;
@@ -80,4 +80,6 @@ declare module 'meteor/mdg:validated-method' {
 
     _execute(context: { [key: string]: any }, args: TRunArg): void;
   }
+
+  export default ValidatedMethod;
 }

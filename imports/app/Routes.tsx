@@ -7,6 +7,7 @@ import SearchPage from '../ui/SearchPage';
 import DashboardPage from '../ui/Dashboard';
 import SignUp from '../ui/signInUp/SignUp';
 import SignIn from '../ui/signInUp/SignIn';
+import BroadcastFetcher from '../ui/Station/BroadcastFetcher';
 
 import routesPaths from './routesPaths';
 import UserCollectionName from '../ui/Dashboard/UserCollectionName';
@@ -92,6 +93,34 @@ export const Routes: React.FC<IRoutesProps> = ({
         )}
         auth
         redirection="home"
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'dashboard', 'broadcast', ':broadcastId')}
+        render={
+          ({ match }: {
+            match: {
+              params: {
+                broadcastId: string;
+              };
+            };
+          }): React.ReactElement => <BroadcastFetcher broadcastId={match.params.broadcastId} />
+        }
+        auth
+        redirection="home"
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'reception', ':broadcastId')}
+        render={
+          ({ match }: {
+            match: {
+              params: {
+                broadcastId: string;
+              };
+            };
+          }): React.ReactElement => <BroadcastFetcher broadcastId={match.params.broadcastId} />
+        }
       />
       <AuthRoute
         path="/*"

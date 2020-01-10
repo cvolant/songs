@@ -97,12 +97,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface IScreen {
+interface IScreenProps {
   print: (zoom: number) => JSX.Element;
   closeScreen: () => void;
 }
 
-export const Screen: React.FC<IScreen> = ({
+export const Screen: React.FC<IScreenProps> = ({
   print, closeScreen,
 }) => {
   const [opacity, setOpacity] = useState(0);

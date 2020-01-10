@@ -4,5 +4,5 @@
  */
 module.exports = function loader(source) {
     // remove line containing "meteor/" and line containing "api/".
-    return source.replace(/^.*meteor\/.*$/mg, '').replace(/^.*api\/.*$/mg, '').replace(/withTracker/mg, 'WT.withTracker');
+    return source.replace(/^.*meteor\/.*$/mg, '').replace(/^.*api\/.*$/mg, '').replace(/(withTracker|useTracker)/mg, 'Tracker.$1');
 }

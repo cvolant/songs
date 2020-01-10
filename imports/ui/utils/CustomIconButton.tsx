@@ -24,6 +24,15 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
   },
+  iconContainer: {
+    display: 'flex',
+    '& + *': {
+      marginLeft: theme.spacing(1),
+    },
+    '& > svg': {
+      margin: 0,
+    },
+  },
   labelVisibleIcon: {
     marginRight: theme.spacing(0.5),
   },
@@ -33,9 +42,11 @@ const useStyles = makeStyles((theme) => ({
       background: `linear-gradient(0deg, ${theme.palette.darken.medium} 0%, transparent 100%)`,
       borderRadius: '50%',
       content: '""',
-      height: '100%',
+      fontSize: '2.4rem',
+      height: '1.3em',
       position: 'absolute',
-      width: '100%',
+      width: '1.3em',
+      margin: '-0.15em',
     },
   },
   '@keyframes full-rotation': {
@@ -110,6 +121,7 @@ export const CustomIconButton = <E, >({
     disabled,
     labelVisible,
     onClick,
+    size,
   } = iconButtonProps;
   const Icon = fn(iconButtonProps.Icon, { element, otherParams });
   const label = fn(iconButtonProps.label, { element, otherParams });
@@ -121,16 +133,28 @@ export const CustomIconButton = <E, >({
       className={clsx(
         rootClassName,
         classes.iconButton,
-        loading && classes.loading,
         fn(className, { element, otherParams }),
       )}
       color={fn(color, { element, otherParams })}
       disabled={(fn(disabled, { element, otherParams })) || !!loading || false}
       onClick={handleClick(fn(onClick, { element, otherParams, callback }), 'callback' in onClick)}
-      variant={variant}
+      size={fn(size, { element, otherParams })}
+      variant={Component.options.name === 'MuiFab'
+        ? (labelVisible && 'extended') || 'round'
+        : variant}
     >
-      {Icon && <Icon className={labelVisible || variant === 'extended' ? classes.labelVisibleIcon : undefined} />}
-      {(labelVisible || variant === 'extended') && label}
+      {Icon && (
+        <div className={clsx(classes.iconContainer, loading && classes.loading)}>
+          <Icon
+            className={labelVisible ? classes.labelVisibleIcon : undefined}
+          />
+        </div>
+      )}
+      {labelVisible && (
+        <span>
+          {label}
+        </span>
+      )}
     </Component>
   );
 };

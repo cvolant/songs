@@ -22,7 +22,7 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
   song, handleUnfold, unfolded,
 }) => {
   const { t } = useTranslation();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   const {
     title,

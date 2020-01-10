@@ -79,7 +79,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   return (
     <>
       <FullCardLayout<typeof display extends 'folders' ? IFolder : ISong>
-        fab={{
+        fabs={{
           color: 'primary' as IIconColor,
           Icon: Add,
           label: display === 'folders'
@@ -121,7 +121,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
           </Typography>
         )}
         headerProps={{ disableTypography: true }}
-        shortHeader={logoMenuDeployed}
+        shortHeader={logoMenuDeployed ? 2 : 1}
       >
         {display === 'folders'
           ? (

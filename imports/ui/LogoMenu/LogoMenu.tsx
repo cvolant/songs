@@ -20,6 +20,7 @@ import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
+import { IIcon } from '../../types/iconButtonTypes';
 
 import routesPaths from '../../app/routesPaths';
 
@@ -131,10 +132,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface IMiddleButton {
+  ariaLabel: string;
+  Icon: IIcon;
+  to: string;
+}
+type IKnownMiddleButtonNames = 'home' | 'dashboard' | 'signup' | 'signin';
+export type ILogoMenuMiddleButtonProp = IMiddleButton | IKnownMiddleButtonNames;
+export interface ILogoMenuClasses {
+  logoMenu?: string;
+  topMenu?: string;
+  topMenuContent?: string;
+  topMenuLarge?: string;
+  topMenuSmall?: string;
+}
+
 interface ILogoMenuProps {
+  classes?: ILogoMenuClasses;
   handleToggleLogoMenu?: (deploy?: boolean) => () => void;
   handleToggleTutorial?: (open?: boolean) => () => void;
   logoMenuDeployed?: boolean;
+  middleButton?: ILogoMenuMiddleButtonProp;
   showTutorial?: boolean;
   tutorialAvailable: boolean;
 }
@@ -143,21 +161,29 @@ interface ILogoMenuWTData {
   handleLogout: () => void;
 }
 interface IWrappedLogoMenuProps
-  extends ILogoMenuProps, ILogoMenuWTData {}
+  extends ILogoMenuProps, ILogoMenuWTData { }
 
 export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
-  isAuthenticated,
+  classes: {
+    logoMenu: logoMenuClassNameProp,
+    topMenu: topMenuClassNameProp,
+    topMenuContent: topMenuContentClassNameProp,
+    topMenuLarge: topMenuLargeClassNameProp,
+    topMenuSmall: topMenuSmallClassNameProp,
+  } = {},
   handleLogout,
   handleToggleLogoMenu: propsHandleToggleLogoMenu,
   handleToggleTutorial,
+  isAuthenticated,
   logoMenuDeployed: propsLogoMenuDeployed,
+  middleButton: middleButtonProps,
   showTutorial,
   tutorialAvailable,
 }) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const location = useLocation();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof propsLogoMenuDeployed === 'undefined'
     ? useState(true)
@@ -169,26 +195,56 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
 
-  let middleButton;
-  const currentlyAt = (
-    pathname: string,
-  ): boolean => location.pathname.indexOf(routesPaths.translatePath(pathname, i18n.language)) >= 0;
-  if (isAuthenticated) {
-    middleButton = {
-      ariaLabel: currentlyAt('/en/dashboard') ? t('Home') : t('Dashboard'),
-      to: currentlyAt('/en/dashboard') ? `/${i18n.language}` : routesPaths.translatePath('/en/dashboard', i18n.language),
-    };
-  } else {
-    middleButton = {
-      ariaLabel: currentlyAt('/en/signin') ? t('Sign up') : t('Sign in'),
-      to: {
-        pathname: currentlyAt('/en/signin') ? routesPaths.translatePath('/en/signup', i18n.language) : routesPaths.translatePath('/en/signin', i18n.language),
-        state: { from: location },
+  const middleButton = ((): IMiddleButton => {
+    const middleButtons: Record<IKnownMiddleButtonNames, IMiddleButton> = {
+      home: {
+        ariaLabel: t('Home'),
+        Icon: Home,
+        to: `/${i18n.language}`,
+      },
+      dashboard: {
+        ariaLabel: t('Dashboard'),
+        Icon: Person,
+        to: '/en/dashboard',
+      },
+      signup: {
+        ariaLabel: t('Sign up'),
+        Icon: Person,
+        to: '/en/signup',
+      },
+      signin: {
+        ariaLabel: t('Sign in'),
+        Icon: Person,
+        to: '/en/signin',
       },
     };
-  }
 
-  console.log('From LogoMenu. render.');
+    if (middleButtonProps) {
+      if (typeof middleButtonProps === 'string' && Object.keys(middleButtons).includes(middleButtonProps)) {
+        return middleButtons[middleButtonProps];
+      }
+      if (typeof middleButtonProps === 'object' && 'to' in middleButtonProps) {
+        return middleButtonProps;
+      }
+    }
+
+    const currentlyAt = (pathname: string): boolean => (
+      location.pathname.indexOf(routesPaths.translatePath(pathname, i18n.language)) >= 0
+    );
+
+    if (isAuthenticated) {
+      if (currentlyAt('/en/dashboard')) {
+        return middleButtons.home;
+      }
+      return middleButtons.dashboard;
+    }
+    if (currentlyAt('/en/signin')) {
+      return middleButtons.signup;
+    }
+    return middleButtons.signin;
+  })();
+
+  console.log('From LogoMenu, render. middleButton:', middleButton, 'middleButtonProps:', middleButtonProps);
 
   const handleToggleTopMenu = (
     deploy?: boolean,
@@ -211,11 +267,13 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
       {smallDevice
         ? (
           <TopMenuSmall
+            className={clsx(topMenuClassNameProp, topMenuSmallClassNameProp)}
             PaperProps={PaperProps}
             handleToggleTopMenu={handleToggleTopMenu}
             topMenuIsOpen={topMenuIsOpen}
           >
             <TopMenuContent
+              className={topMenuContentClassNameProp}
               isAuthenticated={isAuthenticated}
               handleLogout={handleLogout}
               handleToggleTopMenu={handleToggleTopMenu}
@@ -224,17 +282,19 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
         )
         : (
           <TopMenuLarge
+            className={clsx(topMenuClassNameProp, topMenuLargeClassNameProp)}
             PaperProps={PaperProps}
             topMenuIsOpen={topMenuIsOpen}
           >
             <TopMenuContent
+              className={topMenuContentClassNameProp}
               isAuthenticated={isAuthenticated}
               handleLogout={handleLogout}
               handleToggleTopMenu={handleToggleTopMenu}
             />
           </TopMenuLarge>
         )}
-      <div className={classes.root}>
+      <div className={clsx(classes.root, logoMenuClassNameProp)}>
         <div className={clsx(classes.tabShape, classes.tab1, classes.shadow)} />
         <ButtonBase
           aria-label={t('Help')}
@@ -253,10 +313,15 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
           aria-label={middleButton.ariaLabel}
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
-          to={middleButton.to}
+          to={{
+            pathname: routesPaths.translatePath(middleButton.to, i18n.language),
+            state: {
+              from: location,
+            },
+          }}
         >
           <div className={clsx(classes.tabIcon, classes.tabIcon2)}>
-            {location.pathname.indexOf(routesPaths.translatePath('/en/dashboard', i18n.language)) >= 0 ? <Home /> : <Person />}
+            <middleButton.Icon />
           </div>
         </ButtonBase>
 

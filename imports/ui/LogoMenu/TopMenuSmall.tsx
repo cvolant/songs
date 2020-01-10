@@ -4,6 +4,7 @@ import { PaperProps as IPaperProps } from '@material-ui/core/Paper';
 
 interface ITopMenuSmallProps {
   children: ReactNode;
+  className?: string;
   handleToggleTopMenu: (deploy: boolean | undefined) => (event: SyntheticEvent<{}, Event>) => void;
   PaperProps?: Partial<IPaperProps>;
   topMenuIsOpen: boolean;
@@ -11,6 +12,7 @@ interface ITopMenuSmallProps {
 
 export const TopMenuSmall: React.FC<ITopMenuSmallProps> = ({
   children,
+  className,
   handleToggleTopMenu,
   PaperProps,
   topMenuIsOpen,
@@ -18,6 +20,7 @@ export const TopMenuSmall: React.FC<ITopMenuSmallProps> = ({
   <>
     <SwipeableDrawer
       anchor="top"
+      className={className}
       open={topMenuIsOpen}
       onClose={handleToggleTopMenu(false)}
       onOpen={handleToggleTopMenu(true)}

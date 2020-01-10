@@ -97,7 +97,7 @@ const Title: React.FC<ITitle> = ({
 
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
   const [showDetails, setShowDetails] = useState(false);
 
   const handleToggleDetails = (): void => {

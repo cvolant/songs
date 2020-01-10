@@ -18,7 +18,9 @@ import Settings from '@material-ui/icons/Settings';
 
 import InlineIcon from '../utils/InlineIcon';
 
-export type IStepName = 'globalNavigation'
+export type IStepName =
+| 'notWrittenYet'
+| 'globalNavigation'
 | 'searchSong'
 | 'sortList'
 | 'chooseSong'
@@ -41,6 +43,10 @@ export const TutorialStepContent: React.FC<ITutorialStepContentProps> = ({
   const { t } = useTranslation();
 
   const steps = {
+    notWrittenYet: {
+      title: t('tutorial.notWrittenYet.title', 'Sorry'),
+      body: t('tutorial.notWrittenYet.1', 'This part of the tutorial is not available yet...'),
+    },
     globalNavigation: {
       title: t('tutorial.globalNavigation.title', 'Navigation'),
       body: (

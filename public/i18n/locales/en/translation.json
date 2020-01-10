@@ -16,6 +16,7 @@
   "Sorry": "... Hmmm, sorry! :/",
   "Head home": "Head home",
   "Remove": "Remove",
+  "Return": "Return",
 
   "menu": "menu",
   "Help": "Help",
@@ -70,7 +71,6 @@
     "Unselect all": "Unselect all",
     "Edit": "Edit",
     "View": "View",
-    "Return": "Return",
     "Select paragraphs": "Select the paragraphs you want...",
     "Add song to": "Add song to"
   },
@@ -98,7 +98,7 @@
   "infos": {
     "Search title": "Search song by song",
     "Search details": "Here you can search and display songs one by one, but you need to sign in if you want to build a repertoire, a song list for an event, save your songs, etc.",
-    "Create account": "Create an//account (that's//free)",
+    "Create account": "Create an account",
     "Close infos": "Close infos"
   },
 
@@ -185,9 +185,34 @@
     "Untitled song": "Untitled song"
   },
 
+  "station": {
+    "Black screen": "Black screen",
+    "Close": "Close",
+    "Control": "Control",
+    "Current": "Current",
+    "Edit": "Edit this song",
+    "End": "End",
+    "First": "First",
+    "Last": "Last",
+    "Navigate": "Navigate",
+    "Next": "Next",
+    "Previous": "Previous",
+    "Publication links": "Publication links",
+    "Publish": "Publish",
+    "Read only": "Read only",
+    "Reset": "Reset",
+    "Start": "Start",
+    "Broadcast not started": "This broadcast has not started yet",
+    "Unblack screen": "Unblack screen"
+  },
+
   "tutorial": {
     "Close tutorial": "Close tutorial",
-    
+
+    "notWrittenYet": {
+      "title": "Sorry",
+      "1": "This part of the tutorial is not available yet..."
+    },
     "globalNavigation": {
       "title": "Navigation",
       "1": "Click the logo in the top left corner to expand/collapse the menu buttons. Click the menu icon <1 /> to open the full menu.",

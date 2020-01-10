@@ -3,9 +3,12 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
-  withKnobs, boolean,
+  withKnobs, boolean, number,
 } from '@storybook/addon-knobs';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+import Sync from '@material-ui/icons/Sync';
+
 import Logo from '../imports/ui/LogoMenu/Logo';
 import {
   LanguagePicker,
@@ -13,7 +16,7 @@ import {
   TopMenuLarge,
   TopMenuSmall,
 } from '../imports/ui/LogoMenu';
-import LogoMenu, { WrappedLogoMenu } from '../imports/ui/LogoMenu/LogoMenu';
+import LogoMenu, { WrappedLogoMenu, ILogoMenuMiddleButtonProp } from '../imports/ui/LogoMenu/LogoMenu';
 
 export default {
   title: 'LogoMenu',
@@ -86,9 +89,18 @@ export const wrappedLogoMenu = (): JSX.Element => (
 
 export const logoMenu = (): JSX.Element => (
   <LogoMenu
-    handleToggleLogoMenu={(deploy?: boolean): () => void => action(`handleToggleLogoMenu(display: ${deploy})`)}
+    middleButton={[
+      'home',
+      'dashboard',
+      {
+        ariaLabel: 'Pouet',
+        Icon: Sync,
+        to: '/en/pouet',
+      },
+    ][number("0: 'home'; 1: 'dashboard'; 2: Custom", 0, { min: 0, max: 2 })] as ILogoMenuMiddleButtonProp}
+    handleToggleLogoMenu={boolean('handleToggleLogoMenu defined?', false) ? (deploy?: boolean): () => void => action(`handleToggleLogoMenu(display: ${deploy})`) : undefined}
     handleToggleTutorial={(open?: boolean): () => void => action(`handleToggleTutorial(display: ${open})`)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
+    logoMenuDeployed={boolean('logoMenuDeployed defined?', false) ? boolean('logoMenuDeployed', true) : undefined}
     showTutorial={boolean('showTutorial', true)}
     tutorialAvailable={boolean('tutorialAvailable', true)}
   />

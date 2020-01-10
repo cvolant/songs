@@ -3,20 +3,28 @@ import { Mongo } from 'meteor/mongo';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
+import shortid from 'shortid';
 
 import { Folders } from './folders';
 
-import { IMethodInvocation, ObjectIDSchema, IUnfetched } from '../../types/collectionTypes';
+import { ObjectIDSchema, IUnfetched } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 import { FolderSchema, IFolder } from '../../types/folderTypes';
+import { IBroadcastRights } from '../../types/broadcastTypes';
+import Broadcasts from '../broadcasts/broadcasts';
 
 export const foldersUpdate = new ValidatedMethod({
   name: 'folders.update',
   validate: FolderSchema.validator(),
-  run(this: IMethodInvocation, folderUpdates: IUnfetched<IFolder>): void {
+  run(folderUpdates: IUnfetched<IFolder>): void {
     const folder = Folders.findOne(folderUpdates._id);
 
-    if (folder) {
+    if (!folder) {
+      throw new Meteor.Error(
+        'api.folders.update.notFound',
+        'Folder not found',
+      );
+    } else {
       if (folder.userId !== this.userId) {
         throw new Meteor.Error(
           'api.folders.update.newSong.accessDenied',
@@ -31,13 +39,72 @@ export const foldersUpdate = new ValidatedMethod({
   },
 });
 
+export const foldersUpdateBroadcastsInsert = new ValidatedMethod({
+  name: 'folders.update.broadcasts.insert',
+  validate: new SimpleSchema({
+    folderId: ObjectIDSchema,
+    title: {
+      type: String,
+      optional: true,
+    },
+  }).validator(),
+  run({ folderId, title }: {
+    folderId: Mongo.ObjectID;
+    title?: string;
+  }): string {
+    const folder = Folders.findOne(folderId);
+
+    if (!folder) {
+      throw new Meteor.Error(
+        'api.folders.update.broadcasts.insert.notFound',
+        'Folder not found',
+      );
+    } else {
+      if (folder.userId !== this.userId) {
+        throw new Meteor.Error(
+          'api.folders.update.broadcasts.insert.accessDenied',
+          'Cannot update a folder that is not yours',
+        );
+      }
+
+      const addresses = ([
+        'owner',
+        'control',
+        'navigate',
+        'readOnly',
+      ] as IBroadcastRights[]).map((rights) => ({
+        id: shortid.generate(),
+        rights,
+      }));
+
+      Broadcasts.insert({
+        addresses,
+        songs: folder.songs,
+        state: {},
+        status: 'unpublished',
+        title,
+        updatedAt: new Date(),
+        userId: this.userId,
+      });
+
+      const broadcastOwnerId = addresses[0].id;
+
+      Folders.update(folderId, {
+        $set: { broadcastOwnerId },
+      });
+
+      return broadcastOwnerId;
+    }
+  },
+});
+
 export const foldersUpdateSongsInsert = new ValidatedMethod({
   name: 'folders.songs.insert',
   validate: new SimpleSchema({
     folderId: ObjectIDSchema,
     songId: ObjectIDSchema,
   }).validator(),
-  run(this: IMethodInvocation, { folderId, songId }: {
+  run({ folderId, songId }: {
     folderId: Mongo.ObjectID;
     songId: Mongo.ObjectID;
   }): void {
@@ -71,7 +138,7 @@ export const foldersUpdateSongsUpdate = new ValidatedMethod({
     folderId: ObjectIDSchema,
     songUpdates: SongSchema,
   }).validator(),
-  run(this: IMethodInvocation, { folderId, songUpdates }: {
+  run({ folderId, songUpdates }: {
     folderId: string;
     songUpdates: ISong;
   }): void {
@@ -106,7 +173,7 @@ export const foldersUpdateSongsRemove = new ValidatedMethod({
     folderId: ObjectIDSchema,
     songId: ObjectIDSchema,
   }).validator(),
-  run(this: IMethodInvocation, { folderId, songId }: {
+  run({ folderId, songId }: {
     folderId: Mongo.ObjectID;
     songId: Mongo.ObjectID;
   }): void {
@@ -135,6 +202,7 @@ const FOLDERS_METHODS = [
   foldersUpdateSongsInsert,
   foldersUpdateSongsUpdate,
   foldersUpdateSongsRemove,
+  foldersUpdateBroadcastsInsert,
 ].map((method) => method.name);
 
 if (Meteor.isServer) {

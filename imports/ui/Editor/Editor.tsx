@@ -120,7 +120,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const user = useUser();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   const [edit, setEdit] = useState(initEdit);
   const [editTitle, setEditTitle] = useState(false);
@@ -520,7 +520,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
           className={classes.root}
           contentProps={{ className: classes.content }}
           element={song}
-          fab={{
+          fabs={{
             disabled: !pgStates.length,
             Icon: SelectAll,
             label: pgStates.filter((pgState) => pgState.selected).length
@@ -533,7 +533,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
               }): () => void => handleToggleSelectAll(callback),
               callback: true,
             },
-            variant: 'extended',
           }}
           handleReturn={edit ? undefined : goBack}
           otherParams={{ isThereSelected: pgStates.filter((pgState) => pgState.selected).length }}

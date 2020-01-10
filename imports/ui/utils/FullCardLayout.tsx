@@ -9,11 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Card from '@material-ui/core/Card';
+import Card, { CardProps } from '@material-ui/core/Card';
 import CardActions, { CardActionsProps } from '@material-ui/core/CardActions';
 import CardContent, { CardContentProps } from '@material-ui/core/CardContent';
 import CardHeader, { CardHeaderProps } from '@material-ui/core/CardHeader';
 import Fab from '@material-ui/core/Fab';
+import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
@@ -26,9 +27,11 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   actions: {
-    display: 'flex',
-    position: 'relative',
     alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    position: 'relative',
 
     '&::before': {
       background: `linear-gradient(to top, ${theme.palette.grey['500']}, transparent)`,
@@ -62,28 +65,27 @@ const useStyles = makeStyles((theme) => ({
       {
         contentPaddingTop,
       }: {
-        shortHeader: boolean;
+        shortHeader: 0 | 1 | 2;
         contentPaddingTop: boolean;
       },
     ): number | undefined => (contentPaddingTop ? undefined : 0),
   },
   fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2.5),
-    right: theme.spacing(2.5),
+    margin: theme.spacing(2, 2, 2, 0),
   },
-  fabContainer: {
+  fabsContainer: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+  },
+  fabsSuperContainer: {
     position: 'absolute',
     right: 0,
     top: 0,
-    verticalAlign: 'bottom',
     width: '100%',
   },
   fabExtended: {
     padding: theme.spacing(0, 1.5),
-  },
-  flexEnd: {
-    justifyContent: 'flex-end',
   },
   header: {
     paddingBottom: 0,
@@ -91,10 +93,10 @@ const useStyles = makeStyles((theme) => ({
       {
         shortHeader,
       }: {
-        shortHeader: boolean;
+        shortHeader: 0 | 1 | 2;
         contentPaddingTop: boolean;
       },
-    ): number | string => theme.spacing(shortHeader ? 16 : 10),
+    ): number | string => theme.spacing([0, 10, 16][shortHeader]),
     transition: theme.transitions.create('padding-right'),
   },
   spaceBetween: {
@@ -103,31 +105,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IFullCardLayoutProps<E> {
-  actions?: ReactNode | Array<ReactNode | IArrayIconButtonProps<E>>;
+  actions?:
+  | ReactNode
+  | IIconButtonProps<E>
+  | Array<ReactNode | IArrayIconButtonProps<E> | Array<IArrayIconButtonProps<E> | null> | null>;
   actionsProps?: CardActionsProps;
+  cardProps?: CardProps;
   children?: ReactNode | ReactNode[];
   className?: string;
   contentProps?: CardContentProps;
   element?: E;
-  fab?: IIconButtonProps<E>;
+  fabs?: IIconButtonProps<E> | Array<IArrayIconButtonProps<E> | undefined>;
   header?: ReactNode | ReactNode[];
-  headerAction?: ReactNode;
+  headerAction?: ReactNode | IIconButtonProps<E>;
   headerSubheader?: ReactNode;
   headerTitle?: ReactNode;
   headerProps?: CardHeaderProps;
   handleReturn?: () => void;
   otherParams?: object;
-  shortHeader?: boolean;
+  shortHeader?: 0 | 1 | 2;
 }
 
 export const FullCardLayout = <E, >({
   actions,
   actionsProps,
+  cardProps,
   children,
   className,
   contentProps,
   element,
-  fab,
+  fabs,
   header,
   headerAction,
   headerSubheader,
@@ -135,22 +142,47 @@ export const FullCardLayout = <E, >({
   headerProps,
   handleReturn,
   otherParams,
-  shortHeader = false,
+  shortHeader = 1,
 }: IFullCardLayoutProps<E>): ReactElement | null => {
   const headerExists = !!(header || headerAction || headerProps || headerSubheader || headerTitle);
   const classes = useStyles({
     shortHeader,
     contentPaddingTop: !headerExists,
   });
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
   const { t } = useTranslation();
 
+  const iconButtonOrFullNode = (
+    customParam: ReactNode | IIconButtonProps<E> | IArrayIconButtonProps<E>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Component?: (props: any) => JSX.Element,
+  ): ReactNode => {
+    if (customParam && typeof customParam === 'object' && 'label' in customParam) {
+      return (
+        <CustomIconButton
+          Component={Component || Button}
+          element={element}
+          key={'key' in customParam ? customParam.key : undefined}
+          iconButtonProps={customParam}
+          otherParams={otherParams}
+        />
+      );
+    }
+    return customParam;
+  };
+
+  const fabsArray: Array<
+  | IIconButtonProps<E>
+  | IArrayIconButtonProps<E>
+  | undefined
+  > = Array.isArray(fabs) ? fabs : [fabs];
+
   return (
-    <Card className={clsx(classes.card, className)}>
+    <Card {...cardProps} className={clsx(classes.card, className)}>
       {headerExists && (
         <CardHeader
           {...headerProps}
-          action={headerAction}
+          action={iconButtonOrFullNode(headerAction, IconButton)}
           className={clsx(classes.header, headerProps && headerProps.className)}
           subheader={headerSubheader}
           title={headerTitle}
@@ -166,12 +198,11 @@ export const FullCardLayout = <E, >({
           {children}
         </CardContent>
       )}
-      {(actions || actionsProps || handleReturn || fab) && (
+      {(actions || actionsProps || handleReturn || fabs) && (
         <CardActions
           {...actionsProps}
           className={clsx(
             classes.actions,
-            handleReturn ? classes.spaceBetween : classes.flexEnd,
             actionsProps && actionsProps.className,
           )}
         >
@@ -186,43 +217,42 @@ export const FullCardLayout = <E, >({
                   size="large"
                 >
                   <ArrowBackIos />
-                  {smallDevice ? '' : t('editor.Return', 'Return')}
+                  {smallDevice ? '' : t('Return', 'Return')}
                 </Button>
               ) : null,
 
             Array.isArray(actions)
-              ? (
-                <ButtonGroup key="button-group">
-                  {(actions as Array<ReactNode | IArrayIconButtonProps<E>>).map((
-                    action: ReactNode | IArrayIconButtonProps<E>,
-                  ) => {
-                    if (action && typeof action === 'object' && 'label' in action) {
-                      return (
-                        <CustomIconButton
-                          Component={Button}
-                          element={element}
-                          key={action.key}
-                          iconButtonProps={action}
-                          otherParams={otherParams}
-                        />
-                      );
-                    }
-                    return action;
-                  })}
-                </ButtonGroup>
-              ) : actions,
+              ? (actions as Array<ReactNode | IArrayIconButtonProps<E>>).map((
+                action: ReactNode | IArrayIconButtonProps<E>,
+                actionIndex,
+              ) => {
+                if (Array.isArray(action)) {
+                  return (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <ButtonGroup key={`button-group-${actionIndex}`}>
+                      {action.map((subAction) => iconButtonOrFullNode(subAction))}
+                    </ButtonGroup>
+                  );
+                }
+                return iconButtonOrFullNode(action);
+              })
+              : iconButtonOrFullNode(actions),
 
-            fab
-              ? (
-                <div key="fab" className={classes.fabContainer}>
-                  <CustomIconButton
-                    className={classes.fab}
-                    Component={Fab}
-                    element={element}
-                    iconButtonProps={fab}
-                  />
+            fabs ? (
+              <div key="fabs" className={classes.fabsSuperContainer}>
+                <div className={classes.fabsContainer}>
+                  {fabsArray.map((fab?: IIconButtonProps<E> | IArrayIconButtonProps<E>) => (fab ? (
+                    <CustomIconButton
+                      className={classes.fab}
+                      Component={Fab}
+                      element={element}
+                      iconButtonProps={fab}
+                      key={'key' in fab ? fab.key : 'fab'}
+                    />
+                  ) : null))}
                 </div>
-              ) : null,
+              </div>
+            ) : null,
           ]}
         </CardActions>
       )}

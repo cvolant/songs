@@ -13,7 +13,7 @@ import { IFolder, ISong, IUnfetched } from '../../types';
 
 import routesPaths from '../../app/routesPaths';
 import FolderDashboard from './FolderDashboard';
-import { ITutorialContentName } from '../Tutorial';
+import { ITutorialContentName } from '../Tutorial/Tutorial';
 
 interface IDashboardPageProps {
   urlCollection?: string;

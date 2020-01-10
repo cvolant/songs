@@ -10,6 +10,7 @@ module.exports = {
     // setTimeout(callback, 5000);
     // setTimeout.__promisify__(5000).then(callback);
     return specialLog('Meteor.subscribe', {
+      ready: () => true,  // Also needs a setTimeout, or a createdAt: new Date() + ready: () => new Date().valueOf() + 2000 > createdAt...
       stop: () => specialLog('Subscription.stop')(subscriptionName),
     })(subscriptionName, options);
   },

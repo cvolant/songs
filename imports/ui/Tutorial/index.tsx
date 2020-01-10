@@ -1,5 +1,5 @@
-import Tutorial, { ITutorialContentName } from './Tutorial';
+import Tutorial from './Tutorial';
 import TutorialStepContent from './TutorialStepContent';
 
-export { Tutorial, TutorialStepContent, ITutorialContentName };
+export { Tutorial, TutorialStepContent };
 export default Tutorial;

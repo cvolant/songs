@@ -24,7 +24,7 @@ export const FolderListItemText: React.FC<IFolderListItemTextProps> = ({
   folder, handleUnfold, unfolded,
 }) => {
   const { t, i18n } = useTranslation();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   const { date, name, songs } = folder;
 

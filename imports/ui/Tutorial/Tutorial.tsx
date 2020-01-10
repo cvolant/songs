@@ -12,10 +12,12 @@ import Panel from '../utils/Panel';
 import TutorialStepContent, { IStepName } from './TutorialStepContent';
 
 const steps: ISteps = {
-  Search: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
+  Dashboard: ['notWrittenYet'],
   Editor: ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
+  Search: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
   SignIn: ['signIn', 'notSignedUp'],
   SignUp: ['signUp', 'alreadySignedUp'],
+  Station: ['notWrittenYet'],
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -54,10 +56,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export type ITutorialContentName =
-| 'Search'
 | 'Editor'
+| 'Dashboard'
+| 'Search'
 | 'SignIn'
-| 'SignUp';
+| 'SignUp'
+| 'Station';
 
 type ISteps = Record<ITutorialContentName, IStepName[]>
 

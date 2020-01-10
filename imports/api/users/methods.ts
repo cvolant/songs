@@ -7,9 +7,10 @@ import SimpleSchema from 'simpl-schema';
 import Folders from '../folders/folders';
 import Songs from '../songs/songs';
 
-import { IMethodInvocation, ObjectIDSchema } from '../../types/collectionTypes';
+import { ObjectIDSchema } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 import { IFolder, IUser } from '../../types';
+import Broadcasts from '../broadcasts/broadcasts';
 
 // import Folders from '../folders/folders';
 
@@ -22,9 +23,10 @@ export const userFavoriteToggle = new ValidatedMethod({
       optional: true,
     },
   }).validator(),
-  run(this: IMethodInvocation, {
-    songId, value,
-  }: { songId: Mongo.ObjectID; value?: boolean }): void {
+  run({ songId, value }: {
+    songId: Mongo.ObjectID;
+    value?: boolean;
+  }): void {
     console.log('From api.user.favoriteSong.toggle. songId:', songId, 'value:', value);
     if (!this.userId) {
       throw new Meteor.Error(
@@ -64,7 +66,7 @@ export const userFavoriteToggle = new ValidatedMethod({
 export const userCreatedSongInsert = new ValidatedMethod({
   name: 'user.createdSongs.insert',
   validate: new SimpleSchema({ song: SongSchema }).validator(),
-  run(this: IMethodInvocation, { song }: { song: Partial<ISong> }): Mongo.ObjectID {
+  run({ song }: { song: Partial<ISong> }): Mongo.ObjectID {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.createdSongs.insert.accessDenied',
@@ -96,7 +98,7 @@ export const userCreatedSongInsert = new ValidatedMethod({
 export const userCreatedSongRemove = new ValidatedMethod({
   name: 'user.createdSongs.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
-  run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
+  run({ _id }: { _id: Mongo.ObjectID }): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.createdSongs.remove.accessDenied',
@@ -142,7 +144,7 @@ export const userFoldersInsert = new ValidatedMethod({
       optional: true,
     },
   }).validator(),
-  run(this: IMethodInvocation, { name, date }: { name: string; date?: Date }): Mongo.ObjectID {
+  run({ name, date }: { name: string; date?: Date }): Mongo.ObjectID {
     console.log('From user.folders.insert. this.userId:', this.userId);
 
     if (!this.userId) {
@@ -175,7 +177,7 @@ export const userFoldersInsert = new ValidatedMethod({
 export const userFoldersRemove = new ValidatedMethod({
   name: 'user.folders.remove',
   validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
-  run(this: IMethodInvocation, { _id }: { _id: Mongo.ObjectID }): void {
+  run({ _id }: { _id: Mongo.ObjectID }): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.folders.remove.accessDenied',
@@ -185,17 +187,24 @@ export const userFoldersRemove = new ValidatedMethod({
 
     const { folders } = Meteor.users.findOne(this.userId) as IUser;
 
-    if (!folders.map((folder) => folder.toHexString()).includes(_id.toHexString())) {
+    if (!folders.map((folderId) => folderId.toHexString()).includes(_id.toHexString())) {
       throw new Meteor.Error(
         'api.user.folders.remove.notFound',
-        "Song does not exist in user's folders",
+        "Folder does not exist in user's folders",
       );
+    }
+
+    const { broadcastOwnerId } = Folders.findOne(_id) || {};
+
+    Folders.remove(_id);
+    if (broadcastOwnerId) {
+      Broadcasts.remove({ 'addresses.id': broadcastOwnerId });
     }
 
     Meteor.users.update(this.userId, {
       $set: {
         createdSongs: folders
-          .filter((folder) => folder.toHexString() !== _id.toHexString()),
+          .filter((folderId) => folderId.toHexString() !== _id.toHexString()),
       },
     });
   },

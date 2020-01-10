@@ -5,6 +5,7 @@ import React, {
   MouseEventHandler,
 } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { useTranslation } from 'react-i18next';
 
@@ -64,12 +65,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ITopMenuContentProps {
+  className?: string;
   handleLogout: () => void;
   handleToggleTopMenu: (deploy: boolean | undefined) => EventHandler<MouseEvent | KeyboardEvent>;
   isAuthenticated: boolean;
 }
 
 export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
+  className,
   handleLogout,
   handleToggleTopMenu,
   isAuthenticated,
@@ -77,7 +80,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   const { t, i18n: { language: lng } } = useTranslation();
   const classes = useStyles();
   const location = useLocation();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
 
@@ -123,7 +126,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
 
   return (
     <div
-      className={classes.fullList}
+      className={clsx(classes.fullList, className)}
       onClick={smallDevice ? handleClick : undefined}
       onKeyDown={handleToggleTopMenu(false)}
       role="menu"

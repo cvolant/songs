@@ -1,6 +1,11 @@
 Rajouter un bouton 'Plus de resultats'
 Rajouter un bouton 'Rechercher'
 Documenter le code avec Tsdoc
+Écrire les parties manquantes du tutoriel
+Ajouter la possibilite de plusieurs IconButtons dans headerAction => MainDashboard
+Folder settings
+Changer les routes string traduites de l'anglais en routes string[]
+Reorganiser les methods
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

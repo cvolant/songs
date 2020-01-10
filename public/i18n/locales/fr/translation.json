@@ -16,6 +16,7 @@
   "Sorry": "... Désolé ! :/",
   "Head home": "Retour à l'accueil",
   "Remove": "Enlever",
+  "Return": "Retour",
 
   "menu": "menu",
   "Help": "Aide",
@@ -70,7 +71,6 @@
     "Unselect all": "Tout désélectionner",
     "Edit": "Edit",
     "View": "Visualiser",
-    "Return": "Retour",
     "Select paragraphs": "Selectionner les paragraphes désirés...",
     "Add song to": "Ajouter le chant à"
   },
@@ -98,7 +98,7 @@
   "infos": {
     "Search title": "Recherche chant par chant",
     "Search details": "Ici, vous pouvez afficher les chants un par un, mais il est nécessaire de se connecter à un compte pour pouvoir construire un répertoire, une liste de chants pour un évènement, sauvegarder des chants, etc.",
-    "Create account": "Créer un//compte (c'est//gratuit)",
+    "Create account": "Créer un compte",
     "Close infos": "Fermer les infos"
   },
 
@@ -185,10 +185,34 @@
     "Untitled song": "Chant sans titre"
   },
 
-  "tutorial": {
+  "station": {
+    "Black screen": "Cacher l'écran",
+    "Close": "Fermer",
+    "Control": "Contrôle",
+    "Current": "Actuel",
+    "Edit": "Éditer ce chant",
+    "End": "Terminer",
+    "First": "Premier",
+    "Last": "Dernier",
+    "Navigate": "Navigation",
+    "Next": "Prochain",
+    "Previous": "Précédent",
+    "Publication links": "Liens de publication",
+    "Publish": "Publier",
+    "Read only": "Lecture seule",
+    "Reset": "Réinitialiser",
+    "Start": "Commencer",
+    "Broadcast not started": "Cette diffusion n'a pas encore commencé",
+    "Unblack screen": "Dévoiler l'écran"
+  },
 
+  "tutorial": {
     "Close tutorial": "Fermer le tutoriel",
     
+    "notWrittenYet": {
+      "title": "Désolé",
+      "1": "Cette partie du tutorial n'est pas encore disponible..."
+    },
     "globalNavigation": {
       "title": "Navigation",
       "1": "Cliquez sur le logo en haut à droite pour faire apparaître ou masquer les boutons du menu. Cliquez sur l'icône menu <1 /> pour ouvrir le menu complet.",

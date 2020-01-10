@@ -26,6 +26,7 @@ declare module '@material-ui/styles' {
 declare module '@material-ui/core/styles/createPalette' {
   interface TypeBackground {
     page: string;
+    dark: string;
   }
   interface SimplePaletteColorOptions {
     subtle?: string;
@@ -117,6 +118,7 @@ const theme = createMuiTheme({
       page: '#f3ece4',
       paper: '#fff',
       default: '#fafafa',
+      dark: 'black',
     },
     font: {
       opacity: {

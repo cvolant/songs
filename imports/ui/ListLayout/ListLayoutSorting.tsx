@@ -107,7 +107,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
 }: IListLayoutSortingProps<T>): ReactElement | null => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort);
   const [[sortCriterion, sortValue]] = Object.entries(sort || { '': '' });

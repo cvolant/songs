@@ -5,12 +5,13 @@ import { ICollection } from '../../types';
 import Songs from '../songs/songs';
 
 class FoldersCollection extends Mongo.Collection<IFolder> {
-  insert(doc: IFolder, callback?: Function | undefined): string {
+  insert(doc: IFolder, callback?: Function): string {
     const ourDoc = doc;
     ourDoc.updatedAt = ourDoc.updatedAt || new Date();
     const result = super.insert(ourDoc, callback);
     console.log('From api.folders.insert. result:', result);
     return result;
+    // /!\ result is not a string but an ObjectID!!!
   }
 
   update(selector: string | Mongo.Query<IFolder>, modifier: Mongo.Modifier<IFolder>): number {

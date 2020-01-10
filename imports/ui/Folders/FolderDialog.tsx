@@ -42,7 +42,7 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   title,
 }) => {
   const { t } = useTranslation();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   const [name, setName] = useState(folder ? folder.name || '' : '');
   const [dateEnabled, setDateEnabled] = useState(folder && !!folder.date);

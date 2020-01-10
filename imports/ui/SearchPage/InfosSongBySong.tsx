@@ -47,7 +47,7 @@ export const InfosSongBySong: React.FC<IInfosSongBySongProps> = ({
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   return (
     <Panel className={classes.root} handleClosePanel={handleCloseInfos} closeName={t('infos.Close infos', 'Close infos')}>
@@ -66,7 +66,7 @@ export const InfosSongBySong: React.FC<IInfosSongBySongProps> = ({
           {t('Sign in')}
         </Button>
         <Button component={Link} to="/signup" variant="contained" color="primary" className={classes.button}>
-          {t('infos.Create account', 'Create account').replace(/\/\//g, '\xa0')}
+          {t('infos.Create account', 'Create account')}
         </Button>
       </div>
     </Panel>

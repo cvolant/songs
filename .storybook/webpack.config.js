@@ -5,13 +5,14 @@ module.exports = ({ config }) => {
   config.plugins.push(
     new webpack.ProvidePlugin({
       // mock global variables
-      'Accounts': rootPath + '/.storybook/mocks/Accounts',
-      'Folders':  rootPath + '/.storybook/mocks/Folders',
-      'Meteor':   rootPath + '/.storybook/mocks/Meteor',
-      'Mongo':    rootPath + '/.storybook/mocks/Mongo',
-      'Session':  rootPath + '/.storybook/mocks/Session',
-      'Songs':    rootPath + '/.storybook/mocks/Songs',
-      'WT':       rootPath + '/.storybook/mocks/withTracker',
+      'Accounts':   rootPath + '/.storybook/mocks/Accounts',
+      'Broadcasts': rootPath + '/.storybook/mocks/Broadcasts',
+      'Folders':    rootPath + '/.storybook/mocks/Folders',
+      'Meteor':     rootPath + '/.storybook/mocks/Meteor',
+      'Mongo':      rootPath + '/.storybook/mocks/Mongo',
+      'Session':    rootPath + '/.storybook/mocks/Session',
+      'Songs':      rootPath + '/.storybook/mocks/Songs',
+      'Tracker':    rootPath + '/.storybook/mocks/Tracker',
     })
   );
   config.module.rules.push({

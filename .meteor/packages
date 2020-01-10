@@ -20,7 +20,7 @@ shell-server@0.4.0            # Server-side component of the `meteor shell` comm
 static-html
 accounts-password@1.5.1
 session@1.2.0
-react-meteor-data
+react-meteor-data@2.0.1
 mdg:validated-method
 mdg:validation-error
 aldeed:collection2@3.0.0

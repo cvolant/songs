@@ -75,7 +75,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined);
   const [showInfos, setShowInfos] = useState(true);
   const [viewer, setViewer] = useState<React.ReactNode>(undefined);
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
   const classes = useStyles();
   const contentAreaRef = createRef<HTMLDivElement>();
 

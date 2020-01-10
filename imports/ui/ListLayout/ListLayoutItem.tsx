@@ -51,7 +51,7 @@ const ListLayoutItem = <E extends IElement>({
   unfolded,
 }: IListLayoutItemProps<E>): ReactElement | null => {
   const classes = useStyles({ nbRightIcons: secondaryActions.length });
-  const smallDevice = useDeviceSize('sm.down');
+  const smallDevice = useDeviceSize('sm', 'down');
 
   const [hover, setHover] = useState(false);
 

@@ -80,6 +80,19 @@ export const routesPaths: {
                 [Locale.fr]: 'dossiers',
               },
             },
+            {
+              name: 'broadcast',
+              pathPartValues: {
+                [Locale.en]: 'broadcast',
+                [Locale.fr]: 'diffusion',
+              },
+              children: [
+                {
+                  name: 'broadcastId',
+                  variable: true,
+                },
+              ],
+            },
           ],
         },
         {
@@ -91,6 +104,19 @@ export const routesPaths: {
           children: [
             {
               name: 'songId',
+              variable: true,
+            },
+          ],
+        },
+        {
+          name: 'reception',
+          pathPartValues: {
+            [Locale.en]: 'r',
+            [Locale.fr]: 'r',
+          },
+          children: [
+            {
+              name: 'receptionId',
               variable: true,
             },
           ],

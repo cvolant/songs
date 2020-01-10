@@ -2,12 +2,19 @@ import { Mongo as RealMongo } from 'meteor/mongo';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createDetails } from '../../imports/ui/Editor/Detail';
 
+import {
+  IBroadcast,
+  IFolder,
+  ISong,
+  IUser,
+} from '../../imports/types';
+
 const id = (stringId: string): RealMongo.ObjectID => ({
   equals: (): boolean => false,
   toHexString: (): string => stringId,
 });
 
-export const users = [
+export const users: IUser[] = [
   {
     _id: 'idUser1',
     favoriteSongs: [] as RealMongo.ObjectID[],
@@ -34,7 +41,7 @@ export const users = [
   },
 ];
 
-export const songs = [
+export const songs: ISong[] = [
   {
     _id: id('idSong1'),
     userId: users[0]._id,
@@ -57,17 +64,17 @@ export const songs = [
       },
       {
         label: 'Couplet',
-        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
+        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
         index: 1,
       },
       {
         label: 'Couplet',
-        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
+        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
         index: 2,
       },
       {
         label: 'Couplet',
-        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
+        pg: "Moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone, , moi je connais une chanson qui emmerde les gens, mais non mais non ce n'est pas une chanson monotone.",
         index: 3,
       },
     ],
@@ -138,7 +145,7 @@ export const details = createDetails({
   },
 });
 
-export const folders = [
+export const folders: IFolder[] = [
   {
     _id: id('idFolder1'),
     date: new Date(new Date().valueOf() + 300000000),
@@ -178,3 +185,40 @@ users[0].favoriteSongs = songs.map((song) => song._id);
 users[1].favoriteSongs = [songs[0]._id];
 users[0].createdSongs = [songs[1]._id];
 users[1].createdSongs = [songs[0]._id];
+
+export const broadcasts: IBroadcast[] = [
+  {
+    _id: id('idBroadcast1'),
+    addresses: [
+      {
+        id: 'idAddressRO1',
+        rights: 'control',
+      },
+    ],
+    songs: [{ _id: songs[0]._id }, songs[1]],
+    state: {
+      songNumber: 1,
+    },
+    status: 'ongoing',
+    updatedAt: new Date('2019/10/10'),
+    userId: users[0]._id || '',
+  },
+  {
+    _id: id('idBroadcast2'),
+    addresses: [
+      {
+        id: 'idAddressRO2',
+        rights: 'readOnly',
+      },
+      {
+        id: 'idAddressC2',
+        rights: 'control',
+      },
+    ],
+    songs: [songs[0]],
+    state: {},
+    status: 'unstarted',
+    updatedAt: new Date('2019/12/10'),
+    userId: users[1]._id || '',
+  },
+];
