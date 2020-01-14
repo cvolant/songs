@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     position: 'relative',
 
     '&::before': {
@@ -43,10 +43,6 @@ const useStyles = makeStyles((theme) => ({
       top: '-0.5rem',
       width: '100%',
     },
-  },
-  actionButtons: {
-    display: 'flex',
-    alignItems: 'center',
   },
   button: {
     margin: theme.spacing(1),
@@ -206,54 +202,53 @@ export const FullCardLayout = <E, >({
             actionsProps && actionsProps.className,
           )}
         >
-          {[
-            handleReturn
-              ? (
-                <Button
-                  className={classes.button}
-                  color="primary"
-                  key="return"
-                  onClick={handleReturn}
-                  size="large"
-                >
-                  <ArrowBackIos />
-                  {smallDevice ? '' : t('Return', 'Return')}
-                </Button>
-              ) : null,
-
-            Array.isArray(actions)
-              ? (actions as Array<ReactNode | IArrayIconButtonProps<E>>).map((
-                action: ReactNode | IArrayIconButtonProps<E>,
-                actionIndex,
-              ) => {
-                if (Array.isArray(action)) {
-                  return (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <ButtonGroup key={`button-group-${actionIndex}`}>
-                      {action.map((subAction) => iconButtonOrFullNode(subAction))}
-                    </ButtonGroup>
-                  );
-                }
-                return iconButtonOrFullNode(action);
-              })
-              : iconButtonOrFullNode(actions),
-
-            fabs ? (
-              <div key="fabs" className={classes.fabsSuperContainer}>
-                <div className={classes.fabsContainer}>
-                  {fabsArray.map((fab?: IIconButtonProps<E> | IArrayIconButtonProps<E>) => (fab ? (
-                    <CustomIconButton
-                      className={classes.fab}
-                      Component={Fab}
-                      element={element}
-                      iconButtonProps={fab}
-                      key={'key' in fab ? fab.key : 'fab'}
-                    />
-                  ) : null))}
-                </div>
+          {handleReturn
+            ? (
+              <Button
+                className={classes.button}
+                color="primary"
+                key="return"
+                onClick={handleReturn}
+                size="large"
+              >
+                <ArrowBackIos />
+                {smallDevice ? '' : t('Return', 'Return')}
+              </Button>
+            ) : <div />}
+          {Array.isArray(actions)
+            ? (
+              <div>
+                {(actions as Array<ReactNode | IArrayIconButtonProps<E>>).map((
+                  action: ReactNode | IArrayIconButtonProps<E>,
+                  actionIndex,
+                ) => {
+                  if (Array.isArray(action)) {
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <ButtonGroup key={`button-group-${actionIndex}`}>
+                        {action.map((subAction) => iconButtonOrFullNode(subAction))}
+                      </ButtonGroup>
+                    );
+                  }
+                  return iconButtonOrFullNode(action);
+                })}
               </div>
-            ) : null,
-          ]}
+            ) : iconButtonOrFullNode(actions)}
+          {fabs ? (
+            <div key="fabs" className={classes.fabsSuperContainer}>
+              <div className={classes.fabsContainer}>
+                {fabsArray.map((fab?: IIconButtonProps<E> | IArrayIconButtonProps<E>) => (fab ? (
+                  <CustomIconButton
+                    className={classes.fab}
+                    Component={Fab}
+                    element={element}
+                    iconButtonProps={fab}
+                    key={'key' in fab ? fab.key : 'fab'}
+                  />
+                ) : null))}
+              </div>
+            </div>
+          ) : null}
         </CardActions>
       )}
     </Card>

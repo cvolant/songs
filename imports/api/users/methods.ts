@@ -66,7 +66,7 @@ export const userFavoriteToggle = new ValidatedMethod({
 export const userCreatedSongInsert = new ValidatedMethod({
   name: 'user.createdSongs.insert',
   validate: new SimpleSchema({ song: SongSchema }).validator(),
-  run({ song }: { song: Partial<ISong> }): Mongo.ObjectID {
+  run({ song }: { song: Mongo.OptionalId<ISong> }): Mongo.ObjectID {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.createdSongs.insert.accessDenied',
@@ -81,7 +81,7 @@ export const userCreatedSongInsert = new ValidatedMethod({
       updatedAt: new Date(),
       ...song,
     };
-    const songId = Songs.insert(newSong as ISong) as unknown as Mongo.ObjectID;
+    const songId = Songs.insert(newSong) as unknown as Mongo.ObjectID;
 
     Meteor.users.update(this.userId, {
       $set: {

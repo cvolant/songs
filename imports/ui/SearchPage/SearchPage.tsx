@@ -89,7 +89,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 
   const handleGoBackFromEditor = (): void => {
     setSelectedSong(undefined);
-    history.push(routesPaths.translatePath('/en/search/', i18n.language));
+    history.push(routesPaths.path(i18n.language, 'search'));
   };
 
   const handleOpenScreen = (song?: IUnfetched<ISong>) => (): void => {
@@ -110,7 +110,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 
   const handleSelectSong = (song: ISong): void => {
     setSelectedSong(song);
-    history.push(routesPaths.translatePath(`/en/search/${song._id.toHexString()}`, i18n.language));
+    history.push(routesPaths.path(i18n.language, 'search', song._id.toHexString()));
     console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id.toHexString():', song._id.toHexString());
   };
 

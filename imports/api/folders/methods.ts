@@ -3,15 +3,14 @@ import { Mongo } from 'meteor/mongo';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
-import shortid from 'shortid';
 
 import { Folders } from './folders';
+import { Broadcasts } from '../broadcasts/broadcasts';
 
 import { ObjectIDSchema, IUnfetched } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 import { FolderSchema, IFolder } from '../../types/folderTypes';
-import { IBroadcastRights } from '../../types/broadcastTypes';
-import Broadcasts from '../broadcasts/broadcasts';
+import BroadcastSchema, { IBroadcast } from '../../types/broadcastTypes';
 
 export const foldersUpdate = new ValidatedMethod({
   name: 'folders.update',
@@ -41,15 +40,16 @@ export const foldersUpdate = new ValidatedMethod({
 
 export const foldersUpdateBroadcastsInsert = new ValidatedMethod({
   name: 'folders.update.broadcasts.insert',
-  validate: new SimpleSchema({
+  validate: (BroadcastSchema.pick('addresses', 'addresses.$') as SimpleSchema).extend(new SimpleSchema({
     folderId: ObjectIDSchema,
     title: {
       type: String,
       optional: true,
     },
-  }).validator(),
-  run({ folderId, title }: {
+  })).validator(),
+  run({ folderId, addresses, title }: {
     folderId: Mongo.ObjectID;
+    addresses: IBroadcast['addresses'];
     title?: string;
   }): string {
     const folder = Folders.findOne(folderId);
@@ -67,17 +67,7 @@ export const foldersUpdateBroadcastsInsert = new ValidatedMethod({
         );
       }
 
-      const addresses = ([
-        'owner',
-        'control',
-        'navigate',
-        'readOnly',
-      ] as IBroadcastRights[]).map((rights) => ({
-        id: shortid.generate(),
-        rights,
-      }));
-
-      Broadcasts.insert({
+      const broadcastId = Broadcasts.insert({
         addresses,
         songs: folder.songs,
         state: {},
@@ -87,7 +77,21 @@ export const foldersUpdateBroadcastsInsert = new ValidatedMethod({
         userId: this.userId,
       });
 
-      const broadcastOwnerId = addresses[0].id;
+      const broadcast = Broadcasts.findOne(broadcastId);
+
+      if (!broadcast) {
+        console.error('From api.folders.update.broadcasts.insert. Broadcast creation failed.');
+        throw new Meteor.Error(
+          'api.folders.update.broadcasts.insert.failed',
+          'Broadcast creation failed',
+        );
+      }
+
+      const broadcastOwnerId = broadcast.addresses[0].id;
+
+      console.log('From api.folders.update.broadcasts.insert. broadcast:', broadcast, 'broadcastOwnerId:', broadcastOwnerId);
+
+      console.log('From folders.update.broadcasts.insert. broadcastOwnerId:', broadcastOwnerId);
 
       Folders.update(folderId, {
         $set: { broadcastOwnerId },

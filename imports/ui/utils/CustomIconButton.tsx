@@ -127,6 +127,10 @@ export const CustomIconButton = <E, >({
   const label = fn(iconButtonProps.label, { element, otherParams });
   const variant = fn(iconButtonProps.variant, { element, otherParams });
 
+  if (!Component.options) {
+    console.log('From CustomIconButton, render. Component:', Component, 'Component.options', Component.options);
+  }
+
   return (
     <Component
       aria-label={label}
@@ -139,7 +143,7 @@ export const CustomIconButton = <E, >({
       disabled={(fn(disabled, { element, otherParams })) || !!loading || false}
       onClick={handleClick(fn(onClick, { element, otherParams, callback }), 'callback' in onClick)}
       size={fn(size, { element, otherParams })}
-      variant={Component.options.name === 'MuiFab'
+      variant={Component.options && Component.options.name === 'MuiFab'
         ? (labelVisible && 'extended') || 'round'
         : variant}
     >

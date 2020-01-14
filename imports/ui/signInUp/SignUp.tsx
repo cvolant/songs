@@ -8,7 +8,7 @@ export const SignUp: React.FC<{}> = () => {
   const { t, i18n: { language } } = useTranslation();
   return (
     <Door
-      link={{ path: routesPaths.translatePath('/en/signup', locales[language]), text: t('register.Already have an account', 'Already have an account?') }}
+      link={{ path: routesPaths.path(locales[language], 'signup'), text: t('register.Already have an account', 'Already have an account?') }}
       title={t('Sign up')}
       alreadySignedUp={false}
     />

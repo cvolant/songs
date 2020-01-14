@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -15,6 +16,10 @@ import 'normalize.css';
 import '../startup/simple-schema-configuration';
 import theme from '../client/theme';
 import { DeviceSizeProvider } from '../hooks/contexts/app-device-size-context';
+
+import Songs from '../api/songs/songs';
+import Folders from '../api/folders/folders';
+import Broadcasts from '../api/broadcasts/broadcasts';
 
 const languages = ['en', 'fr'];
 
@@ -73,12 +78,12 @@ export const App: React.FC<IAppProps> = ({
       // but history is mutable: it is always the current history.
       if (isUnauthenticatedPage && isAuthenticated) {
         console.log('From App, Tracker.autorun. history:', history, 'location:', location, 'history.location.state:', history.location.state);
-        if (history.location.state.from) {
+        if (history.location.state && history.location.state.from) {
           console.log('From App, Tracker.autorun. REDIRECTION. history.location', history.location, ' location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
           history.replace(history.location.pathname.indexOf(routesPaths.translatePath('/en/signin', lng)) >= 0 ? history.location.state.from : routesPaths.translatePath('/en/dashboard', lng));
         } else {
           console.log('From App, Tracker.autorun. REDIRECTION. No state... history.location:', history.location, 'location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
-          history.replace(routesPaths.translatePath('/en/dashboard', lng));
+          history.replace(routesPaths.path(lng, 'dashboard'));
         }
       } else if (isAuthenticatedPage && !isAuthenticated) {
         console.log('From App, Tracker.autorun. REDIRECTION. Autenticated page but unauthenticated: redirection to home.');
@@ -86,6 +91,8 @@ export const App: React.FC<IAppProps> = ({
       }
     });
   }, []);
+
+  console.log('From App, render. \nSongs:', Songs, '\nFolders:', Folders, '\nBroadcasts:', Broadcasts);
 
   return (
     <div>

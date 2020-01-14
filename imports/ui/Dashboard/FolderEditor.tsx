@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import shortid from 'shortid';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +23,7 @@ import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
 import routesPaths from '../../app/routesPaths';
+import { IBroadcastRights } from '../../types/broadcastTypes';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -72,7 +74,17 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   const handleBroadcast = (): void => {
     let { broadcastOwnerId } = folder;
     if (!broadcastOwnerId) {
-      broadcastOwnerId = foldersUpdateBroadcastsInsert.call({ folderId: folder._id });
+      const addresses = ([
+        'owner',
+        'control',
+        'navigate',
+        'readOnly',
+      ] as IBroadcastRights[]).map((rights) => ({
+        id: shortid.generate(),
+        rights,
+      }));
+      console.log('From FolderEditor, handleBroadcast. addresses:', addresses, 'foldersUpdateBroadcastsInsert:', foldersUpdateBroadcastsInsert);
+      broadcastOwnerId = foldersUpdateBroadcastsInsert.call({ folderId: folder._id, addresses });
     }
     history.push(routesPaths.path(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));
   };

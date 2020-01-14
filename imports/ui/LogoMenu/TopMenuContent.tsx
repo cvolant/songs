@@ -94,19 +94,19 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     { name: t('Home'), path: `/${lng}`, Icon: Home },
     {
       name: t('Song lists'),
-      path: routesPaths.translatePath('/en/song-lists', locales[lng]),
+      path: routesPaths.path(locales[lng], 'song-lists'),
       Icon: ListIcon,
       disabled: true,
     },
     {
       name: t('Shared view'),
-      path: routesPaths.translatePath('/en/shared-view', locales[lng]),
+      path: routesPaths.path(locales[lng], 'shared-view'),
       Icon: ScreenShare,
       disabled: true,
     },
     {
       name: t('About'),
-      path: routesPaths.translatePath('/en/about', locales[lng]),
+      path: routesPaths.path(locales[lng], 'about'),
       Icon: Loupe,
       disabled: true,
     },
@@ -118,7 +118,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     },
     {
       name: t('Login'),
-      path: routesPaths.translatePath('/en/signin', locales[lng]),
+      path: routesPaths.path(locales[lng], 'signin'),
       hide: isAuthenticated,
       Icon: Power,
     },

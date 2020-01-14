@@ -1,11 +1,14 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
+
 import { IBroadcast, BroadcastSchema } from '../../types/broadcastTypes';
 
 class BroadcastsCollection extends Mongo.Collection<IBroadcast> {
-  insert(doc: IBroadcast, callback?: Function): string {
-    const ourDoc = doc;
-    ourDoc.updatedAt = ourDoc.updatedAt || new Date();
+  insert(doc: Mongo.OptionalId<IBroadcast>, callback?: Function): string {
+    const ourDoc = {
+      updatedAt: new Date(),
+      ...doc,
+    };
     const result = super.insert(ourDoc, callback);
     console.log('From api.broadcasts.insert. result:', result);
     return result;

@@ -5,7 +5,6 @@ import SimpleSchema from 'simpl-schema';
 
 import Songs from './songs';
 
-import { IMethodInvocation } from '../../types/collectionTypes';
 import { ISong, SongSchema } from '../../types/songTypes';
 
 /*
@@ -39,7 +38,7 @@ export const songsUpdate = new ValidatedMethod({
   validate: new SimpleSchema({
     songUpdates: SongSchema,
   }).validator(),
-  run(this: IMethodInvocation, { songUpdates }: { songUpdates: ISong }): void {
+  run({ songUpdates }: { songUpdates: ISong }): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.songs.insert.accessDenied',
