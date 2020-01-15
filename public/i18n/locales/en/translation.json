@@ -35,12 +35,8 @@
     "Toggle small menu": "Toggle small menu"
   },
 
-  "register": {
-    "Already have an account": "Already have an account?",
-    "Need an account": "Need an account?",
-    "Email Address": "Email Address",
-    "Password": "Password",
-    "Too short": "Password must be at least {{passwordLengthMin}} characters long"
+  "about": {
+    "Content": "Some probably interesting content"
   },
   
   "dashboard": {
@@ -120,6 +116,14 @@
     "grand refrain": "main chorus",
     "stance": "stanza",
     "pont" : "bridge"
+  },
+
+  "register": {
+    "Already have an account": "Already have an account?",
+    "Need an account": "Need an account?",
+    "Email Address": "Email Address",
+    "Password": "Password",
+    "Too short": "Password must be at least {{passwordLengthMin}} characters long"
   },
 
   "search": {

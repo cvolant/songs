@@ -46,6 +46,13 @@ export const routesPaths: {
           },
         },
         {
+          name: 'about',
+          pathPartValues: {
+            [Locale.en]: 'about',
+            [Locale.fr]: 'a-propos',
+          },
+        },
+        {
           name: 'signup',
           pathPartValues: {
             [Locale.en]: 'signup',

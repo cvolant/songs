@@ -1,9 +1,10 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
+import AboutPage from '../ui/About';
 import AuthRoute from './AuthRoute';
 import NotFound from '../ui/NotFound';
-import SearchPage from '../ui/SearchPage';
+import SearchPage from '../ui/Search';
 import DashboardPage from '../ui/Dashboard';
 import SignUp from '../ui/signInUp/SignUp';
 import SignIn from '../ui/signInUp/SignIn';
@@ -27,6 +28,11 @@ export const Routes: React.FC<IRoutesProps> = ({
         exact
         path={routesPaths.path(lng, 'home')}
         component={SearchPage}
+      />
+      <AuthRoute
+        exact
+        path={routesPaths.path(lng, 'about')}
+        component={AboutPage}
       />
       <AuthRoute
         exact

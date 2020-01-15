@@ -16,11 +16,11 @@ import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 import Editor from '../Editor';
 
 import FolderEditor from './FolderEditor';
-import { CardSearchList } from '../SearchPage/CardSearchList';
+import { CardSearchList } from '../Search/CardSearchList';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIcon, IIconButtonCallback } from '../../types/iconButtonTypes';
-import { ITutorialContentName } from '../Tutorial';
+import { ITutorialContentName } from '../Tutorial/Tutorial';
 
 import Folders from '../../api/folders/folders';
 import {

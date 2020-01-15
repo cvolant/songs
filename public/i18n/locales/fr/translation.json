@@ -35,12 +35,8 @@
     "Toggle small menu": "Cacher/montrer le petit menu"
   },
 
-  "register": {
-    "Already have an account": "Déjà inscrit ?",
-    "Need an account": "Pas encore inscrit ?",
-    "Email Address": "Addresse e-mail",
-    "Password": "Mot de passe",
-    "Too short": "Le mot de passe doit contenir au moins {{passwordLengthMin}} caractères"
+  "about": {
+    "Content": "Du contenu probablement intéressant"
   },
 
   "dashboard": {
@@ -120,6 +116,14 @@
     "grand refrain": "grand refrain",
     "stance": "stance",
     "pont" : "pont"
+  },
+
+  "register": {
+    "Already have an account": "Déjà inscrit ?",
+    "Need an account": "Pas encore inscrit ?",
+    "Email Address": "Addresse e-mail",
+    "Password": "Mot de passe",
+    "Too short": "Le mot de passe doit contenir au moins {{passwordLengthMin}} caractères"
   },
 
   "search": {

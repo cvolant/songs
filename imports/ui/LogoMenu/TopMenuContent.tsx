@@ -16,11 +16,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Home from '@material-ui/icons/Home';
-import ListIcon from '@material-ui/icons/List';
 import Loupe from '@material-ui/icons/Loupe';
+import Person from '@material-ui/icons/Person';
 import Power from '@material-ui/icons/Power';
 import PowerOff from '@material-ui/icons/PowerOff';
-import ScreenShare from '@material-ui/icons/ScreenShare';
+import RssFeed from '@material-ui/icons/RssFeed';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LanguagePicker from './LanguagePicker';
@@ -93,21 +93,19 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   const navLinks = [
     { name: t('Home'), path: `/${lng}`, Icon: Home },
     {
-      name: t('Song lists'),
-      path: routesPaths.path(locales[lng], 'song-lists'),
-      Icon: ListIcon,
-      disabled: true,
-    },
-    {
-      name: t('Shared view'),
-      path: routesPaths.path(locales[lng], 'shared-view'),
-      Icon: ScreenShare,
-      disabled: true,
-    },
-    {
       name: t('About'),
       path: routesPaths.path(locales[lng], 'about'),
       Icon: Loupe,
+    },
+    {
+      name: t('Dashboard'),
+      path: routesPaths.path(locales[lng], 'dashboard'),
+      Icon: Person,
+    },
+    {
+      name: t('Free broadcast'),
+      onClick: (): void => {},
+      Icon: RssFeed,
       disabled: true,
     },
     {

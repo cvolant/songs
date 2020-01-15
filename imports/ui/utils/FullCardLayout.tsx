@@ -25,6 +25,12 @@ import {
   IArrayIconButtonProps,
 } from '../../types/iconButtonTypes';
 
+interface IFullCardLayoutStyleProps {
+  bigTitle: boolean;
+  contentPaddingTop: boolean;
+  shortHeader: 0 | 1 | 2;
+}
+
 const useStyles = makeStyles((theme) => ({
   actions: {
     alignItems: 'center',
@@ -57,14 +63,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     overflowY: 'auto',
     overflowScrolling: 'touch',
-    paddingTop: (
-      {
-        contentPaddingTop,
-      }: {
-        shortHeader: 0 | 1 | 2;
-        contentPaddingTop: boolean;
-      },
-    ): number | undefined => (contentPaddingTop ? undefined : 0),
+    paddingTop: ({
+      contentPaddingTop,
+    }: IFullCardLayoutStyleProps): number | undefined => (contentPaddingTop ? undefined : 0),
   },
   fab: {
     margin: theme.spacing(2, 2, 2, 0),
@@ -85,14 +86,15 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     paddingBottom: 0,
-    paddingRight: (
-      {
-        shortHeader,
-      }: {
-        shortHeader: 0 | 1 | 2;
-        contentPaddingTop: boolean;
-      },
-    ): number | string => theme.spacing([0, 10, 16][shortHeader]),
+    padding: ({
+      bigTitle,
+      shortHeader,
+    }: IFullCardLayoutStyleProps): number | string => theme.spacing(
+      bigTitle ? 4 : 2,
+      [0, 10, 16][shortHeader],
+      bigTitle ? 4 : 0,
+      bigTitle ? 4 : 2,
+    ),
     transition: theme.transitions.create('padding-right'),
   },
   spaceBetween: {
@@ -106,6 +108,7 @@ interface IFullCardLayoutProps<E> {
   | IIconButtonProps<E>
   | Array<ReactNode | IArrayIconButtonProps<E> | Array<IArrayIconButtonProps<E> | null> | null>;
   actionsProps?: CardActionsProps;
+  bigTitle?: boolean;
   cardProps?: CardProps;
   children?: ReactNode | ReactNode[];
   className?: string;
@@ -125,6 +128,7 @@ interface IFullCardLayoutProps<E> {
 export const FullCardLayout = <E, >({
   actions,
   actionsProps,
+  bigTitle = false,
   cardProps,
   children,
   className,
@@ -142,8 +146,9 @@ export const FullCardLayout = <E, >({
 }: IFullCardLayoutProps<E>): ReactElement | null => {
   const headerExists = !!(header || headerAction || headerProps || headerSubheader || headerTitle);
   const classes = useStyles({
-    shortHeader,
+    bigTitle,
     contentPaddingTop: !headerExists,
+    shortHeader,
   });
   const smallDevice = useDeviceSize('sm', 'down');
   const { t } = useTranslation();
@@ -177,11 +182,12 @@ export const FullCardLayout = <E, >({
     <Card {...cardProps} className={clsx(classes.card, className)}>
       {headerExists && (
         <CardHeader
-          {...headerProps}
+          titleTypographyProps={bigTitle ? { variant: 'h1' } : undefined}
           action={iconButtonOrFullNode(headerAction, IconButton)}
           className={clsx(classes.header, headerProps && headerProps.className)}
           subheader={headerSubheader}
           title={headerTitle}
+          {...headerProps}
         >
           {header}
         </CardHeader>

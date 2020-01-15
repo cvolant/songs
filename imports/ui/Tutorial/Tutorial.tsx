@@ -13,6 +13,7 @@ import TutorialStepContent, { IStepName } from './TutorialStepContent';
 
 const steps: ISteps = {
   Dashboard: ['notWrittenYet'],
+  Folder: ['notWrittenYet'],
   Editor: ['globalNavigation', 'displaySong', 'editSong', 'editParagraph'],
   Search: ['globalNavigation', 'searchSong', 'sortList', 'chooseSong', 'favorites'],
   SignIn: ['signIn', 'notSignedUp'],
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 export type ITutorialContentName =
 | 'Editor'
+| 'Folder'
 | 'Dashboard'
 | 'Search'
 | 'SignIn'

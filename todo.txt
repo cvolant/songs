@@ -4,10 +4,12 @@ Documenter le code avec Tsdoc
 Écrire les parties manquantes du tutoriel
 Ajouter la possibilite de plusieurs IconButtons dans headerAction => MainDashboard
 Folder settings
+Format de date de Folder
 Ajouter un bouton pour supprimer les dossiers
 Reorganiser les methods
 Regler le probleme de CustomIconButton : Component.options
 Mettre tous les layouts dans un dossier ui/layouts
+Liens du menu
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

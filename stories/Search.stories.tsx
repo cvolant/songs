@@ -9,8 +9,8 @@ import {
 } from '@storybook/addon-knobs';
 
 import { UserProvider } from '../imports/hooks/contexts/app-user-context';
-import SearchList, { WrappedSearchList } from '../imports/ui/SearchPage/SearchList';
-import { SearchListNoResult, SearchField } from '../imports/ui/SearchPage';
+import SearchList, { WrappedSearchList } from '../imports/ui/Search/SearchList';
+import { SearchListNoResult, SearchField } from '../imports/ui/Search';
 import { songs } from './fixtures';
 
 export default {

@@ -128,7 +128,7 @@ export const CustomIconButton = <E, >({
   const variant = fn(iconButtonProps.variant, { element, otherParams });
 
   if (!Component.options) {
-    console.log('From CustomIconButton, render. Component:', Component, 'Component.options', Component.options);
+    console.log('From CustomIconButton, render. Component:', Component, 'Component.options', Component.options, 'label:', label, 'Icon:', Icon);
   }
 
   return (
