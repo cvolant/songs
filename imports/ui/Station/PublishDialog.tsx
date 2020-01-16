@@ -72,7 +72,7 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
           ? addresses.reverse().map((address) => (address.rights === 'owner' ? undefined : (
             <TextField
               className={classes.links}
-              label={captions[address.rights] + t('colon', ':')}
+              label={captions[address.rights] + t('colon')}
               key={address.rights}
               value={address.id}
               variant="outlined"

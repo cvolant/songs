@@ -1,10 +1,8 @@
-/* global alert */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Eye from '@material-ui/icons/RemoveRedEye';
 import Folder from '@material-ui/icons/Folder';
-import Settings from '@material-ui/icons/Settings';
 
 import FolderListItemText from './FolderListItemText';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
@@ -45,16 +43,7 @@ export const FolderListItem: React.FC<IFolderListItemProps> = ({
         onClick: handleSelect,
       }}
       primaryIcon={<Folder />}
-      secondaryActions={[
-        {
-          Icon: Settings,
-          key: 'settings',
-          label: t('folder.Settings', 'Settings'),
-          // eslint-disable-next-line no-alert
-          onClick: (): void => alert('Still undefined'),
-        },
-        ...secondaryActions || [],
-      ]}
+      secondaryActions={secondaryActions}
       unfolded={unfolded}
     />
   );

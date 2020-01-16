@@ -32,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IFormDialogProps {
-  children: ReactElement | ReactElement[];
+  children?: ReactElement | ReactElement[];
   dialogText?: string;
   dialogTitle: string;
   error?: string;
   handleClose: () => void;
-  handleSubmit: (callback: (err: Meteor.Error, res: Mongo.ObjectID) => void) => void;
+  handleSubmit: (callback: (err: Meteor.Error | null, res?: Mongo.ObjectID) => void) => void;
   open?: boolean;
 }
 
@@ -59,7 +59,7 @@ export const FormDialog: React.FC<IFormDialogProps> = ({
     e.preventDefault();
     if (!error) {
       console.log('From FormDialog, onSubmit without error');
-      handleSubmit((err: Meteor.Error, res: Mongo.ObjectID) => {
+      handleSubmit((err: Meteor.Error | null, res?: Mongo.ObjectID) => {
         console.log('From FormDialog, onSubmit callback.');
         if (err) {
           console.error('From FormDialog, handleCreateNew.callback. err:', err);

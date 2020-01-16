@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Delete from '@material-ui/icons/Delete';
 
 import { CreateNewDialog } from '../imports/ui/Dashboard';
-import { FolderDialog } from '../imports/ui/Folders/CreateNewFolder';
+import FolderSettingsDialog from '../imports/ui/Folders/FolderSettingsDialog';
 import { SongDialog } from '../imports/ui/Songs/SongDialog';
 import UserSongList, { WrappedUserSongList } from '../imports/ui/Dashboard/UserSongList';
 import UserFolderList, { WrappedUserFolderList } from '../imports/ui/Dashboard/UserFolderList';
@@ -45,9 +45,10 @@ export const songDialog = (): JSX.Element => (
   />
 );
 
-export const folderDialog = (): JSX.Element => (
-  <FolderDialog
+export const folderSettingsDialog = (): JSX.Element => (
+  <FolderSettingsDialog
     folder={boolean('folder', true) ? folders[1] : undefined}
+    handleClose={action('handleClose')}
     handleSelectFolder={action('handleSelectFolder')}
   />
 );

@@ -19,19 +19,18 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    fallbackLng: 'en',
-    whitelist: ['en', 'fr'],
-    load: 'languageOnly',
-    lowerCaseLng: true,
-    debug: true,
     backend: {
       // for all available options read the backend's repository readme file
       loadPath: '/i18n/locales/{{lng}}/{{ns}}.json',
     },
-
+    debug: true,
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
+    load: 'languageOnly',
+    lowerCaseLng: true,
+    whitelist: ['en', 'fr'],
   });
 
 

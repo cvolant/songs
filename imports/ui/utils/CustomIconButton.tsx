@@ -15,7 +15,7 @@ import {
   IFn,
   IIconButtonProps,
   IIconButtonBuildProps,
-  IIconButtonBuildWithCallbackProps,
+  IIconButtonBWCbProps,
 } from '../../types/iconButtonTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -67,10 +67,10 @@ const useStyles = makeStyles((theme) => ({
 */
 const fn = <E, T>(
   stuff: T | IFn<E, T>,
-  buildProps: IIconButtonBuildProps<E> | IIconButtonBuildWithCallbackProps<E>,
+  buildProps: IIconButtonBuildProps<E> | IIconButtonBWCbProps<E>,
 ): T => (stuff
   && typeof stuff === 'object'
-  && 'build' in stuff ? stuff.build(buildProps as IIconButtonBuildWithCallbackProps<E>) : stuff);
+  && 'build' in stuff ? stuff.build(buildProps as IIconButtonBWCbProps<E>) : stuff);
 
 interface ICustomIconButtonProps<E> {
   className?: string;

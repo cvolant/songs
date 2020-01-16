@@ -11,7 +11,7 @@ import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
-import FolderDialog from '../Folders/FolderDialog';
+import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
 import SongDialog from '../Songs/SongDialog';
 import FullCardLayout from '../utils/FullCardLayout';
 import UserFolderList from './UserFolderList';
@@ -115,12 +115,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
             }
           </div>
         )}
-        headerTitle={(
-          <Typography variant="h4">
-            {userSongLists[display].title}
-          </Typography>
-        )}
-        headerProps={{ disableTypography: true }}
+        headerTitle={userSongLists[display].title}
         shortHeader={logoMenuDeployed ? 2 : 1}
       >
         {display === 'folders'
@@ -150,7 +145,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
             />
           )}
       </FullCardLayout>
-      <FolderDialog
+      <FolderSettingsDialog
         handleClose={handleDialog('')}
         handleSelectFolder={handleSelectFolder}
         open={dialog === 'folder'}

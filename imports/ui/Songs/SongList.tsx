@@ -18,7 +18,7 @@ import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 import {
   IIconColor,
   IArrayIconButtonProps,
-  IIconButtonBuildWithCallbackProps,
+  IIconButtonBWCbProps,
 } from '../../types/iconButtonTypes';
 
 import { userFavoriteToggle } from '../../api/users/methods';
@@ -136,7 +136,7 @@ export const SongList: React.FC<ISongListProps> = ({
                   onClick: {
                     build: ({
                       element, callback, otherParams,
-                    }: IIconButtonBuildWithCallbackProps<IUnfetched<ISong>>): () => void => (
+                    }: IIconButtonBWCbProps<IUnfetched<ISong>>): () => void => (
                       element
                         ? handleToggleFavoriteSong(element, callback, otherParams)
                         : (): void => {}

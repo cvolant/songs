@@ -97,7 +97,7 @@ export const userCreatedSongInsert = new ValidatedMethod({
 
 export const userCreatedSongRemove = new ValidatedMethod({
   name: 'user.createdSongs.remove',
-  validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
+  validate: new SimpleSchema({ _id: ObjectIDSchema }).validator({ keys: ['_id'] }),
   run({ _id }: { _id: Mongo.ObjectID }): void {
     if (!this.userId) {
       throw new Meteor.Error(
@@ -176,7 +176,7 @@ export const userFoldersInsert = new ValidatedMethod({
 
 export const userFoldersRemove = new ValidatedMethod({
   name: 'user.folders.remove',
-  validate: new SimpleSchema({ _id: ObjectIDSchema }).validator(),
+  validate: new SimpleSchema({ _id: ObjectIDSchema }).validator({ keys: ['_id'] }),
   run({ _id }: { _id: Mongo.ObjectID }): void {
     if (!this.userId) {
       throw new Meteor.Error(

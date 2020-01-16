@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import shortid from 'shortid';
@@ -7,6 +7,7 @@ import shortid from 'shortid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
 import PlayArrow from '@material-ui/icons/PlayArrow';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 import Settings from '@material-ui/icons/Settings';
@@ -24,6 +25,8 @@ import { IIconButtonCallback } from '../../types/iconButtonTypes';
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
 import routesPaths from '../../app/routesPaths';
 import { IBroadcastRights } from '../../types/broadcastTypes';
+import FolderDialogs from '../Folders/FolderDialogs';
+import CalendarDate from '../utils/CalendarDate';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -59,6 +62,15 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   const smallDevice = useDeviceSize('sm', 'down');
 
   const [displaySort, setDisplaySort] = useState(false);
+  const [displaySettings, setDisplaySettings] = useState(false);
+  const [displayDelete, setDisplayDelete] = useState(false);
+
+  const handleToggleDisplay = (
+    setter: Dispatch<SetStateAction<boolean>>,
+    newDisplay: boolean,
+  ) => (): void => {
+    setter(newDisplay);
+  };
 
   const handleDeleteSong = (
     song: IUnfetched<ISong>,
@@ -89,86 +101,97 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
     history.push(routesPaths.path(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));
   };
 
-  const handleEditSettings = (): void => {};
-
   return (
-    <FullCardLayout
-      actions={[[
-        {
-          color: 'primary',
-          Icon: PlayArrow,
-          key: 'broadcast',
-          label: t('folder.Broadcast', 'Broadcast'),
-          labelVisible: !smallDevice,
-          onClick: handleBroadcast,
-          variant: 'contained',
-        },
-        {
-          color: 'primary',
-          Icon: Add,
-          key: 'add',
-          label: t('folder.Add songs', 'Add songs'),
-          labelVisible: !smallDevice,
-          onClick: handleSongsAdding,
-          variant: 'contained',
-        },
-        {
-          color: 'primary',
-          Icon: Settings,
-          key: 'settings',
-          label: t('folder.Settings', 'Settings'),
-          labelVisible: !smallDevice,
-          onClick: handleEditSettings,
-          variant: 'outlined',
-        },
-      ]]}
-      className={hidden ? classes.hidden : undefined}
-      handleReturn={goBack}
-      headerAction={{
-        Icon: Sort,
-        label: t('search.Sort', 'Sort') as string,
-        onClick: handleToggleDisplaySort(),
-        size: 'small',
-      }}
-      headerProps={{ disableTypography: true }}
-      headerTitle={(
-        <Typography variant="h4">
-          {folder.name}
-        </Typography>
-      )}
-      shortHeader={logoMenuDeployed ? 2 : 1}
-    >
-      <UserSongList
-        displaySort={displaySort}
-        emptyListPlaceholder={(
-          <Typography>
-            {t('folder.No songs found in this folder', 'No songs found in this folder...')}
-          </Typography>
-        )}
-        folder={folder}
-        handleToggleDisplaySort={handleToggleDisplaySort}
-        logoMenuDeployed={logoMenuDeployed}
-        handleSelectSong={handleSelectSong}
-        secondaryActions={[
+    <>
+      <FullCardLayout
+        actions={[[
           {
-            Icon: RemoveCircleOutline,
-            key: 'remove',
-            label: t('Remove'),
-            onClick: {
-              build: ({ element, callback }: {
-                element?: IUnfetched<ISong>;
-                callback?: IIconButtonCallback;
-              }): () => void => (element
-                ? (): void => handleDeleteSong(element, callback)
-                : (): void => {}),
-              callback: true,
-            },
+            color: 'primary',
+            Icon: PlayArrow,
+            key: 'broadcast',
+            label: t('folder.Broadcast', 'Broadcast'),
+            labelVisible: !smallDevice,
+            onClick: handleBroadcast,
+            variant: 'contained',
           },
-        ]}
-        userSongList={UserCollectionName.Folders}
-        user={user}
+          {
+            color: 'primary',
+            Icon: Add,
+            key: 'add',
+            label: t('folder.Add songs', 'Add songs'),
+            labelVisible: !smallDevice,
+            onClick: handleSongsAdding,
+            variant: 'contained',
+          },
+          {
+            color: 'primary',
+            Icon: Settings,
+            key: 'settings',
+            label: t('folder.Settings', 'Settings'),
+            labelVisible: !smallDevice,
+            onClick: handleToggleDisplay(setDisplaySettings, true),
+            variant: 'outlined',
+          },
+          {
+            color: 'primary',
+            Icon: Delete,
+            key: 'delete',
+            label: t('folder.Delete', 'Delete'),
+            labelVisible: !smallDevice,
+            onClick: handleToggleDisplay(setDisplayDelete, true),
+            variant: 'outlined',
+          },
+        ]]}
+        className={hidden ? classes.hidden : undefined}
+        handleReturn={goBack}
+        headerAction={{
+          Icon: Sort,
+          label: t('search.Sort', 'Sort') as string,
+          onClick: handleToggleDisplaySort(),
+          size: 'small',
+        }}
+        headerTitle={folder.name}
+        headerSubheader={<CalendarDate date={folder.date} />}
+        shortHeader={logoMenuDeployed ? 2 : 1}
+      >
+        <UserSongList
+          displaySort={displaySort}
+          emptyListPlaceholder={(
+            <Typography>
+              {t('folder.No songs found in this folder', 'No songs found in this folder...')}
+            </Typography>
+          )}
+          folder={folder}
+          handleToggleDisplaySort={handleToggleDisplaySort}
+          logoMenuDeployed={logoMenuDeployed}
+          handleSelectSong={handleSelectSong}
+          secondaryActions={[
+            {
+              Icon: RemoveCircleOutline,
+              key: 'remove',
+              label: t('Remove'),
+              onClick: {
+                build: ({ element, callback }: {
+                  element?: IUnfetched<ISong>;
+                  callback?: IIconButtonCallback;
+                }): () => void => (element
+                  ? (): void => handleDeleteSong(element, callback)
+                  : (): void => {}),
+                callback: true,
+              },
+            },
+          ]}
+          userSongList={UserCollectionName.Folders}
+          user={user}
+        />
+      </FullCardLayout>
+      <FolderDialogs
+        deleteFolder={displayDelete ? folder : undefined}
+        handleCloseDelete={handleToggleDisplay(setDisplayDelete, false)}
+        handleCloseSettings={handleToggleDisplay(setDisplaySettings, false)}
+        settingsFolder={displaySettings ? folder : undefined}
       />
-    </FullCardLayout>
+    </>
   );
 };
 

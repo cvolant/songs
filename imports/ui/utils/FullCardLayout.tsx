@@ -182,12 +182,16 @@ export const FullCardLayout = <E, >({
     <Card {...cardProps} className={clsx(classes.card, className)}>
       {headerExists && (
         <CardHeader
-          titleTypographyProps={bigTitle ? { variant: 'h1' } : undefined}
           action={iconButtonOrFullNode(headerAction, IconButton)}
           className={clsx(classes.header, headerProps && headerProps.className)}
           subheader={headerSubheader}
           title={headerTitle}
           {...headerProps}
+          titleTypographyProps={{
+            component: 'h1',
+            ...headerProps && headerProps.titleTypographyProps,
+            variant: bigTitle ? 'h1' : 'h4',
+          }}
         >
           {header}
         </CardHeader>

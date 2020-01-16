@@ -1,5 +1,7 @@
 {
   "colon": ":",
+  ":": ":",
+  "?": "?",
   "date 'at'": "at",
   "date format": "MM-DD-YYYY",
 
@@ -14,6 +16,7 @@
   "Back": "Back",
   "Not found": "Not found",
   "Sorry": "... Hmmm, sorry! :/",
+  "Sure?": "Are you sure?",
   "Head home": "Head home",
   "Remove": "Remove",
   "Return": "Return",
@@ -22,7 +25,7 @@
   "Help": "Help",
   "Home": "Home",
   "Song lists": "Song lists",
-  "Shared view": "Shared view",
+  "Free broadcast": "Free broadcast",
   "About": "About",
   "Login": "Login",
   "Logout": "Logout",
@@ -79,6 +82,8 @@
     "Broadcast": "Broadcast",
     "Choose this folder": "Choose this folder",
     "Date scheduled": "Date scheduled?",
+    "Delete": "Delete",
+    "Delete this folder": "Do you really want to delete this folder",
     "Folder name": "Folder name",
     "Folder settings": "Folder settings",
     "Name": "Name",

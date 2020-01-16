@@ -1,5 +1,7 @@
 {
   "colon": " :",
+  ":": " :",
+  "?": " ?",
   "date 'at'": "à",
   "date format": "DD-MM-YYYY",
 
@@ -14,6 +16,7 @@
   "Back": "Précédent",
   "Not found": "Introuvable",
   "Sorry": "... Désolé ! :/",
+  "Sure?": "Êtes-vous sûr ?",
   "Head home": "Retour à l'accueil",
   "Remove": "Enlever",
   "Return": "Retour",
@@ -22,7 +25,7 @@
   "Help": "Aide",
   "Home": "Accueil",
   "Song lists": "Listes de chants",
-  "Shared view": "Partage d'écran",
+  "Free broadcast": "Diffusion libre",
   "About": "À propos",
   "Login": "Connexion",
   "Logout": "Déconnexion",
@@ -79,6 +82,8 @@
     "Broadcast": "Diffusion",
     "Choose this folder": "Choisir ce dossier",
     "Date scheduled": "Date prévue ?",
+    "Delete": "Delete",
+    "Delete this folder": "Voulez-vous vraiment supprimer ce dossier",
     "Folder name": "Nom du dossier",
     "Folder settings": "Paramètres du dossier",
     "Name": "Nom du dossier",

@@ -43,7 +43,7 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
 
   if (compositor) {
     details.push({
-      key: `${t('song.Music', 'Music')}${t('colon', ':')} `,
+      key: `${t('song.Music', 'Music')}${t('colon')} `,
       before: null,
       icon: MusicNote,
       name: compositor,
@@ -52,7 +52,7 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
   }
   if (author) {
     details.push({
-      key: `${t('song.Text', 'Text')}${t('colon', ':')} `,
+      key: `${t('song.Text', 'Text')}${t('colon')} `,
       before: details.length && ' · ',
       icon: TextFields,
       name: author,
@@ -61,7 +61,7 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
   }
   if (traductor) {
     details.push({
-      key: `${t('song.Translation', 'Translation')}${t('colon', ':')} `,
+      key: `${t('song.Translation', 'Translation')}${t('colon')} `,
       before: details.length && ' · ',
       icon: Translate,
       name: traductor,
@@ -69,7 +69,7 @@ export const SongListItemText: React.FC<ISongListItemTextProps> = ({
     });
   }
   /* if (editeur) details.push({
-      key: `${t('song.Edition', 'Edition')}${'colon', ':'} `, */
+      key: `${t('song.Edition', 'Edition')}${t('colon')} `, */
   // eslint-disable-next-line no-irregular-whitespace
   /*    before: details.length && ' (',
       name: editeur,

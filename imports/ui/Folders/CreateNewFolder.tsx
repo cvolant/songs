@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import Add from '@material-ui/icons/Add';
 
-import FormDialog from './FolderDialog';
+import FormDialog from './FolderSettingsDialog';
 import { IFolder, IUnfetched } from '../../types';
 
-interface IFolderDialogProps {
+interface IFolderSettingsDialogProps {
   folder?: IFolder;
   handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
   title?: string;
 }
 
-export const FolderDialog: React.FC<IFolderDialogProps> = ({
+export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
   folder, handleSelectFolder, title,
 }) => {
   const { t } = useTranslation();
@@ -49,4 +49,4 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   );
 };
 
-export default FolderDialog;
+export default FolderSettingsDialog;

@@ -14,14 +14,14 @@ export interface IIconButtonBuildProps<E> {
   element?: E;
   otherParams?: object;
 }
-export interface IIconButtonBuildWithCallbackProps<E> extends IIconButtonBuildProps<E> {
+export interface IIconButtonBWCbProps<E> extends IIconButtonBuildProps<E> {
   callback: IIconButtonCallback;
 }
 
 export type IFn<E, T> = {
   build: (props: IIconButtonBuildProps<E>) => T;
 } | {
-  build: (props: IIconButtonBuildWithCallbackProps<E>) => T;
+  build: (props: IIconButtonBWCbProps<E>) => T;
   callback: true;
 }
 

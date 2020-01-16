@@ -1,20 +1,22 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, {
   ChangeEventHandler,
   Suspense,
   lazy,
   useState,
+  useEffect,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import DayUtils from '@date-io/dayjs';
+import dayjs from 'dayjs';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
-import DayUtils from '@date-io/dayjs';
-import dayjs from 'dayjs';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FormDialog from '../utils/FormDialog';
@@ -22,20 +24,23 @@ import { IFolder, IUnfetched } from '../../types';
 
 import { userFoldersInsert } from '../../api/users/methods';
 import { foldersUpdate } from '../../api/folders/methods';
+import Folders from '../../api/folders/folders';
 
 const MuiPickersUtilsProvider = lazy(() => import('@material-ui/pickers/MuiPickersUtilsProvider'));
 const KeyboardDatePicker = lazy(() => import('@material-ui/pickers/DatePicker').then((module) => ({ default: module.KeyboardDatePicker })));
 
-interface IFolderDialogProps {
-  folder?: IFolder;
+interface IFolderSettingsDialogProps {
+  folder?: IUnfetched<IFolder>;
   handleClose: () => void;
-  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
+  handleSelectFolder?: (folder: IUnfetched<IFolder>) => void;
   open?: boolean;
   title?: string;
 }
 
-export const FolderDialog: React.FC<IFolderDialogProps> = ({
-  folder,
+export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
+  folder: {
+    _id: folderId,
+  } = {},
   handleClose,
   handleSelectFolder,
   open = false,
@@ -44,10 +49,19 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   const { t } = useTranslation();
   const smallDevice = useDeviceSize('sm', 'down');
 
+  useTracker(() => !Meteor.subscribe('broadcast', folderId).ready(), [folderId]);
+  const folder = useTracker(() => Folders.findOne(folderId), [folderId]);
+
   const [name, setName] = useState(folder ? folder.name || '' : '');
   const [dateEnabled, setDateEnabled] = useState(folder && !!folder.date);
   const [date, setDate] = useState<dayjs.Dayjs>(dayjs(((folder && folder.date) || '') || undefined));
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setName(folder ? folder.name || '' : '');
+    setDateEnabled(folder && !!folder.date);
+    setDate(dayjs(((folder && folder.date) || '') || undefined));
+  }, [folder && folder._id]);
 
   const handleDateEnabledChange = (
     _event: object,
@@ -73,7 +87,9 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
     }
   };
 
-  const handleSubmit = (callback: (err: Meteor.Error, res: Mongo.ObjectID) => void): void => {
+  const handleSubmit = (
+    callback: (err: Meteor.Error | null, res?: Mongo.ObjectID) => void,
+  ): void => {
     let cbErr: Meteor.Error;
     let cbRes: Mongo.ObjectID;
 
@@ -84,7 +100,9 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
         date: dateEnabled ? date.toDate() : undefined,
       }, (err: Meteor.Error): void => {
         if (!err) {
-          handleSelectFolder({ _id: folder._id, name });
+          if (handleSelectFolder) {
+            handleSelectFolder({ _id: folder._id, name });
+          }
           cbRes = folder._id;
         } else {
           cbErr = err;
@@ -99,7 +117,9 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
         },
         (err: Meteor.Error, res: Mongo.ObjectID): void => {
           if (res) {
-            handleSelectFolder({ _id: res, name });
+            if (handleSelectFolder) {
+              handleSelectFolder({ _id: res, name });
+            }
             cbRes = res;
           } else {
             cbErr = err;
@@ -156,4 +176,4 @@ export const FolderDialog: React.FC<IFolderDialogProps> = ({
   );
 };
 
-export default FolderDialog;
+export default FolderSettingsDialog;

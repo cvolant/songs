@@ -189,7 +189,7 @@ const Detail: React.FC<IDetailProps> = ({
     if (detail.value) {
       return (
         <Chip
-          label={detailName + (detail.type !== 'bool' && `${t('colon', ':')} ${detail.value}`)}
+          label={detailName + (detail.type !== 'bool' && `${t('colon')} ${detail.value}`)}
           className={classes.chip}
         />
       );

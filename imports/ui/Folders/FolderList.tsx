@@ -1,12 +1,18 @@
 import { Mongo } from 'meteor/mongo';
-import React, { useState, ReactNode } from 'react';
+import React, {
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Eye from '@material-ui/icons/RemoveRedEye';
+import Delete from '@material-ui/icons/Delete';
 import Folder from '@material-ui/icons/Folder';
 import Settings from '@material-ui/icons/Settings';
 
-import FormDialog from './FolderDialog';
+import FolderDialogs from './FolderDialogs';
 import ListLayout from '../ListLayout/ListLayout';
 import ListLayoutItem from '../ListLayout/ListLayoutItem';
 import ListLayoutSorting from '../ListLayout/ListLayoutSorting';
@@ -20,7 +26,7 @@ interface IFolderListProps {
   displaySort: boolean;
   emptyListPlaceholder?: ReactNode;
   folders?: IFolder[];
-  handleSelectFolder?: (folder: IFolder) => void;
+  handleSelectFolder?: (folder: IUnfetched<IFolder>) => void;
   handleSort: (sortCriterion: ISortCriterion<IFolder>) => () => void;
   handleToggleDisplaySort: (open?: boolean) => () => void;
   loading?: boolean;
@@ -45,19 +51,25 @@ export const FolderList: React.FC<IFolderListProps> = ({
 }) => {
   const { t } = useTranslation();
   const [unfoldedFolder, setUnfoldedFolder] = useState();
-  const [folderSettings, setFolderSettings] = useState<IFolder | undefined>(undefined);
+  const [settingsFolder, setSettingsFolder] = useState<IFolder | undefined>();
+  const [deleteFolder, setDeleteFolder] = useState<IFolder | undefined>();
 
   console.log('From FolderList, render. folders:', folders);
 
-  const handleCloseSettings = (): void => {
-    setFolderSettings(undefined);
+  const handleClose = (setter: Dispatch<SetStateAction<IFolder | undefined>>) => (): void => {
+    setter(undefined);
   };
 
   const handleOpenSettings = (folder: IFolder) => (): void => {
-    setFolderSettings(folder);
+    setSettingsFolder(folder);
+  };
+
+  const handleDelete = (folder: IFolder) => (): void => {
+    setDeleteFolder(folder);
   };
 
   const handleSelect = (folder: IFolder) => (): void => handleSelectFolder(folder);
+
   const handleUnfold = (folderId: Mongo.ObjectID) => (): void => {
     if (folderId === unfoldedFolder) {
       setUnfoldedFolder(undefined);
@@ -115,6 +127,13 @@ export const FolderList: React.FC<IFolderListProps> = ({
                   label: t('folder.Settings', 'Settings'),
                   onClick: handleOpenSettings(folder),
                 },
+                {
+                  color: 'default',
+                  Icon: Delete,
+                  key: 'delete',
+                  label: t('folder.Delete', 'Delete'),
+                  onClick: handleDelete(folder),
+                },
                 ...secondaryActions || [],
               ]}
               unfolded={unfolded}
@@ -122,15 +141,13 @@ export const FolderList: React.FC<IFolderListProps> = ({
           );
         })}
       </ListLayout>
-      {folderSettings && (
-        <FormDialog
-          folder={folderSettings}
-          handleClose={handleCloseSettings}
-          handleSelectFolder={handleSelect(folderSettings)}
-          open
-          title={folderSettings.name}
-        />
-      )}
+      <FolderDialogs
+        deleteFolder={deleteFolder}
+        handleCloseDelete={handleClose(setDeleteFolder)}
+        handleCloseSettings={handleClose(setSettingsFolder)}
+        handleSelectFolder={handleSelectFolder}
+        settingsFolder={settingsFolder}
+      />
     </>
   );
 };

@@ -181,7 +181,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
                     <Typography className={clsx(classes.typography, classes.sortOptions)}>
                       <span className={classes.sortBy}>
                         {t('search.sort', 'sort')}
-                        {t('colon', ':')}
+                        {t('colon')}
                         {' '}
                       </span>
                       <span className={classes.sortOptions}>
