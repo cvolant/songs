@@ -1,5 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import React, { MouseEventHandler, useState } from 'react';
+import React, {
+  MouseEventHandler,
+  useState,
+  SetStateAction,
+  Dispatch,
+} from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -146,8 +151,11 @@ export const Station: React.FC<IStationProps> = ({
     }
   };
 
-  const handleToggleAddSongs = (newAddSongs?: boolean) => (): void => {
-    setAddSongs(typeof newAddSongs === 'undefined' ? !addSongs : newAddSongs);
+  const setActionHandler = (
+    setter: Dispatch<SetStateAction<boolean>>,
+    value: boolean,
+  ) => (): void => {
+    setter(value);
   };
 
   const handleEditSong = (songNumber: number) => (): void => {
@@ -248,19 +256,31 @@ export const Station: React.FC<IStationProps> = ({
     return (): void => { };
   };
 
-  const handlePublish = (callback?: IIconButtonCallback) => (): void => {
-    if (status === 'unpublished' || typeof status === 'undefined') {
-      handleUpdateBroadcast({ status: 'unstarted' }, callback);
-    } else if (callback) {
-      callback(null);
+  const handleChangeStatus = (
+    { status: newStatus }: { status?: IBroadcast['status'] },
+    callback?: IIconButtonCallback,
+  ): (
+    () => void
+    ) => {
+    console.log('From Station, handleChangeStatus');
+    if (newStatus) {
+      if (status === newStatus) {
+        if (callback) {
+          return (): void => callback(null);
+        }
+        return (): void => {};
+      }
+      return handleUpdateBroadcast({ status: newStatus }, callback);
     }
-    setOpenPublishDialog(true);
+    if (status === 'unpublished' || typeof status === 'undefined') {
+      return handleUpdateBroadcast({ status: 'unstarted' }, callback);
+    }
+    return handleUpdateBroadcast({ status: 'unpublished' }, callback);
   };
 
-  const handleClosePublishDialog = (): void => {
-    console.log('From Station, handleClosePublishDialog. viewerId:', viewerId, 'broadcast:', broadcast);
-    setOpenPublishDialog(false);
-  };
+  const handleTogglePublished = (callback?: IIconButtonCallback): () => void => (
+    handleChangeStatus({}, callback)
+  );
 
   console.log('From Station, render. status', status, 'handleUpdateBroadcast', handleUpdateBroadcast, 'broadcast:', broadcast);
 
@@ -289,7 +309,7 @@ export const Station: React.FC<IStationProps> = ({
       {addSongs
         ? (
           <AddRemoveSearchList
-            goBack={handleToggleAddSongs(false)}
+            goBack={setActionHandler(setAddSongs, false)}
             handleAddRemoveSong={handleAddRemoveSong}
             handleFocus={handleFocus}
             shortFirstItem={logoMenuDeployed}
@@ -309,13 +329,7 @@ export const Station: React.FC<IStationProps> = ({
                   key: 'publish',
                   label: t('station.Publish', 'Publish'),
                   labelVisible: !smallDevice,
-                  onClick: {
-                    build: ({ callback }: {
-                      element?: IUnfetched<ISong>;
-                      callback?: IIconButtonCallback;
-                    }): () => void => handlePublish(callback),
-                    callback: true,
-                  },
+                  onClick: setActionHandler(setOpenPublishDialog, true),
                 },
                 //
                 // State button: Publish/Start/End/Reset
@@ -387,7 +401,7 @@ export const Station: React.FC<IStationProps> = ({
                   key: 'addSongs',
                   label: t('station.Add songs', 'Add songs'),
                   labelVisible: !smallDevice,
-                  onClick: handleToggleAddSongs(true),
+                  onClick: setActionHandler(setAddSongs, true),
                 },
                 //
                 // Edit button
@@ -527,7 +541,9 @@ export const Station: React.FC<IStationProps> = ({
         )}
       <PublishDialog
         broadcastOwnerId={viewerId}
-        handleClose={handleClosePublishDialog}
+        broadcastStatus={status}
+        handleClose={setActionHandler(setOpenPublishDialog, false)}
+        handleTogglePublished={handleTogglePublished}
         open={openPublishDialog}
       />
     </PageLayout>

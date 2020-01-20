@@ -14,11 +14,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
+import ToggleOn from '@material-ui/icons/ToggleOn';
+import ToggleOff from '@material-ui/icons/ToggleOff';
 
 import Broadcasts from '../../api/broadcasts/broadcasts';
 import { broadcastGetAddresses } from '../../api/broadcasts/methods';
 import { IBroadcast } from '../../types';
 import useUnmountedRef from '../../hooks/unmountedRef';
+import CustomIconButton from '../utils/CustomIconButton';
+import { IIconButtonBWCbProps, IIconButtonCallback } from '../../types/iconButtonTypes';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -32,13 +36,17 @@ const useStyles = makeStyles((theme) => ({
 
 interface IPublishDialogProps {
   broadcastOwnerId: string;
+  broadcastStatus?: IBroadcast['status'];
   handleClose: () => void;
+  handleTogglePublished: (callback?: IIconButtonCallback) => () => void;
   open?: boolean;
 }
 
 export const PublishDialog: React.FC<IPublishDialogProps> = ({
   broadcastOwnerId,
+  broadcastStatus,
   handleClose,
+  handleTogglePublished,
   open = false,
 }) => {
   const { t } = useTranslation();
@@ -67,14 +75,36 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
     control: t('station.Control', 'Control'),
   };
 
+  const published = broadcastStatus && broadcastStatus !== 'unpublished';
+
   console.log('From PublishDialog, render. location:', location, 'broadcastOwnerId:', broadcastOwnerId, 'addresses:', addresses, 'subscriptionReady:', subscriptionReady, 'Broadcasts:', Broadcasts);
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="dialog-name">
+    <Dialog
+      aria-labelledby="dialog-name"
+      fullWidth
+      onClose={handleClose}
+      open={open}
+    >
       <DialogTitle id="dialog-name">
-        {t('station.Publication links', 'Publication links')}
+        {t('station.Publication', 'Publication')}
       </DialogTitle>
       <DialogContent className={classes.content}>
+        <CustomIconButton
+          Component={Button}
+          iconButtonProps={{
+            color: published ? 'primary' : 'default',
+            Icon: published ? ToggleOn : ToggleOff,
+            label: (published ? t('station.Published', 'Published') : t('station.Publish', 'Publish')) as string,
+            labelVisible: true,
+            onClick: {
+              build: ({ callback }: IIconButtonBWCbProps<IBroadcast>): () => void => (
+                handleTogglePublished(callback)
+              ),
+              callback: true,
+            },
+          }}
+        />
         {addresses && addresses.length > 1
           ? addresses.reverse().map((address) => (address.rights === 'owner' ? undefined : (
             <TextField
