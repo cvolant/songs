@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { makeStyles } from '@material-ui/core/styles';
+
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
@@ -21,6 +24,16 @@ import UserCollectionName from './UserCollectionName';
 import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
 
+const useStyles = makeStyles((theme) => ({
+  divider: {
+    height: '3rem',
+    margin: theme.spacing(0, 0.5),
+  },
+  menuActions: {
+    display: 'flex',
+  },
+}));
+
 interface IMainDashboardProps {
   display: UserCollectionName;
   handleChangeDisplay: (newDisplay?: UserCollectionName) => () => void;
@@ -40,6 +53,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
 }) => {
   const { t } = useTranslation();
   const user = useUser();
+  const classes = useStyles();
 
   console.log('From MainDashboard, render. user:', user);
 
@@ -88,7 +102,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
           onClick: handleDialog(display === 'folders' ? 'folder' : 'song'),
         }}
         headerAction={(
-          <div>
+          <div className={classes.menuActions}>
             <IconButton
               aria-label={t('search.Sort', 'Sort')}
               onClick={handleToggleDisplaySort()}
@@ -97,6 +111,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
             >
               <Sort />
             </IconButton>
+            <Divider orientation="vertical" className={classes.divider} />
             {
               Object.entries(userSongLists).map(([
                 list,

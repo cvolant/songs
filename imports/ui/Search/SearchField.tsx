@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   divider: {
-    width: 1,
     height: '3rem',
     margin: theme.spacing(0.5),
   },
@@ -376,7 +375,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
           onKeyDown={handleKeyDown}
         />
         {loading ? <CircularProgress className={classes.circularProgress} /> : null}
-        <Divider className={classes.divider} />
+        <Divider orientation="vertical" className={classes.divider} />
         <IconButton
           color="primary"
           className={classes.iconButton}
