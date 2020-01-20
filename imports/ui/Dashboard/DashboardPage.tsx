@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import PageLayout from '../utils/PageLayout';
 import Editor from '../Editor';
 import MainDashboard from './MainDashboard';
-
+import { TutorialContext } from '../Tutorial';
+import { LogoMenuContext } from '../LogoMenu';
 import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
@@ -80,39 +81,42 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
       title={t('dashboard.Dashboard', 'Dashboard')}
       tutorialContentName={tutorialContentName}
     >
-      {((): React.ReactElement => {
-        console.log('From DashboardPage, return. song:', song, 'folder:', folder);
-        if (folder) {
-          return (
-            <FolderDashboard
-              folder={folder}
-              goBack={goBack(setFolder)}
-              logoMenuDeployed={logoMenuDeployed}
-              handleToggleLogoMenu={handleToggleLogoMenu}
-              setTutorialContentName={setTutorialContentName}
-            />
-          );
-        }
-        if (song) {
-          return (
-            <Editor
-              edit={song.userId === Meteor.userId() && !song.lyrics}
-              goBack={goBack(setSong)}
-              logoMenuDeployed={logoMenuDeployed}
-              song={song}
-            />
-          );
-        }
-        return (
-          <MainDashboard
-            display={display}
-            handleChangeDisplay={handleChangeDisplay}
-            logoMenuDeployed={logoMenuDeployed}
-            handleSelectFolder={handleSelectFolder}
-            handleSelectSong={handleSelectSong}
-          />
-        );
-      })()}
+      <TutorialContext.Provider value={setTutorialContentName}>
+        <LogoMenuContext.Provider value={[logoMenuDeployed, setLogoMenuDeployed]}>
+          {((): React.ReactElement => {
+            console.log('From DashboardPage, return. song:', song, 'folder:', folder);
+            if (folder) {
+              return (
+                <FolderDashboard
+                  folder={folder}
+                  goBack={goBack(setFolder)}
+                  logoMenuDeployed={logoMenuDeployed}
+                  handleToggleLogoMenu={handleToggleLogoMenu}
+                />
+              );
+            }
+            if (song) {
+              return (
+                <Editor
+                  edit={song.userId === Meteor.userId() && !song.lyrics}
+                  goBack={goBack(setSong)}
+                  logoMenuDeployed={logoMenuDeployed}
+                  song={song}
+                />
+              );
+            }
+            return (
+              <MainDashboard
+                display={display}
+                handleChangeDisplay={handleChangeDisplay}
+                logoMenuDeployed={logoMenuDeployed}
+                handleSelectFolder={handleSelectFolder}
+                handleSelectSong={handleSelectSong}
+              />
+            );
+          })()}
+        </LogoMenuContext.Provider>
+      </TutorialContext.Provider>
     </PageLayout>
   );
 };

@@ -80,4 +80,9 @@ export interface IBroadcast {
   updatedAt: Date;
   userId: string;
 }
+export interface IBroadcastUpdates extends Partial<IBroadcast> {
+  addSongs?: IEditedSong[];
+  removeSongs?: IEditedSong[];
+}
+
 export default BroadcastSchema;

@@ -1,5 +1,7 @@
+/* global window */
 import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import { useTranslation } from 'react-i18next';
 
@@ -42,15 +44,20 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const unmountedRef = useUnmountedRef();
+  const location = useLocation();
 
   const [addresses, setAddresses] = useState<IBroadcast['addresses'] | undefined>();
 
   const subscriptionReady = useTracker(() => Meteor.subscribe('broadcast.addresses', broadcastOwnerId), [broadcastOwnerId]);
 
-  broadcastGetAddresses.call({ broadcastOwnerId }, (_err, res) => {
-    if (res && !unmountedRef.current) {
-      console.log('From PublishDialog.broadcastGetAddresses.callback. res:', res);
-      setAddresses(res);
+  useEffect(() => {
+    if (!addresses) {
+      broadcastGetAddresses.call({ broadcastOwnerId }, (_err, res) => {
+        if (res && !unmountedRef.current) {
+          console.log('From PublishDialog.broadcastGetAddresses.callback. res:', res);
+          setAddresses(res);
+        }
+      });
     }
   });
 
@@ -60,7 +67,7 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
     control: t('station.Control', 'Control'),
   };
 
-  console.log('From PublishDialog, render. broadcastOwnerId:', broadcastOwnerId, 'addresses:', addresses, 'subscriptionReady:', subscriptionReady, 'Broadcasts:', Broadcasts);
+  console.log('From PublishDialog, render. location:', location, 'broadcastOwnerId:', broadcastOwnerId, 'addresses:', addresses, 'subscriptionReady:', subscriptionReady, 'Broadcasts:', Broadcasts);
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="dialog-name">
@@ -74,7 +81,7 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
               className={classes.links}
               label={captions[address.rights] + t('colon')}
               key={address.rights}
-              value={address.id}
+              value={`${window.location.origin}/${address.id}`}
               variant="outlined"
             />
           ))) : (

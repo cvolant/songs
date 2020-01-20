@@ -5,7 +5,10 @@ import ObjectIDSchema from './collectionTypes';
 const ParagraphSchema = new SimpleSchema({
   label: String,
   pg: String,
-  index: SimpleSchema.Integer,
+  index: {
+    type: SimpleSchema.Integer,
+    optional: true,
+  },
 });
 export interface IParagraph {
   label: string;
@@ -32,12 +35,12 @@ const SongSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  cnpl: {
-    type: Boolean,
-    optional: true,
-  },
   classification: {
     type: String,
+    optional: true,
+  },
+  cnpl: {
+    type: Boolean,
     optional: true,
   },
   compositor: {
@@ -48,10 +51,11 @@ const SongSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  traductor: {
-    type: String,
+  lyrics: {
+    type: Array,
     optional: true,
   },
+  'lyrics.$': ParagraphSchema,
   newClassification: {
     type: String,
     optional: true,
@@ -60,8 +64,8 @@ const SongSchema = new SimpleSchema({
     type: SimpleSchema.Integer,
     optional: true,
   },
-  year: {
-    type: SimpleSchema.Integer,
+  pgStates: {
+    type: PgStateSchema,
     optional: true,
   },
   subtitle: {
@@ -72,11 +76,10 @@ const SongSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  lyrics: {
-    type: Array,
+  traductor: {
+    type: String,
     optional: true,
   },
-  'lyrics.$': ParagraphSchema,
   updatedAt: {
     type: Date,
     optional: true,
@@ -85,9 +88,43 @@ const SongSchema = new SimpleSchema({
     type: String,
     optional: true,
   },
-  pgStates: {
-    type: PgStateSchema,
+  year: {
+    type: SimpleSchema.Integer,
     optional: true,
+  },
+  /* internet: {
+    type: Boolean,
+    optional: true,
+  },
+  SNPLS: {
+    type: SimpleSchema.Integer,
+    optional: true,
+  },
+  booklet: {
+    type: String,
+    optional: true,
+  },
+  scan: {
+    type: Boolean,
+    optional: true,
+  },
+  detailedStructure: {
+    type: SimpleSchema.Integer,
+    optional: true,
+  },
+  suspicion: {
+    type: SimpleSchema.Integer,
+    optional: true,
+  },
+  structure: {
+    type: String,
+    optional: true,
+  }, */
+}, {
+  clean: {
+    filter: true,
+    autoConvert: true,
+    trimStrings: true,
   },
 });
 export interface ISong {

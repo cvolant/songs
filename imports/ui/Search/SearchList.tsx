@@ -181,7 +181,7 @@ const SearchList = withTracker<ISearchListWTData, ISearchListProps>(() => {
   return {
     favoriteSongs: user ? user.favoriteSongs : [],
     isAuthenticated: !!user,
-    songs: Songs.find({}).fetch(),
+    songs: Songs.find({}).fetch().filter((song) => typeof song.score !== 'undefined'),
   };
 })(WrappedSearchList);
 

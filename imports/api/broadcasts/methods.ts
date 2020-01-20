@@ -6,8 +6,13 @@ import SimpleSchema from 'simpl-schema';
 
 import { Broadcasts } from './broadcasts';
 
-import { BroadcastSchema, IBroadcast } from '../../types/broadcastTypes';
+import {
+  BroadcastSchema,
+  IBroadcast,
+  IBroadcastUpdates,
+} from '../../types/broadcastTypes';
 import { ObjectIDSchema } from '../../types';
+import { SongSchema, IEditedSong } from '../../types/songTypes';
 
 export const broadcastUpdate = new ValidatedMethod({
   name: 'broadcast.update',
@@ -16,36 +21,96 @@ export const broadcastUpdate = new ValidatedMethod({
     updates: BroadcastSchema.pick('state', 'status') as SimpleSchema,
     viewerId: String,
   }).validator(),
+  run({ _id, updates, viewerId }: {
+    _id: Mongo.ObjectID;
+    updates: IBroadcastUpdates;
+    viewerId: string;
+  }): void {
+    console.log('From api.broadcast.update, viewerId:', viewerId);
+
+    const broadcast = Broadcasts.findOne({
+      addresses: {
+        $elemMatch: {
+          id: viewerId,
+          rights: 'owner',
+        },
+      },
+    });
+
+    if (!broadcast) {
+      throw new Meteor.Error(
+        'broadcast.getAddresses.notFound',
+        'Owned broadcast not found',
+      );
+    }
+
+    console.log('From api.broadcast.update.accessGranted. updates:', updates);
+
+    Broadcasts.update(_id, {
+      $set: { ...updates },
+    });
+  },
+});
+
+export const broadcastUpdateAddRemoveSong = new ValidatedMethod({
+  name: 'broadcast.update.addRemoveSong',
+  validate: new SimpleSchema({
+    _id: ObjectIDSchema,
+    operation: {
+      type: String,
+      allowedValues: ['add', 'remove'],
+    },
+    song: SongSchema,
+    viewerId: String,
+  }).validator(),
   run({
     _id,
-    updates,
+    operation,
+    song,
     viewerId,
   }: {
     _id: Mongo.ObjectID;
-    updates: {
-      state?: IBroadcast['state'];
-      status?: IBroadcast['status'];
-    };
+    operation: 'add' | 'remove';
+    song: IEditedSong;
     viewerId: string;
   }): void {
-    const broadcast = Broadcasts.findOne(_id);
+    console.log('From api.broadcast.update.addRemoveSong, viewerId:', viewerId);
 
-    if (broadcast) {
-      if (viewerId && !broadcast.addresses
-        .find((address) => (address.rights === 'control' || address.rights === 'owner') && address.id === viewerId)) {
-        console.log('From api.broadcast.update.accessDenied, viewerId:', viewerId, 'broadcast:', broadcast);
-        throw new Meteor.Error(
-          'broadcast.update.accessDenied',
-          'Cannot update a broadcast when you do not have control or owner rights',
-        );
-      }
+    const broadcast = Broadcasts.findOne({
+      addresses: {
+        $elemMatch: {
+          id: viewerId,
+          rights: 'owner',
+        },
+      },
+    });
 
-      console.log('From api.broadcast.update.accessGranted, updates:', updates, 'broadcast:', broadcast);
-
-      Broadcasts.update(_id, {
-        $set: { ...updates },
-      });
+    if (!broadcast) {
+      throw new Meteor.Error(
+        'broadcast.getAddresses.notFound',
+        'Owned broadcast not found',
+      );
     }
+
+    const modifier = {} as Mongo.Modifier<IBroadcast>;
+
+    if (operation === 'add') {
+      modifier.$addToSet = { songs: song };
+    } else {
+      modifier.$pull = { songs: { _id: song._id } };
+
+      const songIndex = broadcast.songs
+        .map((mapSong) => mapSong._id.toHexString())
+        .indexOf(song._id.toHexString());
+
+      const songNumber = broadcast.state && broadcast.state.songNumber;
+
+      if (songNumber && songIndex <= songNumber) {
+        modifier.$inc = { 'state.songNumber': -1 };
+      }
+    }
+
+    Broadcasts.update(_id, modifier);
   },
 });
 
@@ -77,6 +142,7 @@ export const broadcastGetAddresses = new ValidatedMethod({
 
 const BROADCASTS_METHODS = [
   broadcastUpdate,
+  broadcastUpdateAddRemoveSong,
   broadcastGetAddresses,
 ].map((method) => method.name);
 

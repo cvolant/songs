@@ -35,7 +35,12 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
     };
   }, [broadcastId]);
 
-  const songs = useTracker(() => Songs.find({}).fetch(), []);
+  const songIds = broadcast ? broadcast.songs.map((mapSong) => mapSong._id) : [];
+
+  const songs = useTracker(
+    () => (broadcast ? Songs.find({ _id: { $in: songIds } }).fetch() : []),
+    [songIds.join('')],
+  );
 
   if (broadcast && songNb === undefined) {
     setSongNb(broadcast.state.songNumber || 0);
