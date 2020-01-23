@@ -87,7 +87,7 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
           songStringIds.includes(element._id.toHexString()) ? 'remove' : 'add',
           element,
           callback,
-        )) || ((): void => {})
+        )) || ((): void => { /* Empty function */ })
       ),
       callback: true,
     },

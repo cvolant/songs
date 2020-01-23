@@ -138,6 +138,7 @@ export interface ISong {
   newClassification?: string;
   number?: number;
   year?: number;
+  score?: number;
   subtitle?: string;
   title: string;
   lyrics?: IParagraph[];

@@ -4,7 +4,8 @@ import React, {
   MouseEvent,
   MouseEventHandler,
 } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
+import shortid from 'shortid';
 import clsx from 'clsx';
 
 import { useTranslation } from 'react-i18next';
@@ -24,7 +25,11 @@ import RssFeed from '@material-ui/icons/RssFeed';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LanguagePicker from './LanguagePicker';
+
+import { IBroadcastRights } from '../../types/broadcastTypes';
+
 import routesPaths, { locales } from '../../app/routesPaths';
+import { broadcastInsert } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({
   cushion: {
@@ -80,6 +85,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   const { t, i18n: { language: lng } } = useTranslation();
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory();
   const smallDevice = useDeviceSize('sm', 'down');
 
   console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
@@ -88,6 +94,23 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     const { currentTarget: { classList: targetClasses } } = event;
     console.log('From TopMenuContent, handleClick. targetClasses:', targetClasses);
     if (!targetClasses || targetClasses.contains('languagePicker')) handleToggleTopMenu(false)(event);
+  };
+
+  const handleFreeBroadcast = (): void => {
+    const addresses = ([
+      'owner',
+      'control',
+      'navigate',
+      'readOnly',
+    ] as IBroadcastRights[]).map((rights) => ({
+      id: shortid.generate(),
+      rights,
+    }));
+    broadcastInsert.call({ addresses }, (_err, res) => {
+      if (res) {
+        history.push(routesPaths.path(lng, 'dashboard', 'broadcast', addresses[0].id));
+      }
+    });
   };
 
   const navLinks = [
@@ -104,9 +127,9 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     },
     {
       name: t('Free broadcast'),
-      onClick: (): void => {},
+      onClick: handleFreeBroadcast,
+      hide: !isAuthenticated,
       Icon: RssFeed,
-      disabled: true,
     },
     {
       name: t('Logout'),
@@ -137,7 +160,6 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
             <ListItem
               className={classes.listItem}
               component={navLink.path ? Link : ButtonBase}
-              disabled={navLink.disabled}
               onClick={navLink.onClick}
               to={navLink.path}
               key={navLink.name}

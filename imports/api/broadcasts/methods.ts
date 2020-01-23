@@ -14,6 +14,28 @@ import {
 import { ObjectIDSchema } from '../../types';
 import { SongSchema, IEditedSong } from '../../types/songTypes';
 
+export const broadcastInsert = new ValidatedMethod({
+  name: 'broadcast.insert',
+  validate: (BroadcastSchema.pick('addresses', 'addresses.$') as SimpleSchema).validator(),
+  run({ addresses }: { addresses: IBroadcast['addresses']; }): boolean {
+    if (!this.userId) {
+      throw new Meteor.Error(
+        'broadcast.insert.notLoggedIn',
+        'Must be logged in to create a broadcast',
+      );
+    }
+
+    return !!Broadcasts.insert({
+      addresses,
+      songs: [],
+      state: {},
+      status: 'unpublished',
+      updatedAt: new Date(),
+      userId: this.userId,
+    });
+  },
+});
+
 export const broadcastUpdate = new ValidatedMethod({
   name: 'broadcast.update',
   validate: new SimpleSchema({
@@ -141,6 +163,7 @@ export const broadcastGetAddresses = new ValidatedMethod({
 });
 
 const BROADCASTS_METHODS = [
+  broadcastInsert,
   broadcastUpdate,
   broadcastUpdateAddRemoveSong,
   broadcastGetAddresses,

@@ -39,7 +39,7 @@ const actionIconButtonProps = {
   disable: (): boolean => false,
   Icon: Check,
   label: 'action icon button aria label',
-  onClick: (): void => {},
+  onClick: (): void => { /* Empty function */ },
 };
 
 export const paragraph = (): JSX.Element => (

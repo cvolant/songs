@@ -110,8 +110,8 @@ const Paragraph: React.FC<IParagraphProps> = ({
   return (
     <Grid item xs={12} sm={6} md={4} xl={3}>
       <Card
-        className={`${classes.card} ${selected ? classes.selectedCard : ''} ${edit ? '' : classes.hoverableCard}`}
-        onClick={edit ? (): void => { } : handleSelect}
+        className={`${classes.card} ${selected ? classes.selectedCard : ''} ${editGlobal ? '' : classes.hoverableCard}`}
+        onClick={editGlobal ? undefined : handleSelect}
         elevation={selected ? 4 : 0}
         raised={selected}
       >

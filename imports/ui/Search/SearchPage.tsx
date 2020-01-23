@@ -1,7 +1,12 @@
-import React, { createRef, useState, MouseEventHandler } from 'react';
+import React, {
+  createRef,
+  useState,
+  useEffect,
+  MouseEventHandler,
+} from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,13 +76,21 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+
+  const undefetchedSong = /^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined;
+
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [selectedSong, setSelectedSong] = useState(/^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined);
+  const [selectedSong, setSelectedSong] = useState(undefetchedSong);
   const [showInfos, setShowInfos] = useState(true);
   const [viewer, setViewer] = useState<React.ReactNode>(undefined);
   const smallDevice = useDeviceSize('sm', 'down');
   const classes = useStyles();
   const contentAreaRef = createRef<HTMLDivElement>();
+
+  useEffect((): void => {
+    setSelectedSong(undefetchedSong);
+  }, [songId]);
 
   const handleCloseInfos = (): void => {
     setShowInfos(false);
@@ -89,7 +102,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 
   const handleGoBackFromEditor = (): void => {
     setSelectedSong(undefined);
-    history.push(routesPaths.path(i18n.language, 'search'));
+    history.push(routesPaths.path(i18n.language, 'search') + location.search);
   };
 
   const handleOpenScreen = (song?: IUnfetched<ISong>) => (): void => {
@@ -110,7 +123,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 
   const handleSelectSong = (song: ISong): void => {
     setSelectedSong(song);
-    history.push(routesPaths.path(i18n.language, 'search', song._id.toHexString()));
+    history.push(routesPaths.path(i18n.language, 'search', song._id.toHexString()) + location.search);
     console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id.toHexString():', song._id.toHexString());
   };
 
@@ -178,7 +191,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
                 }): MouseEventHandler => (
                   element
                     ? handleOpenScreen(element)
-                    : (): void => {}
+                    : (): void => { /* Empty function */ }
                 ),
               },
               color: 'primary' as IIconColor,

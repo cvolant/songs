@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import React, {
-  MouseEventHandler,
   useState,
   SetStateAction,
   Dispatch,
@@ -239,7 +238,8 @@ export const Station: React.FC<IStationProps> = ({
     forward: number,
     callback?: IIconButtonCallback,
   ): (
-    ) => void => {
+    () => void
+    ) => {
     const newStateSongNb = stateSongNb + forward;
     if (songs && newStateSongNb >= 0 && newStateSongNb < songs.length) {
       return handleUpdateBroadcast({
@@ -253,7 +253,11 @@ export const Station: React.FC<IStationProps> = ({
         }
       });
     }
-    return (): void => { };
+    return (): void => {
+      if (callback) {
+        callback(null);
+      }
+    };
   };
 
   const handleChangeStatus = (
@@ -268,7 +272,7 @@ export const Station: React.FC<IStationProps> = ({
         if (callback) {
           return (): void => callback(null);
         }
-        return (): void => {};
+        return (): void => { /* Empty function */ };
       }
       return handleUpdateBroadcast({ status: newStatus }, callback);
     }
@@ -454,9 +458,9 @@ export const Station: React.FC<IStationProps> = ({
                 {
                   disabled: true,
                   key: 'nav-display',
-                  label: `${songNb + 1}/${songs.length}`,
+                  label: `${songNb + (songs.length ? 1 : 0)}/${songs.length}`,
                   labelVisible: true,
-                  onClick: (): void => { },
+                  onClick: (): void => { /* Empty function */ },
                 },
                 // Current
                 {
@@ -505,9 +509,9 @@ export const Station: React.FC<IStationProps> = ({
               {
                 disabled: true,
                 key: 'control-display',
-                label: `${stateSongNb + 1}/${songs.length}`,
+                label: `${stateSongNb + (songs.length ? 1 : 0)}/${songs.length}`,
                 labelVisible: true,
-                onClick: ((): void => { }) as MouseEventHandler,
+                onClick: (): void => { /* Empty function */ },
               },
               // Control: Next
               {

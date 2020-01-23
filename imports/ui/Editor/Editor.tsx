@@ -163,27 +163,26 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     const {
       attributes: {
         name: {
-          value: nameValue,
-        },
-        type: {
-          value: typeValue,
+          value: detailKeyName,
         },
       },
       checked,
       value: targetValue,
     } = target;
+    const detailType = details[detailKeyName as keyof IDetails].type;
+
     const newDetails = JSON.parse(JSON.stringify(details));
-    if (typeValue === 'bool') {
-      newDetails[nameValue].value = !checked;
-    } else if (typeValue === 'number') {
-      const readValue = targetValue as string;
-      let value = '';
-      for (let i = 0; i < readValue.length; i += 1) {
-        if (!Number.isNaN(parseInt(readValue[i], 10))) value += readValue[i];
-      }
-      newDetails[nameValue].value = value;
+    if (detailType === 'bool') {
+      newDetails[detailKeyName].value = !checked;
+    } else if (detailType === 'number') {
+      const value = (
+        Number.isInteger(targetValue as number) && targetValue
+      ) || (
+        Number.isInteger(parseInt(targetValue as string, 10)) && parseInt(targetValue as string, 10)
+      ) || undefined;
+      newDetails[detailKeyName].value = value;
     } else {
-      newDetails[nameValue].value = targetValue;
+      newDetails[detailKeyName].value = targetValue;
     }
     setDetails(newDetails);
   };
@@ -229,13 +228,13 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handlePgCancel = (pgIndex: number): void => {
+    console.log('From Editor, handlePgCancel. song.lyrics:', song.lyrics, 'pgStates:', pgStates);
     if (song.lyrics) {
-      console.log('From Editor, handlePgCancel. song.lyrics[pgIndex]:', song.lyrics[pgIndex]);
       const newLyrics = JSON.parse(JSON.stringify(lyrics));
       newLyrics[pgIndex] = song.lyrics[pgIndex];
       setLyrics(newLyrics);
-      handleEditPg(pgIndex);
     }
+    handleEditPg(pgIndex);
   };
 
   const handlePgChange = (
@@ -427,7 +426,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       console.log('From Editor, useEffect[user._id]. foldersSubscription:', foldersSubscription);
       return foldersSubscription.stop;
     }
-    return (): void => { };
+    return (): void => { /* Empty function */ };
   }, [user && user._id]);
 
   useEffect(() => {
@@ -441,7 +440,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       console.log('From Editor, useEffect[song._id.toHexString()]. songSubscription:', songSubscription);
       return songSubscription.stop;
     }
-    return (): void => { };
+    return (): void => { /* Empty function */ };
   }, [song._id.toHexString()]);
 
   console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
@@ -534,7 +533,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
               callback: true,
             },
           }}
-          handleReturn={edit ? undefined : goBack}
+          handleReturn={goBack}
           otherParams={{ isThereSelected: pgStates.filter((pgState) => pgState.selected).length }}
         >
           {title

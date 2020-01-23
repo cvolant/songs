@@ -63,12 +63,9 @@ export interface IDetailTarget {
     name: {
       value: string;
     };
-    type: {
-      value: 'string' | 'number' | 'bool';
-    };
   };
   checked?: boolean;
-  value?: string;
+  value?: string | number;
 }
 
 interface IDetailProps {
@@ -174,7 +171,7 @@ const Detail: React.FC<IDetailProps> = ({
           label={detailName}
           type={detail.type}
           inputProps={{ name: keyname, type: detail.type }}
-          multiline
+          multiline={detail.type === 'string'}
           className={classes.textField}
           margin="normal"
           variant="outlined"

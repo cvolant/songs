@@ -45,7 +45,7 @@ export const SongList: React.FC<ISongListProps> = ({
   displaySort,
   emptyListPlaceholder,
   favoriteSongs,
-  handleSelectSong = (): void => { },
+  handleSelectSong = (): void => { /* Empty function */ },
   handleSort,
   handleToggleDisplaySort,
   loading = false,
@@ -139,7 +139,7 @@ export const SongList: React.FC<ISongListProps> = ({
                     }: IIconButtonBWCbProps<IUnfetched<ISong>>): () => void => (
                       element
                         ? handleToggleFavoriteSong(element, callback, otherParams)
-                        : (): void => {}
+                        : (): void => { /* Empty function */ }
                     ),
                     callback: true as true,
                   },

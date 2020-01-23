@@ -176,7 +176,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
                   callback?: IIconButtonCallback;
                 }): () => void => (element
                   ? (): void => handleDeleteSong(element, callback)
-                  : (): void => {}),
+                  : (): void => { /* Empty function */ }),
                 callback: true,
               },
             },

@@ -99,7 +99,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     }
     console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
-    return (): void => { };
+    return (): void => { /* Empty function */ };
   }, [search, sort]);
 
   useEffect(() => {

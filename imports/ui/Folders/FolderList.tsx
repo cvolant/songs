@@ -40,7 +40,7 @@ export const FolderList: React.FC<IFolderListProps> = ({
   displaySort,
   emptyListPlaceholder,
   folders = [],
-  handleSelectFolder = (): void => { },
+  handleSelectFolder = (): void => { /* Empty function */ },
   handleSort,
   handleToggleDisplaySort,
   loading = false,
