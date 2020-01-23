@@ -33,7 +33,7 @@ interface ISongListProps {
   handleToggleDisplaySort: (open?: boolean) => () => void;
   handleToggleFavoriteSong: (songId: Mongo.ObjectID, value?: boolean) => () => void;
   loading?: boolean;
-  raiseLimit: () => void;
+  raiseLimit?: () => void;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   shortFirstItem?: boolean;
   songs?: ISong[];

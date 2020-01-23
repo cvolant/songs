@@ -82,7 +82,7 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
       handleSort={handleSort}
       handleToggleDisplaySort={handleToggleDisplaySort}
       loading={loading}
-      raiseLimit={raiseLimit}
+      raiseLimit={folders.length === limit ? raiseLimit : undefined}
       shortFirstItem={logoMenuDeployed}
       sort={sort}
     />

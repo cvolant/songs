@@ -112,7 +112,7 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
       handleToggleDisplaySort={handleToggleDisplaySort}
       handleToggleFavoriteSong={handleToggleFavoriteSong}
       loading={loading}
-      raiseLimit={raiseLimit}
+      raiseLimit={songs.length === limit ? raiseLimit : undefined}
       handleSelectSong={handleSelectSong}
       secondaryActions={secondaryActions}
       shortFirstItem={logoMenuDeployed}

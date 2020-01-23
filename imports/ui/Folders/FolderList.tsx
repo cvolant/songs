@@ -30,7 +30,7 @@ interface IFolderListProps {
   handleSort: (sortCriterion: ISortCriterion<IFolder>) => () => void;
   handleToggleDisplaySort: (open?: boolean) => () => void;
   loading?: boolean;
-  raiseLimit: () => void;
+  raiseLimit?: () => void;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<IFolder>>[];
   shortFirstItem?: boolean;
   sort?: ISortSpecifier<IFolder>;

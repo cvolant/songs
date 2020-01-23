@@ -39,7 +39,7 @@ interface IListLayoutProps {
   listSorting?: ReactElement;
   loading?: boolean;
   shortFirstItem?: boolean;
-  raiseLimit: () => void;
+  raiseLimit?: () => void;
 }
 
 export const ListLayout: React.FC<IListLayoutProps> = ({
@@ -76,7 +76,7 @@ export const ListLayout: React.FC<IListLayoutProps> = ({
     <List
       component="nav"
       className={classes.list}
-      onScroll={handleListScroll}
+      onScroll={raiseLimit && handleListScroll}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ref={listRef as any}
       subheader={displaySort ? listSorting : undefined}

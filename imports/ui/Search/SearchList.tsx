@@ -85,22 +85,20 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     ) {
       const { query, options } = buildQuery({ search, options: { limit, sort } });
 
-      console.log('From SearchList, useEffect[search, sort]: subscription with { query, options }:', JSON.stringify({ query, options }));
-
-      const subscription = Meteor.subscribe('songs', { query, options }, () => {
-        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false).');
+      const subscription = Meteor.subscribe('songs', { query, options }, (args) => {
+        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false). args:', args);
         setLoading(false);
         setLimitRaised(false);
       });
-      return (): void => {
-        console.log('From SearchList, useEffect[search, sort] return. Stop subscriptions.');
-        subscription.stop();
-      };
+
+      console.log('From SearchList, useEffect[search, sort]: subscription with { query, options }:', JSON.stringify({ query, options }), '\nsubscription:', subscription);
+
+      return subscription.stop;
     }
     console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
     return (): void => { /* Empty function */ };
-  }, [search, sort]);
+  }, [search, sort && Object.values(sort).join(), limit]);
 
   useEffect(() => {
     setLimit(nbItemsPerPage);
@@ -166,7 +164,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         handleToggleFavoriteSong={handleToggleFavoriteSong}
         loading={limitRaised || loading}
         shortFirstItem={shortFirstItem}
-        raiseLimit={raiseLimit}
+        raiseLimit={songs.length === limit ? raiseLimit : undefined}
         secondaryActions={secondaryActions}
         songs={songs}
         sort={sort}
