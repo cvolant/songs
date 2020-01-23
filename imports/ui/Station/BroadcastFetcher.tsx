@@ -24,7 +24,7 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
     return !handle.ready();
   }, [broadcastId]);
 
-  const { broadcast } = useTracker(() => {
+  const uTBroadcastAndDetails = useTracker(() => {
     const tBroadcast = Broadcasts.findOne({ 'addresses.id': broadcastId });
     return {
       broadcast: tBroadcast,
@@ -34,6 +34,8 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
       ...tBroadcast ? tBroadcast.state : {},
     };
   }, [broadcastId]);
+
+  const { broadcast } = uTBroadcastAndDetails;
 
   const songIds = broadcast ? broadcast.songs.map((mapSong) => mapSong._id) : [];
 

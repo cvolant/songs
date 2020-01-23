@@ -13,6 +13,7 @@ module.exports = ({ config }) => {
       'Session':    rootPath + '/.storybook/mocks/Session',
       'Songs':      rootPath + '/.storybook/mocks/Songs',
       'Tracker':    rootPath + '/.storybook/mocks/Tracker',
+      'broadcastGetAddresses': rootPath + '/.storybook/mocks/methods/broadcastGetAddresses',
     })
   );
   config.module.rules.push({

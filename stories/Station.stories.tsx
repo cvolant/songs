@@ -1,10 +1,19 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { withKnobs, number } from '@storybook/addon-knobs';
+import { withKnobs, number, boolean } from '@storybook/addon-knobs';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { action } from '@storybook/addon-actions';
 
 import { UserProvider } from '../imports/hooks/contexts/app-user-context';
-import { Station } from '../imports/ui/Station';
+import {
+  BroadcastFetcher,
+  PublishDialog,
+} from '../imports/ui/Station';
+
+import { IIconButtonCallback } from '../imports/types/iconButtonTypes';
+
+import { broadcasts } from './fixtures';
 
 export default {
   title: 'Station',
@@ -22,8 +31,23 @@ export default {
   ],
 };
 
-export const station = (): JSX.Element => (
-  <Station
+export const publishDialog = (): JSX.Element => (
+  <PublishDialog
+    broadcastOwnerId={broadcasts[0].addresses[0].id}
+    broadcastStatus={broadcasts[0].status}
+    handleClose={action('handleClose')}
+    handleTogglePublished={(callback?: IIconButtonCallback) => (): void => {
+      action('handleTogglePublished')();
+      if (callback) {
+        setTimeout(callback, 1000);
+      }
+    }}
+    open={boolean('open', false)}
+  />
+);
+
+export const broadcastFetcher = (): JSX.Element => (
+  <BroadcastFetcher
     broadcastId={[
       'idAddressRO1',
       'idAddressN1',

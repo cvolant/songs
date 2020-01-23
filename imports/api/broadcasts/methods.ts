@@ -17,7 +17,7 @@ import { SongSchema, IEditedSong } from '../../types/songTypes';
 export const broadcastInsert = new ValidatedMethod({
   name: 'broadcast.insert',
   validate: (BroadcastSchema.pick('addresses', 'addresses.$') as SimpleSchema).validator(),
-  run({ addresses }: { addresses: IBroadcast['addresses']; }): boolean {
+  run({ addresses }: { addresses: IBroadcast['addresses'] }): boolean {
     if (!this.userId) {
       throw new Meteor.Error(
         'broadcast.insert.notLoggedIn',

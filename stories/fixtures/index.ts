@@ -191,8 +191,20 @@ export const broadcasts: IBroadcast[] = [
     _id: id('idBroadcast1'),
     addresses: [
       {
-        id: 'idAddressRO1',
+        id: 'idAddressO1',
+        rights: 'owner',
+      },
+      {
+        id: 'idAddressC1',
         rights: 'control',
+      },
+      {
+        id: 'idAddressN1',
+        rights: 'navigate',
+      },
+      {
+        id: 'idAddressR1',
+        rights: 'readOnly',
       },
     ],
     songs: [{ _id: songs[0]._id }, songs[1]],
@@ -207,12 +219,20 @@ export const broadcasts: IBroadcast[] = [
     _id: id('idBroadcast2'),
     addresses: [
       {
-        id: 'idAddressRO2',
-        rights: 'readOnly',
+        id: 'idAddressO2',
+        rights: 'owner',
       },
       {
         id: 'idAddressC2',
         rights: 'control',
+      },
+      {
+        id: 'idAddressN2',
+        rights: 'navigate',
+      },
+      {
+        id: 'idAddressR2',
+        rights: 'readOnly',
       },
     ],
     songs: [songs[0]],
