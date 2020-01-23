@@ -9,9 +9,8 @@ import {
 } from '@storybook/addon-knobs';
 
 import { UserProvider } from '../imports/hooks/contexts/app-user-context';
-import SearchList, { WrappedSearchList } from '../imports/ui/Search/SearchList';
+import SearchList from '../imports/ui/Search/SearchList';
 import { SearchListNoResult, SearchField } from '../imports/ui/Search';
-import { songs } from './fixtures';
 
 export default {
   title: 'Search',
@@ -39,18 +38,6 @@ export const searchField = (): JSX.Element => (
     handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort. focus: ${display}`)}
     shortSearchField={boolean('shortSearchField', true)}
     handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
-  />
-);
-
-export const wrappedSearchList = (): JSX.Element => (
-  <WrappedSearchList
-    handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
-    handleSelectSong={action('handleSelectSong')}
-    favoriteSongs={[]}
-    isAuthenticated={boolean('isAuthenticated', true)}
-    shortFirstItem={boolean('shortFirstItem', true)}
-    shortSearchField={boolean('shortSearchField', true)}
-    songs={songs}
   />
 );
 

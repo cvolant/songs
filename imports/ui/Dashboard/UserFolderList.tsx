@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
 import FolderList from '../Folders/FolderList';
@@ -22,20 +22,15 @@ interface IUserFolderListProps {
   logoMenuDeployed?: boolean;
   handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
 }
-interface IUserFolderListWTData {
-  folders: IFolder[];
-}
-interface IWrappedUserFolderListProps
-  extends IUserFolderListProps, IUserFolderListWTData { }
 
-export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
+export const UserFolderList: React.FC<IUserFolderListProps> = ({
   displaySort = false,
   emptyListPlaceholder,
-  folders,
   handleToggleDisplaySort,
   logoMenuDeployed,
   handleSelectFolder,
 }) => {
+  const [folders, setFolders] = useState<IFolder[]>([]);
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<ISortSpecifier<IFolder> | undefined>(undefined);
@@ -45,10 +40,19 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     const subscription = Meteor.subscribe('user.folders', { limit, sort }, () => {
       setLoading(false);
     });
-    return (): void => {
-      subscription.stop();
-    };
-  }, [sort]);
+    return subscription.stop;
+  }, [limit, sort]);
+
+  useTracker(() => {
+    let uTFolders: IFolder[] = [];
+
+    if (!loading) {
+      uTFolders = Folders.find().fetch();
+      setFolders(uTFolders);
+    }
+
+    return uTFolders; // Unused.
+  }, [loading]);
 
   const raiseLimit = (): void => {
     console.log('From UserFolderList, raiseLimit. folders.length:', folders.length, 'limit:', limit);
@@ -88,9 +92,5 @@ export const WrappedUserFolderList: React.FC<IWrappedUserFolderListProps> = ({
     />
   );
 };
-
-const UserFolderList = withTracker<IUserFolderListWTData, IUserFolderListProps>(() => ({
-  folders: Folders.find().fetch(),
-}))(WrappedUserFolderList);
 
 export default UserFolderList;

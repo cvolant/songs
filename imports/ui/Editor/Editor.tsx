@@ -427,7 +427,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       return foldersSubscription.stop;
     }
     return (): void => { /* Empty function */ };
-  }, [user && user._id]);
+  }, [user]);
 
   useEffect(() => {
     if (song._id.toHexString()) {
@@ -441,7 +441,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       return songSubscription.stop;
     }
     return (): void => { /* Empty function */ };
-  }, [song._id.toHexString()]);
+  }, [goBack, song._id]);
 
   console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
 

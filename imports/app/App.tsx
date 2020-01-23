@@ -1,8 +1,9 @@
+/* global localStorage */
 import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Session } from 'meteor/session';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -38,7 +39,6 @@ export const App: React.FC<IAppProps> = ({
   match,
 }) => {
   const history = useHistory();
-  const location = useLocation();
   const { i18n } = useTranslation();
 
   let lng: string;
@@ -62,7 +62,6 @@ export const App: React.FC<IAppProps> = ({
     Session.set('selectedSongId', undefined);
     Session.set('isNavOpen', false);
 
-    // eslint-disable-next-line no-undef
     localStorage.setItem('zoom', localStorage.getItem('zoom') || (
       (xs && 0.6) || (sm && 0.7) || (md && 0.8) || (lg && 1) || 1.2
     ).toString());
@@ -77,20 +76,17 @@ export const App: React.FC<IAppProps> = ({
       // props here are the props useEffect received, not the current props,
       // but history is mutable: it is always the current history.
       if (isUnauthenticatedPage && isAuthenticated) {
-        console.log('From App, Tracker.autorun. history:', history, 'location:', location, 'history.location.state:', history.location.state);
         if (history.location.state && history.location.state.from) {
-          console.log('From App, Tracker.autorun. REDIRECTION. history.location', history.location, ' location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
-          history.replace(history.location.pathname.indexOf(routesPaths.translatePath('/en/signin', lng)) >= 0 ? history.location.state.from : routesPaths.translatePath('/en/dashboard', lng));
+          history.replace(history.location.pathname.indexOf(routesPaths.path(lng, 'signin')) >= 0 ? history.location.state.from : routesPaths.path(lng, 'dashboard'));
         } else {
-          console.log('From App, Tracker.autorun. REDIRECTION. No state... history.location:', history.location, 'location:', location, ' JSON.stringigy(location):', JSON.stringify(location), ' JSON.stringigy(history.location):', JSON.stringify(history.location));
           history.replace(routesPaths.path(lng, 'dashboard'));
         }
       } else if (isAuthenticatedPage && !isAuthenticated) {
-        console.log('From App, Tracker.autorun. REDIRECTION. Autenticated page but unauthenticated: redirection to home.');
         history.replace(`/${lng}`);
       }
     });
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lng, xs, sm, md, lg]);
 
   console.log('From App, render. \nSongs:', Songs, '\nFolders:', Folders, '\nBroadcasts:', Broadcasts);
 

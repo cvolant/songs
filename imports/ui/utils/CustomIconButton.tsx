@@ -94,7 +94,7 @@ export const CustomIconButton = <E, >({
 
   useEffect(() => {
     if (loading) clearTimeout(loading);
-  }, []);
+  }, [loading]);
 
   const handleClick = (
     onClick: MouseEventHandler,

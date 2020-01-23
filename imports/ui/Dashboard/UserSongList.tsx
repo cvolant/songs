@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, { ReactNode, useState, useEffect } from 'react';
 
 import SongList from '../Songs/SongList';
@@ -36,27 +36,22 @@ interface IUserSongListProps {
   user: IUser | null;
   userSongList?: UserCollectionName;
 }
-interface IUserSongListWTData {
-  favoriteSongs: Mongo.ObjectID[];
-  songs: ISong[];
-}
-interface IWrappedUserSongListProps
-  extends IUserSongListProps, IUserSongListWTData { }
 
-export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
+export const UserSongList: React.FC<IUserSongListProps> = ({
   displaySort = false,
   emptyListPlaceholder,
-  favoriteSongs,
   folder,
   handleToggleDisplaySort,
   logoMenuDeployed,
   handleSelectSong,
   secondaryActions,
-  songs,
+  user,
   userSongList = UserCollectionName.FavoriteSongs,
 }) => {
   const [limit, setLimit] = useState(nbItemsPerPage);
+  const [favoriteSongs, setFavoriteSongs] = useState<Mongo.ObjectID[]>([]);
   const [loading, setLoading] = useState(true);
+  const [songs, setSongs] = useState<ISong[]>([]);
   const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
 
   useEffect((): (() => void) => {
@@ -68,11 +63,31 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
     const subscription = userSongList === UserCollectionName.Folders && folder && folder._id
       ? Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }, endOfLoading)
       : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
+
     console.log('From UserSongList, useEffect. userSongList:', userSongList, 'folder:', folder, 'subscription:', subscription);
-    return (): void => {
-      subscription.stop();
-    };
-  }, [sort, userSongList]);
+    return subscription.stop;
+  }, [folder, limit, sort, userSongList]);
+
+  useTracker(() => {
+    let uTFavoriteSongs: Mongo.ObjectID[] = [];
+    let uTSongs: ISong[] = [];
+
+    if (!loading) {
+      const songIds = userSongList === UserCollectionName.Folders
+        ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
+        : (user && user[userSongList]) || [];
+      uTFavoriteSongs = (user && user.favoriteSongs) || [];
+      uTSongs = Songs.find({ _id: { $in: songIds } }).fetch();
+
+      setFavoriteSongs(uTFavoriteSongs);
+      setSongs(uTSongs);
+    }
+    return { uTFavoriteSongs, uTSongs }; // Unused.
+  }, [folder, loading, user, userSongList]);
+
+  useEffect(() => {
+    setLimit(nbItemsPerPage);
+  }, [userSongList]);
 
   const raiseLimit = (): void => {
     console.log('From UserSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
@@ -121,19 +136,5 @@ export const WrappedUserSongList: React.FC<IWrappedUserSongListProps> = ({
     />
   );
 };
-
-const UserSongList = withTracker<IUserSongListWTData, IUserSongListProps>(({
-  userSongList = UserCollectionName.FavoriteSongs, folder, user,
-}) => {
-  const songIds = userSongList === UserCollectionName.Folders
-    ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
-    : (user && user[userSongList]) || [];
-  const favoriteSongs = (user && user.favoriteSongs) || [];
-  console.log('From UserSongList, withTracker. folder:', folder, 'favoriteSongs:', favoriteSongs, 'user:', user);
-  return {
-    favoriteSongs,
-    songs: Songs.find({ _id: { $in: songIds } }).fetch(),
-  };
-})(WrappedUserSongList);
 
 export default UserSongList;

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core';
@@ -47,35 +47,24 @@ interface ISearchListProps {
   shortSearchField?: boolean;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
 }
-interface ISearchListWTData {
-  favoriteSongs: Mongo.ObjectID[];
-  isAuthenticated: boolean;
-  songs: ISong[];
-}
-interface IWrappedSearchListProps
-  extends ISearchListProps, ISearchListWTData { }
 
-export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
-  favoriteSongs,
+export const SearchList: React.FC<ISearchListProps> = ({
   handleFocus,
   handleSelectSong,
   hidden = false,
-  isAuthenticated,
   shortFirstItem = false,
   shortSearchField = false,
   secondaryActions,
-  songs,
 }) => {
   const classes = useStyles();
 
   const [displaySort, setDisplaySort] = useState(false);
   const [limit, setLimit] = useState(nbItemsPerPage);
-  const [limitRaised, setLimitRaised] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
   const [search, setSearch] = useState();
-
-  console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
+  const [songs, setSongs] = useState<ISong[]>([]);
+  const [favoriteSongs, setFavoriteSongs] = useState<Mongo.ObjectID[]>([]);
 
   useEffect(() => {
     if (search
@@ -88,7 +77,6 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
       const subscription = Meteor.subscribe('songs', { query, options }, () => {
         console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false)');
         setLoading(false);
-        setLimitRaised(false);
       });
 
       console.log('From SearchList, useEffect[search, sort]: subscription with { query, options }:', JSON.stringify({ query, options }), '\nsubscription:', subscription);
@@ -98,7 +86,29 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
     return (): void => { /* Empty function */ };
-  }, [JSON.stringify({ search, sort, limit })]);
+  }, [search, sort, limit]);
+
+  const { isAuthenticated } = useTracker(() => {
+    const user = Meteor.user() as IUser;
+    let uTFavoriteSongs: Mongo.ObjectID[] = [];
+    let uTSongs: ISong[] = [];
+
+    if (!loading) {
+      uTFavoriteSongs = user ? user.favoriteSongs : [];
+      uTSongs = Songs.find({}).fetch().filter((song) => typeof song.score !== 'undefined');
+
+      setSongs(uTSongs);
+      setFavoriteSongs(uTFavoriteSongs);
+    }
+
+    return {
+      isAuthenticated: !!user,
+      uTSongs, // Unused.
+      uTFavoriteSongs, // Unused.
+    };
+  }, [loading]);
+
+  console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
 
   useEffect(() => {
     setLimit(nbItemsPerPage);
@@ -106,9 +116,9 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
 
   const raiseLimit = (): void => {
     if (songs.length === limit) {
-      console.log(`From SearchList, raiseLimit: setLimitRaised(true) + setLimit(${limit + nbItemsPerPage}). exlimit:`, limit);
-      setLimitRaised(true);
+      console.log(`From SearchList, raiseLimit: setLimit(${limit + nbItemsPerPage}). exlimit:`, limit);
       setLimit(limit + nbItemsPerPage);
+      setLoading(true);
     }
   };
 
@@ -162,7 +172,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
         handleSort={handleSort}
         handleToggleDisplaySort={handleToggleDisplaySort}
         handleToggleFavoriteSong={handleToggleFavoriteSong}
-        loading={limitRaised || loading}
+        loading={loading}
         shortFirstItem={shortFirstItem}
         raiseLimit={songs.length === limit ? raiseLimit : undefined}
         secondaryActions={secondaryActions}
@@ -172,15 +182,5 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     </div>
   );
 };
-
-const SearchList = withTracker<ISearchListWTData, ISearchListProps>(() => {
-  const user = Meteor.user() as IUser;
-
-  return {
-    favoriteSongs: user ? user.favoriteSongs : [],
-    isAuthenticated: !!user,
-    songs: Songs.find({}).fetch().filter((song) => typeof song.score !== 'undefined'),
-  };
-})(WrappedSearchList);
 
 export default SearchList;

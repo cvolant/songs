@@ -13,8 +13,8 @@ import Delete from '@material-ui/icons/Delete';
 import { CreateNewDialog } from '../imports/ui/Dashboard';
 import FolderSettingsDialog from '../imports/ui/Folders/FolderSettingsDialog';
 import { SongDialog } from '../imports/ui/Songs/SongDialog';
-import UserSongList, { WrappedUserSongList } from '../imports/ui/Dashboard/UserSongList';
-import UserFolderList, { WrappedUserFolderList } from '../imports/ui/Dashboard/UserFolderList';
+import UserSongList from '../imports/ui/Dashboard/UserSongList';
+import UserFolderList from '../imports/ui/Dashboard/UserFolderList';
 import UserCollectionName from '../imports/ui/Dashboard/UserCollectionName';
 import FolderEditor from '../imports/ui/Dashboard/FolderEditor';
 import FolderDashboard from '../imports/ui/Dashboard/FolderDashboard';
@@ -22,7 +22,7 @@ import MainDashboard from '../imports/ui/Dashboard/MainDashboard';
 
 import { ISong, IUnfetched } from '../imports/types';
 
-import { folders, songs, users } from './fixtures';
+import { folders, users } from './fixtures';
 
 export default {
   title: 'Dashboard',
@@ -53,21 +53,6 @@ export const folderSettingsDialog = (): JSX.Element => (
   />
 );
 
-export const wrappedUserFolderList = (): JSX.Element => (
-  <WrappedUserFolderList
-    displaySort={boolean('displaySort', false)}
-    emptyListPlaceholder={(
-      <Typography>
-        No songs found in this folder...
-      </Typography>
-    )}
-    handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
-    handleSelectFolder={action('handleSelectFolder')}
-    folders={folders}
-  />
-);
-
 export const userFolderList = (): JSX.Element => (
   <UserFolderList
     displaySort={boolean('displaySort', false)}
@@ -79,39 +64,6 @@ export const userFolderList = (): JSX.Element => (
     handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
     logoMenuDeployed={boolean('logoMenuDeployed', true)}
     handleSelectFolder={action('handleSelectFolder')}
-  />
-);
-
-export const wrappedUserSongList = (): JSX.Element => (
-  <WrappedUserSongList
-    displaySort={boolean('displaySort', true)}
-    emptyListPlaceholder={(
-      <Typography>
-        No songs found in this folder...
-      </Typography>
-    )}
-    folder={folders[0]}
-    handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort(display: ${display})`)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
-    handleSelectSong={action('handleSelectSong')}
-    secondaryActions={[
-      {
-        Icon: Delete,
-        key: 'delete',
-        label: 'Delete',
-        onClick: {
-          build: ({ element, callback }: {
-            element?: IUnfetched<ISong>;
-            callback?: (err: Meteor.Error, res: void) => void;
-          }): () => void => action(`handleDeleteSong(song: ${element}, callback: ${callback})`),
-          callback: true,
-        },
-      },
-    ]}
-    userSongList={UserCollectionName.Folders}
-    user={users[0]}
-    favoriteSongs={users[0].favoriteSongs}
-    songs={songs}
   />
 );
 

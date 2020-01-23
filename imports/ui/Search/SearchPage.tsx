@@ -78,10 +78,10 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const history = useHistory();
   const location = useLocation();
 
-  const undefetchedSong = /^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined;
+  const unfetchedSong = /^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined;
 
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [selectedSong, setSelectedSong] = useState(undefetchedSong);
+  const [selectedSong, setSelectedSong] = useState(unfetchedSong);
   const [showInfos, setShowInfos] = useState(true);
   const [viewer, setViewer] = useState<React.ReactNode>(undefined);
   const smallDevice = useDeviceSize('sm', 'down');
@@ -89,8 +89,8 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const contentAreaRef = createRef<HTMLDivElement>();
 
   useEffect((): void => {
-    setSelectedSong(undefetchedSong);
-  }, [songId]);
+    setSelectedSong(unfetchedSong);
+  }, [unfetchedSong]);
 
   const handleCloseInfos = (): void => {
     setShowInfos(false);

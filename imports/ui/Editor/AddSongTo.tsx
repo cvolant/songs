@@ -247,7 +247,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
           {t('Close')}
         </Button>
       </DialogActions>
-      {<SnackbarMessage message={error} variant="error" />}
+      <SnackbarMessage message={error} variant="error" />
     </Dialog>
   );
 };

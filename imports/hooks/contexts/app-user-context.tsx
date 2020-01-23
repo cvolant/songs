@@ -25,12 +25,7 @@ const WrappedUserProvider: React.FC<IWrappedUserProviderProps> = ({
   user,
   children,
 }) => {
-  useEffect(() => {
-    const subscription = Meteor.subscribe('user', () => {
-      console.log('From app-user-context, useEffect[]. user:', user);
-    });
-    return subscription.stop;
-  }, []);
+  useEffect(() => Meteor.subscribe('user').stop, []);
 
   return (
     <UserContext.Provider value={user as IUser}>

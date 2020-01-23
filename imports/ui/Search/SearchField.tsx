@@ -5,6 +5,7 @@ import React, {
   MouseEventHandler,
   KeyboardEventHandler,
   ChangeEventHandler,
+  useCallback,
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -173,7 +174,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [delay, setDelay] = useState<NodeJS.Timeout | undefined>(undefined);
 
-  const handleSearch = (searchEntryToHandle: string): void => {
+  const handleSearch = useCallback((searchEntryToHandle: string): void => {
     const newUrlSearchElements = [];
 
     const globalQuery = searchEntryToHandle
@@ -213,7 +214,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       console.log('From SearchField, handleSearch. REDIRECTION. Former url search:', location.search, ', newUrlSearch:', newUrlSearch);
       history.replace({ ...location, search: newUrlSearch });
     }
-  };
+  }, [advancedFields, handleNewSearch, history, location]);
 
   useEffect(() => {
     const urlSearchQuery = location.search;
@@ -227,7 +228,8 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       setSearchEntry(query);
       handleSearch(query);
     }
-  }, []);
+  }, [location.search, handleSearch]);
+
   useEffect(() => {
     if (selectionRange && inputRef.current) {
       const { selectionStart, selectionEnd } = selectionRange;
@@ -241,7 +243,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         input.focus();
       }
     }
-  }, [searchEntry]);
+  }, [searchEntry, inputRef, selectionRange]);
 
 
   const inputFocus = (focus: boolean | undefined) => (): void => {

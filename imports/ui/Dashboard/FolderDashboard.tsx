@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import React, { useState, useEffect, useContext } from 'react';
 
 import Editor from '../Editor';
@@ -24,14 +24,9 @@ interface IFolderDashboardProps {
   handleToggleLogoMenu: (oc?: boolean) => () => void;
   logoMenuDeployed?: boolean;
 }
-interface IFolderDashboardWTData {
-  folder: IUnfetched<IFolder>;
-}
-interface IWrappedFolderDashboardProps
-  extends IFolderDashboardProps, IFolderDashboardWTData { }
 
-export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
-  folder,
+export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
+  folder: propsFolder,
   goBack,
   handleToggleLogoMenu,
 }) => {
@@ -41,15 +36,22 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
   const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
 
+  const folderId = propsFolder._id;
+
   useEffect(() => {
-    const subscription = Meteor.subscribe('folder', folder._id, () => {
-      console.log('From FolderDashboard, useEffect. Folders:', Folders, 'Folders.find().fetch():', Folders.find().fetch(), 'Folders.find({ _id: folder._id }).fetch()[0]:', Folders.find({ _id: folder._id }).fetch()[0]);
+    const subscription = Meteor.subscribe('folder', folderId, () => {
+      console.log('From FolderDashboard, useEffect. Subscription callback.');
     });
     return (): void => {
       console.log('From FolderDashboard. SUBSCRIPTION.STOP.');
       subscription.stop();
     };
-  }, []);
+  }, [folderId]);
+
+  const folder = useTracker(
+    () => Folders.find({ _id: folderId }).fetch()[0] || { _id: folderId },
+    [folderId],
+  );
 
   const handleAddRemoveSong: SongARHandler = (addOrRemove, arSong, callback) => (): void => {
     console.log('From FolderDashboard, handleAddRemoveSong. arSong:', arSong, 'callback:', callback);
@@ -123,16 +125,5 @@ export const WrappedFolderDashboard: React.FC<IWrappedFolderDashboardProps> = ({
     />
   );
 };
-
-const FolderDashboard = withTracker<IFolderDashboardWTData, IFolderDashboardProps>(({
-  folder: propsFolder,
-}) => {
-  const idFolder = { _id: propsFolder._id };
-  const folder = Folders.find(idFolder).fetch()[0] || idFolder;
-  console.log('From FolderDashboard, withTracker. folder:', folder, 'propFolder:', propsFolder, 'Folders:', Folders);
-  return {
-    folder,
-  };
-})(WrappedFolderDashboard);
 
 export default FolderDashboard;

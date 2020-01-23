@@ -69,7 +69,7 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
         setAddresses(res);
       }
     });
-  }, [broadcastOwnerId]);
+  }, [broadcastOwnerId, unmountedRef]);
 
   const handleCopy = (rights: IBroadcastRights) => (): void => {
     if (!copied.includes(rights)) {

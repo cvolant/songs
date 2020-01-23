@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Check from '@material-ui/icons/Check';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -11,7 +9,6 @@ import {
 import {
   AddSongTo,
   Editor,
-  EditorButtons,
   Paragraph,
   Title,
 } from '../imports/ui/Editor';
@@ -20,7 +17,6 @@ import { UserProvider } from '../imports/hooks/contexts/app-user-context';
 import {
   songs, folders, details, users,
 } from './fixtures';
-import { IIconColor } from '../imports/types/iconButtonTypes';
 
 export default {
   title: 'Editor',
@@ -32,14 +28,6 @@ export default {
       </UserProvider>
     ),
   ],
-};
-
-const actionIconButtonProps = {
-  color: 'primary' as IIconColor,
-  disable: (): boolean => false,
-  Icon: Check,
-  label: 'action icon button aria label',
-  onClick: (): void => { /* Empty function */ },
 };
 
 export const paragraph = (): JSX.Element => (
@@ -74,42 +62,6 @@ export const title = (): JSX.Element => (
     logoMenuDeployed={boolean('logoMenuDeployed', true)}
   />
 );
-
-export const editorButtons = (): JSX.Element => (
-  <EditorButtons
-    actionIconButtonProps={boolean('actionIconButtonProps', true)
-      ? {
-        ...actionIconButtonProps,
-        onClick: action('actionIconButtonClick'),
-        disabled: boolean('disable', false),
-      } : undefined}
-    edit={boolean('edit', false)}
-    handleCancelAll={action('handleCancelAll')}
-    handleDelete={action('handleDelete')}
-    handleEditSong={action('handleEditSong')}
-    handleSaveAll={action('handleSaveAll')}
-    handleToggleSelectAll={action('handleToggleSelectAll')}
-    isThereParagraphs={boolean('isThereParagraphs', true)}
-    isThereTitle={boolean('isThereTitle', true)}
-    selectedPg={songs[0].lyrics.reverse()}
-    song={songs[0]}
-    folders={folders}
-  />
-);
-editorButtons.story = {
-  decorators: [
-    (storyFn: () => JSX.Element): JSX.Element => (
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-      }}
-      >
-        {storyFn()}
-      </div>
-    ),
-  ],
-};
 
 export const addSongTo = (): JSX.Element => (
   <AddSongTo

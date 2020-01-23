@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -26,9 +26,9 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   const { i18n, t } = useTranslation();
   const history = useHistory();
 
-  const setDisplayFromUrl = (): UserCollectionName | undefined => (
+  const setDisplayFromUrl = useCallback((): UserCollectionName | undefined => (
     Object.values(UserCollectionName).find((value) => value === urlCollection)
-  );
+  ), [urlCollection]);
 
   const [display, setDisplay] = useState<UserCollectionName>(
     setDisplayFromUrl() || UserCollectionName.FavoriteSongs,
@@ -46,7 +46,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
     if (newDisplay) {
       setDisplay(newDisplay);
     }
-  }, [urlCollection]);
+  }, [setDisplayFromUrl, urlCollection]);
 
   const handleChangeDisplay = (newDisplay?: UserCollectionName) => (): void => {
     setDisplay(newDisplay || UserCollectionName.FavoriteSongs);

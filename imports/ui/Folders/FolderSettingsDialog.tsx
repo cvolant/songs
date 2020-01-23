@@ -61,7 +61,7 @@ export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
     setName(folder ? folder.name || '' : '');
     setDateEnabled(folder && !!folder.date);
     setDate(dayjs(((folder && folder.date) || '') || undefined));
-  }, [folder && folder._id]);
+  }, [folder]);
 
   const handleDateEnabledChange = (
     _event: object,

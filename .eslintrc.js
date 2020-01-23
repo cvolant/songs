@@ -1,7 +1,7 @@
 module.exports = {
   extends: ['airbnb', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'react-hooks'],
   settings: {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
@@ -21,6 +21,7 @@ module.exports = {
     'no-console': 0,  // Remove when ready to go to prod
     'no-underscore-dangle': 0,
     'no-useless-constructor': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
     'react/prop-types': 0,
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
   },
