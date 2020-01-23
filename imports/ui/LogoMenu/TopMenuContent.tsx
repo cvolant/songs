@@ -123,6 +123,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     {
       name: t('Dashboard'),
       path: routesPaths.path(locales[lng], 'dashboard'),
+      hide: !isAuthenticated,
       Icon: Person,
     },
     {

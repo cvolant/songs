@@ -7,6 +7,12 @@ import { Typography } from '@material-ui/core/styles/createTypography';
 import { Transitions } from '@material-ui/core/styles';
 
 declare module '@material-ui/styles' {
+  interface TypeBackground {
+    dark: string;
+    default: string;
+    page: string;
+    paper: string;
+  }
   interface DefaultTheme {
     spacing: Spacing;
     breakpoints: Breakpoints;
@@ -15,6 +21,7 @@ declare module '@material-ui/styles' {
       menuItem: React.CSSProperties['width'];
     };
     palette: {
+      background: TypeBackground;
       primary: PaletteColor;
       secondary: PaletteColor;
       darken: PaletteColor;
@@ -25,8 +32,10 @@ declare module '@material-ui/styles' {
 
 declare module '@material-ui/core/styles/createPalette' {
   interface TypeBackground {
-    page: string;
     dark: string;
+    default: string;
+    page: string;
+    paper: string;
   }
   interface SimplePaletteColorOptions {
     subtle?: string;

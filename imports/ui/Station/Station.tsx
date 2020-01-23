@@ -79,7 +79,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
   },
   root: {
-    background: 'white',
+    background: ({ addSongs }: IStationUseStylesProps): string => (addSongs
+      ? theme.palette.background.default
+      : theme.palette.background.paper),
     filter: ({ addSongs }: IStationUseStylesProps): string => (addSongs ? '' : 'saturate(0.2) invert(1)'),
     transition: theme.transitions.create('filter'),
     paddingBottom: 0,
@@ -410,7 +412,7 @@ export const Station: React.FC<IStationProps> = ({
                 //
                 // Edit button
                 //
-                ['control', 'owner'].includes(rights) && {
+                ['control', 'owner'].includes(rights) && songs.length && {
                   disabled: true,
                   Icon: Edit,
                   key: 'edit',
@@ -421,7 +423,7 @@ export const Station: React.FC<IStationProps> = ({
                 //
                 // Remove button
                 //
-                ['control', 'owner'].includes(rights) && {
+                ['control', 'owner'].includes(rights) && songs.length && {
                   Icon: RemoveCircleOutline,
                   key: 'remove',
                   label: t('station.Remove', 'Remove this song'),

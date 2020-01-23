@@ -11,8 +11,6 @@ Mettre le state du logomenu en global, virer handleFocus.
 Utiliser les Routes dans le Dashboard.
 Reparer le tri
 Reparer le chargement automatique ou le transformer en bouton : + de resultats
-Activer la diffusion libre
-Pb: bouton Espace personnel dans le menu quand pas connecte + echec de redirection
 Chargement sans fin des chants favoris lors de l'inscription
 Ajouter des Snackbars de changement de statut dans la station
 
