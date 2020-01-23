@@ -85,8 +85,8 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     ) {
       const { query, options } = buildQuery({ search, options: { limit, sort } });
 
-      const subscription = Meteor.subscribe('songs', { query, options }, (args) => {
-        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false). args:', args);
+      const subscription = Meteor.subscribe('songs', { query, options }, () => {
+        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false)');
         setLoading(false);
         setLimitRaised(false);
       });
@@ -98,7 +98,7 @@ export const WrappedSearchList: React.FC<IWrappedSearchListProps> = ({
     console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
     return (): void => { /* Empty function */ };
-  }, [search, sort && Object.values(sort).join(), limit]);
+  }, [JSON.stringify({ search, sort, limit })]);
 
   useEffect(() => {
     setLimit(nbItemsPerPage);

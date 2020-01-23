@@ -71,12 +71,9 @@ export const buildQuery = ({
   };
 
   console.log('\n------------------------');
-  console.log('\nFrom publish songs, globalQuery =', globalQuery, ', specificQueries =', specificQueries);
+  console.log('\nFrom buildQuery, globalQuery =', globalQuery, '\nspecificQueries =', specificQueries, '\noptions:', { sort, limit });
 
-  const options: IMongoQueryOptions = {
-    sort: sort || { year: -1 },
-    limit,
-  };
+  const options: IMongoQueryOptions = { sort, limit };
 
   let queries: IQuery[] = [];
   if (specificQueries && specificQueries.length > 0) {
@@ -116,7 +113,11 @@ export const buildQuery = ({
     options.fields = {
       score: { $meta: 'textScore' } as unknown as number,
     };
-    options.sort = { score: { $meta: 'textScore' } };
+    if (!options.sort) {
+      options.sort = {
+        score: { $meta: 'textScore' },
+      };
+    }
   }
 
   console.log('From buildQuery. query:', toStr({ $and: queries }), '\noptions:', toStr(options));

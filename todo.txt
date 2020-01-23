@@ -9,9 +9,6 @@ Mettre tous les layouts dans un dossier ui/layouts
 Utiliser les options de traduction de simple-schema
 Mettre le state du logomenu en global, virer handleFocus.
 Utiliser les Routes dans le Dashboard.
-Reparer le tri
-Reparer le chargement automatique ou le transformer en bouton : + de resultats
-Chargement sans fin des chants favoris lors de l'inscription
 Ajouter des Snackbars de changement de statut dans la station
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
