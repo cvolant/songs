@@ -228,20 +228,24 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
       }
     }
 
-    const currentlyAt = (pathname: string): boolean => (
-      location.pathname.indexOf(routesPaths.translatePath(pathname, i18n.language)) >= 0
+    const currentlyAt = (pathname: 'dashboard' | 'signin' | 'signup' | 'home'): boolean => (
+      pathname === 'home'
+        ? location.pathname === routesPaths.path(i18n.language, pathname)
+        : location.pathname.indexOf(routesPaths.path(i18n.language, pathname)) >= 0
     );
 
-    if (isAuthenticated) {
-      if (currentlyAt('/en/dashboard')) {
-        return middleButtons.home;
-      }
+    console.log('From LogoMenu, middleButton. currentlyAt:', currentlyAt, 'isAuthenticated:', isAuthenticated, 'curentlyAt(home)', currentlyAt('home'));
+
+    if (isAuthenticated && currentlyAt('home')) {
       return middleButtons.dashboard;
     }
-    if (currentlyAt('/en/signin')) {
+    if (currentlyAt('signin')) {
       return middleButtons.signup;
     }
-    return middleButtons.signin;
+    if (currentlyAt('home') || currentlyAt('signup')) {
+      return middleButtons.signin;
+    }
+    return middleButtons.home;
   })();
 
   console.log('From LogoMenu, render. middleButton:', middleButton, 'middleButtonProps:', middleButtonProps);

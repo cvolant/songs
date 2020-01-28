@@ -41,7 +41,10 @@
   },
 
   "about": {
-    "Content": "Some probably interesting content"
+    "What is this webapp for?": "What is this webapp for?",
+    "This webapp is for": "This webapp allow users to quickly find the songs they are looking for, and share them with others to sing them together. The others can see the shared songs on their own devices as if they where shown using a video projector.",
+    "Features": "Features",
+    "Its features are": "- Intelligent text search, advanced search, results sorting<br/>- Favorite songs<br/>- New songs creation<br/>- Folders of songs<br/>- Real-time broadcasts"
   },
   
   "dashboard": {

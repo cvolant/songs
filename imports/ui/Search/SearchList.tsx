@@ -88,7 +88,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
     return (): void => { /* Empty function */ };
   }, [search, sort, limit]);
 
-  const { isAuthenticated } = useTracker(() => {
+  const uTResult = useTracker(() => {
     const user = Meteor.user() as IUser;
     let uTFavoriteSongs: Mongo.ObjectID[] = [];
     let uTSongs: ISong[] = [];
@@ -107,6 +107,8 @@ export const SearchList: React.FC<ISearchListProps> = ({
       uTFavoriteSongs, // Unused.
     };
   }, [loading]);
+
+  const { isAuthenticated } = uTResult;
 
   console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
 

@@ -9,7 +9,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pretest": "npm run lint --silent",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build-texts": "node ./texts/textsToJSON.js"
   },
   "eslintConfig": {
     "extends": "airbnb"
@@ -21,7 +22,6 @@
     "@material-ui/icons": "latest",
     "@material-ui/pickers": "^3.2.7",
     "@material-ui/styles": "latest",
-    "@types/shortid": "0.0.29",
     "clsx": "^1.0.4",
     "dayjs": "^1.8.17",
     "i18next": "^17.0.6",
@@ -34,6 +34,7 @@
     "react-dom": "^16.9.0",
     "react-helmet": "^5.2.1",
     "react-i18next": "^10.11.4",
+    "react-markdown": "^4.3.1",
     "react-router-dom": "^5.0.0",
     "shortid": "^2.2.15",
     "simpl-schema": "^1.5.5",
@@ -62,6 +63,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-helmet": "^5.0.11",
     "@types/react-router-dom": "^5.1.0",
+    "@types/shortid": "0.0.29",
     "@types/simpl-schema": "^0.2.5",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",

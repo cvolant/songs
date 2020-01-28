@@ -93,6 +93,7 @@ interface IEditorProps {
 }
 interface IEditorWTData {
   folders: IFolder[];
+  loading: boolean;
   song: IUnfetched<ISong>;
   user?: IUser;
 }
@@ -114,6 +115,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   edit: initEdit = false,
   folders,
   goBack,
+  loading,
   logoMenuDeployed,
   song,
 }) => {
@@ -430,18 +432,8 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   }, [user]);
 
   useEffect(() => {
-    if (song._id.toHexString()) {
-      const songSubscription = Meteor.subscribe('song', song._id, () => {
-        const newSong = Songs.findOne(song._id) as ISong;
-        console.log('From Editor, useEffect[song._id.toHexString()], songSubscription callback. Songs.findOne(song._id):', newSong);
-        if (!newSong) goBack();
-        else initSong(newSong);
-      });
-      console.log('From Editor, useEffect[song._id.toHexString()]. songSubscription:', songSubscription);
-      return songSubscription.stop;
-    }
-    return (): void => { /* Empty function */ };
-  }, [goBack, song._id]);
+    initSong(song);
+  }, [song]);
 
   console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
 
@@ -453,22 +445,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         </Helmet>
         <FullCardLayout<IUnfetched<ISong>>
           actions={[
-            undefined && {/* <EditorButtons
-              actionIconButtonsProps={actionIconButtonsProps}
-              edit={edit}
-              folders={folders}
-              handleCancelAll={handleCancelAll}
-              handleDelete={handleDelete}
-              handleEditSong={handleEditSong}
-              handleSaveAll={handleSaveAll}
-              handleToggleSelectAll={handleToggleSelectAll}
-              isThereParagraphs={!!pgStates.length}
-              isThereTitle={!!title}
-              selectedPg={pgStates
-                .filter((pgState) => pgState.selected)
-                .map((pgState) => (lyrics[pgState.pgIndex]))}
-              song={song}
-            /> */},
             ...edit
               ? [
                 {
@@ -579,7 +555,12 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                       />
                     ),
                   )
-                  : <NoLyrics />}
+                  : !loading && <NoLyrics />}
+                {loading && (
+                  <Grid item xs={12} sm={6} md={4} xl={3}>
+                    <CircularProgress />
+                  </Grid>
+                )}
               </Grid>,
               <Button
                 className={`${classes.button} ${edit ? '' : classes.displayNone}`}
@@ -608,10 +589,13 @@ export const Editor = withTracker<IEditorWTData, IEditorProps>(({
   song: propsSong,
 }: { song: IUnfetched<ISong> }) => {
   console.log('From Editor, withTracker. Songs:', Songs);
+  const subscription = Meteor.subscribe('song', propsSong._id);
+
   return ({
+    folders: Folders.find({}).fetch(),
+    loading: !subscription.ready(),
     song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
     user: Meteor.user() as IUser | undefined,
-    folders: Folders.find({}).fetch(),
   });
 })(WrappedEditor);
 

@@ -34,11 +34,11 @@ interface IPrintSongProps {
     subtitle?: string;
     lyrics?: IParagraph[];
   };
-  zoom: number;
+  zoom?: number;
 }
 
 export const PrintSong: React.FC<IPrintSongProps> = ({
-  song, zoom,
+  song, zoom = 0.5,
 }) => {
   const classes = useStyles({ zoom });
 
@@ -46,11 +46,6 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
 
   return (
     <Grid container spacing={4}>
-      {/* <Grid item xs={12}>
-        <Typography className={classes.title} variant="h1">{song.title}</Typography>
-        <Typography className={classes.subtitle} variant="subtitle1">{song.subtitle}</Typography>
-      </Grid>
-      <div className={classes.return} /> */}
       {song.lyrics && song.lyrics.map((paragraph, index) => {
         // eslint-disable-next-line react/no-array-index-key
         const pgText = paragraph.pg.split(/(<br\/>\n)/g).map((e, ind) => (e === '<br/>\n' ? <br key={ind} /> : e));

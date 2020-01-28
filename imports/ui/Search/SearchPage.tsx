@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Clear from '@material-ui/icons/Clear';
 import Eye from '@material-ui/icons/RemoveRedEye';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
@@ -20,11 +21,12 @@ import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
 import PrintSong from '../PrintSong';
-import Screen from '../Screen';
+import Screen from '../Station/Screen';
 import SearchList from './SearchList';
 
-import { ISong, IUnfetched } from '../../types';
+import { IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
+import { IEditedSong, ISong } from '../../types/songTypes';
 
 import routesPaths from '../../app/routesPaths';
 
@@ -78,26 +80,25 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const history = useHistory();
   const location = useLocation();
 
-  const unfetchedSong = /^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined;
-
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [selectedSong, setSelectedSong] = useState(unfetchedSong);
+  const [selectedSong, setSelectedSong] = useState<IUnfetched<ISong> | undefined>();
   const [showInfos, setShowInfos] = useState(true);
-  const [viewer, setViewer] = useState<React.ReactNode>(undefined);
+  const [viewSong, setViewSong] = useState<IEditedSong | undefined>();
   const smallDevice = useDeviceSize('sm', 'down');
   const classes = useStyles();
   const contentAreaRef = createRef<HTMLDivElement>();
 
   useEffect((): void => {
+    const unfetchedSong = /^(?:[0-9A-Fa-f]{6})+$/g.test(songId) ? { _id: new Mongo.ObjectID(songId) } : undefined;
     setSelectedSong(unfetchedSong);
-  }, [unfetchedSong]);
+  }, [songId]);
 
   const handleCloseInfos = (): void => {
     setShowInfos(false);
   };
 
   const handleCloseScreen = (): void => {
-    setViewer(undefined);
+    setViewSong(undefined);
   };
 
   const handleGoBackFromEditor = (): void => {
@@ -106,19 +107,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   };
 
   const handleOpenScreen = (song?: IUnfetched<ISong>) => (): void => {
-    if (song) {
-      setViewer(
-        <Screen
-          closeScreen={handleCloseScreen}
-          print={(zoom: number): JSX.Element => (
-            <PrintSong
-              zoom={zoom}
-              song={song}
-            />
-          )}
-        />,
-      );
-    }
+    setViewSong(song);
   };
 
   const handleSelectSong = (song: ISong): void => {
@@ -146,71 +135,87 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
 
   console.log('From SearchPage. render.');
 
-  return (
-    <PageLayout
-      menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
-      sidePanel={showInfos && !Meteor.userId()
-        ? (
-          <InfosSongBySong handleCloseInfos={handleCloseInfos}>
-            {smallDevice && (
-              <Fab
-                variant="extended"
-                size="small"
-                aria-label="Continue"
-                className={classes.continueFab}
-                onClick={scrollDown}
-              >
-                <ExpandMore className={classes.continueFabIcon} />
-                <Typography>{t('Continue')}</Typography>
-              </Fab>
-            )}
-          </InfosSongBySong>
-        )
-        : undefined}
-      title={t('search.Search songs', 'Search songs')}
-      tutorialContentName={selectedSong ? 'Editor' : 'Search'}
-      contentAreaRef={contentAreaRef}
-      scrollDown={scrollDown}
-      viewer={viewer}
-    >
-      <SearchList
-        handleFocus={handleFocus}
-        handleSelectSong={handleSelectSong}
-        hidden={!!selectedSong}
-        shortFirstItem={false}
-        shortSearchField={logoMenuDeployed}
-      />
-      {selectedSong
-        ? (
-          <Editor
-            actionIconButtonsProps={[{
-              Icon: Eye,
-              onClick: {
-                build: ({ element }: {
-                  element?: IUnfetched<ISong>;
-                }): MouseEventHandler => (
-                  element
-                    ? handleOpenScreen(element)
-                    : (): void => { /* Empty function */ }
-                ),
-              },
-              color: 'primary' as IIconColor,
-              disabled: {
-                build: ({ otherParams }: {
-                  otherParams?: { isThereSelected?: boolean };
-                }): boolean => !(otherParams && otherParams.isThereSelected),
-              },
-              key: 'view',
-              label: t('editor.View', 'View'),
-              labelVisible: !smallDevice,
-            }]}
-            goBack={handleGoBackFromEditor}
-            logoMenuDeployed={logoMenuDeployed}
-            song={selectedSong}
-          />
-        )
-        : null}
-    </PageLayout>
+  return (viewSong
+    ? (
+      <Screen
+        disableLogoMenu
+        headerAction={{
+          Icon: Clear,
+          label: t('Close'),
+          onClick: handleCloseScreen,
+        }}
+        headerSubheader={viewSong.subtitle}
+        headerTitle={viewSong.title}
+        song={viewSong}
+        title={`Alleluia.plus - ${viewSong.title}`}
+      >
+        <PrintSong song={viewSong} />
+      </Screen>
+    ) : (
+      <PageLayout
+        menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
+        sidePanel={showInfos && !Meteor.userId()
+          ? (
+            <InfosSongBySong handleCloseInfos={handleCloseInfos}>
+              {smallDevice && (
+                <Fab
+                  variant="extended"
+                  size="small"
+                  aria-label="Continue"
+                  className={classes.continueFab}
+                  onClick={scrollDown}
+                >
+                  <ExpandMore className={classes.continueFabIcon} />
+                  <Typography>{t('Continue')}</Typography>
+                </Fab>
+              )}
+            </InfosSongBySong>
+          )
+          : undefined}
+        title={t('search.Search songs', 'Search songs')}
+        tutorialContentName={selectedSong ? 'Editor' : 'Search'}
+        contentAreaRef={contentAreaRef}
+        scrollDown={scrollDown}
+      >
+        <SearchList
+          handleFocus={handleFocus}
+          handleSelectSong={handleSelectSong}
+          hidden={!!selectedSong}
+          shortFirstItem={false}
+          shortSearchField={logoMenuDeployed}
+        />
+        {selectedSong
+          ? (
+            <Editor
+              actionIconButtonsProps={[{
+                Icon: Eye,
+                onClick: {
+                  build: ({ element }: {
+                    element?: IUnfetched<ISong>;
+                  }): MouseEventHandler => (
+                    element
+                      ? handleOpenScreen(element)
+                      : (): void => { /* Empty function */ }
+                  ),
+                },
+                color: 'primary' as IIconColor,
+                disabled: {
+                  build: ({ otherParams }: {
+                    otherParams?: { isThereSelected?: boolean };
+                  }): boolean => !(otherParams && otherParams.isThereSelected),
+                },
+                key: 'view',
+                label: t('editor.View', 'View'),
+                labelVisible: !smallDevice,
+              }]}
+              goBack={handleGoBackFromEditor}
+              logoMenuDeployed={logoMenuDeployed}
+              song={selectedSong}
+            />
+          )
+          : null}
+      </PageLayout>
+    )
   );
 };
 

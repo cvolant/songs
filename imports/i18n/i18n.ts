@@ -24,12 +24,14 @@ i18n
       loadPath: '/i18n/locales/{{lng}}/{{ns}}.json',
     },
     debug: true,
+    defaultNS: 'translation',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
     load: 'languageOnly',
     lowerCaseLng: true,
+    ns: ['translation', 'texts'],
     whitelist: ['en', 'fr'],
   });
 

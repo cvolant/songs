@@ -114,8 +114,6 @@ export const folderDashboard = (): JSX.Element => (
     folder={folders[0]}
     goBack={action('goBack')}
     handleToggleLogoMenu={(oc?: boolean): () => void => action(`handleToggleLogoMenu(oc: ${oc})`)}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
-    setTutorialContentName={action('setTutorialContentName')}
   />
 );
 

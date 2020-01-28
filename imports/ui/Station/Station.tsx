@@ -542,7 +542,7 @@ export const Station: React.FC<IStationProps> = ({
             headerTitle={active ? (song && song.title) : broadcastTitle}
             shortHeader={0}
           >
-            {active && song && <PrintSong song={song} zoom={0.5} />}
+            {active && song && <PrintSong song={song} />}
           </FullCardLayout>
         )}
       <PublishDialog

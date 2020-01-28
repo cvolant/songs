@@ -5,7 +5,6 @@ import React, {
   MouseEventHandler,
   KeyboardEventHandler,
   ChangeEventHandler,
-  useCallback,
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -174,12 +173,13 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [delay, setDelay] = useState<NodeJS.Timeout | undefined>(undefined);
 
-  const handleSearch = useCallback((searchEntryToHandle: string): void => {
+  const handleSearch = (searchEntryToHandle: string): void => {
     const newUrlSearchElements = [];
 
     const globalQuery = searchEntryToHandle
-      .replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '')
-      .replace(/(\W\w\W)|\W+/g, ' ')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/(\$.*?\[.*?(\]|\$|$))|\$\w+(\W|$)/g, '') // Remove advanced searches
+      .replace(/(\W\w\W)|\W+/g, ' ') // Remove multi spaces and single letters
       .trim();
     const specificQueries: ISpecificQuery[] = [];
     const newSearch: ISearch = { globalQuery, specificQueries };
@@ -214,7 +214,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       console.log('From SearchField, handleSearch. REDIRECTION. Former url search:', location.search, ', newUrlSearch:', newUrlSearch);
       history.replace({ ...location, search: newUrlSearch });
     }
-  }, [advancedFields, handleNewSearch, history, location]);
+  };
 
   useEffect(() => {
     const urlSearchQuery = location.search;
@@ -228,7 +228,8 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       setSearchEntry(query);
       handleSearch(query);
     }
-  }, [location.search, handleSearch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (selectionRange && inputRef.current) {
@@ -339,9 +340,12 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const newEntry = e.currentTarget.value;
     setSearchEntry(newEntry);
-    if (selectionRange) setSelectionRange(undefined);
-
-    if (delay) clearTimeout(delay);
+    if (selectionRange) {
+      setSelectionRange(undefined);
+    }
+    if (delay) {
+      clearTimeout(delay);
+    }
     setDelay(setTimeout(() => handleSearch(newEntry), 750));
   };
 

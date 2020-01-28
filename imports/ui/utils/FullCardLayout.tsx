@@ -16,6 +16,8 @@ import CardHeader, { CardHeaderProps } from '@material-ui/core/CardHeader';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
+import { OverrideProps } from '@material-ui/core/OverridableComponent';
+import { TypographyTypeMap } from '@material-ui/core/Typography';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import CustomIconButton from './CustomIconButton';
@@ -63,6 +65,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     overflowY: 'auto',
     overflowScrolling: 'touch',
+    padding: ({
+      bigTitle,
+    }: IFullCardLayoutStyleProps): number | string => theme.spacing(bigTitle ? 4 : 2),
     paddingTop: ({
       contentPaddingTop,
     }: IFullCardLayoutStyleProps): number | undefined => (contentPaddingTop ? undefined : 0),
@@ -102,7 +107,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface IFullCardLayoutProps<E> {
+export interface IFullCardLayoutProps<E> {
   actions?:
   | ReactNode
   | IIconButtonProps<E>
@@ -191,7 +196,7 @@ export const FullCardLayout = <E, >({
             component: 'h1',
             ...headerProps && headerProps.titleTypographyProps,
             variant: bigTitle ? 'h1' : 'h4',
-          }}
+          } as unknown as Partial<OverrideProps<TypographyTypeMap<{}, 'h1'>, 'h1'>>}
         >
           {header}
         </CardHeader>
