@@ -20,7 +20,6 @@ import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../utils/PageLayout';
-import PrintSong from '../PrintSong';
 import Screen from '../Station/Screen';
 import SearchList from './SearchList';
 
@@ -148,9 +147,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
         headerTitle={viewSong.title}
         song={viewSong}
         title={`Alleluia.plus - ${viewSong.title}`}
-      >
-        <PrintSong song={viewSong} />
-      </Screen>
+      />
     ) : (
       <PageLayout
         menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}

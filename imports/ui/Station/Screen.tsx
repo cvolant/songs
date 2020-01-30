@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FullCardLayout, { IFullCardLayoutProps } from '../utils/FullCardLayout';
-import PrintSong from '../PrintSong';
+import PrintSong from './PrintSong';
 
 import { ISong } from '../../types';
 import { IEditedSong } from '../../types/songTypes';
@@ -67,7 +67,7 @@ interface IStationProps {
   headerAction?: IFullCardLayoutProps<ISong>['headerAction'];
   headerSubheader?: IFullCardLayoutProps<ISong>['headerSubheader'];
   headerTitle?: IFullCardLayoutProps<ISong>['headerTitle'];
-  song: IEditedSong;
+  song?: IEditedSong;
   title: string;
 }
 

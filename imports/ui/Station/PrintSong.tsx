@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import { IParagraph } from '../types';
+import { IParagraph } from '../../types';
 
 const modifyFontSize = (fontSize: string, zoom: number): string => parseFloat(fontSize) * zoom + fontSize.substring((`${parseFloat(fontSize)}`).length);
 

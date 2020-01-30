@@ -26,8 +26,7 @@ import Stop from '@material-ui/icons/Stop';
 import Sync from '@material-ui/icons/Sync';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import FullCardLayout from '../utils/FullCardLayout';
-import PrintSong from '../PrintSong';
+import Screen from './Screen';
 
 import { broadcastUpdate, broadcastUpdateAddRemoveSong } from '../../api/broadcasts/methods';
 
@@ -290,270 +289,270 @@ export const Station: React.FC<IStationProps> = ({
 
   console.log('From Station, render. status', status, 'handleUpdateBroadcast', handleUpdateBroadcast, 'broadcast:', broadcast);
 
-  return (
-    <PageLayout
-      className={classes.root}
-      disableLogoMenu={['readOnly', 'navigate'].includes(rights)}
-      menuProps={{
-        classes: {
-          logoMenu: clsx(classes.logoMenu, classes.menus),
-          topMenu: classes.menus,
-        },
-        handleToggleLogoMenu,
-        logoMenuDeployed,
-        onMouseLeave: handleLogoMenuMouseLeave,
-      }}
-      title={
-        [
-          'Alleluia.plus',
-          broadcastTitle,
-          active && songs && songs[songNb] && songs[songNb].title,
-        ].filter((e) => e).join(' - ')
-      }
-      tutorialContentName="Station"
-    >
-      {addSongs
-        ? (
-          <AddRemoveSearchList
-            goBack={setActionHandler(setAddSongs, false)}
-            handleAddRemoveSong={handleAddRemoveSong}
-            handleFocus={handleFocus}
-            shortFirstItem={logoMenuDeployed}
-            shortSearchField={logoMenuDeployed}
-            songIds={songs.map((s) => s._id)}
-          />
-        ) : (
-          <FullCardLayout
-            actions={rights === 'readOnly' || (rights === 'navigate' && status !== 'ongoing') ? undefined : [
-              [
-                //
-                // Publish button
-                //
-                rights === 'owner' && {
-                  color: status !== 'unpublished' ? 'primary' : 'default',
-                  Icon: RssFeed,
-                  key: 'publish',
-                  label: t('station.Publish', 'Publish'),
-                  labelVisible: !smallDevice,
-                  onClick: setActionHandler(setOpenPublishDialog, true),
-                },
-                //
-                // State button: Publish/Start/End/Reset
-                //
-                rights === 'owner' && status && status !== 'unpublished' && {
-                  color: {
-                    // unpublished: 'default',
-                    unstarted: 'default',
-                    ongoing: 'primary',
-                    ended: 'default',
-                  }[status],
-                  Icon: {
-                    // unpublished: RssFeed,
-                    unstarted: PlayArrow,
-                    ongoing: Stop,
-                    ended: Replay,
-                  }[status],
-                  key: 'status',
-                  label: {
-                    // unpublished: t('station.Publish', 'Publish'),
-                    unstarted: t('station.Start', 'Start'),
-                    ongoing: t('station.End', 'End'),
-                    ended: t('station.Reset', 'Reset'),
-                  }[status],
-                  labelVisible: !smallDevice,
-                  onClick: {
-                    build: ({ callback }: {
-                      element?: IUnfetched<ISong>;
-                      callback?: IIconButtonCallback;
-                    }): () => void => handleUpdateBroadcast({
-                      status: {
-                        // unpublished: 'unstarted',
-                        unstarted: 'ongoing',
-                        ongoing: 'ended',
-                        ended: 'unstarted',
-                      }[status] as IBroadcast['status'],
-                    }, callback),
-                    callback: true,
-                  },
-                },
-                //
-                // BlackScreen button
-                //
-                ['control', 'owner'].includes(rights) && {
-                  Icon: blackScreen ? BlackScreenOn : BlackScreenOff,
-                  key: 'black-screen',
-                  label: blackScreen
-                    ? t('station.Unblack screen', 'Unblack screen')
-                    : t('station.Black screen', 'Black screen'),
-                  labelVisible: !smallDevice,
-                  onClick: {
-                    build: ({ callback }: {
-                      element?: IUnfetched<ISong>;
-                      callback?: IIconButtonCallback;
-                    }): () => void => handleUpdateBroadcast({
-                      state: {
-                        ...state,
-                        blackScreen: !blackScreen,
-                      },
-                    }, callback),
-                    callback: true,
-                  },
-                },
-                //
-                // New songs button
-                //
-                ['control', 'owner'].includes(rights) && {
-                  Icon: Add,
-                  key: 'addSongs',
-                  label: t('station.Add songs', 'Add songs'),
-                  labelVisible: !smallDevice,
-                  onClick: setActionHandler(setAddSongs, true),
-                },
-                //
-                // Edit button
-                //
-                ['control', 'owner'].includes(rights) && songs.length && {
-                  disabled: true,
-                  Icon: Edit,
-                  key: 'edit',
-                  label: t('station.Edit', 'Edit this song'),
-                  labelVisible: !smallDevice,
-                  onClick: handleEditSong(songNb),
-                },
-                //
-                // Remove button
-                //
-                ['control', 'owner'].includes(rights) && songs.length && {
-                  Icon: RemoveCircleOutline,
-                  key: 'remove',
-                  label: t('station.Remove', 'Remove this song'),
-                  labelVisible: !smallDevice,
-                  onClick: {
-                    build: ({ callback }: {
-                      element?: IUnfetched<ISong>;
-                      callback?: IIconButtonCallback;
-                    }): () => void => handleAddRemoveSong('remove', songs[songNb], callback),
-                  },
-                },
-              ],
-              //
-              // Navigation buttons: First, Previous, (Display), Current, Next, Last
-              //
-              songs && [
-                // First
-                {
-                  disabled: songNb === 0,
-                  Icon: FirstPage,
-                  key: 'nav-first',
-                  label: t('station.First', 'First'),
-                  onClick: handlePreviousNext(songNb),
-                },
-                // Previous
-                {
-                  disabled: songNb === 0,
-                  Icon: NavigateBefore,
-                  key: 'nav-previous',
-                  label: t('station.Previous', 'Previous'),
-                  onClick: handlePreviousNext(-1),
-                },
-                // (Display)
-                {
-                  disabled: true,
-                  key: 'nav-display',
-                  label: `${songNb + (songs.length ? 1 : 0)}/${songs.length}`,
-                  labelVisible: true,
-                  onClick: (): void => { /* Empty function */ },
-                },
-                // Current
-                {
-                  disabled: songNb === stateSongNb,
-                  Icon: Sync,
-                  key: 'nav-current',
-                  label: t('station.Current', 'Current'),
-                  onClick: handlePreviousNext(stateSongNb - songNb),
-                },
-                // Next
-                {
-                  disabled: songNb === songs.length - 1,
-                  Icon: NavigateNext,
-                  key: 'nav-next',
-                  label: t('station.Next', 'Next'),
-                  onClick: handlePreviousNext(1),
-                },
-                // Last
-                {
-                  disabled: songNb === songs.length - 1,
-                  Icon: LastPage,
-                  key: 'nav-last',
-                  label: t('station.Last', 'Last'),
-                  onClick: handlePreviousNext(1),
-                },
-              ],
-            ]}
-            className={classes.card}
-            contentProps={{ className: classes.cardContent }}
-            fabs={['readOnly', 'navigate'].includes(rights) || !songs ? undefined : [
-              // Control: Previous
-              {
-                disabled: stateSongNb === 0,
-                Icon: NavigateBefore,
-                key: 'control-previous',
-                label: t('station.Previous', 'Previous') as string,
-                onClick: {
-                  build: ({ callback }: {
-                    element?: IUnfetched<ISong>;
-                    callback?: IIconButtonCallback;
-                  }): () => void => handleControlPreviousNext(-1, callback),
-                  callback: true,
-                },
+  return addSongs
+    ? (
+      <PageLayout
+        className={classes.root}
+        disableLogoMenu={['readOnly', 'navigate'].includes(rights)}
+        menuProps={{
+          classes: {
+            logoMenu: clsx(classes.logoMenu, classes.menus),
+            topMenu: classes.menus,
+          },
+          handleToggleLogoMenu,
+          logoMenuDeployed,
+          onMouseLeave: handleLogoMenuMouseLeave,
+        }}
+        title={
+          [
+            'Alleluia.plus',
+            broadcastTitle,
+          ].filter((e) => e).join(' - ')
+        }
+        tutorialContentName="Station"
+      >
+        <AddRemoveSearchList
+          goBack={setActionHandler(setAddSongs, false)}
+          handleAddRemoveSong={handleAddRemoveSong}
+          handleFocus={handleFocus}
+          shortFirstItem={logoMenuDeployed}
+          shortSearchField={logoMenuDeployed}
+          songIds={songs.map((s) => s._id)}
+        />
+      </PageLayout>
+    ) : (
+      <Screen
+        actions={rights === 'readOnly' || (rights === 'navigate' && status !== 'ongoing') ? undefined : [
+          [
+            //
+            // Publish button
+            //
+            rights === 'owner' && {
+              color: status !== 'unpublished' ? 'primary' : 'default',
+              Icon: RssFeed,
+              key: 'publish',
+              label: t('station.Publish', 'Publish'),
+              labelVisible: !smallDevice,
+              onClick: setActionHandler(setOpenPublishDialog, true),
+            },
+            //
+            // State button: Publish/Start/End/Reset
+            //
+            rights === 'owner' && status && status !== 'unpublished' && {
+              color: {
+                // unpublished: 'default',
+                unstarted: 'default',
+                ongoing: 'primary',
+                ended: 'default',
+              }[status],
+              Icon: {
+                // unpublished: RssFeed,
+                unstarted: PlayArrow,
+                ongoing: Stop,
+                ended: Replay,
+              }[status],
+              key: 'status',
+              label: {
+                // unpublished: t('station.Publish', 'Publish'),
+                unstarted: t('station.Start', 'Start'),
+                ongoing: t('station.End', 'End'),
+                ended: t('station.Reset', 'Reset'),
+              }[status],
+              labelVisible: !smallDevice,
+              onClick: {
+                build: ({ callback }: {
+                  element?: IUnfetched<ISong>;
+                  callback?: IIconButtonCallback;
+                }): () => void => handleUpdateBroadcast({
+                  status: {
+                    // unpublished: 'unstarted',
+                    unstarted: 'ongoing',
+                    ongoing: 'ended',
+                    ended: 'unstarted',
+                  }[status] as IBroadcast['status'],
+                }, callback),
+                callback: true,
               },
-              // Control: (Display)
-              {
-                disabled: true,
-                key: 'control-display',
-                label: `${stateSongNb + (songs.length ? 1 : 0)}/${songs.length}`,
-                labelVisible: true,
-                onClick: (): void => { /* Empty function */ },
+            },
+            //
+            // BlackScreen button
+            //
+            ['control', 'owner'].includes(rights) && {
+              Icon: blackScreen ? BlackScreenOn : BlackScreenOff,
+              key: 'black-screen',
+              label: blackScreen
+                ? t('station.Unblack screen', 'Unblack screen')
+                : t('station.Black screen', 'Black screen'),
+              labelVisible: !smallDevice,
+              onClick: {
+                build: ({ callback }: {
+                  element?: IUnfetched<ISong>;
+                  callback?: IIconButtonCallback;
+                }): () => void => handleUpdateBroadcast({
+                  state: {
+                    ...state,
+                    blackScreen: !blackScreen,
+                  },
+                }, callback),
+                callback: true,
               },
-              // Control: Next
-              {
-                disabled: stateSongNb === songs.length - 1,
-                Icon: NavigateNext,
-                key: 'control-next',
-                label: t('station.Next', 'Next') as string,
-                onClick: {
-                  build: ({ callback }: {
-                    element?: IUnfetched<ISong>;
-                    callback?: IIconButtonCallback;
-                  }): () => void => handleControlPreviousNext(1, callback),
-                  callback: true,
-                },
+            },
+            //
+            // New songs button
+            //
+            ['control', 'owner'].includes(rights) && {
+              Icon: Add,
+              key: 'addSongs',
+              label: t('station.Add songs', 'Add songs'),
+              labelVisible: !smallDevice,
+              onClick: setActionHandler(setAddSongs, true),
+            },
+            //
+            // Edit button
+            //
+            ['control', 'owner'].includes(rights) && songs.length && {
+              disabled: true,
+              Icon: Edit,
+              key: 'edit',
+              label: t('station.Edit', 'Edit this song'),
+              labelVisible: !smallDevice,
+              onClick: handleEditSong(songNb),
+            },
+            //
+            // Remove button
+            //
+            ['control', 'owner'].includes(rights) && songs.length && {
+              Icon: RemoveCircleOutline,
+              key: 'remove',
+              label: t('station.Remove', 'Remove this song'),
+              labelVisible: !smallDevice,
+              onClick: {
+                build: ({ callback }: {
+                  element?: IUnfetched<ISong>;
+                  callback?: IIconButtonCallback;
+                }): () => void => handleAddRemoveSong('remove', songs[songNb], callback),
               },
-            ]}
-            cardProps={{ elevation: 0 }}
-            headerAction={['readOnly', 'navigate'].includes(rights) && {
-              Icon: Clear,
-              key: 'close',
-              label: t('station.Close', 'Close') as string,
-              onClick: handleCloseScreen,
-            }}
-            headerProps={{ className: classes.cardHeader }}
-            headerSubheader={active ? (song && song.subtitle) || '' : t('station.Broadcast not started', 'This broadcast has not started yet')}
-            headerTitle={active ? (song && song.title) : broadcastTitle}
-            shortHeader={0}
-          >
-            {active && song && <PrintSong song={song} />}
-          </FullCardLayout>
-        )}
-      <PublishDialog
-        broadcastOwnerId={viewerId}
-        broadcastStatus={status}
-        handleClose={setActionHandler(setOpenPublishDialog, false)}
-        handleTogglePublished={handleTogglePublished}
-        open={openPublishDialog}
-      />
-    </PageLayout>
-  );
+            },
+          ],
+          //
+          // Navigation buttons: First, Previous, (Display), Current, Next, Last
+          //
+          songs && [
+            // First
+            {
+              disabled: songNb === 0,
+              Icon: FirstPage,
+              key: 'nav-first',
+              label: t('station.First', 'First'),
+              onClick: handlePreviousNext(-songNb),
+            },
+            // Previous
+            {
+              disabled: songNb === 0,
+              Icon: NavigateBefore,
+              key: 'nav-previous',
+              label: t('station.Previous', 'Previous'),
+              onClick: handlePreviousNext(-1),
+            },
+            // (Display)
+            {
+              disabled: true,
+              key: 'nav-display',
+              label: `${songNb + (songs.length ? 1 : 0)}/${songs.length}`,
+              labelVisible: true,
+              onClick: (): void => { /* Empty function */ },
+            },
+            // Current
+            {
+              disabled: songNb === stateSongNb,
+              Icon: Sync,
+              key: 'nav-current',
+              label: t('station.Current', 'Current'),
+              onClick: handlePreviousNext(stateSongNb - songNb),
+            },
+            // Next
+            {
+              disabled: songNb === songs.length - 1,
+              Icon: NavigateNext,
+              key: 'nav-next',
+              label: t('station.Next', 'Next'),
+              onClick: handlePreviousNext(1),
+            },
+            // Last
+            {
+              disabled: songNb === songs.length - 1,
+              Icon: LastPage,
+              key: 'nav-last',
+              label: t('station.Last', 'Last'),
+              onClick: handlePreviousNext(songs.length - 1 - songNb),
+            },
+          ],
+        ]}
+        blackScreen={blackScreen}
+        fabs={['readOnly', 'navigate'].includes(rights) || !songs ? undefined : [
+          // Control: Previous
+          {
+            disabled: stateSongNb === 0,
+            Icon: NavigateBefore,
+            key: 'control-previous',
+            label: t('station.Previous', 'Previous') as string,
+            onClick: {
+              build: ({ callback }: {
+                element?: IUnfetched<ISong>;
+                callback?: IIconButtonCallback;
+              }): () => void => handleControlPreviousNext(-1, callback),
+              callback: true,
+            },
+          },
+          // Control: (Display)
+          {
+            disabled: true,
+            key: 'control-display',
+            label: `${stateSongNb + (songs.length ? 1 : 0)}/${songs.length}`,
+            labelVisible: true,
+            onClick: (): void => { /* Empty function */ },
+          },
+          // Control: Next
+          {
+            disabled: stateSongNb === songs.length - 1,
+            Icon: NavigateNext,
+            key: 'control-next',
+            label: t('station.Next', 'Next') as string,
+            onClick: {
+              build: ({ callback }: {
+                element?: IUnfetched<ISong>;
+                callback?: IIconButtonCallback;
+              }): () => void => handleControlPreviousNext(1, callback),
+              callback: true,
+            },
+          },
+        ]}
+        headerAction={['readOnly', 'navigate'].includes(rights) && {
+          Icon: Clear,
+          key: 'close',
+          label: t('station.Close', 'Close') as string,
+          onClick: handleCloseScreen,
+        }}
+        headerSubheader={active ? (song && song.subtitle) || '' : t('station.Broadcast not started', 'This broadcast has not started yet')}
+        headerTitle={active ? (song && song.title) : broadcastTitle}
+        song={song}
+        title={
+          [
+            'Alleluia.plus',
+            broadcastTitle,
+            active && songs && songs[songNb] && songs[songNb].title,
+          ].filter((e) => e).join(' - ')
+        }
+      >
+        <PublishDialog
+          broadcastOwnerId={viewerId}
+          broadcastStatus={status}
+          handleClose={setActionHandler(setOpenPublishDialog, false)}
+          handleTogglePublished={handleTogglePublished}
+          open={openPublishDialog}
+        />
+      </Screen>
+    );
 };
 
 export default Station;
