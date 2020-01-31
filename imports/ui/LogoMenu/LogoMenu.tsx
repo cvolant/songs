@@ -230,7 +230,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
     const currentlyAt = (pathname: 'dashboard' | 'signin' | 'signup' | 'home'): boolean => (
       pathname === 'home'
-        ? location.pathname === routesPaths.path(i18n.language, pathname)
+        ? location.pathname.replace(/\/$/, '') === routesPaths.path(i18n.language, pathname)
         : location.pathname.indexOf(routesPaths.path(i18n.language, pathname)) >= 0
     );
 

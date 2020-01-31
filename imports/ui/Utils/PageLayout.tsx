@@ -135,7 +135,6 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
         className={classes.pageContent}
         onScroll={sidePanel && smallDevice && scrollDown ? scrollDown : undefined}
       >
-        {console.log('From PageLayout, return. sidePanel:', sidePanel)}
         {!!sidePanel
           && (
             <Grid item sm={12} md={4} lg={3}>

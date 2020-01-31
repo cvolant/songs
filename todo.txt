@@ -10,6 +10,10 @@ Utiliser les options de traduction de simple-schema
 Mettre le state du logomenu en global, virer handleFocus.
 Utiliser les Routes dans le Dashboard.
 Ajouter des Snackbars de changement de statut dans la station
+Ajouter un fab + dans l'Editor de AddRemoveSearchList
+Ajouter un bouton supprimer pour les chants créés
+Tranformer les hocs en hooks
+Améliorer l'utilisation du router, des urls et des Routes
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.
