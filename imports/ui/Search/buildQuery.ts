@@ -21,13 +21,14 @@ const toStr = (o: any): string => {
   if (o.constructor.name === 'Object') {
     return `{ ${Object.entries(o).map((entry) => `${entry[0]}: ${toStr(entry[1])}`).join(', ')} }`;
   }
+  if (typeof o === 'string') { return `"${o}"`; }
   return o.toString();
 };
  */
 
 export const buildQuery = ({
   search: { globalQuery, specificQueries } = {},
-  options: { sort, limit = 20 } = { limit: 20 },
+  options: propOptions,
 }: {
   search?: ISearch;
   options?: IMongoQueryOptions;
@@ -83,10 +84,13 @@ export const buildQuery = ({
     '\nFrom buildQuery,',
     'globalQuery =', globalQuery,
     '\nspecificQueries =', specificQueries,
-    '\noptions:', { sort, limit },
+    '\noptions = ', propOptions,
   ); */
 
-  const options: IMongoQueryOptions = { sort, limit };
+  const options: IMongoQueryOptions = propOptions || {};
+  if (!options.limit) {
+    options.limit = 20;
+  }
 
   let queries: IQuery[] = [];
   if (specificQueries && specificQueries.length > 0) {

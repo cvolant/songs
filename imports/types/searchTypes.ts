@@ -46,4 +46,5 @@ export interface IMongoQueryOptions {
   skip?: number;
   limit?: number;
   fields?: Mongo.FieldSpecifier;
+  transform?: (doc: object) => object;
 }

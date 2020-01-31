@@ -72,9 +72,19 @@ export const SearchList: React.FC<ISearchListProps> = ({
         || (search.specificQueries && Object.keys(search.specificQueries).length)
       )
     ) {
-      const { query, options } = buildQuery({ search, options: { limit, sort } });
+      const builtQuery = buildQuery({
+        search,
+        options: {
+          limit,
+          sort,
+          transform: (doc): object => ({
+            ...doc,
+            fromSearch: true,
+          }),
+        },
+      });
 
-      const subscription = Meteor.subscribe('songs', { query, options }, () => {
+      const subscription = Meteor.subscribe('songs', builtQuery, () => {
         /* console.log(
           'From SearchList, useEffect[search, sort], subscription callback.',
           'setLoading(false) + setLimitRaised(false)',
@@ -84,7 +94,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
 
       /* console.log(
         'From SearchList, useEffect[search, sort]: subscription with',
-        '{ query, options }:', JSON.stringify({ query, options }),
+        '{ query, options }:', JSON.stringify(builtQuery),
         '\nsubscription:', subscription,
       ); */
 
@@ -102,7 +112,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
 
     if (!loading) {
       uTFavoriteSongs = user ? user.favoriteSongs : [];
-      uTSongs = Songs.find({}).fetch().filter((song) => typeof song.score !== 'undefined');
+      uTSongs = Songs.find({}).fetch();
 
       setSongs(uTSongs);
       setFavoriteSongs(uTFavoriteSongs);
@@ -120,7 +130,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
   /* console.log(
     'From SearchList, render.',
     'loading:', loading,
-    'songs[0]:', songs[0] && songs[0].title,
+    'songs[0]:', songs[0],
   ); */
 
   useEffect(() => {
