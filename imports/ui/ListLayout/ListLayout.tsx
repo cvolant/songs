@@ -65,8 +65,8 @@ export const ListLayout: React.FC<IListLayoutProps> = ({
         },
       } = listRef;
       const scrollPosition = (scrollTop * 100) / (scrollHeight - clientHeight);
-      if (scrollPosition > 90) {
-        console.log('From ListLayout, handleListScroll. scrollPosition:', scrollPosition);
+      if (scrollPosition > 90 && raiseLimit) {
+        // console.log('From ListLayout, handleListScroll. scrollPosition:', scrollPosition);
         raiseLimit();
       }
     }

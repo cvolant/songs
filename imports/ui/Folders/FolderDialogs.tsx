@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import FolderSettingsDialog from './FolderSettingsDialog';
-import FormDialog from '../utils/FormDialog';
+import FormDialog from '../Utils/FormDialog';
 
 import { IFolder, IUnfetched } from '../../types';
 

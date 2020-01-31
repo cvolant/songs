@@ -109,7 +109,7 @@ export const ListLayoutSorting = <T extends ISong | IFolder>({
   const classes = useStyles();
   const smallDevice = useDeviceSize('sm', 'down');
 
-  console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort);
+  // console.log('From ListLayoutSorting, render. sortCriteria:', sortCriteria, 'sort:', sort);
   const [[sortCriterion, sortValue]] = Object.entries(sort || { '': '' });
 
 

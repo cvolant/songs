@@ -9,7 +9,7 @@ class FoldersCollection extends Mongo.Collection<IFolder> {
     const ourDoc = doc;
     ourDoc.updatedAt = ourDoc.updatedAt || new Date();
     const result = super.insert(ourDoc, callback);
-    console.log('From api.folders.insert. result:', result);
+    // console.log('From api.folders.insert. result:', result);
     return result;
     // /!\ result is not a string but an ObjectID!!!
   }

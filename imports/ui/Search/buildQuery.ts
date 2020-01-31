@@ -12,14 +12,18 @@ type IQueryFields = Record<IFieldsKey, {
   > | undefined;
 }>;
 
-// Custom toString function for deep in objects/arrays containing regexp stringing.
+/*
+// Custom toString function for console.log deep in objects/arrays containing regexp stringing.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toStr = (o: any): string => {
   if (typeof o === 'undefined') { return '[undefined]'; }
   if (Array.isArray(o)) { return `[ ${o.map((oel) => toStr(oel)).join(', ')} ]`; }
-  if (o.constructor.name === 'Object') { return `{ ${Object.entries(o).map((entry) => `${entry[0]}: ${toStr(entry[1])}`).join(', ')} }`; }
+  if (o.constructor.name === 'Object') {
+    return `{ ${Object.entries(o).map((entry) => `${entry[0]}: ${toStr(entry[1])}`).join(', ')} }`;
+  }
   return o.toString();
 };
+ */
 
 export const buildQuery = ({
   search: { globalQuery, specificQueries } = {},
@@ -60,9 +64,13 @@ export const buildQuery = ({
       operator: (value: string): Mongo.FieldExpression<Mongo.ObjectID> | undefined => {
         const user = Meteor.user();
         if (user) {
-          console.log('From songs, fields.search.favorites.operator. value:', value);
+          // console.log('From songs, fields.search.favorites.operator. value:', value);
           const { favoriteSongs } = user as IUser;
-          console.log('From songs, fields.search.favorites.operator. value:', value, 'favoritesSongs:', favoriteSongs);
+          console.log(
+            'From songs, fields.search.favorites.operator.',
+            'value:', value,
+            'favoritesSongs:', favoriteSongs,
+          );
           return value in ['no', 'non'] ? { $nin: favoriteSongs } : { $in: favoriteSongs };
         }
         return undefined;
@@ -70,14 +78,19 @@ export const buildQuery = ({
     },
   };
 
-  console.log('\n------------------------');
-  console.log('\nFrom buildQuery, globalQuery =', globalQuery, '\nspecificQueries =', specificQueries, '\noptions:', { sort, limit });
+  /* console.log(
+    '\n------------------------',
+    '\nFrom buildQuery,',
+    'globalQuery =', globalQuery,
+    '\nspecificQueries =', specificQueries,
+    '\noptions:', { sort, limit },
+  ); */
 
   const options: IMongoQueryOptions = { sort, limit };
 
   let queries: IQuery[] = [];
   if (specificQueries && specificQueries.length > 0) {
-    console.log('=> specificQueries...');
+    // console.log('=> specificQueries...');
 
     queries = specificQueries.map((specificQuery) => {
       const query: Mongo.Query<number | string | Mongo.ObjectID> = {};
@@ -120,7 +133,7 @@ export const buildQuery = ({
     }
   }
 
-  console.log('From buildQuery. query:', toStr({ $and: queries }), '\noptions:', toStr(options));
+  // console.log('From buildQuery. query:', toStr({ $and: queries }), '\noptions:', toStr(options));
 
   return {
     query: queries.length > 0 ? { $and: queries } : {},

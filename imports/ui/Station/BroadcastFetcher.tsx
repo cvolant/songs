@@ -49,7 +49,7 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
   }
 
   if (!broadcastLoading && broadcast && songs) {
-    console.log('From BroadcastFetcher, render. broadcast:', broadcast, 'songs:', songs);
+    // console.log('From BroadcastFetcher, render. broadcast:', broadcast, 'songs:', songs);
     return <Station broadcast={broadcast} songs={songs} />;
   }
   if (broadcastLoading) {

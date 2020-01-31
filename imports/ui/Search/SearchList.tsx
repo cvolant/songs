@@ -75,15 +75,22 @@ export const SearchList: React.FC<ISearchListProps> = ({
       const { query, options } = buildQuery({ search, options: { limit, sort } });
 
       const subscription = Meteor.subscribe('songs', { query, options }, () => {
-        console.log('From SearchList, useEffect[search, sort], subscription callback. setLoading(false) + setLimitRaised(false)');
+        /* console.log(
+          'From SearchList, useEffect[search, sort], subscription callback.',
+          'setLoading(false) + setLimitRaised(false)',
+        ); */
         setLoading(false);
       });
 
-      console.log('From SearchList, useEffect[search, sort]: subscription with { query, options }:', JSON.stringify({ query, options }), '\nsubscription:', subscription);
+      /* console.log(
+        'From SearchList, useEffect[search, sort]: subscription with',
+        '{ query, options }:', JSON.stringify({ query, options }),
+        '\nsubscription:', subscription,
+      ); */
 
       return subscription.stop;
     }
-    console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
+    // console.log('From Songlist, useEffect[search, sort]. Empty search: stopLoading().');
     setLoading(false);
     return (): void => { /* Empty function */ };
   }, [search, sort, limit]);
@@ -110,7 +117,11 @@ export const SearchList: React.FC<ISearchListProps> = ({
 
   const { isAuthenticated } = uTResult;
 
-  console.log('From SearchList, render. loading:', loading, 'songs[0]:', songs[0] && songs[0].title);
+  /* console.log(
+    'From SearchList, render.',
+    'loading:', loading,
+    'songs[0]:', songs[0] && songs[0].title,
+  ); */
 
   useEffect(() => {
     setLimit(nbItemsPerPage);
@@ -118,7 +129,11 @@ export const SearchList: React.FC<ISearchListProps> = ({
 
   const raiseLimit = (): void => {
     if (songs.length === limit) {
-      console.log(`From SearchList, raiseLimit: setLimit(${limit + nbItemsPerPage}). exlimit:`, limit);
+      /* console.log(
+        'From SearchList, raiseLimit.',
+        `setLimit(${limit + nbItemsPerPage}).`,
+        'exlimit:', limit,
+      ); */
       setLimit(limit + nbItemsPerPage);
       setLoading(true);
     }
@@ -126,7 +141,10 @@ export const SearchList: React.FC<ISearchListProps> = ({
 
   const handleNewSearch = (newSearch: ISearch): void => {
     if (JSON.stringify(newSearch) !== JSON.stringify(search)) {
-      console.log('From SearchList, handleNewSearch : setLoading(true) + setSearch(', JSON.stringify(newSearch), ').');
+      /* console.log(
+        'From SearchList, handleNewSearch.',
+        `setLoading(true) + setSearch(${JSON.stringify(newSearch)}).`,
+      ); */
       setLoading(true);
       setSearch(newSearch);
     }
@@ -151,7 +169,10 @@ export const SearchList: React.FC<ISearchListProps> = ({
   };
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
-    console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
+    /* console.log(
+      'From SearchList, handleToggleFavoriteSong.',
+      '{ songId, value }:', { songId, value },
+    ); */
     userFavoriteToggle.call({ songId, value });
   };
 

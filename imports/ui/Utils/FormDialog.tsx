@@ -58,14 +58,14 @@ export const FormDialog: React.FC<IFormDialogProps> = ({
   const onSubmit: FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault();
     if (!error) {
-      console.log('From FormDialog, onSubmit without error');
-      handleSubmit((err: Meteor.Error | null, res?: Mongo.ObjectID) => {
-        console.log('From FormDialog, onSubmit callback.');
+      // console.log('From FormDialog, onSubmit without error');
+      handleSubmit((err: Meteor.Error | null) => {
+        // console.log('From FormDialog, onSubmit callback.');
         if (err) {
           console.error('From FormDialog, handleCreateNew.callback. err:', err);
           setMessage(err.reason || 'Error, sorry... Cannot create a new one. Please retry!');
         } else {
-          console.log('From FormDialog, handleCreateNew.callback. res:', res);
+          // console.log('From FormDialog, handleCreateNew.callback.');
           handleClose();
         }
       });

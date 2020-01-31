@@ -16,7 +16,7 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Check from '@material-ui/icons/Check';
 import { CircularProgress } from '@material-ui/core';
 
-import SnackbarMessage from '../utils/SnackBarMessage';
+import SnackbarMessage from '../Utils/SnackBarMessage';
 
 const useStyles = makeStyles((theme) => ({
   spacedIcon: {
@@ -72,12 +72,12 @@ export const CreateNewDialog: React.FC<ICreateNewDialogProps> = ({
   const onSubmit: FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault();
     if (name) {
-      handleCreateNew(name, (err: Meteor.Error, res: Mongo.ObjectID) => {
+      handleCreateNew(name, (err: Meteor.Error) => {
         if (err) {
           console.error('From CreateNewDialog, handleCreateNew.callback. err:', err);
           setError(err.reason || 'Error, sorry... Cannot create a new one. Please retry!');
         } else {
-          console.log('From CreateNewDialog, handleCreateNew.callback. res:', res);
+          // console.log('From CreateNewDialog, handleCreateNew.callback. res:', res);
           handleClose();
         }
       });

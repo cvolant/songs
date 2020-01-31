@@ -1,6 +1,5 @@
 /* global window */
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -18,12 +17,11 @@ import ToggleOn from '@material-ui/icons/ToggleOn';
 import ToggleOff from '@material-ui/icons/ToggleOff';
 
 import useUnmountedRef from '../../hooks/unmountedRef';
-import CustomIconButton from '../utils/CustomIconButton';
+import CustomIconButton from '../Utils/CustomIconButton';
 
 import { IIconButtonBWCbProps, IIconButtonCallback } from '../../types/iconButtonTypes';
 import { IBroadcast, IBroadcastRights } from '../../types/broadcastTypes';
 
-import Broadcasts from '../../api/broadcasts/broadcasts';
 import { broadcastGetAddresses } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +55,6 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const unmountedRef = useUnmountedRef();
-  const location = useLocation();
 
   const [addresses, setAddresses] = useState<IBroadcast['addresses'] | undefined>();
   const [copied, setCopied] = useState<IBroadcastRights[]>([]);
@@ -65,7 +62,7 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
   useEffect(() => {
     broadcastGetAddresses.call({ broadcastOwnerId }, (_err, res) => {
       if (res && !unmountedRef.current) {
-        console.log('From PublishDialog.broadcastGetAddresses.callback. res:', res);
+        // console.log('From PublishDialog.broadcastGetAddresses.callback. res:', res);
         setAddresses(res);
       }
     });
@@ -90,7 +87,11 @@ export const PublishDialog: React.FC<IPublishDialogProps> = ({
 
   const published = broadcastStatus && broadcastStatus !== 'unpublished';
 
-  console.log('From PublishDialog, render. location:', location, 'broadcastOwnerId:', broadcastOwnerId, 'addresses:', addresses, 'Broadcasts:', Broadcasts);
+  /* console.log(
+    'From PublishDialog, render.',
+    'broadcastOwnerId:', broadcastOwnerId,
+    'addresses:', addresses,
+  ); */
 
   return (
     <Dialog

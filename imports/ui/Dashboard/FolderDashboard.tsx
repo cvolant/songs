@@ -40,10 +40,10 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
 
   useEffect(() => {
     const subscription = Meteor.subscribe('folder', folderId, () => {
-      console.log('From FolderDashboard, useEffect. Subscription callback.');
+      // console.log('From FolderDashboard, useEffect. Subscription callback.');
     });
     return (): void => {
-      console.log('From FolderDashboard. SUBSCRIPTION.STOP.');
+      // console.log('From FolderDashboard. SUBSCRIPTION.STOP.');
       subscription.stop();
     };
   }, [folderId]);
@@ -54,7 +54,11 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
   );
 
   const handleAddRemoveSong: SongARHandler = (addOrRemove, arSong, callback) => (): void => {
-    console.log('From FolderDashboard, handleAddRemoveSong. arSong:', arSong, 'callback:', callback);
+    /* console.log(
+      'From FolderDashboard, handleAddRemoveSong.',
+      'arSong:', arSong,
+      'callback:', callback,
+    ); */
     if (arSong && arSong._id && folder && folder._id) {
       (addOrRemove === 'add' ? foldersUpdateSongsInsert : foldersUpdateSongsRemove)
         .call({ folderId: folder._id, songId: arSong._id }, callback);
@@ -80,7 +84,7 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
   };
 
   const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
-    console.log('From FolderDashboard, handleSelectSong. newSong.title:', newSong.title);
+    // console.log('From FolderDashboard, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
     if (setTutorialContentName) {
       setTutorialContentName('Editor');
@@ -88,9 +92,8 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
   };
 
   const folderSongs = (folder && folder.songs) || [];
-  const folderSongIds = folderSongs.map((folderSong) => folderSong._id);
 
-  console.log('From FolderDashboard, return. song:', song, 'folder:', folder);
+  // console.log('From FolderDashboard, return. song:', song, 'folder:', folder);
 
   if (song) {
     return (
@@ -103,7 +106,11 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
     );
   }
   if (search) {
-    console.log('From FolderDashboard, if(search). folder:', folder, 'folderSongs:', folderSongs, 'folderSongIds:', folderSongIds);
+    /* console.log(
+      'From FolderDashboard, if(search).',
+      'folder:', folder,
+      'folderSongs:', folderSongs,
+    ); */
     return (
       <AddRemoveSearchList
         goBack={goBackToFolders(setSearch)}

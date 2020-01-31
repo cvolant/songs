@@ -10,7 +10,7 @@ class BroadcastsCollection extends Mongo.Collection<IBroadcast> {
       ...doc,
     };
     const result = super.insert(ourDoc, callback);
-    console.log('From api.broadcasts.insert. result:', result);
+    // console.log('From api.broadcasts.insert. result:', result);
     return result;
     // /!\ result is not a string but an ObjectID!!!
   }

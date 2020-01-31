@@ -17,7 +17,7 @@ import SelectAll from '@material-ui/icons/SelectAll';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import AddSongTo from './AddSongTo';
-import FullCardLayout from '../utils/FullCardLayout';
+import FullCardLayout from '../Utils/FullCardLayout';
 import NoLyrics from './NoLyrics';
 import Paragraph from './Paragraph';
 import Title from './Title';
@@ -161,7 +161,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleDetailChange = (target: IDetailTarget): void => {
-    console.log('From Editor, handleDetailChange. target:', target);
+    // console.log('From Editor, handleDetailChange. target:', target);
     const {
       attributes: {
         name: {
@@ -191,7 +191,13 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 
   const handleEditPg = (pgIndex: number): void => {
     const pgStateIndex = indexOfObject(pgStates, { pgIndex });
-    console.log('From Editor, handleEditPg. pgIndex:', pgIndex, 'title:', title, 'pgStates:', pgStates, 'pgStateIndex:', pgStateIndex);
+    /* console.log(
+      'From Editor, handleEditPg.',
+      'pgIndex:', pgIndex,
+      'title:', title,
+      'pgStates:', pgStates,
+      'pgStateIndex:', pgStateIndex,
+    ); */
     const newPgStates = JSON.parse(JSON.stringify(pgStates));
     newPgStates[pgStateIndex].edit = !pgStates[pgStateIndex].edit;
     setPgStates(newPgStates);
@@ -208,7 +214,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleMove = (pgIndex: number, movement: number): void => {
-    console.log('From Editor => handleMove. movement:', movement, 'pgStates:', pgStates);
+    // console.log('From Editor => handleMove. movement:', movement, 'pgStates:', pgStates);
     const pgStateIndex = indexOfObject(pgStates, { pgIndex });
     const movedPgState = pgStates.splice(pgStateIndex, 1);
     let newPgStateIndex = pgStateIndex + movement;
@@ -217,20 +223,20 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     } else if (newPgStateIndex > pgStates.length) {
       newPgStateIndex = 0;
     }
-    console.log('From Editor => handleMove. pgStateIndex:', pgStateIndex);
-    console.log('From Editor => handleMove. movedPgState:', movedPgState);
-    console.log('From Editor => handleMove. spliced pgStates:', pgStates);
+    // console.log('From Editor => handleMove. pgStateIndex:', pgStateIndex);
+    // console.log('From Editor => handleMove. movedPgState:', movedPgState);
+    // console.log('From Editor => handleMove. spliced pgStates:', pgStates);
     const newPgStates = [
       ...pgStates.slice(0, newPgStateIndex),
       ...movedPgState,
       ...pgStates.slice(newPgStateIndex),
     ];
-    console.log('From Editor => handleMove. After. pgStates:', pgStates);
+    // console.log('From Editor => handleMove. After. pgStates:', pgStates);
     setPgStates(newPgStates);
   };
 
   const handlePgCancel = (pgIndex: number): void => {
-    console.log('From Editor, handlePgCancel. song.lyrics:', song.lyrics, 'pgStates:', pgStates);
+    // console.log('From Editor, handlePgCancel. song.lyrics:', song.lyrics, 'pgStates:', pgStates);
     if (song.lyrics) {
       const newLyrics = JSON.parse(JSON.stringify(lyrics));
       newLyrics[pgIndex] = song.lyrics[pgIndex];
@@ -244,7 +250,12 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     pgIndex: number,
     part: 'label' | 'pg',
   ): void => {
-    console.log('From Editor, handlePgChange. target:', target, 'pgIndex:', pgIndex, 'part:', part);
+    /* console.log(
+      'From Editor, handlePgChange.',
+      'target:', target,
+      'pgIndex:', pgIndex,
+      'part:', part,
+    ); */
     if (target) {
       const newLyrics = JSON.parse(JSON.stringify(lyrics));
       newLyrics[pgIndex][part] = target.value;
@@ -272,7 +283,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         subtitle,
         title,
       };
-      console.log('From Editor, handleSaveAll. details:', songUpdates);
+      // console.log('From Editor, handleSaveAll. details:', songUpdates);
       songsUpdate.call({ songUpdates });
       setEdit(false);
     }
@@ -336,7 +347,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     title: string;
     subtitle: string;
   } => {
-    console.log('From Editor, initSong. songToInit:', songToInit);
+    // console.log('From Editor, initSong. songToInit:', songToInit);
     const newLyrics = songToInit.lyrics
       ? JSON.parse(JSON.stringify(songToInit.lyrics))
       : []; // To copy song.lyrics properties in a new object.
@@ -391,7 +402,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     setLyrics(newStates.lyrics);
     setPgStates(newStates.pgStates);
     setDetails(newStates.details);
-    console.log('From Editor, initSong. newStates:', newStates);
+    // console.log('From Editor, initSong. newStates:', newStates);
     return (newStates);
   };
 
@@ -425,7 +436,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   useEffect(() => {
     if (user) {
       const foldersSubscription = Meteor.subscribe('user.folders');
-      console.log('From Editor, useEffect[user._id]. foldersSubscription:', foldersSubscription);
+      // console.log('From Editor, useEffect[user._id]. foldersSubscription:', foldersSubscription);
       return foldersSubscription.stop;
     }
     return (): void => { /* Empty function */ };
@@ -435,7 +446,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     initSong(song);
   }, [song]);
 
-  console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
+  // console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
 
   if (song._id.toHexString()) {
     return (
@@ -588,7 +599,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
 export const Editor = withTracker<IEditorWTData, IEditorProps>(({
   song: propsSong,
 }: { song: IUnfetched<ISong> }) => {
-  console.log('From Editor, withTracker. Songs:', Songs);
+  // console.log('From Editor, withTracker. Songs:', Songs);
   const subscription = Meteor.subscribe('song', propsSong._id);
 
   return ({

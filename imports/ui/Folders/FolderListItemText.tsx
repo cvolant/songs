@@ -8,7 +8,7 @@ import Songs from '../../api/songs/songs';
 
 import { IFolder } from '../../types';
 import { ListLayoutItemText } from '../ListLayout';
-import CalendarDate from '../utils/CalendarDate';
+import CalendarDate from '../Utils/CalendarDate';
 
 interface IFolderListItemTextProps {
   handleUnfold: MouseEventHandler<HTMLDivElement>;

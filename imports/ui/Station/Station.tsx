@@ -34,7 +34,7 @@ import { IIconButtonCallback } from '../../types/iconButtonTypes';
 import { ISong, IUnfetched } from '../../types';
 import { IBroadcast, IBroadcastUpdates } from '../../types/broadcastTypes';
 import { IEditedSong, SongSchema } from '../../types/songTypes';
-import PageLayout from '../utils/PageLayout';
+import PageLayout from '../Utils/PageLayout';
 import PublishDialog from './PublishDialog';
 import AddRemoveSearchList, { SongARHandler } from '../Search/AddRemoveSearchList';
 
@@ -93,7 +93,6 @@ interface IStationProps {
 }
 
 export const Station: React.FC<IStationProps> = ({
-  broadcast,
   broadcast: {
     _id,
     addresses: [{
@@ -173,7 +172,7 @@ export const Station: React.FC<IStationProps> = ({
     updates: IBroadcastUpdates,
     callback?: IIconButtonCallback,
   ) => (): void => {
-    console.log('From Station, handleUpdateBroadcast. updates:', updates);
+    // console.log('From Station, handleUpdateBroadcast. updates:', updates);
     if (_id) {
       if (['control', 'owner'].includes(rights)) {
         broadcastUpdate.call({
@@ -203,7 +202,12 @@ export const Station: React.FC<IStationProps> = ({
   };
 
   const handleAddRemoveSong: SongARHandler = (operation, arSong, callback) => (): void => {
-    console.log('From Station, handleAddRemoveSong. operation:', operation, 'arSong:', SongSchema.clean(arSong), 'callback:', callback);
+    /* console.log(
+      'From Station, handleAddRemoveSong.',
+      'operation:', operation,
+      'arSong:', SongSchema.clean(arSong),
+      'callback:', callback,
+    ); */
     if (_id) {
       if (['control', 'owner'].includes(rights)) {
         const songStringIds = operation === 'add' ? undefined : songs.map((mapSong) => mapSong._id.toHexString());
@@ -267,7 +271,7 @@ export const Station: React.FC<IStationProps> = ({
   ): (
     () => void
     ) => {
-    console.log('From Station, handleChangeStatus');
+    // console.log('From Station, handleChangeStatus');
     if (newStatus) {
       if (status === newStatus) {
         if (callback) {
@@ -287,7 +291,12 @@ export const Station: React.FC<IStationProps> = ({
     handleChangeStatus({}, callback)
   );
 
-  console.log('From Station, render. status', status, 'handleUpdateBroadcast', handleUpdateBroadcast, 'broadcast:', broadcast);
+  /* console.log(
+    'From Station, render.',
+    'status', status,
+    'handleUpdateBroadcast', handleUpdateBroadcast,
+    'broadcast:', broadcast,
+  ); */
 
   return addSongs
     ? (

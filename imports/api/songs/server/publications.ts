@@ -8,10 +8,7 @@ import { IMongoQueryOptions } from '../../../types/searchTypes';
 import Songs from '../songs';
 import Folders from '../../folders/folders';
 
-Meteor.publish('song', (_id: Mongo.ObjectID) => {
-  console.log('From songs, publish song. _id:', _id);
-  return Songs.find(_id);
-});
+Meteor.publish('song', (_id: Mongo.ObjectID) => Songs.find(_id));
 
 Meteor.publish('songs', ({
   query, options,
@@ -26,13 +23,18 @@ publishComposite('songs.inFolder', function songsInFolder(
     options: IMongoQueryOptions;
   },
 ) {
-  console.log('From songs.inFolder. Before schema validation.');
+  // console.log('From songs.inFolder. Before schema validation.');
   Folders.schema.validate(folder);
 
   const { _id } = folder;
   const { userId } = this;
 
-  console.log('From songs.inFolder. _id:', _id, 'userId:', userId, '\nfolder:', folder, '\noptions:', options);
+  /* console.log(
+    'From songs.inFolder. _id:', _id,
+    'userId:', userId,
+    '\nfolder:', folder,
+    '\noptions:', options,
+  ); */
 
   return {
     find: (): Mongo.Cursor<IFolder> => Folders.find(
@@ -41,13 +43,10 @@ publishComposite('songs.inFolder', function songsInFolder(
     ),
 
     children: [{
-      find: (foundFolder: IFolder): Mongo.Cursor<ISong> => {
-        console.log('$in:', foundFolder.songs.map((song) => song._id));
-        return Songs.find(
-          { _id: { $in: foundFolder.songs.map((song) => song._id) } },
-          options,
-        );
-      },
+      find: (foundFolder: IFolder): Mongo.Cursor<ISong> => Songs.find(
+        { _id: { $in: foundFolder.songs.map((song) => song._id) } },
+        options,
+      ),
     }],
   };
 });

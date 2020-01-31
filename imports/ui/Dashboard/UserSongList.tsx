@@ -57,14 +57,19 @@ export const UserSongList: React.FC<IUserSongListProps> = ({
   useEffect((): (() => void) => {
     setLoading(true);
     const endOfLoading = (): void => {
-      console.log('From UserSongList, useEffect, endOfLoading.');
+      // console.log('From UserSongList, useEffect, endOfLoading.');
       setLoading(false);
     };
     const subscription = userSongList === UserCollectionName.Folders && folder && folder._id
       ? Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }, endOfLoading)
       : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
 
-    console.log('From UserSongList, useEffect. userSongList:', userSongList, 'folder:', folder, 'subscription:', subscription);
+    /* console.log(
+      'From UserSongList, useEffect.',
+      'userSongList:', userSongList,
+      'folder:', folder,
+      'subscription:', subscription,
+    ); */
     return subscription.stop;
   }, [folder, limit, sort, userSongList]);
 
@@ -90,11 +95,11 @@ export const UserSongList: React.FC<IUserSongListProps> = ({
   }, [userSongList]);
 
   const raiseLimit = (): void => {
-    console.log('From UserSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
+    // console.log('From UserSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
     if (songs.length === limit) {
       setLoading(true);
       const newLimit = limit + nbItemsPerPage;
-      console.log('From UserSongList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
+      // console.log('From UserSongList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
       setLimit(newLimit);
     }
   };
@@ -113,7 +118,10 @@ export const UserSongList: React.FC<IUserSongListProps> = ({
   };
 
   const handleToggleFavoriteSong = (songId: Mongo.ObjectID, value?: boolean) => (): void => {
-    console.log('From UserSongList, handleToggleFavoriteSong. { songId, value }:', { songId, value });
+    /* console.log(
+      'From UserSongList, handleToggleFavoriteSong.',
+      '{ songId, value }:', { songId, value },
+    ); */
     userFavoriteToggle.call({ songId, value });
   };
 

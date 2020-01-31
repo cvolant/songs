@@ -21,7 +21,7 @@ module.exports = {
 
 /*
 const specialLog = ({name, returnValue, args}) => {
-  console.log(`-SbMock- ${name}:`, args || returnValue);
+  // console.log(`-SbMock- ${name}:`, args || returnValue);
   return returnValue;
 };
 

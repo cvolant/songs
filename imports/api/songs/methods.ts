@@ -29,7 +29,7 @@ export const insert = new ValidatedMethod({
 
     const songId = Songs.insert(newSong);
 
-    console.log('From songs.insert. songId:', songId);
+    // console.log('From songs.insert. songId:', songId);
   },
 });
  */
@@ -84,13 +84,13 @@ export const remove = new ValidatedMethod({
     const song = Songs.findOne({ _id: songId });
 
     if (!song) {
-      console.log('From songs.remove.run. song NOT found. songId:', songId);
+      // console.log('From songs.remove.run. song NOT found. songId:', songId);
       throw new Meteor.Error(
         'api.songs.remove.not-found',
         'Cannot remove a song that does not exist',
       );
     }
-    console.log('From songs.remove.run. song found. songId:', songId);
+    // console.log('From songs.remove.run. song found. songId:', songId);
 
     if (song.userId !== this.userId) {
       throw new Meteor.Error(

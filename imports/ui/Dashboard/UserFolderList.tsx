@@ -55,11 +55,15 @@ export const UserFolderList: React.FC<IUserFolderListProps> = ({
   }, [loading]);
 
   const raiseLimit = (): void => {
-    console.log('From UserFolderList, raiseLimit. folders.length:', folders.length, 'limit:', limit);
+    /* console.log(
+      'From UserFolderList, raiseLimit.',
+      'folders.length:', folders.length,
+      'limit:', limit,
+    ); */
     if (folders.length === limit) {
       setLoading(true);
       const newLimit = limit + nbItemsPerPage;
-      console.log('From UserFolderList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
+      // console.log('From UserFolderList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
       setLimit(newLimit);
     }
   };

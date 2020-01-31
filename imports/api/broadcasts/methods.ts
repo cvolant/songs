@@ -48,7 +48,7 @@ export const broadcastUpdate = new ValidatedMethod({
     updates: IBroadcastUpdates;
     viewerId: string;
   }): void {
-    console.log('From api.broadcast.update, viewerId:', viewerId);
+    // console.log('From api.broadcast.update, viewerId:', viewerId);
 
     const broadcast = Broadcasts.findOne({
       addresses: {
@@ -66,7 +66,7 @@ export const broadcastUpdate = new ValidatedMethod({
       );
     }
 
-    console.log('From api.broadcast.update.accessGranted. updates:', updates);
+    // console.log('From api.broadcast.update.accessGranted. updates:', updates);
 
     Broadcasts.update(_id, {
       $set: { ...updates },
@@ -96,7 +96,7 @@ export const broadcastUpdateAddRemoveSong = new ValidatedMethod({
     song: IEditedSong;
     viewerId: string;
   }): void {
-    console.log('From api.broadcast.update.addRemoveSong, viewerId:', viewerId);
+    // console.log('From api.broadcast.update.addRemoveSong, viewerId:', viewerId);
 
     const broadcast = Broadcasts.findOne({
       addresses: {

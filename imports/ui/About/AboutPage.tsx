@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import PageLayout from '../utils/PageLayout';
-import FullCardLayout from '../utils/FullCardLayout';
+import PageLayout from '../Utils/PageLayout';
+import FullCardLayout from '../Utils/FullCardLayout';
 
-const MarkDownText = React.lazy(() => import('../utils/MarkDownText'));
+const MarkDownText = React.lazy(() => import('../Utils/MarkDownText'));
 
 export const AboutPage: React.FC = () => {
   const { t } = useTranslation();

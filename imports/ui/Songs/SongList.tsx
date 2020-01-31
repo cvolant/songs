@@ -59,7 +59,7 @@ export const SongList: React.FC<ISongListProps> = ({
 
   const [unfoldedSong, setUnfoldedSong] = useState();
 
-  console.log('From SongList, render. Meteor.user():', Meteor.user());
+  // console.log('From SongList, render. Meteor.user():', Meteor.user());
 
   const handleSelect = (song: ISong) => (): void => handleSelectSong(song);
   const handleUnfold = (songId: Mongo.ObjectID): MouseEventHandler<HTMLDivElement> => (): void => {
@@ -76,11 +76,14 @@ export const SongList: React.FC<ISongListProps> = ({
     params?: { value?: boolean },
   ) => (): void => {
     const value = (params && params.value) || undefined;
-    console.log('From SearchList, handleToggleFavoriteSong. { songId, value }:', { songId: song._id, value });
+    /* console.log(
+      'From SearchList, handleToggleFavoriteSong.',
+      '{ songId, value }:', { songId: song._id, value },
+    ); */
     userFavoriteToggle.call({ songId: song._id, value }, callback);
   };
 
-  console.log('From SongList, render. favoriteSongs', favoriteSongs);
+  // console.log('From SongList, render. favoriteSongs', favoriteSongs);
 
   return (
     <ListLayout

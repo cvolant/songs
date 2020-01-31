@@ -54,7 +54,7 @@ export const FolderList: React.FC<IFolderListProps> = ({
   const [settingsFolder, setSettingsFolder] = useState<IFolder | undefined>();
   const [deleteFolder, setDeleteFolder] = useState<IFolder | undefined>();
 
-  console.log('From FolderList, render. folders:', folders);
+  // console.log('From FolderList, render. folders:', folders);
 
   const handleClose = (setter: Dispatch<SetStateAction<IFolder | undefined>>) => (): void => {
     setter(undefined);

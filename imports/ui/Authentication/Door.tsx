@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import EmailPasswordForm from './EmailPasswordForm';
-import PageLayout from '../utils/PageLayout';
+import PageLayout from '../Utils/PageLayout';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {

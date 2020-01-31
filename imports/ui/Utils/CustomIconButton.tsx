@@ -83,11 +83,13 @@ interface ICustomIconButtonProps<E> {
 
 export const CustomIconButton = <E, >({
   className: rootClassName,
-  Component,
+  Component: propComponent,
   element,
   iconButtonProps,
   otherParams,
 }: ICustomIconButtonProps<E>): ReactElement | null => {
+  const Component = propComponent as { options?: { name?: string } } & ICustomIconButtonProps<E>['Component'];
+
   const classes = useStyles();
   const unmountedRef = useUnmountedRef();
   const [loading, setLoading] = useState<NodeJS.Timeout | undefined>(undefined);
@@ -128,7 +130,13 @@ export const CustomIconButton = <E, >({
   const variant = fn(iconButtonProps.variant, { element, otherParams });
 
   if (!Component.options) {
-    console.log('From CustomIconButton, render. Component:', Component, 'Component.options', Component.options, 'label:', label, 'Icon:', Icon);
+    /* console.log(
+      'From CustomIconButton, render.',
+      'Component:', Component,
+      'Component.options', Component.options,
+      'label:', label,
+      'Icon:', Icon,
+    ); */
   }
 
   return (

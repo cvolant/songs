@@ -27,7 +27,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Folder from '@material-ui/icons/Folder';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
-import SnackbarMessage from '../utils/SnackBarMessage';
+import SnackbarMessage from '../Utils/SnackBarMessage';
 import { IFolder, ISong, IUnfetched } from '../../types';
 
 import {
@@ -144,7 +144,7 @@ export const AddSongTo: React.FC<IAddSongToProps> = ({
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault();
-    console.log('From AddSongTo, onSubmit. e:', e);
+    // console.log('From AddSongTo, onSubmit. e:', e);
     setError('');
     setLoading(true);
     userFoldersInsert.call({ name }, () => {

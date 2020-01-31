@@ -16,7 +16,7 @@ import {
   IArrayIconButtonProps,
   IElement,
 } from '../../types/iconButtonTypes';
-import CustomIconButton from '../utils/CustomIconButton';
+import CustomIconButton from '../Utils/CustomIconButton';
 
 const useStyles = makeStyles((theme) => ({
   listIcon: {

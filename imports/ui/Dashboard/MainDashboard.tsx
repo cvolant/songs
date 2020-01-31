@@ -16,7 +16,7 @@ import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
 import SongDialog from '../Songs/SongDialog';
-import FullCardLayout from '../utils/FullCardLayout';
+import FullCardLayout from '../Utils/FullCardLayout';
 import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
@@ -55,7 +55,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   const user = useUser();
   const classes = useStyles();
 
-  console.log('From MainDashboard, render. user:', user);
+  // console.log('From MainDashboard, render. user:', user);
 
   const [displaySort, setDisplaySort] = useState(false);
   const [dialog, setDialog] = useState<IDialog>('');

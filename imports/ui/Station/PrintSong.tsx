@@ -42,7 +42,7 @@ export const PrintSong: React.FC<IPrintSongProps> = ({
 }) => {
   const classes = useStyles({ zoom });
 
-  console.log('From PrintSong. song:', song);
+  // console.log('From PrintSong. song:', song);
 
   return (
     <Grid container spacing={4}>

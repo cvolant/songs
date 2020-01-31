@@ -10,7 +10,7 @@ const stringify = (element) => {
 };
 
 const specialLog = (name, returnValue) => (args) => {
-  console.log(`-SbMock- ${name}(${stringify(args)})${returnValue ? ` => ${stringify(returnValue)}` : ''}.`);
+  // console.log(`-SbMock- ${name}(${stringify(args)})${returnValue ? ` => ${stringify(returnValue)}` : ''}.`);
   return returnValue;
 };
 

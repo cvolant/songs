@@ -15,7 +15,7 @@ import Sort from '@material-ui/icons/Sort';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import FullCardLayout from '../utils/FullCardLayout';
+import FullCardLayout from '../Utils/FullCardLayout';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
@@ -23,10 +23,10 @@ import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
-import routesPaths from '../../app/routesPaths';
+import routesPaths from '../../routes/routesPaths';
 import { IBroadcastRights } from '../../types/broadcastTypes';
 import FolderDialogs from '../Folders/FolderDialogs';
-import CalendarDate from '../utils/CalendarDate';
+import CalendarDate from '../Utils/CalendarDate';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -95,7 +95,12 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         id: shortid.generate(),
         rights,
       }));
-      console.log('From FolderEditor, handleBroadcast. addresses:', addresses, 'foldersUpdateBroadcastsInsert:', foldersUpdateBroadcastsInsert);
+      /* console.log(
+        'From FolderEditor, handleBroadcast.',
+        'addresses:', addresses,
+        'foldersUpdateBroadcastsInsert:',
+        foldersUpdateBroadcastsInsert,
+      ); */
       broadcastOwnerId = foldersUpdateBroadcastsInsert.call({ folderId: folder._id, addresses });
     }
     history.push(routesPaths.path(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));

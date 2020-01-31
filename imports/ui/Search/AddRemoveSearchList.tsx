@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Add from '@material-ui/icons/Add';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 
-import FullCardLayout from '../utils/FullCardLayout';
+import FullCardLayout from '../Utils/FullCardLayout';
 import SearchList from './SearchList';
 import { LogoMenuContext } from '../LogoMenu';
 import { TutorialContext } from '../Tutorial';
@@ -51,7 +51,7 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
   };
 
   const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
-    console.log('From FolderDashboard, handleSelectSong. newSong.title:', newSong.title);
+    // console.log('From FolderDashboard, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
     if (setTutorialContentName) {
       setTutorialContentName('Editor');
@@ -60,7 +60,11 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
 
   const songStringIds = songIds.map((songId) => songId.toHexString());
 
-  console.log('From AddRemoveSearchList, render. songIds:', songIds, 'songStringIds:', songStringIds);
+  /* console.log(
+    'From AddRemoveSearchList, render.',
+    'songIds:', songIds,
+    'songStringIds:', songStringIds,
+  ); */
 
   const addRemoveButton = {
     Icon: {

@@ -89,9 +89,12 @@ export const foldersUpdateBroadcastsInsert = new ValidatedMethod({
 
       const broadcastOwnerId = broadcast.addresses[0].id;
 
-      console.log('From api.folders.update.broadcasts.insert. broadcast:', broadcast, 'broadcastOwnerId:', broadcastOwnerId);
+      /* console.log(
+        'From api.folders.update.broadcasts.insert. broadcast:', broadcast,
+        'broadcastOwnerId:', broadcastOwnerId,
+      ); */
 
-      console.log('From folders.update.broadcasts.insert. broadcastOwnerId:', broadcastOwnerId);
+      // console.log('From folders.update.broadcasts.insert. broadcastOwnerId:', broadcastOwnerId);
 
       Folders.update(folderId, {
         $set: { broadcastOwnerId },
@@ -116,7 +119,13 @@ export const foldersUpdateSongsInsert = new ValidatedMethod({
 
     if (folder) {
       if (folder.userId !== this.userId) {
-        console.log('From folders.songs.insert. folder.userId !== this.userId... Folders:', Folders, 'folder:', folder, 'folder.userId:', folder.userId, 'this.userId:', this.userId);
+        /* console.log(
+          'From folders.songs.insert. folder.userId !== this.userId...',
+          'Folders:', Folders,
+          'folder:', folder,
+          'folder.userId:', folder.userId,
+          'this.userId:', this.userId,
+        ); */
         throw new Meteor.Error(
           'api.folders.update.newSong.accessDenied',
           'Cannot add songs in a folder that is not yours',
@@ -131,7 +140,7 @@ export const foldersUpdateSongsInsert = new ValidatedMethod({
         },
       });
 
-      console.log('From folders.songs.insert. song inserted.');
+      // console.log('From folders.songs.insert. song inserted.');
     }
   },
 });
@@ -193,7 +202,7 @@ export const foldersUpdateSongsRemove = new ValidatedMethod({
 
       const { songs } = folder;
       const newSongs = songs.filter((song) => song._id.toHexString() !== songId.toHexString());
-      console.log('From folders.update.removeSong. newSongs:', newSongs);
+      // console.log('From folders.update.removeSong. newSongs:', newSongs);
       Folders.update(folderId, {
         $set: { songs: newSongs },
       });

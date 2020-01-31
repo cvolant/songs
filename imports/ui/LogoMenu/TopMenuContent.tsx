@@ -28,7 +28,7 @@ import LanguagePicker from './LanguagePicker';
 
 import { IBroadcastRights } from '../../types/broadcastTypes';
 
-import routesPaths, { locales } from '../../app/routesPaths';
+import routesPaths, { locales } from '../../routes/routesPaths';
 import { broadcastInsert } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({
@@ -88,11 +88,11 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   const history = useHistory();
   const smallDevice = useDeviceSize('sm', 'down');
 
-  console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
+  // console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
     const { currentTarget: { classList: targetClasses } } = event;
-    console.log('From TopMenuContent, handleClick. targetClasses:', targetClasses);
+    // console.log('From TopMenuContent, handleClick. targetClasses:', targetClasses);
     if (!targetClasses || targetClasses.contains('languagePicker')) handleToggleTopMenu(false)(event);
   };
 

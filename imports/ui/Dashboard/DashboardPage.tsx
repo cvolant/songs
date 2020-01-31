@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import PageLayout from '../utils/PageLayout';
+import PageLayout from '../Utils/PageLayout';
 import Editor from '../Editor';
 import MainDashboard from './MainDashboard';
 import { TutorialContext } from '../Tutorial';
@@ -12,7 +12,7 @@ import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 
-import routesPaths from '../../app/routesPaths';
+import routesPaths from '../../routes/routesPaths';
 import FolderDashboard from './FolderDashboard';
 import { ITutorialContentName } from '../Tutorial/Tutorial';
 
@@ -70,7 +70,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   };
 
   const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
-    console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
+    // console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
     setSong(newSong);
     setTutorialContentName('Editor');
   };
@@ -84,7 +84,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
       <TutorialContext.Provider value={setTutorialContentName}>
         <LogoMenuContext.Provider value={[logoMenuDeployed, setLogoMenuDeployed]}>
           {((): React.ReactElement => {
-            console.log('From DashboardPage, return. song:', song, 'folder:', folder);
+            // console.log('From DashboardPage, return. song:', song, 'folder:', folder);
             if (folder) {
               return (
                 <FolderDashboard

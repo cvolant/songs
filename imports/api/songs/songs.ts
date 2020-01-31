@@ -8,7 +8,7 @@ class SongsCollection extends Mongo.Collection<ISong> {
     const ourDoc = doc;
     ourDoc.updatedAt = ourDoc.updatedAt || new Date();
     const result = super.insert(ourDoc, callback);
-    console.log('From api.songs.insert. result:', result);
+    // console.log('From api.songs.insert. result:', result);
     return result;
     // /!\ result is not a string but an ObjectID!!!
   }

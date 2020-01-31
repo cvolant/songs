@@ -9,18 +9,14 @@ import { Session } from 'meteor/session';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Routes from './Routes';
-import routesPaths from './routesPaths';
+import Routes from '../routes/Routes';
+import routesPaths from '../routes/routesPaths';
 import { UserProvider } from '../hooks/contexts/app-user-context';
 
 import 'normalize.css';
 import '../startup/simple-schema-configuration';
 import theme from '../client/theme';
 import { DeviceSizeProvider } from '../hooks/contexts/app-device-size-context';
-
-import Songs from '../api/songs/songs';
-import Folders from '../api/folders/folders';
-import Broadcasts from '../api/broadcasts/broadcasts';
 
 const languages = ['en', 'fr'];
 
@@ -44,7 +40,10 @@ export const App: React.FC<IAppProps> = ({
   let lng: string;
   if (match.params.lng === undefined || !languages.includes(match.params.lng)) {
     lng = ['en', 'en-en'].includes(i18n.language.toLocaleLowerCase()) ? 'en' : 'fr';
-    console.log('From App, render. REDIRECTION. Language undefined or invalid. redirection using language:', lng);
+    /* console.log(
+      'From App, render. REDIRECTION.',
+      'Language undefined or invalid. redirection using language:', lng,
+    ); */
     history.replace(`/${lng + match.url}`);
   } else {
     lng = match.params.lng;
@@ -57,7 +56,7 @@ export const App: React.FC<IAppProps> = ({
   const lg = useMediaQuery(theme.breakpoints.only('lg'));
 
   useEffect(() => {
-    console.log('From App, useEffect. App mounted.\ntheme:', theme);
+    // console.log('From App, useEffect. App mounted.\ntheme:', theme);
 
     Session.set('selectedSongId', undefined);
     Session.set('isNavOpen', false);
@@ -76,8 +75,9 @@ export const App: React.FC<IAppProps> = ({
       // props here are the props useEffect received, not the current props,
       // but history is mutable: it is always the current history.
       if (isUnauthenticatedPage && isAuthenticated) {
-        if (history.location.state && history.location.state.from) {
-          history.replace(history.location.pathname.indexOf(routesPaths.path(lng, 'signin')) >= 0 ? history.location.state.from : routesPaths.path(lng, 'dashboard'));
+        const { state } = history.location as { state?: { from?: string } };
+        if (state && state.from) {
+          history.replace(history.location.pathname.indexOf(routesPaths.path(lng, 'signin')) >= 0 ? state.from : routesPaths.path(lng, 'dashboard'));
         } else {
           history.replace(routesPaths.path(lng, 'dashboard'));
         }
@@ -87,8 +87,6 @@ export const App: React.FC<IAppProps> = ({
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lng, xs, sm, md, lg]);
-
-  console.log('From App, render. \nSongs:', Songs, '\nFolders:', Folders, '\nBroadcasts:', Broadcasts);
 
   return (
     <div>

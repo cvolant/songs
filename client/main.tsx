@@ -8,7 +8,7 @@ import Loading from '../imports/ui/Loading';
 import '../imports/client/load-fonts';
 import '../imports/i18n';
 
-const App = React.lazy(() => import('../imports/app/App'));
+const App = React.lazy(() => import('../imports/ui/App'));
 
 Meteor.startup(() => {
   ReactDOM.render((

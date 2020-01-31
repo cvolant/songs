@@ -22,7 +22,7 @@ import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
 import { IIcon } from '../../types/iconButtonTypes';
 
-import routesPaths from '../../app/routesPaths';
+import routesPaths from '../../routes/routesPaths';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -234,7 +234,12 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
         : location.pathname.indexOf(routesPaths.path(i18n.language, pathname)) >= 0
     );
 
-    console.log('From LogoMenu, middleButton. currentlyAt:', currentlyAt, 'isAuthenticated:', isAuthenticated, 'curentlyAt(home)', currentlyAt('home'));
+    /* console.log(
+      'From LogoMenu, middleButton.',
+      'currentlyAt:', currentlyAt,
+      'isAuthenticated:', isAuthenticated,
+      'curentlyAt(home)', currentlyAt('home'),
+    ); */
 
     if (isAuthenticated && currentlyAt('home')) {
       return middleButtons.dashboard;
@@ -248,7 +253,11 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
     return middleButtons.home;
   })();
 
-  console.log('From LogoMenu, render. middleButton:', middleButton, 'middleButtonProps:', middleButtonProps);
+  /* console.log(
+    'From LogoMenu, render.',
+    'middleButton:', middleButton,
+    'middleButtonProps:', middleButtonProps,
+  ); */
 
   const handleToggleTopMenu = (
     deploy?: boolean,
@@ -258,11 +267,20 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
     if (event && event.type === 'keydown') {
       const { key } = event as unknown as KeyboardEvent;
       if (key === 'Tab' || key === 'Shift') {
-        console.log('From LogoMenu, handleToggleTopMenu. aborted. event.type:', event.type, 'event.key:', key);
+        /* console.log(
+          'From LogoMenu, handleToggleTopMenu. aborted.',
+          'event.type:', event.type,
+          'event.key:', key,
+        ); */
         return;
       }
     }
-    console.log('From LogoMenu, handleToggleTopMenu. performed. deploy (should be a bool):', deploy, 'former topMenuIsOpen:', topMenuIsOpen, 'event.currentTarget:', event.currentTarget);
+    /* console.log(
+      'From LogoMenu, handleToggleTopMenu. performed.',
+      'deploy (should be a bool):', deploy,
+      'former topMenuIsOpen:', topMenuIsOpen,
+      'event.currentTarget:', event.currentTarget,
+    ); */
     setTopMenuIsOpen(typeof deploy === 'undefined' ? !topMenuIsOpen : !!deploy);
   };
 

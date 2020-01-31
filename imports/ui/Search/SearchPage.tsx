@@ -19,7 +19,7 @@ import Eye from '@material-ui/icons/RemoveRedEye';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
-import PageLayout from '../utils/PageLayout';
+import PageLayout from '../Utils/PageLayout';
 import Screen from '../Station/Screen';
 import SearchList from './SearchList';
 
@@ -27,7 +27,7 @@ import { IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
 import { IEditedSong, ISong } from '../../types/songTypes';
 
-import routesPaths from '../../app/routesPaths';
+import routesPaths from '../../routes/routesPaths';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
@@ -112,7 +112,12 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
   const handleSelectSong = (song: ISong): void => {
     setSelectedSong(song);
     history.push(routesPaths.path(i18n.language, 'search', song._id.toHexString()) + location.search);
-    console.log('From SearchPage, handleSelectSong. history:', history, 'song:', song, 'song._id.toHexString():', song._id.toHexString());
+    /* console.log(
+      'From SearchPage, handleSelectSong.',
+      'history:', history,
+      'song:', song,
+      'song._id.toHexString():', song._id.toHexString(),
+    ); */
   };
 
   const handleToggleLogoMenu = (oc?: boolean) => (): void => {
@@ -132,7 +137,7 @@ export const SearchPage: React.FC<ISearchPageProps> = ({
     if (showInfos && smallDevice) scrollDown();
   };
 
-  console.log('From SearchPage. render.');
+  // console.log('From SearchPage. render.');
 
   return (viewSong
     ? (

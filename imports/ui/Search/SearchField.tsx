@@ -203,15 +203,19 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
           newUrlSearchElements.push(`${fieldName}=${encodeURI(cleanQuery)}`);
         }
       });
-      console.log('From SearchField, handleSearch. specificQueries:', specificQueries);
+      // console.log('From SearchField, handleSearch. specificQueries:', specificQueries);
     }
 
-    console.log('From SearchField, handleSearch. newSearch:', newSearch);
+    // console.log('From SearchField, handleSearch. newSearch:', newSearch);
     handleNewSearch(newSearch);
     const newUrlSearch = `?${newUrlSearchElements.join('&')}`;
-    console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
+    // console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
     if (location.search !== newUrlSearch) {
-      console.log('From SearchField, handleSearch. REDIRECTION. Former url search:', location.search, ', newUrlSearch:', newUrlSearch);
+      /* console.log(
+        'From SearchField, handleSearch. REDIRECTION.',
+        'Former url search:', location.search,
+        ', newUrlSearch:', newUrlSearch,
+      ); */
       history.replace({ ...location, search: newUrlSearch });
     }
   };
@@ -219,7 +223,10 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   useEffect(() => {
     const urlSearchQuery = location.search;
     if (urlSearchQuery) {
-      console.log('From SearchField, useEffect[]. search on mount. location.search:', urlSearchQuery);
+      /* console.log(
+        'From SearchField, useEffect[]. search on mount.',
+        'location.search:', urlSearchQuery,
+      ); */
       const query = urlSearchQuery.substring(1).replace('global=', '').split('&').map((q) => {
         const egal = q.indexOf('=');
         return egal === -1 ? decodeURI(q) : `$${q.substring(0, egal)}[${decodeURI(q.substring(egal + 1))}]`;
@@ -258,7 +265,12 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   };
 
   const handleAdvancedButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    console.log('From SearchFiel, handleAdvancedButtonClick. e:', e, 'e.target:', e.target, 'e.currentTarget:', e.currentTarget);
+    /* console.log(
+      'From SearchFiel, handleAdvancedButtonClick.',
+      'e:', e,
+      'e.target:', e.target,
+      'e.currentTarget:', e.currentTarget,
+    ); */
     if (inputRef.current) {
       const {
         currentTarget: {
@@ -278,7 +290,11 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       if (field) {
         let newSelectionEnd = typeof selectionEnd === 'number' ? selectionEnd : inputValue.length;
         let newSelectionStart = typeof selectionStart === 'number' ? selectionStart : newSelectionEnd;
-        console.log('From SearchField, handleAdvancedButtonClick. newSelectionStart:', newSelectionStart, 'newSelectionEnd:', newSelectionEnd);
+        /* console.log(
+          'From SearchField, handleAdvancedButtonClick.',
+          'newSelectionStart:', newSelectionStart,
+          'newSelectionEnd:', newSelectionEnd,
+        ); */
 
         // A 'clean place' is:
         const cursorInCleanPlace = (pos: number): boolean => false
@@ -299,7 +315,9 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
           // Then let's put the cursor at the end
           newSelectionStart = inputValue.length;
           newSelectionEnd = inputValue.length;
-          console.log('From SearchField, handleAdvancedButtonClick. Cursor is not in a clean place.');
+          /* console.log(
+            'From SearchField, handleAdvancedButtonClick. Cursor is not in a clean place.',
+          ); */
         }
 
         // Build the resulting searchEntry string
@@ -326,7 +344,12 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         setSearchEntry(newSearchString);
         inputFocus(true)();
         handleSearch(newSearchString);
-        console.log('From SearchField, handleAdvancedButtonClick.\nfield:', field, 'inputValue:', inputValue, 'stringParts:', stringParts);
+        /* console.log(
+          'From SearchField, handleAdvancedButtonClick.',
+          '\nfield:', field,
+          'inputValue:', inputValue,
+          'stringParts:', stringParts,
+        ); */
       } else {
         console.error('From SearchField, handleAdvancedButtonClick. field:', field, '\nThe value of each advanced search button should match a proper field name.');
       }

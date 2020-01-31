@@ -27,7 +27,7 @@ export const userFavoriteToggle = new ValidatedMethod({
     songId: Mongo.ObjectID;
     value?: boolean;
   }): void {
-    console.log('From api.user.favoriteSong.toggle. songId:', songId, 'value:', value);
+    // console.log('From api.user.favoriteSong.toggle. songId:', songId, 'value:', value);
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.favoriteSong.toggle.accessDenied',
@@ -89,7 +89,7 @@ export const userCreatedSongInsert = new ValidatedMethod({
       },
     });
 
-    console.log('From api.user.createdSongs.insert. songId:', songId);
+    // console.log('From api.user.createdSongs.insert. songId:', songId);
 
     return songId;
   },
@@ -145,7 +145,7 @@ export const userFoldersInsert = new ValidatedMethod({
     },
   }).validator(),
   run({ name, date }: { name: string; date?: Date }): Mongo.ObjectID {
-    console.log('From user.folders.insert. this.userId:', this.userId);
+    // console.log('From user.folders.insert. this.userId:', this.userId);
 
     if (!this.userId) {
       throw new Meteor.Error(
@@ -163,13 +163,12 @@ export const userFoldersInsert = new ValidatedMethod({
 
     const { folders } = Meteor.users.findOne(this.userId) as IUser;
 
-    const res = Meteor.users.update(this.userId, {
+    Meteor.users.update(this.userId, {
       $set: {
         folders: [folderId, ...folders || []],
       },
     });
 
-    console.log('From user.folders.insert. folders:', folders, 'res:', res);
     return folderId;
   },
 });

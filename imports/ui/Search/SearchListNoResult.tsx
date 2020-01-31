@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 
-import InlineIcon from '../utils/InlineIcon';
+import InlineIcon from '../Utils/InlineIcon';
 import { ISearch } from '../../types';
 
 const useStyles = makeStyles((theme) => ({

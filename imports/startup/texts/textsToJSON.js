@@ -1,7 +1,8 @@
-const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { readdir, readFile, writeFileSync } = require('fs');
 
 const readFiles = (dirname, onFileName, onError) => {
-  fs.readdir(dirname, (err, filenames) => {
+  readdir(dirname, (err, filenames) => {
     if (err) {
       onError(err);
       return;
@@ -10,7 +11,7 @@ const readFiles = (dirname, onFileName, onError) => {
   });
 };
 
-const dirPath = './texts';
+const dirPath = './imports/startup/texts';
 const onError = (err, name) => {
   console.log('\nError while trying to read', name, '\nerr:', err);
 };
@@ -19,7 +20,7 @@ const onFileContent = (dirName, fileName, content) => {
   console.log(`Reading page "${dirName}" in ${language}...`);
   const newLocation = `./public/i18n/locales/${language}/texts.json`;
   const contentJs = { content: content.split('\n') };
-  fs.readFile(
+  readFile(
     newLocation,
     'utf-8',
     (err, previousContentJSON) => {
@@ -30,7 +31,7 @@ const onFileContent = (dirName, fileName, content) => {
       };
       const newContentJSON = JSON.stringify(newContent, null, 2);
       console.log(`Writing new "${dirName}" content in ${language}...`);
-      fs.writeFileSync(newLocation, newContentJSON);
+      writeFileSync(newLocation, newContentJSON);
       console.log(`Done: new "${dirName}" content in ${language} written.`);
     },
   );
@@ -45,7 +46,7 @@ readFiles(
         subDirPath,
         (fileName) => {
           const filePath = `${subDirPath}/${fileName}`;
-          fs.readFile(
+          readFile(
             filePath,
             'utf-8',
             (err, content) => {

@@ -105,7 +105,7 @@ const Title: React.FC<ITitle> = ({
   };
 
   const detailsArray = Object.entries(details);
-  console.log('From Title, render. detailsArray:', detailsArray);
+  // console.log('From Title, render. detailsArray:', detailsArray);
 
   const DetailsContainer = smallDevice && !titleEdit ? Button : React.Fragment;
 

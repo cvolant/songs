@@ -112,7 +112,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   const handleToggleTutorial = (open: boolean | undefined) => (): void => {
     if (smallDevice && scrollDown) scrollDown();
     setShowTutorial(typeof open === 'undefined' ? !showTutorial : open);
-    console.log('From PageLayout, handleToggleTutorial.');
+    // console.log('From PageLayout, handleToggleTutorial.');
   };
 
   return (

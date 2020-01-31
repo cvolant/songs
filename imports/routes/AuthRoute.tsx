@@ -26,7 +26,7 @@ export const AuthRoute: React.FC<IAuthRouteProps> = ({
     exact={exact}
     path={path}
     render={(props): React.ReactNode => {
-      console.log('From AuthRoute. props:', props);
+      // console.log('From AuthRoute. props:', props);
 
       let goal: React.ReactNode;
       if (originalRender) {
@@ -39,13 +39,19 @@ export const AuthRoute: React.FC<IAuthRouteProps> = ({
       }
 
       if (redirection) {
-        console.log(`Authenticated ? ${!!Meteor.userId()}. Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`);
+        /* console.log(
+          `Authenticated ? ${!!Meteor.userId()}.`,
+          `Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`
+        ); */
         Session.set('currentPagePrivacy', Meteor.userId() ? 'auth' : 'unauth');
         if (auth === !!Meteor.userId()) {
-          console.log(`OK, go to location: "${props.location.pathname}"`);
+          // console.log(`OK, go to location: "${props.location.pathname}"`);
           return goal;
         }
-        console.log(`Redirection to: "${redirection}" from location: "${props.location.pathname}" (match: "${props.match.path}")`);
+        /* console.log(
+          `Redirection to: "${redirection}" from location: "${props.location.pathname}"`,
+          `(match: "${props.match.path}")`,
+        ); */
         return (
           <Redirect to={{
             pathname: redirection,
@@ -54,7 +60,7 @@ export const AuthRoute: React.FC<IAuthRouteProps> = ({
           />
         );
       }
-      console.log('No redirection, go to goal. goal:', goal);
+      // console.log('No redirection, go to goal. goal:', goal);
       Session.set('currentPagePrivacy', undefined);
       return goal;
     }}
