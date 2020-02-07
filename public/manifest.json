@@ -1,0 +1,19 @@
+{
+  "name": "Alleluia.plus",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/images/logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#b71c1c",
+  "theme_color": "#ff8f00"
+}

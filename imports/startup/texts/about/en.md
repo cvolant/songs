@@ -20,9 +20,10 @@ The goal of this webapp is not to be used instead of a videoprojector, which has
 - Broadcasting from songs of a folder or from scratch
 - Multilingual support
 - Tutorial/help available on every page
-- Responsive layout
 
 ## Technical details
+- Progressive Web App
+- Responsive design
 - Meteor
 - React (hooks)
 - Material UI

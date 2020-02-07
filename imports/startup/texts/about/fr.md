@@ -20,9 +20,10 @@ Cette application n'est pas destinée à remplacer un vidéoprojecteur, qui a l'
 - Diffusions à partir des chants d'un dossier ou librement sans chants au départ
 - Multilingue
 - Tutoriel/aide disponible sur chaque page
-- Mise en page adaptative
 
 ## Détails techniques
+- Progressive Web App
+- Mise en page adaptative
 - Meteor
 - React (hooks)
 - Material UI
