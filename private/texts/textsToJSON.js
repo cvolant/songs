@@ -1,4 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const { readdir, readFile, writeFileSync } = require('fs');
 
 const readFiles = (dirname, onFileName, onError) => {
@@ -11,13 +13,12 @@ const readFiles = (dirname, onFileName, onError) => {
   });
 };
 
-const dirPath = './imports/startup/texts';
 const onError = (err, name) => {
   console.log('\nError while trying to read', name, '\nerr:', err);
 };
-const onFileContent = (dirName, fileName, content) => {
+const onFileContent = (folderName, fileName, content) => {
   const language = fileName.substr(0, 2);
-  console.log(`Reading page "${dirName}" in ${language}...`);
+  console.log(`Reading page "${folderName}" in ${language}...`);
   const newLocation = `./public/i18n/locales/${language}/texts.json`;
   const contentJs = { content: content.split('\n') };
   readFile(
@@ -27,25 +28,25 @@ const onFileContent = (dirName, fileName, content) => {
       console.log('Reading existing file "texts" in', language, '...');
       const newContent = {
         ...err ? {} : JSON.parse(previousContentJSON),
-        [dirName]: contentJs,
+        [folderName]: contentJs,
       };
       const newContentJSON = JSON.stringify(newContent, null, 2);
-      console.log(`Writing new "${dirName}" content in ${language}...`);
+      console.log(`Writing new "${folderName}" content in ${language}...`);
       writeFileSync(newLocation, newContentJSON);
-      console.log(`Done: new "${dirName}" content in ${language} written.`);
+      console.log(`Done: new "${folderName}" content in ${language} written.`);
     },
   );
 };
 
 readFiles(
-  dirPath,
-  (subDirName) => {
-    if (subDirName !== 'textsToJSON.js') {
-      const subDirPath = `${dirPath}/${subDirName}`;
+  __dirname,
+  (subFolderName) => {
+    if (subFolderName !== 'textsToJSON.js') {
+      const subFolderPath = `${__dirname}/${subFolderName}`;
       readFiles(
-        subDirPath,
+        subFolderPath,
         (fileName) => {
-          const filePath = `${subDirPath}/${fileName}`;
+          const filePath = `${subFolderPath}/${fileName}`;
           readFile(
             filePath,
             'utf-8',
@@ -53,13 +54,13 @@ readFiles(
               if (err) {
                 onError(err, fileName);
               }
-              onFileContent(subDirName, fileName, content);
+              onFileContent(subFolderName, fileName, content);
             },
           );
         },
         (err) => {
           if (err) {
-            onError(err, dirPath);
+            onError(err, __dirname);
           }
         },
       );

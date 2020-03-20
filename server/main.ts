@@ -12,9 +12,6 @@ import '../imports/api/broadcasts/server/publications';
 // Configure simple-schema
 import '../imports/startup/simple-schema-configuration';
 
-// Build JSON texts
-import '../imports/startup/texts/textsToJSON';
-
 // eslint-disable-next-line global-require,  no-constant-condition
 if (false) require('./../imports/startup/shell');
 

@@ -14,6 +14,12 @@ Ajouter un fab + dans l'Editor de AddRemoveSearchList
 Ajouter un bouton supprimer pour les chants créés
 Tranformer les hocs en hooks
 Améliorer l'utilisation du router, des urls et des Routes
+Permettre le partage d'un dossier avec d'autres utilisateurs ou en public
+Essayer de SSR les chants et les dossiers publics
+Ajouter des slugs pour les chants et les dossiers
+Créer une page pour présenter une liste de chants => dossiers publics, par auteurs, conseillés...
+Rajouter des boutons pour passer au chant suivant/précédent dans l'éditeur
+Ajouter des paramètres utilisateur, et compléter le formulaire d'inscription
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.
