@@ -113,17 +113,13 @@ export const Station: React.FC<IStationProps> = ({
   const { t } = useTranslation();
   const smallDevice = useDeviceSize('sm', 'down');
 
-  const [songNb, setSongNb] = useState();
+  const [songNb, setSongNb] = useState(stateSongNb);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(false);
   const [logoMenuTimeout, setLogoMenuTimeout] = useState<NodeJS.Timeout | undefined>();
   const [openPublishDialog, setOpenPublishDialog] = useState(rights === 'owner');
   const [addSongs, setAddSongs] = useState(false);
 
   const classes = useStyles({ blackScreen, smallDevice, addSongs });
-
-  if (songNb === undefined) {
-    setSongNb(stateSongNb);
-  }
 
   const song = songs ? songs[rights === 'readOnly' ? stateSongNb : songNb] : undefined;
   const active = ['control', 'owner'].includes(rights) || status === 'ongoing';

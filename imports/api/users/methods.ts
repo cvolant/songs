@@ -5,10 +5,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
 
 import Folders from '../folders/folders';
-import Songs from '../songs/songs';
 
 import { ObjectIDSchema } from '../../types/collectionTypes';
-import { ISong, SongSchema } from '../../types/songTypes';
 import { IFolder, IUser } from '../../types';
 import Broadcasts from '../broadcasts/broadcasts';
 
@@ -65,68 +63,51 @@ export const userFavoriteToggle = new ValidatedMethod({
 
 export const userCreatedSongInsert = new ValidatedMethod({
   name: 'user.createdSongs.insert',
-  validate: new SimpleSchema({ song: SongSchema }).validator(),
-  run({ song }: { song: Mongo.OptionalId<ISong> }): Mongo.ObjectID {
+  validate: ObjectIDSchema.validator(),
+  run(songId: Mongo.ObjectID): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.createdSongs.insert.accessDenied',
-        'Cannot create a song when not signed in',
+        'Cannot insert a created song when not signed in',
       );
     }
 
     const { createdSongs } = Meteor.users.findOne(this.userId) as IUser;
-
-    const newSong = {
-      userId: this.userId,
-      updatedAt: new Date(),
-      ...song,
-    };
-    const songId = Songs.insert(newSong) as unknown as Mongo.ObjectID;
 
     Meteor.users.update(this.userId, {
       $set: {
         createdSongs: [songId, ...createdSongs || []],
       },
     });
-
-    // console.log('From api.user.createdSongs.insert. songId:', songId);
-
-    return songId;
   },
 });
 
 export const userCreatedSongRemove = new ValidatedMethod({
   name: 'user.createdSongs.remove',
-  validate: new SimpleSchema({ _id: ObjectIDSchema }).validator({ keys: ['_id'] }),
-  run({ _id }: { _id: Mongo.ObjectID }): void {
+  validate: ObjectIDSchema.validator(),
+  run(songId: Mongo.ObjectID): void {
     if (!this.userId) {
       throw new Meteor.Error(
         'api.user.createdSongs.remove.accessDenied',
-        'Cannot remove a song when not signed in',
+        'Cannot remove a created song when not signed in',
       );
     }
 
     const { createdSongs } = Meteor.users.findOne(this.userId) as IUser;
 
-    if (!createdSongs.map((createdSong) => createdSong.toHexString()).includes(_id.toHexString())) {
+    if (!createdSongs
+      .map((createdSong) => createdSong.toHexString())
+      .includes(songId.toHexString())) {
       throw new Meteor.Error(
         'api.user.createdSongs.remove.notFound',
         "Song does not exist in user's created songs list",
       );
     }
 
-    const res = Songs.remove(_id);
-    if (!res) {
-      throw new Meteor.Error(
-        'api.user.createdSongs.remove.failed',
-        'Attempt to delete the song failed, please retry.',
-      );
-    }
-
     Meteor.users.update(this.userId, {
       $set: {
         createdSongs: createdSongs
-          .filter((createdSong) => createdSong.toHexString() !== _id.toHexString()),
+          .filter((createdSong) => createdSong.toHexString() !== songId.toHexString()),
       },
     });
   },

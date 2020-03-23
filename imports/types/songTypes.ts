@@ -68,6 +68,10 @@ const SongSchema = new SimpleSchema({
     type: PgStateSchema,
     optional: true,
   },
+  slug: {
+    type: String,
+    optional: true,
+  },
   subtitle: {
     type: String,
     optional: true,
@@ -139,6 +143,7 @@ export interface ISong {
   number?: number;
   year?: number;
   score?: number;
+  slug: string;
   subtitle?: string;
   title: string;
   lyrics?: IParagraph[];

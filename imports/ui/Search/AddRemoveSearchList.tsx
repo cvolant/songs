@@ -44,7 +44,7 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
   const [logoMenuDeployed] = useContext(LogoMenuContext);
   const setTutorialContentName = useContext(TutorialContext);
 
-  const [song, setSong] = useState();
+  const [song, setSong] = useState<IUnfetched<ISong> | undefined>();
 
   const handleCloseEditor = (): void => {
     setSong(undefined);

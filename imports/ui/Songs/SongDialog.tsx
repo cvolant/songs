@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import FormDialog from '../Utils/FormDialog';
 import { ISong, IUnfetched } from '../../types';
 
-import { userCreatedSongInsert } from '../../api/users/methods';
+import { songsInsert } from '../../api/songs/methods';
 
 interface ISongDialogProps {
   handleClose: () => void;
@@ -37,8 +37,8 @@ export const SongDialog: React.FC<ISongDialogProps> = ({
   };
 
   const handleSubmit = (callback: (err: Meteor.Error, res: Mongo.ObjectID) => void): void => {
-    userCreatedSongInsert.call(
-      { song: { title: songTitle } },
+    songsInsert.call(
+      { title: songTitle },
       (err: Meteor.Error, res: Mongo.ObjectID) => {
         callback(err, res);
         if (res) {

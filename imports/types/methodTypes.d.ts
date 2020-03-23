@@ -14,7 +14,9 @@ import {
   foldersUpdateSongsUpdate,
 } from '../api/folders/methods';
 import {
+  songsInsert,
   songsUpdate,
+  songsRemove,
 } from '../api/songs/methods';
 import {
   userFavoriteToggle,
@@ -28,7 +30,9 @@ export type KnownMethods = ValidatedMethodAsFunc<typeof foldersUpdate>
 & ValidatedMethodAsFunc<typeof foldersUpdateSongsInsert>
 & ValidatedMethodAsFunc<typeof foldersUpdateSongsRemove>
 & ValidatedMethodAsFunc<typeof foldersUpdateSongsUpdate>
+& ValidatedMethodAsFunc<typeof songsInsert>
 & ValidatedMethodAsFunc<typeof songsUpdate>
+& ValidatedMethodAsFunc<typeof songsRemove>
 & ValidatedMethodAsFunc<typeof userFavoriteToggle>
 & ValidatedMethodAsFunc<typeof userCreatedSongInsert>
 & ValidatedMethodAsFunc<typeof userCreatedSongRemove>

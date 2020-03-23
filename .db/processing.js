@@ -4,7 +4,7 @@ meteor mongo
 load('../../Technique/Chants/Traitement/ewowa.js')
 
 To get the output in a file, use this single command instead:
-echo "/*" > .dbProcessing/output.js ; mongo mongodb://127.0.0.1:3001/meteor .dbProcessing/processing.js >> .dbProcessing/output.js
+echo "/*" > .db/output.js ; mongo mongodb://127.0.0.1:3001/meteor .db/processing.js >> .db/output.js
 If it doesn't work, get a valid mongodb url:
 meteor mongo --url
 Then use this command below to close the comments in the output:  */
@@ -15,8 +15,8 @@ Then use this command below to close the comments in the output:  */
 *******************************************/
 
 nbSongsToSkip = 0;
-nbSongsToCopy = 0;
-pathToFolder = '/home/corentin/Dropbox/Professionnel\ et\ associatif/Entrepreneuriat/Générateur\ de\ livret\ de\ célébration/Réalisation/songs/.dbProcessing/';
+nbSongsToProcess = 10000;
+pathToFolder = '/home/corentin/Dropbox/Professionnel\ et\ associatif/Entrepreneuriat/Générateur\ de\ livret\ de\ célébration/Réalisation/songs/.db/';
 
 
 /* UTILITIES */
@@ -24,7 +24,7 @@ comment = { log: (...args) => print('// ' + args.join(', ')) }
 printArray = (name, array, transformation) => {
   print('\n');
   print(`const ${name} = [`);
-  array.forEach(element => print(transformation ? transformation(element) : `  "${element}",`));
+  array.forEach(element => print(`  "${transformation ? transformation(element) : element}",`));
   print('];');
 };
 
@@ -32,10 +32,29 @@ printArray = (name, array, transformation) => {
 /* INITIALISATION */
 // print('*/\n');
 
-db.songs.find({ numero: 3 }).forEach(song => {
-  db.songs.update(song._id, { $set: { title: song.titre }});
+load('.db/slugify.js');
+
+var songs = db.songs.find({}).skip(nbSongsToSkip).limit(nbSongsToProcess);
+
+songs.forEach((song) => {
+  const findExisting = (s) => db.songs.findOne({
+    _id: { $ne: song._id },
+    slug: s,
+  });
+
+  const baseSlug = `${slugify(song.compositor)}/${slugify(song.title)}`;
+  let slug = baseSlug;
+  let nbExisting = 1;
+  let existing = findExisting(slug);
+
+  while (existing && nbExisting < 50) {
+    nbExisting++;
+    slug = `${baseSlug}-${nbExisting}`;
+    existing = findExisting(slug);
+  }
+  db.songs.updateOne({ _id: song._id }, { $set: { slug } })
 });
-printArray('songs', songs);
+
 /* 
 comment.log('Drop former nSongs DB...');
 db.nSongs && db.nSongs.drop();

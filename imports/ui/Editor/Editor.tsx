@@ -10,8 +10,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Add from '@material-ui/icons/Add';
+import Cancel from '@material-ui/icons/Cancel';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
+import Save from '@material-ui/icons/Save';
 import SelectAll from '@material-ui/icons/SelectAll';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
@@ -39,8 +41,7 @@ import {
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
-import { userCreatedSongRemove } from '../../api/users/methods';
-import { songsUpdate } from '../../api/songs/methods';
+import { songsUpdate, songsRemove } from '../../api/songs/methods';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -149,7 +150,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     .indexOf(Object.values(objectProperty)[0]);
 
   const handleDelete = (): void => {
-    userCreatedSongRemove.call({ _id: song._id });
+    songsRemove.call({ _id: song._id });
     goBack();
   };
 
@@ -284,7 +285,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
         title,
       };
       // console.log('From Editor, handleSaveAll. details:', songUpdates);
-      songsUpdate.call({ songUpdates });
+      songsUpdate.call(songUpdates);
       setEdit(false);
     }
   };
@@ -463,10 +464,12 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                   Icon: Delete,
                   key: 'delete',
                   label: t('Delete'),
+                  labelVisible: true,
                   onClick: handleDelete,
                 },
                 {
                   Component: Button,
+                  Icon: Cancel,
                   key: 'cancel-all',
                   label: t('editor.Cancel all', 'Cancel all'),
                   labelVisible: true,
@@ -476,6 +479,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
                   color: 'primary',
                   Component: Button,
                   disabled: !title,
+                  Icon: Save,
                   key: 'save-all',
                   label: t('editor.Save all', 'Save all'),
                   labelVisible: true,

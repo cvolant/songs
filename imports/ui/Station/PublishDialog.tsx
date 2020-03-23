@@ -1,7 +1,7 @@
 /* global window */
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
