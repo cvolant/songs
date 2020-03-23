@@ -19,7 +19,7 @@ import Eye from '@material-ui/icons/RemoveRedEye';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Editor from '../Editor';
 import InfosSongBySong from './InfosSongBySong';
-import PageLayout from '../Utils/PageLayout';
+import PageLayout from '../Common/PageLayout';
 import Screen from '../Station/Screen';
 import SearchList from './SearchList';
 

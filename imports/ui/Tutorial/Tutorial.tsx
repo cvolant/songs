@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import Panel from '../Utils/Panel';
+import Panel from '../Common/Panel';
 import TutorialStepContent, { IStepName } from './TutorialStepContent';
 
 const steps: ISteps = {

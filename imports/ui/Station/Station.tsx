@@ -34,7 +34,7 @@ import { IIconButtonCallback } from '../../types/iconButtonTypes';
 import { ISong, IUnfetched } from '../../types';
 import { IBroadcast, IBroadcastUpdates } from '../../types/broadcastTypes';
 import { IEditedSong, SongSchema } from '../../types/songTypes';
-import PageLayout from '../Utils/PageLayout';
+import PageLayout from '../Common/PageLayout';
 import PublishDialog from './PublishDialog';
 import AddRemoveSearchList, { SongARHandler } from '../Search/AddRemoveSearchList';
 

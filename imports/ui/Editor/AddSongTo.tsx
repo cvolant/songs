@@ -27,7 +27,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Folder from '@material-ui/icons/Folder';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
-import SnackbarMessage from '../Utils/SnackBarMessage';
+import SnackbarMessage from '../Common/SnackBarMessage';
 import { IFolder, ISong, IUnfetched } from '../../types';
 
 import {

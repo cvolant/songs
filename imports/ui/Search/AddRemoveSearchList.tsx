@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Add from '@material-ui/icons/Add';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 
-import FullCardLayout from '../Utils/FullCardLayout';
+import FullCardLayout from '../Common/FullCardLayout';
 import SearchList from './SearchList';
 import { LogoMenuContext } from '../LogoMenu';
 import { TutorialContext } from '../Tutorial';

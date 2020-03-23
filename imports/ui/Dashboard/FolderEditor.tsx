@@ -15,7 +15,7 @@ import Sort from '@material-ui/icons/Sort';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import FullCardLayout from '../Utils/FullCardLayout';
+import FullCardLayout from '../Common/FullCardLayout';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
@@ -26,7 +26,7 @@ import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../a
 import routesPaths from '../../routes/routesPaths';
 import { IBroadcastRights } from '../../types/broadcastTypes';
 import FolderDialogs from '../Folders/FolderDialogs';
-import CalendarDate from '../Utils/CalendarDate';
+import CalendarDate from '../Common/CalendarDate';
 
 const useStyles = makeStyles((theme) => ({
   button: {

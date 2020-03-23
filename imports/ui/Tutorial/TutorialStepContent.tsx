@@ -16,7 +16,7 @@ import Person from '@material-ui/icons/Person';
 import Remove from '@material-ui/icons/Remove';
 import Settings from '@material-ui/icons/Settings';
 
-import InlineIcon from '../Utils/InlineIcon';
+import InlineIcon from '../Common/InlineIcon';
 
 export type IStepName =
 | 'notWrittenYet'

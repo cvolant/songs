@@ -19,7 +19,7 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import FormDialog from '../Utils/FormDialog';
+import FormDialog from '../Common/FormDialog';
 import { IFolder, IUnfetched } from '../../types';
 
 import { userFoldersInsert } from '../../api/users/methods';

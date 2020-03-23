@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import Panel from '../Utils/Panel';
+import Panel from '../Common/Panel';
 
 const useStyles = makeStyles((theme) => ({
   bottomButtons: {

@@ -8,7 +8,7 @@ import Translate from '@material-ui/icons/Translate';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import ListLayoutItemText from '../ListLayout/ListLayoutItemText';
-import InlineIcon from '../Utils/InlineIcon';
+import InlineIcon from '../Common/InlineIcon';
 
 import { ISong } from '../../types';
 

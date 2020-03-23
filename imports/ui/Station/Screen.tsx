@@ -4,12 +4,12 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import FullCardLayout, { IFullCardLayoutProps } from '../Utils/FullCardLayout';
+import FullCardLayout, { IFullCardLayoutProps } from '../Common/FullCardLayout';
 import PrintSong from './PrintSong';
 
 import { ISong } from '../../types';
 import { IEditedSong } from '../../types/songTypes';
-import PageLayout from '../Utils/PageLayout';
+import PageLayout from '../Common/PageLayout';
 
 interface IStationUseStylesProps {
   smallDevice?: boolean;

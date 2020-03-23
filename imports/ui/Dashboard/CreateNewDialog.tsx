@@ -16,7 +16,7 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Check from '@material-ui/icons/Check';
 import { CircularProgress } from '@material-ui/core';
 
-import SnackbarMessage from '../Utils/SnackBarMessage';
+import SnackbarMessage from '../Common/SnackBarMessage';
 
 const useStyles = makeStyles((theme) => ({
   spacedIcon: {

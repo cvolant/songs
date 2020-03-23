@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import PageLayout from './Utils/PageLayout';
+import PageLayout from './Common/PageLayout';
 
 const useStyles = makeStyles((theme) => ({
   container: {

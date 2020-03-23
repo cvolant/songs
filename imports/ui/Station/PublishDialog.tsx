@@ -17,7 +17,7 @@ import ToggleOn from '@material-ui/icons/ToggleOn';
 import ToggleOff from '@material-ui/icons/ToggleOff';
 
 import useUnmountedRef from '../../hooks/unmountedRef';
-import CustomIconButton from '../Utils/CustomIconButton';
+import CustomIconButton from '../Common/CustomIconButton';
 
 import { IIconButtonBWCbProps, IIconButtonCallback } from '../../types/iconButtonTypes';
 import { IBroadcast, IBroadcastRights } from '../../types/broadcastTypes';

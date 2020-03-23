@@ -1,6 +1,6 @@
 import React from 'react';
 
-import FullCardLayout from '../Utils/FullCardLayout';
+import FullCardLayout from '../Common/FullCardLayout';
 import SearchList from './SearchList';
 
 import { ISong, IUnfetched } from '../../types';

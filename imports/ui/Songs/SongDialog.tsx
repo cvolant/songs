@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import TextField from '@material-ui/core/TextField';
 
-import FormDialog from '../Utils/FormDialog';
+import FormDialog from '../Common/FormDialog';
 import { ISong, IUnfetched } from '../../types';
 
 import { songsInsert } from '../../api/songs/methods';

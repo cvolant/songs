@@ -16,7 +16,7 @@ import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
 import SongDialog from '../Songs/SongDialog';
-import FullCardLayout from '../Utils/FullCardLayout';
+import FullCardLayout from '../Common/FullCardLayout';
 import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';

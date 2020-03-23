@@ -19,7 +19,7 @@ import SelectAll from '@material-ui/icons/SelectAll';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import AddSongTo from './AddSongTo';
-import FullCardLayout from '../Utils/FullCardLayout';
+import FullCardLayout from '../Common/FullCardLayout';
 import NoLyrics from './NoLyrics';
 import Paragraph from './Paragraph';
 import Title from './Title';

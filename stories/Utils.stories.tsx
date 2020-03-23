@@ -11,9 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import Sync from '@material-ui/icons/Sync';
 
-import SnackbarMessage from '../imports/ui/Utils/SnackBarMessage';
-import Panel from '../imports/ui/Utils/Panel';
-import CustomIconButton from '../imports/ui/Utils/CustomIconButton';
+import SnackbarMessage from '../imports/ui/Common/SnackBarMessage';
+import Panel from '../imports/ui/Common/Panel';
+import CustomIconButton from '../imports/ui/Common/CustomIconButton';
 import { IUnfetched, ISong } from '../imports/types';
 import { IIconButtonCallback } from '../imports/types/iconButtonTypes';
 
