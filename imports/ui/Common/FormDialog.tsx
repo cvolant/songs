@@ -15,6 +15,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import Check from '@material-ui/icons/Check';
 
@@ -38,6 +39,7 @@ interface IFormDialogProps {
   error?: string;
   handleClose: () => void;
   handleSubmit: (callback: (err: Meteor.Error | null, res?: Mongo.ObjectID) => void) => void;
+  loadingContent?: boolean;
   open?: boolean;
 }
 
@@ -48,6 +50,7 @@ export const FormDialog: React.FC<IFormDialogProps> = ({
   error = '',
   handleClose,
   handleSubmit,
+  loadingContent = false,
   open = false,
 }) => {
   const { t } = useTranslation();
@@ -63,9 +66,10 @@ export const FormDialog: React.FC<IFormDialogProps> = ({
         // console.log('From FormDialog, onSubmit callback.');
         if (err) {
           console.error('From FormDialog, handleCreateNew.callback. err:', err);
-          setMessage(err.reason || 'Error, sorry... Cannot create a new one. Please retry!');
+          setMessage(err.reason || 'Error, sorry... Please retry!');
         } else {
           // console.log('From FormDialog, handleCreateNew.callback.');
+          setLoading(false);
           handleClose();
         }
       });
@@ -78,6 +82,7 @@ export const FormDialog: React.FC<IFormDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-name">
+      {loadingContent ? <LinearProgress /> : null}
       <form onSubmit={onSubmit} noValidate>
         <DialogTitle id="form-dialog-name">
           {dialogTitle}

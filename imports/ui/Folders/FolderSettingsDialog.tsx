@@ -49,7 +49,7 @@ export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
   const { t } = useTranslation();
   const smallDevice = useDeviceSize('sm', 'down');
 
-  useTracker(() => !Meteor.subscribe('broadcast', folderId).ready(), [folderId]);
+  const loading = useTracker(() => !Meteor.subscribe('broadcast', folderId).ready(), [folderId]);
   const folder = useTracker(() => Folders.findOne(folderId), [folderId]);
 
   const [name, setName] = useState(folder ? folder.name || '' : '');
@@ -58,9 +58,9 @@ export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setName(folder ? folder.name || '' : '');
+    setName(folder?.name || '');
     setDateEnabled(folder && !!folder.date);
-    setDate(dayjs(((folder && folder.date) || '') || undefined));
+    setDate(dayjs((folder?.date || '') || undefined));
   }, [folder]);
 
   const handleDateEnabledChange = (
@@ -136,6 +136,7 @@ export const FolderSettingsDialog: React.FC<IFolderSettingsDialogProps> = ({
       error={error}
       handleClose={handleClose}
       handleSubmit={handleSubmit}
+      loadingContent={loading}
       open={open}
     >
       <FormGroup>
