@@ -18,6 +18,12 @@ import '../startup/simple-schema-configuration';
 import theme from '../client/theme';
 import { DeviceSizeProvider } from '../hooks/contexts/app-device-size-context';
 
+import Songs from '../api/songs/songs';
+import Folders from '../api/folders/folders';
+
+console.log('From App.\nSongs:', Songs, '\nFolders:', Folders);
+
+
 const languages = ['en', 'fr'];
 
 interface IAppProps {

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import PageLayout from '../Common/PageLayout';
-import Editor from '../Editor';
+import { Editor } from '../Editor';
 import MainDashboard from './MainDashboard';
 import { TutorialContext } from '../Tutorial';
 import { LogoMenuContext } from '../LogoMenu';

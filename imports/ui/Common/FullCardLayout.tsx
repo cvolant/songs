@@ -56,6 +56,14 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     padding: theme.spacing(1, 1.5),
   },
+  buttonGroup: {
+    '& > *': {
+      display: 'inline-flex',
+      verticalAlign: 'middle',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+    },
+  },
   card: {
     display: 'flex',
     flexDirection: 'column',
@@ -232,7 +240,7 @@ export const FullCardLayout = <E, >({
             ) : <div />}
           {Array.isArray(actions)
             ? (
-              <div>
+              <div className={classes.buttonGroup}>
                 {(actions as Array<ReactNode | IArrayIconButtonProps<E>>).map((
                   action: ReactNode | IArrayIconButtonProps<E>,
                   actionIndex,

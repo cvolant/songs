@@ -63,11 +63,9 @@
     "No lyrics": "Aucune parole enregistrée pour ce chant...",
     "Cancel all": "Tout annuler",
     "Save all": "Tout enregistrer",
-    "Select or unselect all": "Sélectionner or désélectionner tout",
-    "Select all": "Tout sélectionner",
-    "Unselect all": "Tout désélectionner",
+    "Unselect all": "Tout (dé)sélectionner",
     "Edit": "Edit",
-    "View": "Visualiser",
+    "Reading": "Lecture",
     "Select paragraphs": "Selectionner les paragraphes désirés...",
     "Add song to": "Ajouter le chant à"
   },

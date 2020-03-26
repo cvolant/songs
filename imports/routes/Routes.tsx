@@ -5,6 +5,7 @@ import AboutPage from '../ui/About';
 import AuthRoute from './AuthRoute';
 import NotFound from '../ui/NotFound';
 import SearchPage from '../ui/Search';
+import SongPage from '../ui/Editor';
 import DashboardPage from '../ui/Dashboard';
 import SignUp from '../ui/Authentication/SignUp';
 import SignIn from '../ui/Authentication/SignIn';
@@ -37,16 +38,16 @@ export const Routes: React.FC<IRoutesProps> = ({
       component={SearchPage}
     />
     <AuthRoute
-      exact
-      path={routesPaths.path(lng, 'search', ':id')}
+      path={routesPaths.path(lng, 'song', ':authorSlug', ':titleSlug')}
       render={
-        ({ match }: {
+        ({ match: { params: { authorSlug, titleSlug } } }: {
           match: {
             params: {
-              id: string;
+              authorSlug: string;
+              titleSlug?: string;
             };
           };
-        }): React.ReactElement => <SearchPage songId={match.params.id} />
+        }): React.ReactElement => <SongPage slug={`${authorSlug ? `${authorSlug}/` : ''}${titleSlug}`} />
       }
     />
     <AuthRoute

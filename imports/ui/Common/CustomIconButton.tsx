@@ -149,7 +149,7 @@ export const CustomIconButton = <E, >({
       )}
       color={fn(color, { element, otherParams })}
       disabled={(fn(disabled, { element, otherParams })) || !!loading || false}
-      onClick={handleClick(fn(onClick, { element, otherParams, callback }), 'callback' in onClick)}
+      onClick={handleClick(fn(onClick, { element, otherParams, callback }), onClick && 'callback' in onClick)}
       size={fn(size, { element, otherParams })}
       variant={Component.options && Component.options.name === 'MuiFab'
         ? (labelVisible && 'extended') || 'round'

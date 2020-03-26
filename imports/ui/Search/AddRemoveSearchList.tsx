@@ -13,7 +13,7 @@ import { TutorialContext } from '../Tutorial';
 
 import { ISong, IUnfetched } from '../../types';
 import { IArrayIconButtonProps, IIconButtonCallback, IIcon } from '../../types/iconButtonTypes';
-import Editor from '../Editor';
+import { Editor } from '../Editor';
 
 export type SongARHandler = (
   addOrRemove: 'add' | 'remove',

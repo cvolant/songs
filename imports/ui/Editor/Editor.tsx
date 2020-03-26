@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/styles';
@@ -9,10 +9,12 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import Add from '@material-ui/icons/Add';
 import Cancel from '@material-ui/icons/Cancel';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
+import Eye from '@material-ui/icons/RemoveRedEye';
 import Save from '@material-ui/icons/Save';
 import SelectAll from '@material-ui/icons/SelectAll';
 
@@ -25,19 +27,9 @@ import Paragraph from './Paragraph';
 import Title from './Title';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
 
-import {
-  IFolder,
-  IParagraph,
-  ISong,
-  IUnfetched,
-  IUser,
-} from '../../types';
+import { IParagraph, ISong, IUnfetched } from '../../types';
 import { IPgState } from '../../types/songTypes';
-import {
-  IArrayIconButtonProps,
-  IIconButtonProps,
-  IIconButtonCallback,
-} from '../../types/iconButtonTypes';
+import { IArrayIconButtonProps, IIconColor, IIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
 import Folders from '../../api/folders/folders';
@@ -89,17 +81,11 @@ interface IEditorProps {
   edit?: boolean;
   fab?: IIconButtonProps<IUnfetched<ISong>>;
   goBack: () => void;
+  handleOpenScreen?: (song: ISong) => () => void;
+  loading?: boolean;
   logoMenuDeployed: boolean;
-  song: IUnfetched<ISong>;
+  song: IUnfetched<ISong> | (Partial<ISong> & { slug: string });
 }
-interface IEditorWTData {
-  folders: IFolder[];
-  loading: boolean;
-  song: IUnfetched<ISong>;
-  user?: IUser;
-}
-interface IWrappedEditorProps
-  extends IEditorProps, IEditorWTData { }
 
 const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
   const pgState = {
@@ -111,14 +97,14 @@ const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
   return pgState;
 };
 
-export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
+export const Editor: React.FC<IEditorProps> = ({
   actionIconButtonsProps,
   edit: initEdit = false,
-  folders,
   goBack,
-  loading,
+  handleOpenScreen,
+  loading: propLoading,
   logoMenuDeployed,
-  song,
+  song: propSong,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -128,11 +114,94 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   const [edit, setEdit] = useState(initEdit);
   const [editTitle, setEditTitle] = useState(false);
   const [details, setDetails] = useState(createDetails({}));
-  const [lyrics, setLyrics] = useState<IParagraph[]>(song.lyrics || []);
+  const [lyrics, setLyrics] = useState<IParagraph[]>(propSong.lyrics || []);
   const [pgStates, setPgStates] = useState<IPgState[]>([]);
-  const [title, setTitle] = useState(song.title || '');
-  const [subtitle, setSubtitle] = useState(song.title || '');
+  const [title, setTitle] = useState(propSong.title || '');
+  const [subtitle, setSubtitle] = useState(propSong.title || '');
   const [open, setOpen] = useState(false);
+
+  const initSong = (songToInit: Partial<ISong>): {
+    details: IDetails;
+    edit: boolean;
+    lyrics: IParagraph[];
+    pgStates: IPgState[];
+    title: string;
+    subtitle: string;
+  } => {
+    // console.log('From Editor, initSong. songToInit:', songToInit);
+    const newLyrics = songToInit.lyrics
+      ? JSON.parse(JSON.stringify(songToInit.lyrics))
+      : []; // To copy song.lyrics properties in a new object.
+
+    // Memory of moves and selections: pgStates order can change.
+    //   pgStates[i].pgIndex: refer to the pg in his original position
+    //   pgStates[i].selected
+    const newPgStates = [] as IPgState[];
+    newLyrics.forEach(() => {
+      const l = newPgStates.length;
+      const pgState = createPgState({
+        pgIndex: l,
+      });
+      newPgStates.push(pgState);
+    });
+    const newDetails = createDetails({
+      author: {
+        value: songToInit.author || '',
+      },
+      classification: {
+        value: songToInit.classification || '',
+      },
+      compositor: {
+        value: songToInit.compositor || '',
+      },
+      editor: {
+        value: songToInit.editor || '',
+      },
+      newClassification: {
+        value: songToInit.newClassification || '',
+      },
+      number: {
+        value: songToInit.number || 0,
+      },
+      year: {
+        value: songToInit.year || 0,
+      },
+      cnpl: {
+        value: !!songToInit.cnpl || false,
+      },
+    });
+    const newStates = {
+      details: newDetails,
+      edit: false,
+      lyrics: newLyrics,
+      pgStates: newPgStates,
+      title: songToInit.title || '',
+      subtitle: songToInit.subtitle || '',
+    };
+    setTitle(newStates.title);
+    setSubtitle(newStates.subtitle);
+    setLyrics(newStates.lyrics);
+    setPgStates(newStates.pgStates);
+    setDetails(newStates.details);
+    // console.log('From Editor, initSong. newStates:', newStates);
+    return (newStates);
+  };
+
+  const folders = useTracker(() => Folders.find({}).fetch(), []);
+  const loading = propLoading || useTracker(() => !Meteor.subscribe('songs', { query: propSong }), [propSong]);
+  const song: IUnfetched<ISong> | Partial<ISong> = useTracker(
+    () => {
+      const fetchedSong = {
+        ...propSong,
+        ...Songs.findOne(propSong) || {},
+      };
+      initSong(fetchedSong);
+      return fetchedSong;
+    },
+    [propSong],
+  );
+
+  const nbSelected = pgStates.filter((pgState) => pgState.selected).length;
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -150,8 +219,10 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     .indexOf(Object.values(objectProperty)[0]);
 
   const handleDelete = (): void => {
-    songsRemove.call({ _id: song._id });
-    goBack();
+    if (song._id) {
+      songsRemove.call({ _id: song._id });
+      goBack();
+    }
   };
 
   const handleDeletePg = (pgIndex: number): void => {
@@ -265,7 +336,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   };
 
   const handleSaveAll = (): void => {
-    if (title && pgStates.length) {
+    if (song._id && title && pgStates.length) {
       const newLyrics = [];
       for (let i = 0; i < pgStates.length; i += 1) {
         newLyrics.push(lyrics[pgStates[i].pgIndex]);
@@ -301,7 +372,7 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     }
   };
 
-  const handleToggleSelectAll = (callback?: (err: Meteor.Error, res: void) => void) => (): void => {
+  const handleUnselectAll = () => (): void => {
     const alreadySelected = pgStates.filter((pgState) => pgState.selected).length;
     const newPgStates = pgStates.map((pgState: IPgState) => {
       const newPgState = pgState;
@@ -309,9 +380,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
       return newPgState;
     });
     setPgStates(newPgStates);
-    if (callback) {
-      callback(undefined as unknown as Meteor.Error);
-    }
   };
 
   const handleTitleCancel = (): void => {
@@ -338,73 +406,6 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
   const handleTitleChange = (e: { currentTarget: { value: string } }): void => {
     const newTitle = e.currentTarget.value;
     setTitle(newTitle);
-  };
-
-  const initSong = (songToInit: IUnfetched<ISong>): {
-    details: IDetails;
-    edit: boolean;
-    lyrics: IParagraph[];
-    pgStates: IPgState[];
-    title: string;
-    subtitle: string;
-  } => {
-    // console.log('From Editor, initSong. songToInit:', songToInit);
-    const newLyrics = songToInit.lyrics
-      ? JSON.parse(JSON.stringify(songToInit.lyrics))
-      : []; // To copy song.lyrics properties in a new object.
-
-    // Memory of moves and selections: pgStates order can change.
-    //   pgStates[i].pgIndex: refer to the pg in his original position
-    //   pgStates[i].selected
-    const newPgStates = [] as IPgState[];
-    newLyrics.forEach(() => {
-      const l = newPgStates.length;
-      const pgState = createPgState({
-        pgIndex: l,
-      });
-      newPgStates.push(pgState);
-    });
-    const newDetails = createDetails({
-      author: {
-        value: songToInit.author || '',
-      },
-      classification: {
-        value: songToInit.classification || '',
-      },
-      compositor: {
-        value: songToInit.compositor || '',
-      },
-      editor: {
-        value: songToInit.editor || '',
-      },
-      newClassification: {
-        value: songToInit.newClassification || '',
-      },
-      number: {
-        value: songToInit.number || 0,
-      },
-      year: {
-        value: songToInit.year || 0,
-      },
-      cnpl: {
-        value: !!songToInit.cnpl || false,
-      },
-    });
-    const newStates = {
-      details: newDetails,
-      edit: false,
-      lyrics: newLyrics,
-      pgStates: newPgStates,
-      title: songToInit.title || '',
-      subtitle: songToInit.subtitle || '',
-    };
-    setTitle(newStates.title);
-    setSubtitle(newStates.subtitle);
-    setLyrics(newStates.lyrics);
-    setPgStates(newStates.pgStates);
-    setDetails(newStates.details);
-    // console.log('From Editor, initSong. newStates:', newStates);
-    return (newStates);
   };
 
   const handleAddPg = (): void => {
@@ -443,175 +444,188 @@ export const WrappedEditor: React.FC<IWrappedEditorProps> = ({
     return (): void => { /* Empty function */ };
   }, [user]);
 
-  useEffect(() => {
-    initSong(song);
-  }, [song]);
-
   // console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
 
-  if (song._id.toHexString()) {
-    return (
-      <>
-        <Helmet>
-          <title>{`Alleluia.plus - ${title}`}</title>
-        </Helmet>
-        <FullCardLayout<IUnfetched<ISong>>
-          actions={[
-            ...edit
-              ? [
-                {
-                  Component: IconButton,
-                  Icon: Delete,
-                  key: 'delete',
-                  label: t('Delete'),
-                  labelVisible: true,
-                  onClick: handleDelete,
-                },
-                {
-                  Component: Button,
-                  Icon: Cancel,
-                  key: 'cancel-all',
-                  label: t('editor.Cancel all', 'Cancel all'),
-                  labelVisible: true,
-                  onClick: handleCancelAll,
-                },
-                {
-                  color: 'primary',
-                  Component: Button,
-                  disabled: !title,
-                  Icon: Save,
-                  key: 'save-all',
-                  label: t('editor.Save all', 'Save all'),
-                  labelVisible: true,
-                  onClick: handleSaveAll,
-                },
-              ]
-              : [
-                user && user._id && user._id === song.userId && {
-                  Component: Button,
-                  Icon: Edit,
-                  key: 'edit',
-                  label: t('editor.Edit', 'Edit'),
-                  labelVisible: !smallDevice,
-                  onClick: handleEditSong,
-                },
-                user && user._id && {
-                  Component: Button,
-                  key: 'add',
-                  label: t('Add'),
-                  onClick: handleClickOpen,
-                  labelVisible: !smallDevice,
-                  Icon: Add,
-                },
-                ...actionIconButtonsProps || [],
-              ],
-          ]}
-          actionsProps={{ className: classes.actions }}
-          className={classes.root}
-          contentProps={{ className: classes.content }}
-          element={song}
-          fabs={{
-            disabled: !pgStates.length,
-            Icon: SelectAll,
-            label: pgStates.filter((pgState) => pgState.selected).length
-              ? t('editor.Unselect all', 'Unselect all')
-              : t('editor.Select all', 'Select all'),
-            labelVisible: true,
-            onClick: {
-              build: ({ callback }: {
-                callback?: IIconButtonCallback;
-              }): () => void => handleToggleSelectAll(callback),
-              callback: true,
-            },
-          }}
-          handleReturn={goBack}
-          otherParams={{ isThereSelected: pgStates.filter((pgState) => pgState.selected).length }}
-        >
-          {title
+  return (
+    <>
+      <Helmet>
+        <title>{`Alleluia.plus - ${title}`}</title>
+      </Helmet>
+      <FullCardLayout<IUnfetched<ISong>>
+        actions={[
+          ...nbSelected ? [
+            <Typography key="nb-selected">
+              {`${nbSelected}/${pgStates.length}`}
+            </Typography>,
+          ] : [],
+          ...edit
             ? [
-              <Title
-                edit={editTitle}
-                editGlobal={edit}
-                details={details}
-                handleEditTitle={handleEditTitle}
-                handleTitleChange={handleTitleChange}
-                handleSubtitleChange={handleSubtitleChange}
-                handleDetailChange={handleDetailChange}
-                handleTitleCancel={handleTitleCancel}
-                key="title"
-                logoMenuDeployed={logoMenuDeployed}
-                subtitle={subtitle}
-                title={title}
-              />,
-              <Grid className={classes.lyrics} container key="lyrics" spacing={1}>
-                {pgStates.length > 0
-                  ? pgStates.map(
-                    (pgState) => (
-                      <Paragraph
-                        key={pgState.pgIndex}
-                        paragraph={lyrics[pgState.pgIndex]}
-                        editGlobal={edit}
-                        edit={pgState.edit}
-                        selected={pgState.selected}
-                        handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
-                        handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
-                        handleLabelChange={(e): void => {
-                          handlePgChange(e.target, pgState.pgIndex, 'label');
-                        }}
-                        handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
-                        handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
-                        handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
-                        handlePgChange={(e): void => {
-                          handlePgChange(e.target, pgState.pgIndex, 'pg');
-                        }}
-                        handleSelect={(e): void => {
-                          handleSelect(e.currentTarget, pgState.pgIndex);
-                        }}
-                      />
-                    ),
-                  )
-                  : !loading && <NoLyrics />}
-                {loading && (
-                  <Grid item xs={12} sm={6} md={4} xl={3}>
-                    <CircularProgress />
-                  </Grid>
-                )}
-              </Grid>,
-              <Button
-                className={`${classes.button} ${edit ? '' : classes.displayNone}`}
-                key="addParagraph"
-                onClick={handleAddPg}
-                variant="contained"
-              >
-                <Add />
-              </Button>,
+              {
+                Component: IconButton,
+                disabled: !song._id,
+                Icon: Delete,
+                key: 'delete',
+                label: t('Delete'),
+                labelVisible: true,
+                onClick: handleDelete,
+              },
+              {
+                Component: Button,
+                Icon: Cancel,
+                key: 'cancel-all',
+                label: t('editor.Cancel all', 'Cancel all'),
+                labelVisible: true,
+                onClick: handleCancelAll,
+              },
+              {
+                color: 'primary',
+                Component: Button,
+                disabled: !title || !song._id,
+                Icon: Save,
+                key: 'save-all',
+                label: t('editor.Save all', 'Save all'),
+                labelVisible: true,
+                onClick: handleSaveAll,
+              },
             ]
-            : <CircularProgress className={classes.circularProgress} />}
-        </FullCardLayout>
+            : [
+              user?._id && user._id === song.userId && {
+                Component: Button,
+                Icon: Edit,
+                key: 'edit',
+                label: t('editor.Edit', 'Edit'),
+                labelVisible: !smallDevice,
+                onClick: handleEditSong,
+              },
+              user?._id && {
+                Component: Button,
+                key: 'add',
+                label: t('Add'),
+                onClick: handleClickOpen,
+                labelVisible: !smallDevice,
+                Icon: Add,
+              },
+              ...handleOpenScreen && song?._id ? [{
+                color: 'primary' as IIconColor,
+                Icon: Eye,
+                key: 'view',
+                label: t('editor.Reading', 'Reading'),
+                labelVisible: !smallDevice,
+                onClick: handleOpenScreen({
+                  ...song,
+                  lyrics: pgStates
+                    .filter((pgState) => (nbSelected ? pgState.selected : true))
+                    .map((pgState) => lyrics[pgState.pgIndex]),
+                }),
+              }] : [],
+              ...actionIconButtonsProps || [],
+            ],
+        ]}
+        actionsProps={{ className: classes.actions }}
+        className={classes.root}
+        contentProps={{
+          className: classes.content,
+          component: 'article',
+        }}
+        element={song && '_id' in song ? song : undefined}
+        fabs={nbSelected ? {
+          disabled: !pgStates.length,
+          Icon: SelectAll,
+          label: t('editor.Unselect all', '(Un)select all'),
+          labelVisible: true,
+          onClick: handleUnselectAll(),
+        } : undefined}
+        handleReturn={goBack}
+        otherParams={{ isThereSelected: pgStates.filter((pgState) => pgState.selected).length }}
+      >
+        {title
+          ? [
+            <Title
+              edit={editTitle}
+              editGlobal={edit}
+              details={details}
+              handleEditTitle={handleEditTitle}
+              handleTitleChange={handleTitleChange}
+              handleSubtitleChange={handleSubtitleChange}
+              handleDetailChange={handleDetailChange}
+              handleTitleCancel={handleTitleCancel}
+              key="title"
+              logoMenuDeployed={logoMenuDeployed}
+              subtitle={subtitle}
+              title={title}
+            />,
+            <Grid className={classes.lyrics} container key="lyrics" spacing={1}>
+              {pgStates.length > 0
+                ? pgStates.map(
+                  (pgState) => (
+                    <Paragraph
+                      key={pgState.pgIndex}
+                      paragraph={lyrics[pgState.pgIndex]}
+                      editGlobal={edit}
+                      edit={pgState.edit}
+                      selected={pgState.selected}
+                      handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
+                      handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
+                      handleLabelChange={(e): void => {
+                        handlePgChange(e.target, pgState.pgIndex, 'label');
+                      }}
+                      handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
+                      handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
+                      handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
+                      handlePgChange={(e): void => {
+                        handlePgChange(e.target, pgState.pgIndex, 'pg');
+                      }}
+                      handleSelect={(e): void => {
+                        handleSelect(e.currentTarget, pgState.pgIndex);
+                      }}
+                    />
+                  ),
+                )
+                : !loading && <NoLyrics />}
+              {loading && (
+                <Grid item xs={12} sm={6} md={4} xl={3}>
+                  <CircularProgress />
+                </Grid>
+              )}
+            </Grid>,
+            <Button
+              className={`${classes.button} ${edit ? '' : classes.displayNone}`}
+              key="addParagraph"
+              onClick={handleAddPg}
+              variant="contained"
+            >
+              <Add />
+            </Button>,
+          ]
+          : <CircularProgress className={classes.circularProgress} />}
+      </FullCardLayout>
+      {song && '_id' in song ? (
         <AddSongTo
           folders={folders}
           open={open}
           onClose={handleClose}
           song={song}
         />
-      </>
-    );
-  }
-  return null;
+      ) : null}
+    </>
+  );
 };
 
-export const Editor = withTracker<IEditorWTData, IEditorProps>(({
-  song: propsSong,
-}: { song: IUnfetched<ISong> }) => {
+/* export const Editor = withTracker<IEditorWTData, IEditorProps>(({
+  song: propsSong, loading,
+}: {
+  song?: IUnfetched<ISong>;
+  loading?: boolean;
+}) => {
   // console.log('From Editor, withTracker. Songs:', Songs);
   const subscription = Meteor.subscribe('song', propsSong._id);
 
   return ({
     folders: Folders.find({}).fetch(),
-    loading: !subscription.ready(),
+    loading: !subscription.ready() || loading,
     song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
     user: Meteor.user() as IUser | undefined,
   });
-})(WrappedEditor);
+})(WrappedEditor); */
 
 export default Editor;

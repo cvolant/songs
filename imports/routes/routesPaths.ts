@@ -108,10 +108,23 @@ export const routesPaths: {
             [Locale.en]: 'search',
             [Locale.fr]: 'recherche',
           },
+        },
+        {
+          name: 'song',
+          pathPartValues: {
+            [Locale.en]: 'song',
+            [Locale.fr]: 'chant',
+          },
           children: [
             {
-              name: 'songId',
+              name: 'authorSlug',
               variable: true,
+              children: [
+                {
+                  name: 'titleSlug',
+                  variable: true,
+                },
+              ],
             },
           ],
         },

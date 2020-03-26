@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 import React, { useState, useEffect, useContext } from 'react';
 
-import Editor from '../Editor';
+import { Editor } from '../Editor';
 
 import FolderEditor from './FolderEditor';
 import AddRemoveSearchList, { SongARHandler } from '../Search/AddRemoveSearchList';

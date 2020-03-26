@@ -3,6 +3,7 @@ import AddSongTo from './AddSongTo';
 import Detail from './Detail';
 import NoLyrics from './NoLyrics';
 import Paragraph from './Paragraph';
+import SongPage from './SongPage';
 import Title from './Title';
 
 export {
@@ -11,6 +12,7 @@ export {
   Detail,
   NoLyrics,
   Paragraph,
+  SongPage,
   Title,
 };
-export default Editor;
+export default SongPage;

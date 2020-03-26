@@ -70,11 +70,9 @@
     "No lyrics": "No lyrics in the database for this song...",
     "Cancel all": "Cancel all",
     "Save all": "Save all",
-    "Select or unselect all": "Select or unselect all",
-    "Select all": "Select all",
-    "Unselect all": "Unselect all",
+    "Unselect all": "(Un)select all",
     "Edit": "Edit",
-    "View": "View",
+    "Reading": "Reading",
     "Select paragraphs": "Select the paragraphs you want...",
     "Add song to": "Add song to"
   },
