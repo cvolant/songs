@@ -5,3 +5,5 @@ export type DeepPartial<T> = {
       ? ReadonlyArray<DeepPartial<U>>
       : DeepPartial<T[P]>
 };
+
+export type PartialBut<T, K extends keyof T> = Partial<T> & Pick<T, K>;

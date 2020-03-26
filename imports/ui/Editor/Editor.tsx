@@ -27,8 +27,13 @@ import Paragraph from './Paragraph';
 import Title from './Title';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
 
-import { IParagraph, ISong, IUnfetched } from '../../types';
-import { IPgState } from '../../types/songTypes';
+import { IUnfetched, PartialBut } from '../../types';
+import {
+  IEditedSong,
+  IParagraph,
+  IPgState,
+  ISong,
+} from '../../types/songTypes';
 import { IArrayIconButtonProps, IIconColor, IIconButtonProps } from '../../types/iconButtonTypes';
 
 import Songs from '../../api/songs/songs';
@@ -76,15 +81,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type IPartialSong = IUnfetched<ISong> | PartialBut<ISong, 'slug'>;
+
 interface IEditorProps {
   actionIconButtonsProps?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   edit?: boolean;
   fab?: IIconButtonProps<IUnfetched<ISong>>;
   goBack: () => void;
-  handleOpenScreen?: (song: ISong) => () => void;
+  handleOpenScreen?: (song: IEditedSong) => () => void;
   loading?: boolean;
   logoMenuDeployed: boolean;
-  song: IUnfetched<ISong> | (Partial<ISong> & { slug: string });
+  song: IPartialSong;
 }
 
 const createPgState = (pgStateProps: Partial<IPgState>): IPgState => {
@@ -189,7 +196,7 @@ export const Editor: React.FC<IEditorProps> = ({
 
   const folders = useTracker(() => Folders.find({}).fetch(), []);
   const loading = propLoading || useTracker(() => !Meteor.subscribe('songs', { query: propSong }), [propSong]);
-  const song: IUnfetched<ISong> | Partial<ISong> = useTracker(
+  const song: IPartialSong = useTracker(
     () => {
       const fetchedSong = {
         ...propSong,
@@ -512,10 +519,8 @@ export const Editor: React.FC<IEditorProps> = ({
                 label: t('editor.Reading', 'Reading'),
                 labelVisible: !smallDevice,
                 onClick: handleOpenScreen({
-                  ...song,
-                  lyrics: pgStates
-                    .filter((pgState) => (nbSelected ? pgState.selected : true))
-                    .map((pgState) => lyrics[pgState.pgIndex]),
+                  ...song as IUnfetched<ISong>,
+                  pgStates,
                 }),
               }] : [],
               ...actionIconButtonsProps || [],
@@ -527,7 +532,7 @@ export const Editor: React.FC<IEditorProps> = ({
           className: classes.content,
           component: 'article',
         }}
-        element={song && '_id' in song ? song : undefined}
+        element={song?._id ? song as IUnfetched<ISong> : undefined}
         fabs={nbSelected ? {
           disabled: !pgStates.length,
           Icon: SelectAll,
@@ -599,33 +604,16 @@ export const Editor: React.FC<IEditorProps> = ({
           ]
           : <CircularProgress className={classes.circularProgress} />}
       </FullCardLayout>
-      {song && '_id' in song ? (
+      {song?._id ? (
         <AddSongTo
           folders={folders}
           open={open}
           onClose={handleClose}
-          song={song}
+          song={song as IUnfetched<ISong>}
         />
       ) : null}
     </>
   );
 };
-
-/* export const Editor = withTracker<IEditorWTData, IEditorProps>(({
-  song: propsSong, loading,
-}: {
-  song?: IUnfetched<ISong>;
-  loading?: boolean;
-}) => {
-  // console.log('From Editor, withTracker. Songs:', Songs);
-  const subscription = Meteor.subscribe('song', propsSong._id);
-
-  return ({
-    folders: Folders.find({}).fetch(),
-    loading: !subscription.ready() || loading,
-    song: { ...propsSong, ...(Songs.findOne(propsSong._id) as ISong) },
-    user: Meteor.user() as IUser | undefined,
-  });
-})(WrappedEditor); */
 
 export default Editor;

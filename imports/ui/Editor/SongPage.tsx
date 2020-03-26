@@ -8,7 +8,7 @@ import Editor from './Editor';
 import PageLayout from '../Common/PageLayout';
 import Screen from '../Station/Screen';
 
-import { IEditedSong, ISong } from '../../types/songTypes';
+import { IEditedSong } from '../../types/songTypes';
 
 interface ISongPageProps {
   slug: string;
@@ -28,7 +28,7 @@ export const SongPage: React.FC<ISongPageProps> = ({
     setViewSong(undefined);
   };
 
-  const handleOpenScreen = (song: ISong) => (): void => {
+  const handleOpenScreen = (song: IEditedSong) => (): void => {
     setViewSong(song);
   };
 
