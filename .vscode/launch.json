@@ -1,0 +1,42 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "firefox",
+      "request": "attach",
+      "name": "Meteor-attached: Firefox",
+      "port": 3000,
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Meteor: Firefox",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Meteor: Node",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "debug"],
+      "outputCapture": "std",
+      "port": 9229,
+      "timeout": 120000,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Meteor: All",
+      "configurations": ["Meteor: Node", "Meteor: Firefox"]
+    }
+  ]
+}

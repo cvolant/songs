@@ -6,6 +6,7 @@
     "lib": ["esnext", "dom"],
     "checkJs": false,
     "jsx": "preserve",
+    "sourceMap": true,
 
     /* Strict Type-Checking Options */
     "strict": true,
