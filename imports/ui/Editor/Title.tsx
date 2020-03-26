@@ -1,22 +1,21 @@
-import React, { ChangeEventHandler, useState } from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Cancel from '@material-ui/icons/Cancel';
 import Check from '@material-ui/icons/Check';
 import Edit from '@material-ui/icons/Edit';
-import Eye from '@material-ui/icons/RemoveRedEye';
 import { CSSProperties } from '@material-ui/styles';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Detail, { IDetails, IDetailTarget } from './Detail';
+import Typography from '../Common/Typography';
 
 const useStyles = makeStyles((theme) => ({
   actionButtonsColumn: {
@@ -40,13 +39,6 @@ const useStyles = makeStyles((theme) => ({
     order: -1,
     marginRight: 0,
     marginLeft: theme.spacing(-1),
-  },
-  detailsButton: {
-    width: '100%',
-    textAlign: 'start',
-    display: 'block',
-    textTransform: 'none',
-    fontWeight: 'inherit',
   },
   logoSpace: {
     height: '1px',
@@ -98,16 +90,9 @@ const Title: React.FC<ITitle> = ({
   const { t } = useTranslation();
   const classes = useStyles({ logoMenuDeployed });
   const smallDevice = useDeviceSize('sm', 'down');
-  const [showDetails, setShowDetails] = useState(false);
-
-  const handleToggleDetails = (): void => {
-    setShowDetails(!showDetails);
-  };
 
   const detailsArray = Object.entries(details);
   // console.log('From Title, render. detailsArray:', detailsArray);
-
-  const DetailsContainer = smallDevice && !titleEdit ? Button : React.Fragment;
 
   return (
     <Card elevation={0} className={classes.root}>
@@ -134,21 +119,6 @@ const Title: React.FC<ITitle> = ({
             : undefined
         }
         classes={{ root: classes.cardHeader, action: classes.cardHeaderAction }}
-        title={titleEdit
-          ? (
-            <TextField
-              label={t('song.title', 'Title')}
-              multiline
-              rowsMax="2"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-              value={title}
-              onChange={handleTitleChange}
-              autoFocus
-            />
-          )
-          : title}
         subheader={titleEdit
           ? (
             <TextField
@@ -163,36 +133,46 @@ const Title: React.FC<ITitle> = ({
               autoFocus
             />
           )
-          : subtitle}
+          : (
+            <Typography component="h2" variant="h6">{title}</Typography>
+          )}
+        title={titleEdit
+          ? (
+            <TextField
+              label={t('song.title', 'Title')}
+              multiline
+              rowsMax="2"
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              value={title}
+              onChange={handleTitleChange}
+              autoFocus
+            />
+          )
+          : (
+            <Typography component="h1" variant="h4">{title}</Typography>
+          )}
       />
       <CardContent className={classes.cardContent}>
         {(titleEdit || detailsArray.find(([, detailValue]) => detailValue.value)) && (
-          <DetailsContainer
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...smallDevice && !titleEdit ? {
-              className: classes.detailsButton,
-              onClick: handleToggleDetails,
-            } : {}}
-          >
-            {(!smallDevice || showDetails || titleEdit)
-              ? [
-                <div className={classes.logoSpace} key={-1} />,
-                detailsArray.map(
-                  ([key, detailValue]) => (
-                    <Detail
-                      key={key}
-                      keyname={key}
-                      detail={detailValue}
-                      edit={titleEdit}
-                      handleDetailChange={handleDetailChange}
-                    />
-                  ),
-                ),
-              ]
-              : (
-                <Chip icon={<Eye />} label={t('song.Show details', 'Show details')} />
-              )}
-          </DetailsContainer>
+          <Box component={smallDevice && !titleEdit ? 'details' : undefined}>
+            {smallDevice && !titleEdit ? (
+              <Typography component="summary">
+                {t('song.Show details', 'Show details')}
+              </Typography>
+            ) : null}
+            <div className={classes.logoSpace} key={-1} />
+            {detailsArray.map(([key, detailValue]) => (
+              <Detail
+                key={key}
+                keyname={key}
+                detail={detailValue}
+                edit={titleEdit}
+                handleDetailChange={handleDetailChange}
+              />
+            ))}
+          </Box>
         )}
       </CardContent>
     </Card>
