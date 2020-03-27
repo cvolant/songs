@@ -3,9 +3,8 @@ import { Switch } from 'react-router-dom';
 
 import AboutPage from '../ui/About';
 import AuthRoute from './AuthRoute';
-import NotFound from '../ui/NotFound';
+import NotFoundPage from '../ui/NotFound';
 import SearchPage from '../ui/Search';
-import SongPage from '../ui/Editor';
 import DashboardPage from '../ui/Dashboard';
 import SignUp from '../ui/Authentication/SignUp';
 import SignIn from '../ui/Authentication/SignIn';
@@ -28,27 +27,13 @@ export const Routes: React.FC<IRoutesProps> = ({
       component={SearchPage}
     />
     <AuthRoute
-      exact
-      path={routesPaths.path(lng, 'about')}
-      component={AboutPage}
-    />
-    <AuthRoute
-      exact
-      path={routesPaths.path(lng, 'search')}
+      path={routesPaths.path(lng, 'song', ':slug')}
       component={SearchPage}
     />
     <AuthRoute
-      path={routesPaths.path(lng, 'song', ':authorSlug', ':titleSlug')}
-      render={
-        ({ match: { params: { authorSlug, titleSlug } } }: {
-          match: {
-            params: {
-              authorSlug: string;
-              titleSlug?: string;
-            };
-          };
-        }): React.ReactElement => <SongPage slug={`${authorSlug ? `${authorSlug}/` : ''}${titleSlug}`} />
-      }
+      exact
+      path={routesPaths.path(lng, 'about')}
+      component={AboutPage}
     />
     <AuthRoute
       exact
@@ -128,7 +113,7 @@ export const Routes: React.FC<IRoutesProps> = ({
     />
     <AuthRoute
       path="/*"
-      component={NotFound}
+      component={NotFoundPage}
     />
   </Switch>
 );

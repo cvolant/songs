@@ -103,13 +103,6 @@ export const routesPaths: {
           ],
         },
         {
-          name: 'search',
-          pathPartValues: {
-            [Locale.en]: 'search',
-            [Locale.fr]: 'recherche',
-          },
-        },
-        {
           name: 'song',
           pathPartValues: {
             [Locale.en]: 'song',

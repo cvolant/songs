@@ -10,8 +10,6 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import PageLayout from './Common/PageLayout';
-
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
@@ -24,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const NotFound: React.FC<{}> = () => {
+export const NotFound: React.FC = () => {
   const { t } = useTranslation();
   const classes = useStyles();
 
   return (
-    <PageLayout>
+    <>
       <Grid item sm />
       <Grid item xs sm={8} md={6} lg={4} xl={3} className={classes.container}>
         <Paper className={classes.paper}>
@@ -42,7 +40,7 @@ export const NotFound: React.FC<{}> = () => {
         </Paper>
       </Grid>
       <Grid item sm />
-    </PageLayout>
+    </>
   );
 };
 

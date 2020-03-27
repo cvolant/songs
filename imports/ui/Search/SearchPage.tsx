@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { createRef, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,7 @@ import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../Common/PageLayout';
 import SearchList from './SearchList';
+import SongPage from '../Editor';
 
 import { ISong } from '../../types/songTypes';
 
@@ -38,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(1),
     },
   },
+  hidden: {
+    display: 'none',
+  },
   pageContent: {
     flexGrow: 1,
     height: '100%',
@@ -56,11 +60,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface ISlugParams {
+  authorSlug: string;
+  titleSlug: string;
+}
+
 export const SearchPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const history = useHistory();
   const location = useLocation();
+  const matchWithAuthor = useRouteMatch<ISlugParams>(routesPaths.path(i18n.language, 'song', ':authorSlug', ':titleSlug'));
+  const matchWithoutAuthor = useRouteMatch<ISlugParams>(routesPaths.path(i18n.language, 'song', ':titleSlug'));
+  const {
+    params: {
+      authorSlug,
+      titleSlug,
+    },
+  } = matchWithAuthor || matchWithoutAuthor || { params: {} };
+  const slug = `${authorSlug ? `${authorSlug}/` : ''}${titleSlug}`;
 
+  console.log(
+    'From SearchPage.',
+    '\nuseRouteMatch:', useRouteMatch,
+    '\nauthorSlug:', authorSlug,
+    '\ntitleSlug:', titleSlug,
+  );
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [showInfos, setShowInfos] = useState(true);
   const smallDevice = useDeviceSize('sm', 'down');
@@ -101,38 +125,42 @@ export const SearchPage: React.FC = () => {
   // console.log('From SearchPage. render.');
 
   return (
-    <PageLayout
-      menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
-      sidePanel={showInfos && !Meteor.userId()
-        ? (
-          <InfosSongBySong handleCloseInfos={handleCloseInfos}>
-            {smallDevice && (
-              <Fab
-                variant="extended"
-                size="small"
-                aria-label="Continue"
-                className={classes.continueFab}
-                onClick={scrollDown}
-              >
-                <ExpandMore className={classes.continueFabIcon} />
-                <Typography>{t('Continue')}</Typography>
-              </Fab>
-            )}
-          </InfosSongBySong>
-        )
-        : undefined}
-      title={t('search.Search songs', 'Search songs')}
-      tutorialContentName="Search"
-      contentAreaRef={contentAreaRef}
-      scrollDown={scrollDown}
-    >
-      <SearchList
-        handleFocus={handleFocus}
-        handleSelectSong={handleSelectSong}
-        shortFirstItem={false}
-        shortSearchField={logoMenuDeployed}
-      />
-    </PageLayout>
+    <>
+      {titleSlug ? <SongPage slug={slug} /> : null}
+      <PageLayout
+        className={titleSlug ? classes.hidden : undefined}
+        menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
+        sidePanel={showInfos && !Meteor.userId()
+          ? (
+            <InfosSongBySong handleCloseInfos={handleCloseInfos}>
+              {smallDevice && (
+                <Fab
+                  variant="extended"
+                  size="small"
+                  aria-label="Continue"
+                  className={classes.continueFab}
+                  onClick={scrollDown}
+                >
+                  <ExpandMore className={classes.continueFabIcon} />
+                  <Typography>{t('Continue')}</Typography>
+                </Fab>
+              )}
+            </InfosSongBySong>
+          )
+          : undefined}
+        title={t('search.Search songs', 'Search songs')}
+        tutorialContentName="Search"
+        contentAreaRef={contentAreaRef}
+        scrollDown={scrollDown}
+      >
+        <SearchList
+          handleFocus={handleFocus}
+          handleSelectSong={handleSelectSong}
+          shortFirstItem={false}
+          shortSearchField={logoMenuDeployed}
+        />
+      </PageLayout>
+    </>
   );
 };
 

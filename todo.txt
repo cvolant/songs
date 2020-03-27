@@ -20,6 +20,8 @@ Ajouter des slugs pour les chants et les dossiers
 Créer une page pour présenter une liste de chants => dossiers publics, par auteurs, conseillés...
 Rajouter des boutons pour passer au chant suivant/précédent dans l'éditeur
 Ajouter des paramètres utilisateur, et compléter le formulaire d'inscription
+Intégrer routePaths directement dans AuthRoute, à renommer Route.
+Intégrer les props des routes dans routePaths, et les mapper dans le Switch.
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

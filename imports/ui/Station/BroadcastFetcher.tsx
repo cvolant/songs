@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import Loading from '../Loading';
-import NotFound from '../NotFound';
+import { NotFoundPage } from '../NotFound';
 
 import Broadcasts from '../../api/broadcasts/broadcasts';
 import Songs from '../../api/songs/songs';
@@ -15,7 +15,7 @@ interface IBroadcastFetcherProps {
 }
 
 export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId }) => {
-  const [songNb, setSongNb] = useState();
+  const [songNb, setSongNb] = useState<number | undefined>();
 
   const broadcastLoading = useTracker(() => {
     // Note that this subscription will get cleaned up
@@ -55,7 +55,7 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
   if (broadcastLoading) {
     return <Loading />;
   }
-  return <NotFound />;
+  return <NotFoundPage />;
 };
 
 export default BroadcastFetcher;
