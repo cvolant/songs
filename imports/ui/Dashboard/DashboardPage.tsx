@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import PageLayout from '../Common/PageLayout';
@@ -16,15 +16,17 @@ import { getPath } from '../../routes';
 import FolderDashboard from './FolderDashboard';
 import { ITutorialContentName } from '../Tutorial/Tutorial';
 
-interface IDashboardPageProps {
-  urlCollection?: string;
-}
-
-export const DashboardPage: React.FC<IDashboardPageProps> = ({
-  urlCollection,
-}) => {
+export const DashboardPage: React.FC = () => {
   const { i18n, t } = useTranslation();
+
   const history = useHistory();
+  const favoriteSongsMatch = useRouteMatch(getPath(i18n.language, 'dashboard', UserCollectionName.FavoriteSongs));
+  const createdSongsMatch = useRouteMatch(getPath(i18n.language, 'dashboard', UserCollectionName.CreatedSongs));
+  const foldersMatch = useRouteMatch(getPath(i18n.language, 'dashboard', UserCollectionName.Folders));
+  const urlCollection = (favoriteSongsMatch && UserCollectionName.FavoriteSongs)
+    || (createdSongsMatch && UserCollectionName.CreatedSongs)
+    || (foldersMatch && UserCollectionName.Folders)
+    || '';
 
   const setDisplayFromUrl = useCallback((): UserCollectionName | undefined => (
     Object.values(UserCollectionName).find((value) => value === urlCollection)

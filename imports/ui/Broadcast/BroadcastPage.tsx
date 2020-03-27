@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import Loading from '../Loading';
@@ -10,11 +11,8 @@ import Songs from '../../api/songs/songs';
 
 import Station from './Station';
 
-interface IBroadcastPageProps {
-  broadcastId: string;
-}
-
-export const BroadcastPage: React.FC<IBroadcastPageProps> = ({ broadcastId }) => {
+export const BroadcastPage: React.FC = () => {
+  const broadcastId = useParams<{ broadcastId: string }>();
   const [songNb, setSongNb] = useState<number | undefined>();
 
   const broadcastLoading = useTracker(() => {
