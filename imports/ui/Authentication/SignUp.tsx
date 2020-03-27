@@ -4,7 +4,7 @@ import Door from './Door';
 
 import routesPaths, { locales } from '../../routes/routesPaths';
 
-export const SignUp: React.FC<{}> = () => {
+export const SignUp: React.FC = () => {
   const { t, i18n: { language } } = useTranslation();
   return (
     <Door

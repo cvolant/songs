@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const NoLyrics: React.FC<{}> = () => {
+export const NoLyrics: React.FC = () => {
   const { t } = useTranslation();
   const classes = useStyles();
 

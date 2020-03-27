@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const ListLayoutItemLoading: React.FC<{}> = () => {
+export const ListLayoutItemLoading: React.FC = () => {
   const classes = useStyles();
 
   return (
