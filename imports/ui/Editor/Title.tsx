@@ -134,7 +134,7 @@ const Title: React.FC<ITitle> = ({
             />
           )
           : (
-            <Typography component="h2" variant="h6">{title}</Typography>
+            <Typography component="h2" variant="h6">{subtitle}</Typography>
           )}
         title={titleEdit
           ? (

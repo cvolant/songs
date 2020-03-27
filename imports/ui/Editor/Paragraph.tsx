@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
@@ -108,98 +107,96 @@ const Paragraph: React.FC<IParagraphProps> = ({
   const pgText = pg.replace(/(<br\/>\n)/g, '\n');
 
   return (
-    <Grid item xs={12} sm={6} md={4} xl={3}>
-      <Card
-        className={`${classes.card} ${selected ? classes.selectedCard : ''} ${editGlobal ? '' : classes.hoverableCard}`}
-        onClick={editGlobal ? undefined : handleSelect}
-        elevation={selected ? 4 : 0}
-        raised={selected}
-      >
-        <CardHeader
-          action={
-            editGlobal
-              ? (
-                <div className={classes.actionButtonColumn}>
-                  <IconButton
-                    color={edit ? 'primary' : 'default'}
-                    onClick={handleEditPg}
-                  >
-                    {edit ? <Check /> : <Edit />}
-                  </IconButton>
-                  {edit
-                    ? (
-                      <IconButton onClick={handlePgCancel}>
-                        <Cancel />
-                      </IconButton>
-                    )
-                    : undefined}
-                </div>
-              )
-              : undefined
+    <Card
+      className={`${classes.card} ${selected ? classes.selectedCard : ''} ${editGlobal ? '' : classes.hoverableCard}`}
+      onClick={editGlobal ? undefined : handleSelect}
+      elevation={selected ? 4 : 0}
+      raised={selected}
+    >
+      <CardHeader
+        action={
+          editGlobal
+            ? (
+              <div className={classes.actionButtonColumn}>
+                <IconButton
+                  color={edit ? 'primary' : 'default'}
+                  onClick={handleEditPg}
+                >
+                  {edit ? <Check /> : <Edit />}
+                </IconButton>
+                {edit
+                  ? (
+                    <IconButton onClick={handlePgCancel}>
+                      <Cancel />
+                    </IconButton>
+                  )
+                  : undefined}
+              </div>
+            )
+            : undefined
+        }
+        classes={{ action: classes.cardHeaderAction }}
+        // eslint-disable-next-line no-nested-ternary
+        title={edit
+          ? (
+            <TextField
+              select
+              label={t('lyrics.Type', 'Type')}
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              value={label}
+              onChange={handleLabelChange}
+            >
+              {types.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {t(`lyrics.${option}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )
+          : t(`lyrics.${label}`) === t('lyrics.paragraph', 'paragraph') ? undefined : t(`lyrics.${label}`, label)}
+        titleTypographyProps={edit
+          ? {
+            variant: 'body1',
+            color: 'textSecondary',
           }
-          classes={{ action: classes.cardHeaderAction }}
-          // eslint-disable-next-line no-nested-ternary
-          title={edit
-            ? (
-              <TextField
-                select
-                label={t('lyrics.Type', 'Type')}
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                value={label}
-                onChange={handleLabelChange}
-              >
-                {types.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {t(`lyrics.${option}`)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )
-            : t(`lyrics.${label}`) === t('lyrics.paragraph', 'paragraph') ? undefined : t(`lyrics.${label}`, label)}
-          titleTypographyProps={edit
-            ? {
-              variant: 'body1',
-              color: 'textSecondary',
-            }
-            : {
-              variant: 'overline',
-              color: 'textSecondary',
-            }}
-          subheader={edit
-            ? (
-              <TextField
-                label={t('lyrics.Content', 'Content')}
-                multiline
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                value={pgText}
-                onChange={handlePgChange}
-                autoFocus
-              />
-            )
-            // eslint-disable-next-line react/no-array-index-key
-            : <>{pgText.split(/(\n)/g).map((element: string, mapIndex) => (element === '\n' ? <br key={mapIndex} /> : element))}</>}
-          subheaderTypographyProps={edit ? {}
-            : { color: 'textPrimary' }}
-        />
-        <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
-          <div>
-            <IconButton color="primary" onClick={handleMoveUp}>
-              <ArrowUpward />
-            </IconButton>
-            <IconButton color="primary" onClick={handleMoveDown}>
-              <ArrowDownward />
-            </IconButton>
-          </div>
-          <IconButton onClick={handleDeletePg}>
-            <Delete />
+          : {
+            variant: 'overline',
+            color: 'textSecondary',
+          }}
+        subheader={edit
+          ? (
+            <TextField
+              label={t('lyrics.Content', 'Content')}
+              multiline
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              value={pgText}
+              onChange={handlePgChange}
+              autoFocus
+            />
+          )
+          // eslint-disable-next-line react/no-array-index-key
+          : <>{pgText.split(/(\n)/g).map((element: string, mapIndex) => (element === '\n' ? <br key={mapIndex} /> : element))}</>}
+        subheaderTypographyProps={edit ? {}
+          : { color: 'textPrimary' }}
+      />
+      <CardActions className={`${classes.actions} ${edit ? '' : classes.nonDisplayed}`}>
+        <div>
+          <IconButton color="primary" onClick={handleMoveUp}>
+            <ArrowUpward />
           </IconButton>
-        </CardActions>
-      </Card>
-    </Grid>
+          <IconButton color="primary" onClick={handleMoveDown}>
+            <ArrowDownward />
+          </IconButton>
+        </div>
+        <IconButton onClick={handleDeletePg}>
+          <Delete />
+        </IconButton>
+      </CardActions>
+    </Card>
   );
 };
 

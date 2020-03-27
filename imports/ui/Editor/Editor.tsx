@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Add from '@material-ui/icons/Add';
 import Cancel from '@material-ui/icons/Cancel';
 import Delete from '@material-ui/icons/Delete';
@@ -23,7 +23,9 @@ import { useUser } from '../../hooks/contexts/app-user-context';
 import AddSongTo from './AddSongTo';
 import FullCardLayout from '../Common/FullCardLayout';
 import NoLyrics from './NoLyrics';
+import { NotFound } from '../NotFound';
 import Paragraph from './Paragraph';
+import LoadingParagraph from './LoadingParagraph';
 import Title from './Title';
 import { createDetails, IDetails, IDetailTarget } from './Detail';
 
@@ -68,6 +70,9 @@ const useStyles = makeStyles((theme) => ({
   },
   lyrics: {
     marginBottom: theme.spacing(2),
+  },
+  noShrink: {
+    flexShrink: 0,
   },
   root: {
     display: 'flex',
@@ -195,14 +200,16 @@ export const Editor: React.FC<IEditorProps> = ({
   };
 
   const folders = useTracker(() => Folders.find({}).fetch(), []);
-  const loading = propLoading || useTracker(() => !Meteor.subscribe('songs', { query: propSong }), [propSong]);
+  const loading = propLoading || useTracker(() => !Meteor.subscribe('songs', { query: propSong }).ready(), [propSong]);
   const song: IPartialSong = useTracker(
     () => {
       const fetchedSong = {
         ...propSong,
         ...Songs.findOne(propSong) || {},
       };
-      initSong(fetchedSong);
+      if (fetchedSong.title) {
+        initSong(fetchedSong);
+      }
       return fetchedSong;
     },
     [propSong],
@@ -453,6 +460,10 @@ export const Editor: React.FC<IEditorProps> = ({
 
   // console.log('From Editor. lyrics:', lyrics, 'pgStates:', pgStates);
 
+  console.log('From Editor',
+    '\npropLoading:', propLoading,
+    '\nloading:', loading,
+    '\nsong:', song);
   return (
     <>
       <Helmet>
@@ -504,7 +515,7 @@ export const Editor: React.FC<IEditorProps> = ({
                 labelVisible: !smallDevice,
                 onClick: handleEditSong,
               },
-              user?._id && {
+              user?._id && song?._id && {
                 Component: Button,
                 key: 'add',
                 label: t('Add'),
@@ -543,55 +554,59 @@ export const Editor: React.FC<IEditorProps> = ({
         handleReturn={goBack}
         otherParams={{ isThereSelected: pgStates.filter((pgState) => pgState.selected).length }}
       >
-        {title
+        {title || loading
           ? [
-            <Title
-              edit={editTitle}
-              editGlobal={edit}
-              details={details}
-              handleEditTitle={handleEditTitle}
-              handleTitleChange={handleTitleChange}
-              handleSubtitleChange={handleSubtitleChange}
-              handleDetailChange={handleDetailChange}
-              handleTitleCancel={handleTitleCancel}
-              key="title"
-              logoMenuDeployed={logoMenuDeployed}
-              subtitle={subtitle}
-              title={title}
-            />,
+            title ? (
+              <Title
+                edit={editTitle}
+                editGlobal={edit}
+                details={details}
+                handleEditTitle={handleEditTitle}
+                handleTitleChange={handleTitleChange}
+                handleSubtitleChange={handleSubtitleChange}
+                handleDetailChange={handleDetailChange}
+                handleTitleCancel={handleTitleCancel}
+                key="title"
+                logoMenuDeployed={logoMenuDeployed}
+                subtitle={subtitle}
+                title={title}
+              />
+            ) : <Skeleton key="loading-title" height="12rem" variant="rect" className={classes.noShrink} />,
             <Grid className={classes.lyrics} container key="lyrics" spacing={1}>
               {pgStates.length > 0
                 ? pgStates.map(
                   (pgState) => (
-                    <Paragraph
-                      key={pgState.pgIndex}
-                      paragraph={lyrics[pgState.pgIndex]}
-                      editGlobal={edit}
-                      edit={pgState.edit}
-                      selected={pgState.selected}
-                      handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
-                      handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
-                      handleLabelChange={(e): void => {
-                        handlePgChange(e.target, pgState.pgIndex, 'label');
-                      }}
-                      handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
-                      handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
-                      handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
-                      handlePgChange={(e): void => {
-                        handlePgChange(e.target, pgState.pgIndex, 'pg');
-                      }}
-                      handleSelect={(e): void => {
-                        handleSelect(e.currentTarget, pgState.pgIndex);
-                      }}
-                    />
+                    <Grid item xs={12} sm={6} md={4} xl={3}>
+                      <Paragraph
+                        key={pgState.pgIndex}
+                        paragraph={lyrics[pgState.pgIndex]}
+                        editGlobal={edit}
+                        edit={pgState.edit}
+                        selected={pgState.selected}
+                        handleDeletePg={(): void => { handleDeletePg(pgState.pgIndex); }}
+                        handleEditPg={(): void => { handleEditPg(pgState.pgIndex); }}
+                        handleLabelChange={(e): void => {
+                          handlePgChange(e.target, pgState.pgIndex, 'label');
+                        }}
+                        handleMoveDown={(): void => { handleMove(pgState.pgIndex, 1); }}
+                        handleMoveUp={(): void => { handleMove(pgState.pgIndex, -1); }}
+                        handlePgCancel={(): void => { handlePgCancel(pgState.pgIndex); }}
+                        handlePgChange={(e): void => {
+                          handlePgChange(e.target, pgState.pgIndex, 'pg');
+                        }}
+                        handleSelect={(e): void => {
+                          handleSelect(e.currentTarget, pgState.pgIndex);
+                        }}
+                      />
+                    </Grid>
                   ),
                 )
                 : !loading && <NoLyrics />}
-              {loading && (
-                <Grid item xs={12} sm={6} md={4} xl={3}>
-                  <CircularProgress />
+              {loading ? [1, 2, 3, 4, 5, 6, 7].map((lpgIndex) => (
+                <Grid item key={`loading-pg-${lpgIndex}`} xs={12} sm={6} md={4} xl={3}>
+                  <LoadingParagraph />
                 </Grid>
-              )}
+              )) : null}
             </Grid>,
             <Button
               className={`${classes.button} ${edit ? '' : classes.displayNone}`}
@@ -601,8 +616,7 @@ export const Editor: React.FC<IEditorProps> = ({
             >
               <Add />
             </Button>,
-          ]
-          : <CircularProgress className={classes.circularProgress} />}
+          ] : <NotFound />}
       </FullCardLayout>
       {song?._id ? (
         <AddSongTo
