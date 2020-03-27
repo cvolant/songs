@@ -6,7 +6,7 @@ import Clear from '@material-ui/icons/Clear';
 
 import Editor from './Editor';
 import PageLayout from '../Common/PageLayout';
-import Screen from '../Station/Screen';
+import Screen from '../Broadcast/Screen';
 
 import { IEditedSong } from '../../types/songTypes';
 

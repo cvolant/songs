@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 import Translate from '@material-ui/icons/Translate';
-import routesPaths from '../../routes/routesPaths';
+import { translatePath } from '../../routes';
 
 const useStyles = makeStyles((theme) => ({
   adornment: {
@@ -77,7 +77,7 @@ ILanguagePickerProps
     const formerPath = location.pathname;
     setLanguage(lng);
     // console.log('From LanguagePicker, handleChange. REDIRECTION. Changing language to', lng);
-    history.replace(routesPaths.translatePath(formerPath, lng));
+    history.replace(translatePath(formerPath, lng));
   };
 
   const handleClose = (): void => setOpen(false);

@@ -16,7 +16,7 @@ import SongPage from '../Editor';
 
 import { ISong } from '../../types/songTypes';
 
-import routesPaths from '../../routes/routesPaths';
+import { getPath } from '../../routes';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
@@ -69,8 +69,8 @@ export const SearchPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  const matchWithAuthor = useRouteMatch<ISlugParams>(routesPaths.path(i18n.language, 'song', ':authorSlug', ':titleSlug'));
-  const matchWithoutAuthor = useRouteMatch<ISlugParams>(routesPaths.path(i18n.language, 'song', ':titleSlug'));
+  const matchWithAuthor = useRouteMatch<ISlugParams>(getPath(i18n.language, 'song', ':authorSlug', ':titleSlug'));
+  const matchWithoutAuthor = useRouteMatch<ISlugParams>(getPath(i18n.language, 'song', ':titleSlug'));
   const {
     params: {
       authorSlug,
@@ -96,7 +96,7 @@ export const SearchPage: React.FC = () => {
   };
 
   const handleSelectSong = (song: ISong): void => {
-    history.push(routesPaths.path(i18n.language, 'song', song.slug) + location.search);
+    history.push(getPath(i18n.language, 'song', song.slug) + location.search);
     /* console.log(
       'From SearchPage, handleSelectSong.',
       'history:', history,

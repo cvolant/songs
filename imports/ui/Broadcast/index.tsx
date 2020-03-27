@@ -1,10 +1,11 @@
 import Station from './Station';
-import BroadcastFetcher from './BroadcastFetcher';
+import BroadcastPage from './BroadcastPage';
 import PublishDialog from './PublishDialog';
 
 export {
-  BroadcastFetcher,
+  BroadcastPage,
   PublishDialog,
   Station,
 };
-export default Station;
+
+export default BroadcastPage;

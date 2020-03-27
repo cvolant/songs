@@ -9,8 +9,7 @@ import { Session } from 'meteor/session';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Routes from '../routes/Routes';
-import routesPaths from '../routes/routesPaths';
+import { Routes, getPath } from '../routes';
 import { UserProvider } from '../hooks/contexts/app-user-context';
 
 import 'normalize.css';
@@ -83,9 +82,9 @@ export const App: React.FC<IAppProps> = ({
       if (isUnauthenticatedPage && isAuthenticated) {
         const { state } = history.location as { state?: { from?: string } };
         if (state && state.from) {
-          history.replace(history.location.pathname.indexOf(routesPaths.path(lng, 'signin')) >= 0 ? state.from : routesPaths.path(lng, 'dashboard'));
+          history.replace(history.location.pathname.indexOf(getPath(lng, 'signin')) >= 0 ? state.from : getPath(lng, 'dashboard'));
         } else {
-          history.replace(routesPaths.path(lng, 'dashboard'));
+          history.replace(getPath(lng, 'dashboard'));
         }
       } else if (isAuthenticatedPage && !isAuthenticated) {
         history.replace(`/${lng}`);

@@ -10,11 +10,11 @@ import Songs from '../../api/songs/songs';
 
 import Station from './Station';
 
-interface IBroadcastFetcherProps {
+interface IBroadcastPageProps {
   broadcastId: string;
 }
 
-export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId }) => {
+export const BroadcastPage: React.FC<IBroadcastPageProps> = ({ broadcastId }) => {
   const [songNb, setSongNb] = useState<number | undefined>();
 
   const broadcastLoading = useTracker(() => {
@@ -49,7 +49,7 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
   }
 
   if (!broadcastLoading && broadcast && songs) {
-    // console.log('From BroadcastFetcher, render. broadcast:', broadcast, 'songs:', songs);
+    // console.log('From BroadcastPage, render. broadcast:', broadcast, 'songs:', songs);
     return <Station broadcast={broadcast} songs={songs} />;
   }
   if (broadcastLoading) {
@@ -58,4 +58,4 @@ export const BroadcastFetcher: React.FC<IBroadcastFetcherProps> = ({ broadcastId
   return <NotFoundPage />;
 };
 
-export default BroadcastFetcher;
+export default BroadcastPage;

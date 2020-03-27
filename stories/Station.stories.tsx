@@ -7,9 +7,9 @@ import { action } from '@storybook/addon-actions';
 
 import { UserProvider } from '../imports/hooks/contexts/app-user-context';
 import {
-  BroadcastFetcher,
+  BroadcastPage,
   PublishDialog,
-} from '../imports/ui/Station';
+} from '../imports/ui/Broadcast';
 
 import { IIconButtonCallback } from '../imports/types/iconButtonTypes';
 
@@ -47,7 +47,7 @@ export const publishDialog = (): JSX.Element => (
 );
 
 export const broadcastFetcher = (): JSX.Element => (
-  <BroadcastFetcher
+  <BroadcastPage
     broadcastId={[
       'idAddressRO1',
       'idAddressN1',

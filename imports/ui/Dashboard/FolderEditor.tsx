@@ -23,7 +23,7 @@ import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
-import routesPaths from '../../routes/routesPaths';
+import { getPath } from '../../routes';
 import { IBroadcastRights } from '../../types/broadcastTypes';
 import FolderDialogs from '../Folders/FolderDialogs';
 import CalendarDate from '../Common/CalendarDate';
@@ -103,7 +103,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
       ); */
       broadcastOwnerId = foldersUpdateBroadcastsInsert.call({ folderId: folder._id, addresses });
     }
-    history.push(routesPaths.path(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));
+    history.push(getPath(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));
   };
 
   return (

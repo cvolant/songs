@@ -6,11 +6,11 @@ import AuthRoute from './AuthRoute';
 import NotFoundPage from '../ui/NotFound';
 import SearchPage from '../ui/Search';
 import DashboardPage from '../ui/Dashboard';
-import SignUp from '../ui/Authentication/SignUp';
-import SignIn from '../ui/Authentication/SignIn';
-import BroadcastFetcher from '../ui/Station/BroadcastFetcher';
+import SignUpPage from '../ui/Authentication/SignUpPage';
+import SignInPage from '../ui/Authentication/SignInPage';
+import BroadcastPage from '../ui/Broadcast/BroadcastPage';
 
-import routesPaths from './routesPaths';
+import getPath from './utils';
 import UserCollectionName from '../ui/Dashboard/UserCollectionName';
 
 interface IRoutesProps {
@@ -23,42 +23,42 @@ export const Routes: React.FC<IRoutesProps> = ({
   <Switch>
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'home')}
+      path={getPath(lng, 'home')}
       component={SearchPage}
     />
     <AuthRoute
-      path={routesPaths.path(lng, 'song', ':slug')}
+      path={getPath(lng, 'song', ':slug')}
       component={SearchPage}
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'about')}
+      path={getPath(lng, 'about')}
       component={AboutPage}
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'signin')}
-      component={SignIn}
+      path={getPath(lng, 'signin')}
+      component={SignInPage}
       auth={false}
       redirection="dashboard"
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'signup')}
-      component={SignUp}
+      path={getPath(lng, 'signup')}
+      component={SignUpPage}
       auth={false}
       redirection="dashboard"
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'dashboard')}
+      path={getPath(lng, 'dashboard')}
       component={DashboardPage}
       auth
       redirection="home"
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'dashboard', UserCollectionName.FavoriteSongs)}
+      path={getPath(lng, 'dashboard', UserCollectionName.FavoriteSongs)}
       render={(): React.ReactElement => (
         <DashboardPage urlCollection={UserCollectionName.FavoriteSongs} />
       )}
@@ -67,7 +67,7 @@ export const Routes: React.FC<IRoutesProps> = ({
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'dashboard', UserCollectionName.CreatedSongs)}
+      path={getPath(lng, 'dashboard', UserCollectionName.CreatedSongs)}
       render={(): React.ReactElement => (
         <DashboardPage urlCollection={UserCollectionName.CreatedSongs} />
       )}
@@ -76,7 +76,7 @@ export const Routes: React.FC<IRoutesProps> = ({
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'dashboard', UserCollectionName.Folders)}
+      path={getPath(lng, 'dashboard', UserCollectionName.Folders)}
       render={(): React.ReactElement => (
         <DashboardPage urlCollection={UserCollectionName.Folders} />
       )}
@@ -85,7 +85,7 @@ export const Routes: React.FC<IRoutesProps> = ({
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'dashboard', 'broadcast', ':broadcastId')}
+      path={getPath(lng, 'dashboard', 'broadcast', ':broadcastId')}
       render={
         ({ match }: {
           match: {
@@ -93,14 +93,14 @@ export const Routes: React.FC<IRoutesProps> = ({
               broadcastId: string;
             };
           };
-        }): React.ReactElement => <BroadcastFetcher broadcastId={match.params.broadcastId} />
+        }): React.ReactElement => <BroadcastPage broadcastId={match.params.broadcastId} />
       }
       auth
       redirection="home"
     />
     <AuthRoute
       exact
-      path={routesPaths.path(lng, 'reception', ':broadcastId')}
+      path={getPath(lng, 'reception', ':broadcastId')}
       render={
         ({ match }: {
           match: {
@@ -108,7 +108,7 @@ export const Routes: React.FC<IRoutesProps> = ({
               broadcastId: string;
             };
           };
-        }): React.ReactElement => <BroadcastFetcher broadcastId={match.params.broadcastId} />
+        }): React.ReactElement => <BroadcastPage broadcastId={match.params.broadcastId} />
       }
     />
     <AuthRoute

@@ -28,7 +28,7 @@ import LanguagePicker from './LanguagePicker';
 
 import { IBroadcastRights } from '../../types/broadcastTypes';
 
-import routesPaths, { locales } from '../../routes/routesPaths';
+import { getPath } from '../../routes';
 import { broadcastInsert } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({
@@ -108,7 +108,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     }));
     broadcastInsert.call({ addresses }, (_err, res) => {
       if (res) {
-        history.push(routesPaths.path(lng, 'dashboard', 'broadcast', addresses[0].id));
+        history.push(getPath(lng, 'dashboard', 'broadcast', addresses[0].id));
       }
     });
   };
@@ -117,12 +117,12 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     { name: t('Home'), path: `/${lng}`, Icon: Home },
     {
       name: t('About'),
-      path: routesPaths.path(locales[lng], 'about'),
+      path: getPath(lng, 'about'),
       Icon: Loupe,
     },
     {
       name: t('Dashboard'),
-      path: routesPaths.path(locales[lng], 'dashboard'),
+      path: getPath(lng, 'dashboard'),
       hide: !isAuthenticated,
       Icon: Person,
     },
@@ -140,7 +140,7 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     },
     {
       name: t('Login'),
-      path: routesPaths.path(locales[lng], 'signin'),
+      path: getPath(lng, 'signin'),
       hide: isAuthenticated,
       Icon: Power,
     },

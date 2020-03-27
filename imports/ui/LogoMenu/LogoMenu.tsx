@@ -22,7 +22,7 @@ import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
 import { IIcon } from '../../types/iconButtonTypes';
 
-import routesPaths from '../../routes/routesPaths';
+import { getPath, translatePath } from '../../routes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -230,8 +230,8 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
     const currentlyAt = (pathname: 'dashboard' | 'signin' | 'signup' | 'home'): boolean => (
       pathname === 'home'
-        ? location.pathname.replace(/\/$/, '') === routesPaths.path(i18n.language, pathname)
-        : location.pathname.indexOf(routesPaths.path(i18n.language, pathname)) >= 0
+        ? location.pathname.replace(/\/$/, '') === getPath(i18n.language, pathname)
+        : location.pathname.indexOf(getPath(i18n.language, pathname)) >= 0
     );
 
     /* console.log(
@@ -336,7 +336,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
           to={{
-            pathname: routesPaths.translatePath(middleButton.to, i18n.language),
+            pathname: translatePath(middleButton.to, i18n.language),
             state: {
               from: location,
             },

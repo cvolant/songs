@@ -12,7 +12,7 @@ import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 
-import routesPaths from '../../routes/routesPaths';
+import { getPath } from '../../routes';
 import FolderDashboard from './FolderDashboard';
 import { ITutorialContentName } from '../Tutorial/Tutorial';
 
@@ -51,7 +51,7 @@ export const DashboardPage: React.FC<IDashboardPageProps> = ({
   const handleChangeDisplay = (newDisplay?: UserCollectionName) => (): void => {
     setDisplay(newDisplay || UserCollectionName.FavoriteSongs);
     if (newDisplay) {
-      history.push(routesPaths.path(i18n.language, 'dashboard', newDisplay));
+      history.push(getPath(i18n.language, 'dashboard', newDisplay));
     }
   };
 
