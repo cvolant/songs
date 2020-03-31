@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 import Translate from '@material-ui/icons/Translate';
-import { translatePath } from '../../routes';
+import { translatePath } from '../../routes/utils';
 
 const useStyles = makeStyles((theme) => ({
   adornment: {

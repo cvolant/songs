@@ -3,7 +3,6 @@ Rajouter un bouton 'Rechercher'
 Documenter le code avec Tsdoc
 Écrire les parties manquantes du tutoriel
 Ajouter la possibilite de plusieurs IconButtons dans headerAction => MainDashboard
-Reorganiser les methods
 Regler le probleme de CustomIconButton : Component.options
 Mettre tous les layouts dans un dossier ui/layouts
 Utiliser les options de traduction de simple-schema
@@ -11,17 +10,17 @@ Mettre le state du logomenu en global, virer handleFocus.
 Utiliser les Routes dans le Dashboard.
 Ajouter des Snackbars de changement de statut dans la station
 Ajouter un fab + dans l'Editor de AddRemoveSearchList
-Ajouter un bouton supprimer pour les chants créés
 Tranformer les hocs en hooks
-Améliorer l'utilisation du router, des urls et des Routes
 Permettre le partage d'un dossier avec d'autres utilisateurs ou en public
 Essayer de SSR les chants et les dossiers publics
 Ajouter des slugs pour les chants et les dossiers
 Créer une page pour présenter une liste de chants => dossiers publics, par auteurs, conseillés...
 Rajouter des boutons pour passer au chant suivant/précédent dans l'éditeur
 Ajouter des paramètres utilisateur, et compléter le formulaire d'inscription
-Intégrer routePaths directement dans AuthRoute, à renommer Route.
-Intégrer les props des routes dans routePaths, et les mapper dans le Switch.
+Améliorer la sémantique : aside, nav, main, ... Microdata : https://schema.org/CreativeWork (author, creator, ...)
+Optimiser pour les application de lecture : https://medium.com/@mandy.michael/building-websites-for-safari-reader-mode-and-other-reading-apps-1562913c86c9
+Corriger le html d'accuil pour correspondre à Loading. Et puis changer Loading.
+Remonter PageLayout dans App
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

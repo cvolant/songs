@@ -12,7 +12,7 @@ import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 
-import { getPath } from '../../routes';
+import { getPath } from '../../routes/utils';
 import FolderDashboard from './FolderDashboard';
 import { ITutorialContentName } from '../Tutorial/Tutorial';
 

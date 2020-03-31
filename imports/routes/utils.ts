@@ -1,34 +1,92 @@
 import { Locale } from '../i18n';
-import routesTree, { IRouteBranch } from './routesTree';
+import routesTree from './routesTree';
+import { IRouteBranch, IRouteBranchName, IRouteProps } from '../types/routeTypes';
+
+const newPathPart = (routeBranch: IRouteBranch, lng: Locale): string => {
+  if (routeBranch.pathPartValues) {
+    return routeBranch.pathPartValues[lng] || routeBranch.pathPartValues[Locale.en];
+  }
+  return typeof routeBranch.any === 'string'
+    ? routeBranch.any
+    : `:${routeBranch.name}`;
+};
+
+export const getRoute = (
+  language: Locale,
+  routeName: IRouteBranchName,
+): IRouteProps | undefined => {
+  const lng = language in Locale ? Locale[language as Locale] : Locale.en;
+
+  const checkRoutesInBranch = (
+    routeBranch: IRouteBranch,
+    currentPath: string,
+  ): IRouteProps | undefined => {
+    const path = `${currentPath}/${newPathPart(routeBranch, lng)}`;
+
+    if (routeBranch.name === routeName && routeBranch.componentName) {
+      return {
+        exact: true,
+        path,
+        ...routeBranch,
+      } as IRouteProps;
+    }
+    if (routeBranch.children) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const child of routeBranch.children) {
+        const checkResult = checkRoutesInBranch(child, path);
+        if (checkResult) {
+          return checkResult;
+        }
+      }
+    }
+    return undefined;
+  };
+  return checkRoutesInBranch(routesTree[0], '');
+};
+
+export const getAllRoutes = (language: string): IRouteProps[] => {
+  const lng = language in Locale ? Locale[language as Locale] : Locale.en;
+
+  const getRoutesInBranch = (
+    routeBranch: IRouteBranch,
+    currentPath: string,
+  ): IRouteProps[] => {
+    const path = `${currentPath}/${newPathPart(routeBranch, lng)}`;
+
+    return (routeBranch.children || []).reduce(
+      (result, child) => [
+        ...result,
+        ...getRoutesInBranch(child, path),
+      ],
+      routeBranch.componentName ? [{
+        exact: true,
+        path,
+        ...routeBranch,
+      }] as IRouteProps[] : [],
+    );
+  };
+  return getRoutesInBranch(routesTree[0], '');
+};
 
 export const getPath = (language: string, ...routeParts: string[]): string => {
-  const lng = language in Locale ? Locale[language as Locale] : undefined;
-  if (!lng) {
-    console.error('Impossible to translate path. Unknown language:', lng);
-    return '';
-  }
+  const lng = language in Locale ? Locale[language as Locale] : Locale.en;
+
   const pathParts: string[] = ['', Locale[lng]];
   let branches = routesTree[0].children;
+
   for (let i = 0; i < routeParts.length; i += 1) {
     if (branches === undefined) break;
+
     const part = routeParts[i];
-    const eligiblesBranches = branches.filter((b) => b.name === part || b.variable);
-    if (eligiblesBranches.length > 1) console.warn('From routesPaths.path. More than one eligible branches. path part:', part, 'eligibles branches:', eligiblesBranches);
-    const branch = eligiblesBranches[0];
+    const branch = branches.find((b) => b.name === part)
+      || branches.find((b) => typeof b.any === 'string' || !b.pathPartValues);
+
     if (branch === undefined) {
       console.error('Error in routesPaths.path. Arguments do not correspond to a route path. arguments:', [lng, ...routeParts]);
-      break;
+      return `/${lng}`;
     }
-    let newIPathPart;
-    if (branch.pathPartValues !== undefined) {
-      const branchValue = branch.pathPartValues[lng]
-        ? branch.pathPartValues[lng]
-        : branch.pathPartValues[Locale.en];
-      newIPathPart = branchValue;
-    } else {
-      newIPathPart = branch.any || branch.variable ? part : '';
-    }
-    if (newIPathPart) pathParts.push(newIPathPart);
+
+    pathParts.push(newPathPart(branch, lng));
     branches = branch.children;
   }
 
@@ -36,49 +94,45 @@ export const getPath = (language: string, ...routeParts: string[]): string => {
 };
 
 export const translatePath = (formerPath: string, language: string): string => {
-  const newLng = language in Locale ? Locale[language as Locale] : undefined;
-  if (!newLng) {
-    console.error('Impossible to translate path. Unknown language:', newLng);
-    return '';
-  }
+  const newLng = language in Locale ? Locale[language as Locale] : Locale.en;
+
   const splited = formerPath.split('/');
   const lng = splited[1];
   if (lng === newLng) return formerPath;
 
-  const initTranslatedPath = '';
   const initParts = splited.slice(1);
   const initBranches = routesTree;
 
   const translateFurther = (
-    translatedPath: string,
     parts: string[],
     branches: IRouteBranch[] | undefined,
-  ): string => {
-    if (parts.length === 0) return translatedPath;
-    if (branches === undefined) return [translatedPath, ...parts].join('/');
+  ): string[] => {
+    if (branches === undefined) {
+      return [...parts];
+    }
 
     const pathPart = parts[0];
-    let translatedPart = '';
 
-    for (let i = 0; i < branches.length; i += 1) {
-      const branch = branches[i];
-      const { pathPartValues } = branch;
-      const containValue = pathPartValues !== undefined
-        && Object.values(pathPartValues).includes(pathPart);
-      if (containValue || branch.any === pathPart || branch.variable) {
-        if (containValue) {
-          translatedPart = (pathPartValues && (pathPartValues[Locale[newLng]] || pathPartValues[Locale.en])) || '';
-        } else {
-          translatedPart = pathPart;
-        }
-        const newTranslatedPart = translatedPart ? [translatedPath, translatedPart].join('/') : translatedPath;
-        return translateFurther(newTranslatedPart, parts.slice(1), branch.children);
-      }
+    let branch = branches.find((b) => b.pathPartValues
+      && Object.values(b.pathPartValues).includes(pathPart));
+    if (!branch) {
+      branch = branches.find((b) => typeof b.any === 'string' || !b.pathPartValues);
     }
-    return translatedPath;
+    if (!branch) {
+      return [...parts];
+    }
+
+    const translatedPart = branch.pathPartValues
+      ? branch.pathPartValues[Locale[newLng]] || branch.pathPartValues[Locale.en]
+      : pathPart;
+
+    return [
+      translatedPart,
+      ...branch.children
+        ? translateFurther(parts.slice(1), branch.children)
+        : [],
+    ];
   };
 
-  return translateFurther(initTranslatedPath, initParts, initBranches);
+  return [''].concat(translateFurther(initParts, initBranches)).join('/');
 };
-
-export default getPath;

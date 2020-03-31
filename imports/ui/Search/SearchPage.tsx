@@ -16,7 +16,7 @@ import SongPage from '../Editor';
 
 import { ISong } from '../../types/songTypes';
 
-import { getPath } from '../../routes';
+import { getPath } from '../../routes/utils';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {

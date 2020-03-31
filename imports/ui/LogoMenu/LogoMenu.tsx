@@ -22,7 +22,7 @@ import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
 import { IIcon } from '../../types/iconButtonTypes';
 
-import { getPath, translatePath } from '../../routes';
+import { getPath, translatePath } from '../../routes/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -230,7 +230,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
     const currentlyAt = (pathname: 'dashboard' | 'signin' | 'signup' | 'home'): boolean => (
       pathname === 'home'
-        ? location.pathname.replace(/\/$/, '') === getPath(i18n.language, pathname)
+        ? location.pathname.replace(/\/$/, '') === getPath(i18n.language, pathname).replace(/\/$/, '')
         : location.pathname.indexOf(getPath(i18n.language, pathname)) >= 0
     );
 

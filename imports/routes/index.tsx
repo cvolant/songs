@@ -1,4 +1,7 @@
-export { AuthRoute } from './AuthRoute';
-export { Routes } from './Routes';
-export { getPath, translatePath } from './utils';
+import { Routes } from './Routes';
+
+export { Route } from './Route';
 export { routesTree } from './routesTree';
+export { Routes };
+
+export default Routes;

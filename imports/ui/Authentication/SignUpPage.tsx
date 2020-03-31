@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Door from './Door';
 
-import { getPath } from '../../routes';
+import { getPath } from '../../routes/utils';
 
 export const SignUpPage: React.FC = () => {
   const { t, i18n: { language } } = useTranslation();

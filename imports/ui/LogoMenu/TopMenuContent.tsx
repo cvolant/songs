@@ -28,7 +28,7 @@ import LanguagePicker from './LanguagePicker';
 
 import { IBroadcastRights } from '../../types/broadcastTypes';
 
-import { getPath } from '../../routes';
+import { getPath } from '../../routes/utils';
 import { broadcastInsert } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({

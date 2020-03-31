@@ -1,25 +1,4 @@
-import { Locale } from '../i18n';
-
-export type IPageComponentName =
-| 'AboutPage'
-| 'BroadcastPage'
-| 'DashboardPage'
-| 'SearchPage'
-| 'SignInPage'
-| 'SignUpPage';
-
-export interface IRouteBranch {
-  name: string;
-  pathPartValues?: {
-    [Locale.en]: string;
-    [Locale.fr]: string;
-  };
-  optional?: boolean;
-  variable?: boolean;
-  any?: string;
-  children?: IRouteBranch[];
-  component?: IPageComponentName;
-}
+import { IRouteBranch } from '../types/routeTypes';
 
 export const routesTree: IRouteBranch[] = [
   {
@@ -32,28 +11,32 @@ export const routesTree: IRouteBranch[] = [
     children: [
       {
         name: 'home',
-        component: 'SearchPage',
+        componentName: 'SearchPage',
         any: '',
       },
       {
         name: 'signin',
-        component: 'SignInPage',
+        auth: false,
+        componentName: 'SignInPage',
         pathPartValues: {
           en: 'signin',
           fr: 'connexion',
         },
+        redirection: 'dashboard',
       },
       {
         name: 'signup',
-        component: 'SignUpPage',
+        auth: false,
+        componentName: 'SignUpPage',
         pathPartValues: {
           en: 'signup',
           fr: 'inscription',
         },
+        redirection: 'dashboard',
       },
       {
         name: 'about',
-        component: 'AboutPage',
+        componentName: 'AboutPage',
         pathPartValues: {
           en: 'about',
           fr: 'a-propos',
@@ -61,47 +44,56 @@ export const routesTree: IRouteBranch[] = [
       },
       {
         name: 'dashboard',
-        component: 'DashboardPage',
+        auth: true,
+        componentName: 'DashboardPage',
         pathPartValues: {
           en: 'dashboard',
           fr: 'espace-personnel',
         },
+        redirection: 'home',
         children: [
           {
             name: 'favoriteSongs',
-            component: 'DashboardPage',
+            auth: true,
+            componentName: 'DashboardPage',
             pathPartValues: {
               en: 'favorite-songs',
               fr: 'chants-favoris',
             },
+            redirection: 'home',
           },
           {
             name: 'createdSongs',
-            component: 'DashboardPage',
+            auth: true,
+            componentName: 'DashboardPage',
             pathPartValues: {
               en: 'created-songs',
               fr: 'chants-crees',
             },
+            redirection: 'home',
           },
           {
             name: 'folders',
-            component: 'DashboardPage',
+            auth: true,
+            componentName: 'DashboardPage',
             pathPartValues: {
               en: 'folders',
               fr: 'dossiers',
             },
+            redirection: 'home',
           },
           {
             name: 'broadcast',
-            component: 'DashboardPage',
+            auth: true,
+            componentName: 'DashboardPage',
             pathPartValues: {
               en: 'broadcast',
               fr: 'diffusion',
             },
+            redirection: 'home',
             children: [
               {
                 name: 'broadcastId',
-                variable: true,
               },
             ],
           },
@@ -116,13 +108,11 @@ export const routesTree: IRouteBranch[] = [
         children: [
           {
             name: 'titleSlug',
-            component: 'SearchPage',
-            variable: true,
+            componentName: 'SearchPage',
             children: [
               {
                 name: 'authorAndTitleSlug',
-                component: 'SearchPage',
-                variable: true,
+                componentName: 'SearchPage',
               },
             ],
           },
@@ -137,9 +127,14 @@ export const routesTree: IRouteBranch[] = [
         children: [
           {
             name: 'receptionId',
-            variable: true,
           },
         ],
+      },
+      {
+        name: 'notFound',
+        any: '',
+        componentName: 'NotFoundPage',
+        exact: false,
       },
     ],
   },

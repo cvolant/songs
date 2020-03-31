@@ -23,7 +23,7 @@ import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
-import { getPath } from '../../routes';
+import { getPath } from '../../routes/utils';
 import { IBroadcastRights } from '../../types/broadcastTypes';
 import FolderDialogs from '../Folders/FolderDialogs';
 import CalendarDate from '../Common/CalendarDate';
