@@ -1,59 +1,73 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
-import React, { Suspense } from 'react';
-import { Route as RouterRoute, Redirect } from 'react-router-dom';
+import React, { Suspense, useMemo, ReactNode } from 'react';
+import { Redirect, Route as RouterRoute, RouteComponentProps } from 'react-router-dom';
 
 import Loading from '../ui/Loading';
 import PageComponents from './PageComponents';
 import { IRouteProps } from '../types/routeTypes';
 
-
-export const Route: React.FC<IRouteProps> = ({
-  path,
-  exact,
-  auth,
-  componentName,
-  redirection,
-}) => (
-  <RouterRoute
-    exact={exact}
-    path={path}
-    render={(renderProps): React.ReactNode => {
-      // console.log('From Route. renderProps:', renderProps);
-
-      if (redirection) {
-        /* console.log(
-          `Authenticated ? ${!!Meteor.userId()}.`,
-          `Page for ? ${auth ? 'logged in' : 'unlogged'} visitors:`
-        ); */
-        Session.set('currentPagePrivacy', Meteor.userId() ? 'auth' : 'unauth');
-
-        if (auth === !Meteor.userId()) {
-          /* console.log(
-            `Redirection to: "${redirection}" from location: "${renderProps.location.pathname}"`,
-            `(match: "${renderProps.match.path}")`,
-          ); */
-          return (
-            <Redirect to={{
-              pathname: redirection,
-              state: { from: renderProps.location },
-            }}
-            />
-          );
-        }
-      } else {
-        // console.log('No redirection, go to goal. goal:', goal);
-        Session.set('currentPagePrivacy', undefined);
+export const Route: React.FC<IRouteProps> = (props) => {
+  const {
+    auth,
+    exact,
+    path,
+    redirection,
+    render,
+  } = useMemo((): IRouteProps => {
+    const result = { ...props };
+    const {
+      children,
+      component,
+      componentName,
+    } = result;
+    if (children) {
+      result.render = (): ReactNode => children;
+    }
+    if (!result.render) {
+      /* eslint-disable react/jsx-props-no-spreading */
+      if (component) {
+        const Component = component;
+        result.render = (renderProps: RouteComponentProps): JSX.Element => (
+          <Component {...renderProps} />
+        );
+      } else if (componentName) {
+        const Component = PageComponents[componentName];
+        result.render = (renderProps: RouteComponentProps): JSX.Element => (
+          <Suspense fallback={<Loading />}>
+            <Component {...renderProps} />
+          </Suspense>
+        );
       }
+      /* eslint-enable react/jsx-props-no-spreading */
+    }
+    return result;
+  }, [props]);
 
-      const Component = PageComponents[componentName];
-      return (
-        <Suspense fallback={<Loading />}>
-          <Component />
-        </Suspense>
-      );
-    }}
-  />
-);
+  return (
+    <RouterRoute
+      exact={exact}
+      path={path}
+      render={(renderProps): React.ReactNode => {
+        if (redirection) {
+          Session.set('currentPagePrivacy', Meteor.userId() ? 'auth' : 'unauth');
 
+          if (auth === !Meteor.userId()) {
+            return (
+              <Redirect to={{
+                pathname: redirection,
+                state: { from: renderProps.location },
+              }}
+              />
+            );
+          }
+        } else {
+          Session.set('currentPagePrivacy', undefined);
+        }
+
+        return render ? render(renderProps) : null;
+      }}
+    />
+  );
+};
 export default Route;

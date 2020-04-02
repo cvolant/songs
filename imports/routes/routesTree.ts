@@ -1,5 +1,10 @@
 import { IRouteBranch } from '../types/routeTypes';
-
+/**
+ * Each route branch must have a unique name
+ * If exact (boolean) is not defined, it is considered to be:
+ * - false if the branch has subbranches,
+ * - true if it has not.
+  */
 export const routesTree: IRouteBranch[] = [
   {
     name: 'lang',
@@ -8,7 +13,7 @@ export const routesTree: IRouteBranch[] = [
       en: 'en',
       fr: 'fr',
     },
-    children: [
+    subbranches: [
       {
         name: 'home',
         componentName: 'SearchPage',
@@ -51,7 +56,7 @@ export const routesTree: IRouteBranch[] = [
           fr: 'espace-personnel',
         },
         redirection: 'home',
-        children: [
+        subbranches: [
           {
             name: 'favoriteSongs',
             auth: true,
@@ -81,6 +86,13 @@ export const routesTree: IRouteBranch[] = [
               fr: 'dossiers',
             },
             redirection: 'home',
+            subbranches: [
+              {
+                name: 'folder',
+                auth: true,
+                componentName: 'FolderDashboard',
+              },
+            ],
           },
           {
             name: 'broadcast',
@@ -91,7 +103,7 @@ export const routesTree: IRouteBranch[] = [
               fr: 'diffusion',
             },
             redirection: 'home',
-            children: [
+            subbranches: [
               {
                 name: 'broadcastId',
               },
@@ -101,18 +113,17 @@ export const routesTree: IRouteBranch[] = [
       },
       {
         name: 'song',
+        componentName: 'SearchPage',
         pathPartValues: {
           en: 'song',
           fr: 'chant',
         },
-        children: [
+        subbranches: [
           {
             name: 'titleSlug',
-            componentName: 'SearchPage',
-            children: [
+            subbranches: [
               {
                 name: 'authorAndTitleSlug',
-                componentName: 'SearchPage',
               },
             ],
           },
@@ -124,7 +135,7 @@ export const routesTree: IRouteBranch[] = [
           en: 'r',
           fr: 'r',
         },
-        children: [
+        subbranches: [
           {
             name: 'receptionId',
           },

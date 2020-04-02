@@ -1,10 +1,8 @@
-import { Meteor } from 'meteor/meteor';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import PageLayout from '../Common/PageLayout';
-import { Editor } from '../Editor';
 import MainDashboard from './MainDashboard';
 import { TutorialContext } from '../Tutorial';
 import { LogoMenuContext } from '../LogoMenu';
@@ -12,8 +10,8 @@ import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 
-import { getPath } from '../../routes/utils';
-import FolderDashboard from './FolderDashboard';
+import { getPath, getRoute } from '../../routes/utils';
+import Route from '../../routes/Route';
 import { ITutorialContentName } from '../Tutorial/Tutorial';
 
 export const DashboardPage: React.FC = () => {
@@ -35,9 +33,7 @@ export const DashboardPage: React.FC = () => {
   const [display, setDisplay] = useState<UserCollectionName>(
     setDisplayFromUrl() || UserCollectionName.FavoriteSongs,
   );
-  const [folder, setFolder] = useState<IUnfetched<IFolder> | undefined>(undefined);
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
-  const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
   const [
     tutorialContentName,
     setTutorialContentName,
@@ -61,20 +57,14 @@ export const DashboardPage: React.FC = () => {
     setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : oc);
   };
 
-  const goBack = <T, >(setter: React.Dispatch<React.SetStateAction<T | undefined>>) => (): void => {
-    setter(undefined);
-    setTutorialContentName('Dashboard');
-  };
-
   const handleSelectFolder = (newFolder: IUnfetched<IFolder>): void => {
-    setFolder(newFolder);
-    setTutorialContentName('Folder');
+    history.push(getPath(i18n.language, 'dashboard', UserCollectionName.Folders, newFolder._id.toHexString()));
   };
 
   const handleSelectSong = (newSong: IUnfetched<ISong>): void => {
-    // console.log('From DashboardPage, handleSelectSong. newSong.title:', newSong.title);
-    setSong(newSong);
-    setTutorialContentName('Editor');
+    if (newSong.slug) {
+      history.push(getPath(i18n.language, 'song', newSong.slug));
+    }
   };
 
   return (
@@ -85,29 +75,10 @@ export const DashboardPage: React.FC = () => {
     >
       <TutorialContext.Provider value={setTutorialContentName}>
         <LogoMenuContext.Provider value={[logoMenuDeployed, setLogoMenuDeployed]}>
-          {((): React.ReactElement => {
-            // console.log('From DashboardPage, return. song:', song, 'folder:', folder);
-            if (folder) {
-              return (
-                <FolderDashboard
-                  folder={folder}
-                  goBack={goBack(setFolder)}
-                  logoMenuDeployed={logoMenuDeployed}
-                  handleToggleLogoMenu={handleToggleLogoMenu}
-                />
-              );
-            }
-            if (song) {
-              return (
-                <Editor
-                  edit={song.userId === Meteor.userId() && !song.lyrics}
-                  goBack={goBack(setSong)}
-                  logoMenuDeployed={logoMenuDeployed}
-                  song={song}
-                />
-              );
-            }
-            return (
+          <Switch>
+            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+            <Route {...getRoute(i18n.language, 'folder')} />
+            <Route>
               <MainDashboard
                 display={display}
                 handleChangeDisplay={handleChangeDisplay}
@@ -115,8 +86,8 @@ export const DashboardPage: React.FC = () => {
                 handleSelectFolder={handleSelectFolder}
                 handleSelectSong={handleSelectSong}
               />
-            );
-          })()}
+            </Route>
+          </Switch>
         </LogoMenuContext.Provider>
       </TutorialContext.Provider>
     </PageLayout>

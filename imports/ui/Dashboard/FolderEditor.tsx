@@ -44,6 +44,7 @@ interface IFolderEditorProps {
   handleSongsAdding: () => void;
   handleSelectSong: (song: IUnfetched<ISong>) => void;
   hidden?: boolean;
+  loading?: boolean;
   logoMenuDeployed: boolean;
 }
 
@@ -53,6 +54,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   handleSongsAdding,
   handleSelectSong,
   hidden = false,
+  loading,
   logoMenuDeployed,
 }) => {
   const { t, i18n } = useTranslation();
@@ -112,6 +114,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         actions={[[
           {
             color: 'primary',
+            disabled: !folder.name,
             Icon: PlayArrow,
             key: 'broadcast',
             label: t('folder.Broadcast', 'Broadcast'),
@@ -121,6 +124,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           },
           {
             color: 'primary',
+            disabled: !folder.name,
             Icon: Add,
             key: 'add',
             label: t('folder.Add songs', 'Add songs'),
@@ -130,6 +134,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           },
           {
             color: 'primary',
+            disabled: !folder.name,
             Icon: Settings,
             key: 'settings',
             label: t('folder.Settings', 'Settings'),
@@ -139,6 +144,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           },
           {
             color: 'primary',
+            disabled: !folder.name,
             Icon: Delete,
             key: 'delete',
             label: t('folder.Delete', 'Delete'),
@@ -151,6 +157,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
         handleReturn={goBack}
         headerAction={{
           Icon: Sort,
+          disabled: !folder.name,
           label: t('search.Sort', 'Sort') as string,
           onClick: handleToggleDisplaySort(),
           size: 'small',
@@ -168,6 +175,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
           )}
           folder={folder}
           handleToggleDisplaySort={handleToggleDisplaySort}
+          loading={loading}
           logoMenuDeployed={logoMenuDeployed}
           handleSelectSong={handleSelectSong}
           secondaryActions={[

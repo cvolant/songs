@@ -1,8 +1,15 @@
 import { Locale } from '../i18n';
 import routesTree from './routesTree';
-import { IRouteBranch, IRouteBranchName, IRouteProps } from '../types/routeTypes';
+import {
+  IRouteProps,
+  IRouteBranch,
+  IRouteBranchName,
+} from '../types/routeTypes';
 
-const newPathPart = (routeBranch: IRouteBranch, lng: Locale): string => {
+const getPathPart = (
+  lng: Locale,
+  routeBranch: IRouteBranch,
+): string => {
   if (routeBranch.pathPartValues) {
     return routeBranch.pathPartValues[lng] || routeBranch.pathPartValues[Locale.en];
   }
@@ -11,8 +18,21 @@ const newPathPart = (routeBranch: IRouteBranch, lng: Locale): string => {
     : `:${routeBranch.name}`;
 };
 
+const getRouteProps = (
+  lng: Locale,
+  currentPath: string,
+  routeBranch: IRouteBranch,
+): IRouteProps & {
+  exact: boolean;
+  path: string;
+} => ({
+  exact: !routeBranch.subbranches,
+  path: `${currentPath}/${getPathPart(lng, routeBranch)}`,
+  ...routeBranch,
+});
+
 export const getRoute = (
-  language: Locale,
+  language: string,
   routeName: IRouteBranchName,
 ): IRouteProps | undefined => {
   const lng = language in Locale ? Locale[language as Locale] : Locale.en;
@@ -21,19 +41,15 @@ export const getRoute = (
     routeBranch: IRouteBranch,
     currentPath: string,
   ): IRouteProps | undefined => {
-    const path = `${currentPath}/${newPathPart(routeBranch, lng)}`;
+    const routeProps = getRouteProps(lng, currentPath, routeBranch);
 
     if (routeBranch.name === routeName && routeBranch.componentName) {
-      return {
-        exact: true,
-        path,
-        ...routeBranch,
-      } as IRouteProps;
+      return routeProps;
     }
-    if (routeBranch.children) {
+    if (routeBranch.subbranches) {
       // eslint-disable-next-line no-restricted-syntax
-      for (const child of routeBranch.children) {
-        const checkResult = checkRoutesInBranch(child, path);
+      for (const child of routeBranch.subbranches) {
+        const checkResult = checkRoutesInBranch(child, routeProps.path);
         if (checkResult) {
           return checkResult;
         }
@@ -44,25 +60,36 @@ export const getRoute = (
   return checkRoutesInBranch(routesTree[0], '');
 };
 
-export const getAllRoutes = (language: string): IRouteProps[] => {
+export const getAllRoutes = (
+  language: string,
+  options?: {
+    depth?: number;
+    withComponent?: boolean;
+  },
+): IRouteProps[] => {
   const lng = language in Locale ? Locale[language as Locale] : Locale.en;
+  const { depth, withComponent } = options || {};
 
   const getRoutesInBranch = (
     routeBranch: IRouteBranch,
     currentPath: string,
+    currentDepth?: number,
   ): IRouteProps[] => {
-    const path = `${currentPath}/${newPathPart(routeBranch, lng)}`;
+    const routeProps = getRouteProps(lng, currentPath, routeBranch);
+    const currentRouteBranch = !withComponent || routeBranch.componentName
+      ? [routeProps] as IRouteProps[]
+      : [];
 
-    return (routeBranch.children || []).reduce(
+    if (depth && currentDepth === depth) {
+      return currentRouteBranch;
+    }
+
+    return (routeBranch.subbranches || []).reduce(
       (result, child) => [
         ...result,
-        ...getRoutesInBranch(child, path),
+        ...getRoutesInBranch(child, routeProps.path, (currentDepth || 0) + 1),
       ],
-      routeBranch.componentName ? [{
-        exact: true,
-        path,
-        ...routeBranch,
-      }] as IRouteProps[] : [],
+      currentRouteBranch,
     );
   };
   return getRoutesInBranch(routesTree[0], '');
@@ -72,7 +99,7 @@ export const getPath = (language: string, ...routeParts: string[]): string => {
   const lng = language in Locale ? Locale[language as Locale] : Locale.en;
 
   const pathParts: string[] = ['', Locale[lng]];
-  let branches = routesTree[0].children;
+  let branches = routesTree[0].subbranches;
 
   for (let i = 0; i < routeParts.length; i += 1) {
     if (branches === undefined) break;
@@ -82,12 +109,18 @@ export const getPath = (language: string, ...routeParts: string[]): string => {
       || branches.find((b) => typeof b.any === 'string' || !b.pathPartValues);
 
     if (branch === undefined) {
-      console.error('Error in routesPaths.path. Arguments do not correspond to a route path. arguments:', [lng, ...routeParts]);
+      console.error(
+        'Error in routesPaths.path. Arguments do not correspond to a route path.',
+        '\nArguments:', [lng, ...routeParts],
+        '\nUnknown part:', part, 'in branches:', branches,
+      );
       return `/${lng}`;
     }
 
-    pathParts.push(newPathPart(branch, lng));
-    branches = branch.children;
+    const newPathPart = getPathPart(lng, branch);
+
+    pathParts.push(newPathPart.slice(0, 1) === ':' ? part : newPathPart);
+    branches = branch.subbranches;
   }
 
   return pathParts.join('/');
@@ -128,8 +161,8 @@ export const translatePath = (formerPath: string, language: string): string => {
 
     return [
       translatedPart,
-      ...branch.children
-        ? translateFurther(parts.slice(1), branch.children)
+      ...branch.subbranches
+        ? translateFurther(parts.slice(1), branch.subbranches)
         : [],
     ];
   };

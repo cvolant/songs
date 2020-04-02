@@ -7,13 +7,12 @@ Regler le probleme de CustomIconButton : Component.options
 Mettre tous les layouts dans un dossier ui/layouts
 Utiliser les options de traduction de simple-schema
 Mettre le state du logomenu en global, virer handleFocus.
-Utiliser les Routes dans le Dashboard.
 Ajouter des Snackbars de changement de statut dans la station
 Ajouter un fab + dans l'Editor de AddRemoveSearchList
 Tranformer les hocs en hooks
 Permettre le partage d'un dossier avec d'autres utilisateurs ou en public
 Essayer de SSR les chants et les dossiers publics
-Ajouter des slugs pour les chants et les dossiers
+Ajouter des slugs pour les dossiers
 Créer une page pour présenter une liste de chants => dossiers publics, par auteurs, conseillés...
 Rajouter des boutons pour passer au chant suivant/précédent dans l'éditeur
 Ajouter des paramètres utilisateur, et compléter le formulaire d'inscription
@@ -21,6 +20,12 @@ Améliorer la sémantique : aside, nav, main, ... Microdata : https://schema.org
 Optimiser pour les application de lecture : https://medium.com/@mandy.michael/building-websites-for-safari-reader-mode-and-other-reading-apps-1562913c86c9
 Corriger le html d'accuil pour correspondre à Loading. Et puis changer Loading.
 Remonter PageLayout dans App
+Passer les path en array
+Introduire des alias dans le routesTree ? Avec routeName...
+Enlever l'icône supprimer dans la liste de dossiers, et la mettre dans les paramètres du dossier
+Tranformer toutes les interfaces en types
+Améliorer ListLayoutItemLoading
+Introduire des transition group
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

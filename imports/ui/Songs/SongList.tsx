@@ -48,7 +48,7 @@ export const SongList: React.FC<ISongListProps> = ({
   handleSelectSong = (): void => { /* Empty function */ },
   handleSort,
   handleToggleDisplaySort,
-  loading = false,
+  loading,
   raiseLimit,
   secondaryActions,
   shortFirstItem = false,
@@ -57,7 +57,7 @@ export const SongList: React.FC<ISongListProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [unfoldedSong, setUnfoldedSong] = useState();
+  const [unfoldedSong, setUnfoldedSong] = useState<Mongo.ObjectID | undefined>();
 
   // console.log('From SongList, render. Meteor.user():', Meteor.user());
 

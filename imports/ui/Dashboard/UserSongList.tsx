@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { useTracker } from 'meteor/react-meteor-data';
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import SongList from '../Songs/SongList';
 import UserCollectionName from './UserCollectionName';
@@ -23,7 +23,7 @@ import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 import { userFavoriteToggle } from '../../api/users/methods';
 
-const nbItemsPerPage = 20;
+import { NB_ITEMS_PER_PAGE } from '../../config';
 
 interface IUserSongListProps {
   displaySort?: boolean;
@@ -31,6 +31,7 @@ interface IUserSongListProps {
   folder?: IUnfetched<IFolder>;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   handleSelectSong: (song: IUnfetched<ISong>) => void;
+  loading?: boolean;
   logoMenuDeployed?: boolean;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
   user: IUser | null;
@@ -42,63 +43,38 @@ export const UserSongList: React.FC<IUserSongListProps> = ({
   emptyListPlaceholder,
   folder,
   handleToggleDisplaySort,
+  loading: propLoading,
   logoMenuDeployed,
   handleSelectSong,
   secondaryActions,
   user,
   userSongList = UserCollectionName.FavoriteSongs,
 }) => {
-  const [limit, setLimit] = useState(nbItemsPerPage);
-  const [favoriteSongs, setFavoriteSongs] = useState<Mongo.ObjectID[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [songs, setSongs] = useState<ISong[]>([]);
+  const [limit, setLimit] = useState(NB_ITEMS_PER_PAGE);
   const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
 
-  useEffect((): (() => void) => {
-    setLoading(true);
-    const endOfLoading = (): void => {
-      // console.log('From UserSongList, useEffect, endOfLoading.');
-      setLoading(false);
+  const loading = useTracker(
+    () => (userSongList === UserCollectionName.Folders && folder && folder._id
+      ? !Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }).ready()
+      : Meteor.subscribe(`user.${userSongList}`, { limit, sort }).ready()),
+    [folder, limit, sort, userSongList],
+  );
+
+  const { songs, favoriteSongs } = useTracker(() => {
+    const songIds = userSongList === UserCollectionName.Folders
+      ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
+      : (user && user[userSongList]) || [];
+
+    return {
+      songs: Songs.find({ _id: { $in: songIds } }).fetch(),
+      favoriteSongs: (user && user.favoriteSongs) || [],
     };
-    const subscription = userSongList === UserCollectionName.Folders && folder && folder._id
-      ? Meteor.subscribe('songs.inFolder', { folder, options: { limit, sort } }, endOfLoading)
-      : Meteor.subscribe(`user.${userSongList}`, { limit, sort }, endOfLoading);
-
-    /* console.log(
-      'From UserSongList, useEffect.',
-      'userSongList:', userSongList,
-      'folder:', folder,
-      'subscription:', subscription,
-    ); */
-    return subscription.stop;
-  }, [folder, limit, sort, userSongList]);
-
-  useTracker(() => {
-    let uTFavoriteSongs: Mongo.ObjectID[] = [];
-    let uTSongs: ISong[] = [];
-
-    if (!loading) {
-      const songIds = userSongList === UserCollectionName.Folders
-        ? (folder && folder.songs && folder.songs.map((song) => song._id)) || []
-        : (user && user[userSongList]) || [];
-      uTFavoriteSongs = (user && user.favoriteSongs) || [];
-      uTSongs = Songs.find({ _id: { $in: songIds } }).fetch();
-
-      setFavoriteSongs(uTFavoriteSongs);
-      setSongs(uTSongs);
-    }
-    return { uTFavoriteSongs, uTSongs }; // Unused.
-  }, [folder, loading, user, userSongList]);
-
-  useEffect(() => {
-    setLimit(nbItemsPerPage);
-  }, [userSongList]);
+  }, [folder, user, userSongList]);
 
   const raiseLimit = (): void => {
     // console.log('From UserSongList, raiseLimit. songs.length:', songs.length, 'limit:', limit);
     if (songs.length === limit) {
-      setLoading(true);
-      const newLimit = limit + nbItemsPerPage;
+      const newLimit = limit + NB_ITEMS_PER_PAGE;
       // console.log('From UserSongList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
       setLimit(newLimit);
     }
@@ -134,7 +110,7 @@ export const UserSongList: React.FC<IUserSongListProps> = ({
       handleSort={handleSort}
       handleToggleDisplaySort={handleToggleDisplaySort}
       handleToggleFavoriteSong={handleToggleFavoriteSong}
-      loading={loading}
+      loading={loading || propLoading}
       raiseLimit={songs.length === limit ? raiseLimit : undefined}
       handleSelectSong={handleSelectSong}
       secondaryActions={secondaryActions}

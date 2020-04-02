@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Switch, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,12 +16,14 @@ import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
 import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
-import SongDialog from '../Songs/SongDialog';
 import FullCardLayout from '../Common/FullCardLayout';
+import Route from '../../routes/Route';
+import SongDialog from '../Songs/SongDialog';
 import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
+import { getPath, getRoute } from '../../routes/utils';
 import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
 
@@ -51,7 +54,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
   logoMenuDeployed,
   handleSelectFolder,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const user = useUser();
   const classes = useStyles();
 
@@ -133,8 +136,9 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
         headerTitle={userSongLists[display].title}
         shortHeader={logoMenuDeployed ? 2 : 1}
       >
-        {display === 'folders'
-          ? (
+        <Switch>
+          {/* eslint-disable react/jsx-props-no-spreading */}
+          <Route {...getRoute(i18n.language, 'folders')}>
             <UserFolderList
               displaySort={displaySort}
               emptyListPlaceholder={(
@@ -146,7 +150,8 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
               logoMenuDeployed={logoMenuDeployed}
               handleSelectFolder={handleSelectFolder}
             />
-          ) : (
+          </Route>
+          <Route {...getRoute(i18n.language, display)}>
             <UserSongList
               displaySort={displaySort}
               emptyListPlaceholder={
@@ -158,7 +163,12 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
               user={user}
               userSongList={display}
             />
-          )}
+          </Route>
+          <Route>
+            <Redirect to={getPath(i18n.language, 'dashboard', 'favoriteSongs')} />
+          </Route>
+          {/* eslint-enable react/jsx-props-no-spreading */}
+        </Switch>
       </FullCardLayout>
       <FolderSettingsDialog
         handleClose={handleDialog('')}

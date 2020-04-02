@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import FolderList from '../Folders/FolderList';
 
@@ -30,29 +30,11 @@ export const UserFolderList: React.FC<IUserFolderListProps> = ({
   logoMenuDeployed,
   handleSelectFolder,
 }) => {
-  const [folders, setFolders] = useState<IFolder[]>([]);
   const [limit, setLimit] = useState(nbItemsPerPage);
-  const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<ISortSpecifier<IFolder> | undefined>(undefined);
 
-  useEffect((): (() => void) => {
-    setLoading(true);
-    const subscription = Meteor.subscribe('user.folders', { limit, sort }, () => {
-      setLoading(false);
-    });
-    return subscription.stop;
-  }, [limit, sort]);
-
-  useTracker(() => {
-    let uTFolders: IFolder[] = [];
-
-    if (!loading) {
-      uTFolders = Folders.find().fetch();
-      setFolders(uTFolders);
-    }
-
-    return uTFolders; // Unused.
-  }, [loading]);
+  const loading = useTracker(() => !Meteor.subscribe('user.folders', { limit, sort }).ready(), [limit, sort]);
+  const folders = useTracker(() => Folders.find().fetch(), []);
 
   const raiseLimit = (): void => {
     /* console.log(
@@ -61,7 +43,6 @@ export const UserFolderList: React.FC<IUserFolderListProps> = ({
       'limit:', limit,
     ); */
     if (folders.length === limit) {
-      setLoading(true);
       const newLimit = limit + nbItemsPerPage;
       // console.log('From UserFolderList, raiseLimit. limit:', limit, 'newLimit:', newLimit);
       setLimit(newLimit);

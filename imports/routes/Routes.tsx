@@ -3,13 +3,21 @@ import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import React, { useEffect, useMemo } from 'react';
 import {
-  Switch, useHistory, useLocation, match as IMatch,
+  Switch,
+  useHistory,
+  useLocation,
+  match as IMatch,
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 
 import Route from './Route';
-import { getAllRoutes, getPath } from './utils';
+import {
+  getAllRoutes,
+  getPath,
+  getRoute,
+  translatePath,
+} from './utils';
 import { Locale } from '../i18n';
 import { TITLE, DEFAULT_LNG } from '../config';
 
@@ -20,13 +28,15 @@ interface IRoutesProps {
 export const Routes: React.FC<IRoutesProps> = ({
   match: { params: { lng } },
 }) => {
-  console.log('From Routes. render. lng:', lng);
+  console.log(
+    'From Routes. render. lng:', lng,
+    'getRoute:', getRoute, 'getAllRoutes:', getAllRoutes, 'translatePath:', translatePath, 'getPath:', getPath,
+  );
   const { i18n } = useTranslation();
   const history = useHistory();
   const { pathname, search } = useLocation();
 
   useEffect(() => {
-    console.log('From Routes, useEffect1.');
     const i18nLng = i18n.language.toLocaleLowerCase().slice(0, 2) as Locale;
     if (lng === undefined || !Object.values(Locale).includes(lng as Locale)) {
       history.replace(`/${
@@ -40,7 +50,6 @@ export const Routes: React.FC<IRoutesProps> = ({
   }, [lng, history, i18n, pathname, search]);
 
   useEffect(() => {
-    console.log('From Routes, useEffect2.');
     if (lng && Object.values(Locale).includes(lng as Locale)) {
       Tracker.autorun(() => {
         const isAuthenticated = !!Meteor.userId();
@@ -62,7 +71,10 @@ export const Routes: React.FC<IRoutesProps> = ({
     }
   }, [lng, history]);
 
-  const allRoutes = useMemo(() => getAllRoutes(lng as Locale), [lng]);
+  const mainRoutes = useMemo(
+    () => getAllRoutes(lng as Locale, { depth: 1, withComponent: true }),
+    [lng],
+  );
 
   return (
     <>
@@ -72,7 +84,7 @@ export const Routes: React.FC<IRoutesProps> = ({
       </Helmet>
       <Switch>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        {allRoutes.map((route) => <Route key={route.name} {...route} />)}
+        {mainRoutes.map((route) => <Route key={route.name} {...route} />)}
       </Switch>
     </>
   );

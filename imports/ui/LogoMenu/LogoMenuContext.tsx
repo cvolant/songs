@@ -1,10 +1,10 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-export type LogoMenuStateContext = [
+export type ILogoMenuStateContext = [
   boolean,
-  Dispatch<SetStateAction<boolean>> | undefined,
+  Dispatch<SetStateAction<boolean>>,
 ];
 
-const LogoMenuContext = createContext<LogoMenuStateContext>([false, undefined]);
+const LogoMenuContext = createContext<ILogoMenuStateContext | undefined>(undefined);
 
 export default LogoMenuContext;

@@ -1,7 +1,9 @@
 /* eslint-disable indent */
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { useTracker } from 'meteor/react-meteor-data';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
+import { useHistory, match as IMatch } from 'react-router-dom';
 
 import { Editor } from '../Editor';
 
@@ -10,43 +12,37 @@ import AddRemoveSearchList, { SongARHandler } from '../Search/AddRemoveSearchLis
 import { TutorialContext } from '../Tutorial';
 import { LogoMenuContext } from '../LogoMenu';
 
-import { IFolder, ISong, IUnfetched } from '../../types';
+import { ISong, IUnfetched } from '../../types';
 
 import Folders from '../../api/folders/folders';
 import {
   foldersUpdateSongsInsert,
   foldersUpdateSongsRemove,
 } from '../../api/folders/methods';
+import { ILogoMenuStateContext } from '../LogoMenu/LogoMenuContext';
 
 interface IFolderDashboardProps {
-  folder: IUnfetched<IFolder>;
-  goBack: () => void;
-  handleToggleLogoMenu: (oc?: boolean) => () => void;
-  logoMenuDeployed?: boolean;
+  match: IMatch<{folder: string}>;
 }
 
 export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
-  folder: propsFolder,
-  goBack,
-  handleToggleLogoMenu,
+  match: { params: { folder: folderStringId } },
 }) => {
+  console.log('From FolderDashboard. render. folderStringId:', folderStringId);
+  const history = useHistory();
+
   const setTutorialContentName = useContext(TutorialContext);
-  const [logoMenuDeployed] = useContext(LogoMenuContext);
+  const [
+    logoMenuDeployed,
+    setLogoMenuDeployed,
+  ] = useContext(LogoMenuContext) as ILogoMenuStateContext;
 
   const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
 
-  const folderId = propsFolder._id;
+  const folderId = useMemo(() => new Mongo.ObjectID(folderStringId), [folderStringId]);
 
-  useEffect(() => {
-    const subscription = Meteor.subscribe('folder', folderId, () => {
-      // console.log('From FolderDashboard, useEffect. Subscription callback.');
-    });
-    return (): void => {
-      // console.log('From FolderDashboard. SUBSCRIPTION.STOP.');
-      subscription.stop();
-    };
-  }, [folderId]);
+  const loading = useTracker(() => !Meteor.subscribe('folder', folderId).ready(), [folderId]);
 
   const folder = useTracker(
     () => Folders.find({ _id: folderId }).fetch()[0] || { _id: folderId },
@@ -65,6 +61,10 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
     }
   };
 
+  const goBack = (): void => {
+    history.goBack();
+  };
+
   const goBackToFolders = <T, >(
     setter: React.Dispatch<React.SetStateAction<T | undefined>>,
   ) => (): void => {
@@ -74,7 +74,9 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
     }
   };
 
-  const handleFocus = (focus?: boolean): () => void => handleToggleLogoMenu(!focus);
+  const handleFocus = (focus?: boolean): () => void => (): void => {
+    setLogoMenuDeployed(!focus);
+  };
 
   const handleSongsAdding = (): void => {
     setSearch(true);
@@ -126,9 +128,10 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
     <FolderEditor
       folder={folder}
       goBack={goBack}
-      logoMenuDeployed={logoMenuDeployed}
       handleSelectSong={handleSelectSong}
       handleSongsAdding={handleSongsAdding}
+      loading={loading}
+      logoMenuDeployed={logoMenuDeployed}
     />
   );
 };

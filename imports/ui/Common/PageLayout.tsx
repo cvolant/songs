@@ -15,6 +15,7 @@ import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LogoMenu, { ILogoMenuClasses } from '../LogoMenu/LogoMenu';
 
 import { ITutorialContentName } from '../Tutorial/Tutorial';
+import { TITLE } from '../../config';
 
 const Tutorial = React.lazy(() => import('../Tutorial'));
 
@@ -118,7 +119,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   return (
     <div className={clsx(classes.root, className)}>
       <Helmet>
-        <title>{`Alleluia.plus - ${title}`}</title>
+        <title>{`${TITLE} - ${title}`}</title>
       </Helmet>
       {!disableLogoMenu && (
         <LogoMenu
