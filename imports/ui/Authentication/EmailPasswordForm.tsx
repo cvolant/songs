@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React, { createRef, useState, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accounts } from 'meteor/accounts-base';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -23,27 +23,9 @@ interface IEmailPasswordFormProps {
   alreadySignedUp: boolean;
   title: string;
 }
-interface IEmailPasswordFormWTData {
-  handleCreateUser: (
-    { email, password }: {
-      email: string;
-      password: string;
-    },
-    callback: (err?: Meteor.Error | Error) => void,
-  ) => void;
-  handleLogin: (
-    user: { email: string },
-    password: string,
-    callback?: ((err?: Meteor.Error | Error) => void),
-  ) => void;
-}
-interface IWrappedEmailPasswordFormProps
-  extends IEmailPasswordFormProps, IEmailPasswordFormWTData {}
 
-export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> = ({
+export const EmailPasswordForm: React.FC<IEmailPasswordFormProps> = ({
   alreadySignedUp,
-  handleCreateUser,
-  handleLogin,
   title,
 }) => {
   const { t } = useTranslation();
@@ -51,6 +33,11 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
   const [error, setError] = useState<string | undefined>('');
   const emailRef = createRef();
   const passwordRef = createRef();
+
+  const { handleLogin, handleCreateUser } = useTracker(() => ({
+    handleLogin: Meteor.loginWithPassword,
+    handleCreateUser: Accounts.createUser,
+  }), []);
 
   const passwordLengthMin = 6;
 
@@ -63,7 +50,7 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
     if (alreadySignedUp) {
       handleLogin({ email }, password, (err?: Meteor.Error | Error) => {
         if (err) {
-          setError(err.reason || err.stack || err.error || 'Error');
+          setError((err as Meteor.Error).reason || err.stack || (err as Meteor.Error).error.toString() || 'Error');
         } else {
           setError('');
         }
@@ -75,7 +62,7 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
 
       handleCreateUser({ email, password }, (err) => {
         if (err) {
-          setError(err.reason || err.stack || err.error || 'Error');
+          setError((err as Meteor.Error).reason || err.stack || (err as Meteor.Error).error.toString() || 'Error');
         } else {
           setError('');
         }
@@ -126,13 +113,5 @@ export const WrappedEmailPasswordForm: React.FC<IWrappedEmailPasswordFormProps> 
     </div>
   );
 };
-
-export const EmailPasswordForm = withTracker<
-IEmailPasswordFormWTData,
-IEmailPasswordFormProps
->(() => ({
-  handleLogin: Meteor.loginWithPassword,
-  handleCreateUser: Accounts.createUser,
-}))(WrappedEmailPasswordForm);
 
 export default EmailPasswordForm;

@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
@@ -156,14 +156,8 @@ interface ILogoMenuProps {
   showTutorial?: boolean;
   tutorialAvailable: boolean;
 }
-interface ILogoMenuWTData {
-  isAuthenticated: boolean;
-  handleLogout: () => void;
-}
-interface IWrappedLogoMenuProps
-  extends ILogoMenuProps, ILogoMenuWTData { }
 
-export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
+export const LogoMenu: React.FC<ILogoMenuProps> = ({
   classes: {
     logoMenu: logoMenuClassNameProp,
     topMenu: topMenuClassNameProp,
@@ -171,10 +165,8 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
     topMenuLarge: topMenuLargeClassNameProp,
     topMenuSmall: topMenuSmallClassNameProp,
   } = {},
-  handleLogout,
   handleToggleLogoMenu: propsHandleToggleLogoMenu,
   handleToggleTutorial,
-  isAuthenticated,
   logoMenuDeployed: propsLogoMenuDeployed,
   middleButton: middleButtonProps,
   showTutorial,
@@ -191,12 +183,17 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
     : [propsLogoMenuDeployed, (): void => { console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...'); }];
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
+  const { handleLogout, isAuthenticated } = useTracker(() => ({
+    handleLogout: (): void => Accounts.logout(),
+    isAuthenticated: !!Meteor.userId(),
+  }));
+
   const handleToggleLogoMenu = propsHandleToggleLogoMenu
     || ((deploy?: boolean) => (): void => setLogoMenuDeployed(typeof deploy === 'undefined' ? !logoMenuDeployed : !!deploy));
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
 
-  const middleButton = ((): IMiddleButton => {
+  const middleButton = useMemo((): IMiddleButton => {
     const middleButtons: Record<IKnownMiddleButtonNames, IMiddleButton> = {
       home: {
         ariaLabel: t('Home'),
@@ -252,7 +249,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
       return middleButtons.signin;
     }
     return middleButtons.home;
-  })();
+  }, [isAuthenticated, location.pathname, middleButtonProps, path, t]);
 
   /* console.log(
     'From LogoMenu, render.',
@@ -373,10 +370,5 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
     </>
   );
 };
-
-export const LogoMenu = withTracker<ILogoMenuWTData, ILogoMenuProps>(() => ({
-  handleLogout: (): void => Accounts.logout(),
-  isAuthenticated: !!Meteor.userId(),
-}))(WrappedLogoMenu);
 
 export default LogoMenu;
