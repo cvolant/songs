@@ -8,18 +8,12 @@ import { IArrayIconButtonProps } from '../../types/iconButtonTypes';
 
 interface ICardSearchListProps {
   goBack: () => void;
-  shortFirstItem?: boolean;
-  shortSearchField?: boolean;
-  handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: IUnfetched<ISong>) => void;
   secondaryActions: IArrayIconButtonProps<IUnfetched<ISong>>[];
 }
 
 export const CardSearchList: React.FC<ICardSearchListProps> = ({
   goBack,
-  shortFirstItem,
-  shortSearchField,
-  handleFocus,
   handleSelectSong,
   secondaryActions,
 }) => (
@@ -27,10 +21,7 @@ export const CardSearchList: React.FC<ICardSearchListProps> = ({
     handleReturn={goBack}
   >
     <SearchList
-      handleFocus={handleFocus}
       handleSelectSong={handleSelectSong}
-      shortFirstItem={shortFirstItem}
-      shortSearchField={shortSearchField}
       secondaryActions={secondaryActions}
     />
   </FullCardLayout>

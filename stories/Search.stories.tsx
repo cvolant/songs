@@ -5,10 +5,10 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { action } from '@storybook/addon-actions';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
-  withKnobs, boolean,
+  withKnobs,
 } from '@storybook/addon-knobs';
 
-import { UserProvider } from '../imports/hooks/contexts/app-user-context';
+import { UserProvider } from '../imports/hooks/contexts/User';
 import SearchList from '../imports/ui/Search/SearchList';
 import { SearchListNoResult, SearchField } from '../imports/ui/Search';
 
@@ -36,16 +36,9 @@ export const searchField = (): JSX.Element => (
   <SearchField
     handleNewSearch={action('handleNewSearch')}
     handleToggleDisplaySort={(display?: boolean): () => void => action(`handleToggleDisplaySort. focus: ${display}`)}
-    shortSearchField={boolean('shortSearchField', true)}
-    handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
   />
 );
 
 export const searchList = (): JSX.Element => (
-  <SearchList
-    handleFocus={(focus?: boolean): () => void => action(`handleFocus. focus: ${focus}`)}
-    handleSelectSong={action('handleSelectSong')}
-    shortFirstItem={boolean('shortFirstItem', true)}
-    shortSearchField={boolean('shortSearchField', true)}
-  />
+  <SearchList handleSelectSong={action('handleSelectSong')} />
 );

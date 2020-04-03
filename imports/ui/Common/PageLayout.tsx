@@ -11,7 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
+import { useMenu } from '../../hooks/contexts/Menu';
 import LogoMenu, { ILogoMenuClasses } from '../LogoMenu/LogoMenu';
 
 import { ITutorialContentName } from '../Tutorial/Tutorial';
@@ -77,11 +78,8 @@ interface IPageLayoutProps {
   children: ReactNode;
   contentAreaRef?: React.RefObject<HTMLDivElement>;
   className?: string;
-  disableLogoMenu?: boolean;
   menuProps?: {
     classes?: ILogoMenuClasses;
-    handleToggleLogoMenu?: (deploy?: boolean) => () => void;
-    logoMenuDeployed?: boolean;
     onMouseEnter?: MouseEventHandler;
     onMouseLeave?: MouseEventHandler;
   };
@@ -96,7 +94,6 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   children,
   className,
   contentAreaRef,
-  disableLogoMenu,
   menuProps,
   scrollDown,
   sidePanel,
@@ -105,6 +102,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   viewer,
 }) => {
   const classes = useStyles();
+  const { logoMenuDisabled } = useMenu();
   const smallDevice = useDeviceSize('sm', 'down');
   const [showTutorial, setShowTutorial] = useState(false);
 
@@ -121,7 +119,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
       <Helmet>
         <title>{`${TITLE} - ${title}`}</title>
       </Helmet>
-      {!disableLogoMenu && (
+      {!logoMenuDisabled && (
         <LogoMenu
           handleToggleTutorial={handleToggleTutorial}
           showTutorial={showTutorial}

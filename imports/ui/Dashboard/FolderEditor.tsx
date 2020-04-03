@@ -14,8 +14,9 @@ import Settings from '@material-ui/icons/Settings';
 import Sort from '@material-ui/icons/Sort';
 
 import usePath from '../../hooks/usePath';
-import { useUser } from '../../hooks/contexts/app-user-context';
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useUser } from '../../hooks/contexts/User';
+import { useMenu } from '../../hooks/contexts/Menu';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import FullCardLayout from '../Common/FullCardLayout';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
@@ -45,7 +46,6 @@ interface IFolderEditorProps {
   handleSelectSong: (song: IUnfetched<ISong>) => void;
   hidden?: boolean;
   loading?: boolean;
-  logoMenuDeployed: boolean;
 }
 
 export const FolderEditor: React.FC<IFolderEditorProps> = ({
@@ -55,12 +55,12 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   handleSelectSong,
   hidden = false,
   loading,
-  logoMenuDeployed,
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
   const { path } = usePath();
+  const { logoMenuDeployed } = useMenu();
   const classes = useStyles({ logoMenuDeployed });
   const user = useUser();
   const smallDevice = useDeviceSize('sm', 'down');

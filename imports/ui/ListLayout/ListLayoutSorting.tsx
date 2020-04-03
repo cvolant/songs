@@ -16,7 +16,7 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
 import Sort from '@material-ui/icons/Sort';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 
 import { ISortSpecifier, ISortCriterion } from '../../types/searchTypes';
 import { ISong, IFolder } from '../../types';

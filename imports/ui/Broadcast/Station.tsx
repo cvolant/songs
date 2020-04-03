@@ -3,6 +3,7 @@ import React, {
   useState,
   SetStateAction,
   Dispatch,
+  useEffect,
 } from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
@@ -25,7 +26,8 @@ import RssFeed from '@material-ui/icons/RssFeed';
 import Stop from '@material-ui/icons/Stop';
 import Sync from '@material-ui/icons/Sync';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
+import { useMenu } from '../../hooks/contexts/Menu';
 import Screen from './Screen';
 
 import { broadcastUpdate, broadcastUpdateAddRemoveSong } from '../../api/broadcasts/methods';
@@ -112,10 +114,9 @@ export const Station: React.FC<IStationProps> = ({
   const history = useHistory();
   const { t } = useTranslation();
   const smallDevice = useDeviceSize('sm', 'down');
+  const { logoMenuDisabled, disableLogoMenu } = useMenu();
 
   const [songNb, setSongNb] = useState(stateSongNb);
-  const [logoMenuDeployed, setLogoMenuDeployed] = useState(false);
-  const [logoMenuTimeout, setLogoMenuTimeout] = useState<NodeJS.Timeout | undefined>();
   const [openPublishDialog, setOpenPublishDialog] = useState(rights === 'owner');
   const [addSongs, setAddSongs] = useState(false);
 
@@ -124,26 +125,14 @@ export const Station: React.FC<IStationProps> = ({
   const song = songs ? songs[rights === 'readOnly' ? stateSongNb : songNb] : undefined;
   const active = ['control', 'owner'].includes(rights) || status === 'ongoing';
 
+  useEffect(() => {
+    if (!logoMenuDisabled && ['readOnly', 'navigate'].includes(rights)) {
+      disableLogoMenu();
+    }
+  }, [disableLogoMenu, logoMenuDisabled, rights]);
+
   const handleCloseScreen = (): void => {
     history.push('/');
-  };
-
-  const handleToggleLogoMenu = (deploy?: boolean | undefined) => (): void => {
-    const newLogoMenuDeployed = typeof deploy === 'boolean' ? deploy : !logoMenuDeployed;
-    setLogoMenuDeployed(newLogoMenuDeployed);
-    if (newLogoMenuDeployed === false && logoMenuTimeout) {
-      clearTimeout(logoMenuTimeout);
-      setLogoMenuTimeout(undefined);
-    }
-  };
-
-  const handleLogoMenuMouseLeave = (): void => {
-    if (logoMenuDeployed) {
-      if (logoMenuTimeout) {
-        clearTimeout(logoMenuTimeout);
-      }
-      setLogoMenuTimeout(setTimeout(handleToggleLogoMenu(false), 4000));
-    }
   };
 
   const setActionHandler = (
@@ -191,10 +180,6 @@ export const Station: React.FC<IStationProps> = ({
       callback(new Meteor.Error('No broadcast loaded'));
       console.error('From Station, handleControlPreviousNext.', 'No broadcast loaded');
     }
-  };
-
-  const handleFocus = (focus?: boolean) => (): void => {
-    if (smallDevice) setTimeout(handleToggleLogoMenu(!focus), 100);
   };
 
   const handleAddRemoveSong: SongARHandler = (operation, arSong, callback) => (): void => {
@@ -298,15 +283,11 @@ export const Station: React.FC<IStationProps> = ({
     ? (
       <PageLayout
         className={classes.root}
-        disableLogoMenu={['readOnly', 'navigate'].includes(rights)}
         menuProps={{
           classes: {
             logoMenu: clsx(classes.logoMenu, classes.menus),
             topMenu: classes.menus,
           },
-          handleToggleLogoMenu,
-          logoMenuDeployed,
-          onMouseLeave: handleLogoMenuMouseLeave,
         }}
         title={
           [
@@ -319,9 +300,6 @@ export const Station: React.FC<IStationProps> = ({
         <AddRemoveSearchList
           goBack={setActionHandler(setAddSongs, false)}
           handleAddRemoveSong={handleAddRemoveSong}
-          handleFocus={handleFocus}
-          shortFirstItem={logoMenuDeployed}
-          shortSearchField={logoMenuDeployed}
           songIds={songs.map((s) => s._id)}
         />
       </PageLayout>

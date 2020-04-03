@@ -20,7 +20,6 @@ export const SongPage: React.FC<ISongPageProps> = ({
   const { t } = useTranslation();
   const history = useHistory();
 
-  const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const contentAreaRef = createRef<HTMLDivElement>();
   const [viewSong, setViewSong] = useState<IEditedSong | undefined>();
 
@@ -34,10 +33,6 @@ export const SongPage: React.FC<ISongPageProps> = ({
 
   const handleGoBackFromEditor = (): void => {
     history.goBack();
-  };
-
-  const handleToggleLogoMenu = (oc?: boolean) => (): void => {
-    setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : oc);
   };
 
   // console.log('From SongPage. render.');
@@ -58,7 +53,6 @@ export const SongPage: React.FC<ISongPageProps> = ({
       />
     ) : (
       <PageLayout
-        menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
         title={t('search.Search songs', 'Search songs')}
         tutorialContentName="Editor"
         contentAreaRef={contentAreaRef}
@@ -66,7 +60,6 @@ export const SongPage: React.FC<ISongPageProps> = ({
         <Editor
           goBack={handleGoBackFromEditor}
           handleOpenScreen={handleOpenScreen}
-          logoMenuDeployed={logoMenuDeployed}
           song={{ slug: (authorSlug ? `${authorSlug}/` : '') + titleSlug }}
         />
       </PageLayout>

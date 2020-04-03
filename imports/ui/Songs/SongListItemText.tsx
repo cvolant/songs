@@ -6,7 +6,7 @@ import MusicNote from '@material-ui/icons/MusicNote';
 import TextFields from '@material-ui/icons/TextFields';
 import Translate from '@material-ui/icons/Translate';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import ListLayoutItemText from '../ListLayout/ListLayoutItemText';
 import InlineIcon from '../Common/InlineIcon';
 

@@ -18,8 +18,8 @@ import Eye from '@material-ui/icons/RemoveRedEye';
 import Save from '@material-ui/icons/Save';
 import SelectAll from '@material-ui/icons/SelectAll';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
-import { useUser } from '../../hooks/contexts/app-user-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
+import { useUser } from '../../hooks/contexts/User';
 import AddSongTo from './AddSongTo';
 import FullCardLayout from '../Common/FullCardLayout';
 import NoLyrics from './NoLyrics';
@@ -95,7 +95,6 @@ interface IEditorProps {
   goBack: () => void;
   handleOpenScreen?: (song: IEditedSong) => () => void;
   loading?: boolean;
-  logoMenuDeployed: boolean;
   song: IPartialSong;
 }
 
@@ -115,7 +114,6 @@ export const Editor: React.FC<IEditorProps> = ({
   goBack,
   handleOpenScreen,
   loading: propLoading,
-  logoMenuDeployed,
   song: propSong,
 }) => {
   const classes = useStyles();
@@ -567,7 +565,6 @@ export const Editor: React.FC<IEditorProps> = ({
                 handleDetailChange={handleDetailChange}
                 handleTitleCancel={handleTitleCancel}
                 key="title"
-                logoMenuDeployed={logoMenuDeployed}
                 subtitle={subtitle}
                 title={title}
               />

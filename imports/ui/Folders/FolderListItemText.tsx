@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import Songs from '../../api/songs/songs';
 
 import { IFolder } from '../../types';

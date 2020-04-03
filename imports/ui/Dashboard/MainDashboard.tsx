@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Switch,
   Redirect,
@@ -19,7 +19,8 @@ import Folder from '@material-ui/icons/Folder';
 import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-import { useUser } from '../../hooks/contexts/app-user-context';
+import { useUser } from '../../hooks/contexts/User';
+import { useMenu } from '../../hooks/contexts/Menu';
 import usePath from '../../hooks/usePath';
 import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
 import FullCardLayout from '../Common/FullCardLayout';
@@ -31,8 +32,6 @@ import UserCollectionName from './UserCollectionName';
 
 import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
-import { LogoMenuContext } from '../LogoMenu';
-import { ILogoMenuStateContext } from '../LogoMenu/LogoMenuContext';
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -52,7 +51,7 @@ export const MainDashboard: React.FC = () => {
   const classes = useStyles();
   const { path } = usePath('MainDashboard');
   const history = useHistory();
-  const [logoMenuDeployed] = useContext(LogoMenuContext) as ILogoMenuStateContext;
+  const { logoMenuDeployed } = useMenu();
   const isCreatedSongs = !!useRouteMatch(path(['dashboard', 'createdSongs']));
   const isFolders = !!useRouteMatch(path(['dashboard', 'folders']));
 
@@ -160,7 +159,6 @@ export const MainDashboard: React.FC = () => {
                 </Typography>
               )}
               handleToggleDisplaySort={handleToggleDisplaySort}
-              logoMenuDeployed={logoMenuDeployed}
               handleSelectFolder={handleSelectFolder}
             />
           </Route>

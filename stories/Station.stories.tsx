@@ -5,7 +5,7 @@ import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
 
-import { UserProvider } from '../imports/hooks/contexts/app-user-context';
+import { UserProvider } from '../imports/hooks/contexts/User';
 import {
   BroadcastPage,
   PublishDialog,

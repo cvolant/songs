@@ -6,16 +6,19 @@ import { action } from '@storybook/addon-actions';
 import {
   withKnobs, boolean,
 } from '@storybook/addon-knobs';
+
+import { UserProvider } from '../imports/hooks/contexts/User';
 import {
   AddSongTo,
   Editor,
   Paragraph,
   Title,
 } from '../imports/ui/Editor';
-import { WrappedEditor } from '../imports/ui/Editor/Editor';
-import { UserProvider } from '../imports/hooks/contexts/app-user-context';
+
+import { IParagraph } from '../imports/types';
+
 import {
-  songs, folders, details, users,
+  songs, folders, details,
 } from './fixtures';
 
 export default {
@@ -35,7 +38,7 @@ export const paragraph = (): JSX.Element => (
     edit={boolean('edit', true)}
     editGlobal={boolean('editGlobal', true)}
     selected={boolean('selected', true)}
-    paragraph={songs[0].lyrics[0]}
+    paragraph={songs[0].lyrics[0] as IParagraph}
     handleEditPg={action('handleEditPg')}
     handlePgChange={action('handlePgChange')}
     handleLabelChange={action('handleLabelChange')}
@@ -69,17 +72,6 @@ export const addSongTo = (): JSX.Element => (
     open={boolean('open', true)}
     song={songs[0]}
     folders={folders}
-  />
-);
-
-export const wrappedEditor = (): JSX.Element => (
-  <WrappedEditor
-    edit={boolean('edit', false)}
-    goBack={action('goBack')}
-    logoMenuDeployed={boolean('logoMenuDeployed', true)}
-    song={songs[0]}
-    folders={folders}
-    user={users[0]}
   />
 );
 

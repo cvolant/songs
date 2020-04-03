@@ -25,7 +25,7 @@ import PowerOff from '@material-ui/icons/PowerOff';
 import RssFeed from '@material-ui/icons/RssFeed';
 
 import usePath from '../../hooks/usePath';
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import LanguagePicker from './LanguagePicker';
 
 import { IBroadcastRights } from '../../types/broadcastTypes';

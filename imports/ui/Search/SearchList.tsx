@@ -40,20 +40,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface ISearchListProps {
-  handleFocus: (focus?: boolean) => () => void;
   handleSelectSong: (song: ISong) => void;
   hidden?: boolean;
-  shortFirstItem?: boolean;
-  shortSearchField?: boolean;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
 }
 
 export const SearchList: React.FC<ISearchListProps> = ({
-  handleFocus,
   handleSelectSong,
   hidden = false,
-  shortFirstItem = false,
-  shortSearchField = false,
   secondaryActions,
 }) => {
   const classes = useStyles();
@@ -62,7 +56,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
   const [limit, setLimit] = useState(nbItemsPerPage);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<ISortSpecifier<ISong> | undefined>(undefined);
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState<ISearch | undefined>();
   const [songs, setSongs] = useState<ISong[]>([]);
   const [favoriteSongs, setFavoriteSongs] = useState<Mongo.ObjectID[]>([]);
 
@@ -190,8 +184,6 @@ export const SearchList: React.FC<ISearchListProps> = ({
     <div className={hidden ? classes.hidden : classes.root}>
       <SearchField
         displaySort={displaySort}
-        shortSearchField={shortSearchField}
-        handleFocus={handleFocus}
         handleNewSearch={handleNewSearch}
         handleToggleDisplaySort={handleToggleDisplaySort}
         loading={loading}
@@ -206,7 +198,6 @@ export const SearchList: React.FC<ISearchListProps> = ({
         handleToggleDisplaySort={handleToggleDisplaySort}
         handleToggleFavoriteSong={handleToggleFavoriteSong}
         loading={loading}
-        shortFirstItem={shortFirstItem}
         raiseLimit={songs.length === limit ? raiseLimit : undefined}
         secondaryActions={secondaryActions}
         songs={songs}

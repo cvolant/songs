@@ -19,7 +19,7 @@ import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 import { OverrideProps } from '@material-ui/core/OverridableComponent';
 import { TypographyTypeMap } from '@material-ui/core/Typography';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import CustomIconButton from './CustomIconButton';
 
 import {

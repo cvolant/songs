@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import { UserProvider } from '../imports/hooks/contexts/app-user-context';
+import { UserProvider } from '../imports/hooks/contexts/User';
 import AboutPage from '../imports/ui/About/AboutPage';
 
 export default {

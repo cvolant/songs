@@ -13,7 +13,7 @@ import Check from '@material-ui/icons/Check';
 import Edit from '@material-ui/icons/Edit';
 import { CSSProperties } from '@material-ui/styles';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import Detail, { IDetails, IDetailTarget } from './Detail';
 import Typography from '../Common/Typography';
 

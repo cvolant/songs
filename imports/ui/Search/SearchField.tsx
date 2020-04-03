@@ -25,6 +25,9 @@ import Settings from '@material-ui/icons/Settings';
 import SettingsOutlined from '@material-ui/icons/SettingsOutlined';
 import Search from '@material-ui/icons/Search';
 
+import { useMenu } from '../../hooks/contexts/Menu';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
+
 import { ISearch, ISpecificQuery } from '../../types/searchTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -87,8 +90,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     transition: theme.transitions.create('width'),
     width: (
-      { shortSearchField }: { shortSearchField?: boolean },
-    ): string => `calc(100% - 15rem + ${shortSearchField ? 0 : 5}rem)`,
+      { logoMenuDeployed }: { logoMenuDeployed?: boolean },
+    ): string => `calc(100% - 15rem + ${logoMenuDeployed ? 0 : 5}rem)`,
   },
 }));
 
@@ -99,22 +102,18 @@ interface IAdvancedField {
 }
 interface ISearchFieldProps {
   displaySort?: boolean;
-  handleFocus: (focus?: boolean) => () => void;
   handleNewSearch: (newSearch: ISearch) => void;
   handleToggleDisplaySort: (display?: boolean) => () => void;
   isAuthenticated?: boolean;
   loading?: boolean;
-  shortSearchField: boolean;
 }
 
 export const SearchField: React.FC<ISearchFieldProps> = ({
   displaySort,
-  handleFocus,
   handleNewSearch,
   handleToggleDisplaySort,
   isAuthenticated,
   loading,
-  shortSearchField,
 }) => {
   const { t } = useTranslation();
 
@@ -162,9 +161,12 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   ];
 
   const inputRef = createRef<HTMLInputElement>();
-  const classes = useStyles({ shortSearchField });
+  const { logoMenuDeployed, toggleLogoMenu } = useMenu();
+  const classes = useStyles({ logoMenuDeployed });
   const history = useHistory();
   const location = useLocation();
+  const smallDevice = useDeviceSize('sm', 'down');
+
   const [searchEntry, setSearchEntry] = useState('');
   const [selectionRange, setSelectionRange] = useState<{
     selectionStart: number;
@@ -227,7 +229,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         'From SearchField, useEffect[]. search on mount.',
         'location.search:', urlSearchQuery,
       ); */
-      const query = urlSearchQuery.substring(1).replace('global=', '').split('&').map((q) => {
+      const query = urlSearchQuery.substring(1).replace('global=', '').split('&').map((q: string) => {
         const egal = q.indexOf('=');
         return egal === -1 ? decodeURI(q) : `$${q.substring(0, egal)}[${decodeURI(q.substring(egal + 1))}]`;
       })
@@ -360,6 +362,14 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
     if (e && e.key === 'Enter') inputFocus(false)();
   };
 
+  const handleFocus = (focus: boolean) => (): void => {
+    if (smallDevice && logoMenuDeployed && focus) {
+      toggleLogoMenu(false);
+    } else if (smallDevice && !logoMenuDeployed && !focus) {
+      toggleLogoMenu(true);
+    }
+  };
+
   const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const newEntry = e.currentTarget.value;
     setSearchEntry(newEntry);
@@ -385,18 +395,15 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
           className={classes.input}
           placeholder={`      ${t('search.placeholder.Search', 'Search…')}`}
           inputRef={inputRef}
-          startAdornment={
-            searchEntry ? undefined
-              : (
-                <InputAdornment
-                  position="start"
-                  className={classes.adornment}
-                  onClick={inputFocus(true)}
-                >
-                  <Search />
-                </InputAdornment>
-              )
-          }
+          startAdornment={searchEntry ? undefined : (
+            <InputAdornment
+              position="start"
+              className={classes.adornment}
+              onClick={inputFocus(true)}
+            >
+              <Search />
+            </InputAdornment>
+          )}
           value={searchEntry}
           onChange={handleSearchChange}
           onFocus={handleFocus(true)}

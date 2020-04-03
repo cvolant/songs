@@ -16,7 +16,8 @@ import Menu from '@material-ui/icons/Menu';
 import Person from '@material-ui/icons/Person';
 
 import usePath from '../../hooks/usePath';
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
+import { useMenu } from '../../hooks/contexts/Menu';
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';
@@ -165,9 +166,7 @@ export const LogoMenu: React.FC<ILogoMenuProps> = ({
     topMenuLarge: topMenuLargeClassNameProp,
     topMenuSmall: topMenuSmallClassNameProp,
   } = {},
-  handleToggleLogoMenu: propsHandleToggleLogoMenu,
   handleToggleTutorial,
-  logoMenuDeployed: propsLogoMenuDeployed,
   middleButton: middleButtonProps,
   showTutorial,
   tutorialAvailable,
@@ -177,19 +176,18 @@ export const LogoMenu: React.FC<ILogoMenuProps> = ({
   const location = useLocation();
   const { path } = usePath();
   const smallDevice = useDeviceSize('sm', 'down');
+  const {
+    logoMenuDeployed,
+    handleToggleLogoMenu,
+  } = useMenu();
+
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
-  const [logoMenuDeployed, setLogoMenuDeployed] = typeof propsLogoMenuDeployed === 'undefined'
-    ? useState(true)
-    : [propsLogoMenuDeployed, (): void => { console.error('LogoMenu received a logoMenuDeployed prop without receiving a handleToggleLogoMenu prop...'); }];
   const classes = useStyles({ scale: logoMenuDeployed ? 1 : 0.63 });
 
   const { handleLogout, isAuthenticated } = useTracker(() => ({
     handleLogout: (): void => Accounts.logout(),
     isAuthenticated: !!Meteor.userId(),
   }));
-
-  const handleToggleLogoMenu = propsHandleToggleLogoMenu
-    || ((deploy?: boolean) => (): void => setLogoMenuDeployed(typeof deploy === 'undefined' ? !logoMenuDeployed : !!deploy));
 
   const PaperProps = { classes: { root: classes.drawerPaper }, elevation: 3 };
 

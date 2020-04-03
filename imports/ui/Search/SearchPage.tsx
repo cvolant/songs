@@ -8,7 +8,7 @@ import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import usePath from '../../hooks/usePath';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../Common/PageLayout';
@@ -67,7 +67,6 @@ export const SearchPage: React.FC = () => {
   const { path } = usePath('SearchPage');
   const displaySongPage = !!useRouteMatch(path('song'));
 
-  const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [showInfos, setShowInfos] = useState(true);
   const smallDevice = useDeviceSize('sm', 'down');
   const classes = useStyles();
@@ -87,21 +86,12 @@ export const SearchPage: React.FC = () => {
     ); */
   };
 
-  const handleToggleLogoMenu = (oc?: boolean) => (): void => {
-    setLogoMenuDeployed(typeof oc === 'undefined' ? !logoMenuDeployed : oc);
-  };
-
   const scrollDown = (): void => {
     const { current: contentArea } = contentAreaRef;
     if (contentArea) {
       contentArea.scrollIntoView({ behavior: 'smooth' });
       setTimeout(handleCloseInfos, 500);
     }
-  };
-
-  const handleFocus = (focus?: boolean) => (): void => {
-    if (smallDevice) setTimeout(handleToggleLogoMenu(!focus), 100);
-    if (showInfos && smallDevice) scrollDown();
   };
 
   // console.log('From SearchPage. render.');
@@ -112,7 +102,6 @@ export const SearchPage: React.FC = () => {
       <Route exact path={path(['song', ':authorSlug', ':titleSlug'])} component={SongPage} />
       <PageLayout
         className={displaySongPage ? classes.hidden : undefined}
-        menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
         sidePanel={showInfos && !Meteor.userId()
           ? (
             <InfosSongBySong handleCloseInfos={handleCloseInfos}>
@@ -136,12 +125,7 @@ export const SearchPage: React.FC = () => {
         contentAreaRef={contentAreaRef}
         scrollDown={scrollDown}
       >
-        <SearchList
-          handleFocus={handleFocus}
-          handleSelectSong={handleSelectSong}
-          shortFirstItem={false}
-          shortSearchField={logoMenuDeployed}
-        />
+        <SearchList handleSelectSong={handleSelectSong} />
       </PageLayout>
     </>
   );

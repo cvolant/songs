@@ -4,12 +4,10 @@ Documenter le code avec Tsdoc
 Écrire les parties manquantes du tutoriel
 Ajouter la possibilite de plusieurs IconButtons dans headerAction => MainDashboard
 Regler le probleme de CustomIconButton : Component.options
-Mettre tous les layouts dans un dossier ui/layouts
 Utiliser les options de traduction de simple-schema
 Mettre le state du logomenu en global, virer handleFocus.
 Ajouter des Snackbars de changement de statut dans la station
 Ajouter un fab + dans l'Editor de AddRemoveSearchList
-Tranformer les hocs en hooks
 Permettre le partage d'un dossier avec d'autres utilisateurs ou en public
 Essayer de SSR les chants et les dossiers publics
 Ajouter des slugs pour les dossiers
@@ -20,15 +18,16 @@ Améliorer la sémantique : aside, nav, main, ... Microdata : https://schema.org
 Optimiser pour les application de lecture : https://medium.com/@mandy.michael/building-websites-for-safari-reader-mode-and-other-reading-apps-1562913c86c9
 Corriger le html d'accuil pour correspondre à Loading. Et puis changer Loading.
 Remonter PageLayout dans App
-Passer les path en array
-Introduire des alias dans le routesTree ? Avec routeName...
 Enlever l'icône supprimer dans la liste de dossiers, et la mettre dans les paramètres du dossier
 Tranformer toutes les interfaces en types
 Améliorer ListLayoutItemLoading
 Introduire des transition group
+Reforger Editor avec useStore
 Optimiser Editor : trop de render
 Calquer FolderEditor sur Editor ?
 Extraire middleButton du LogoMenu en un composant indépendant avec Switch et Route.
+Reforger le tutoriel en utilisant un composant genre onboarding
+Extraire les contantes du SeachField
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

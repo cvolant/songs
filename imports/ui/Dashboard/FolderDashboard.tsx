@@ -6,11 +6,9 @@ import React, { useState, useContext, useMemo } from 'react';
 import { useHistory, match as IMatch } from 'react-router-dom';
 
 import { Editor } from '../Editor';
-
 import FolderEditor from './FolderEditor';
 import AddRemoveSearchList, { SongARHandler } from '../Search/AddRemoveSearchList';
 import { TutorialContext } from '../Tutorial';
-import { LogoMenuContext } from '../LogoMenu';
 
 import { ISong, IUnfetched } from '../../types';
 
@@ -19,7 +17,6 @@ import {
   foldersUpdateSongsInsert,
   foldersUpdateSongsRemove,
 } from '../../api/folders/methods';
-import { ILogoMenuStateContext } from '../LogoMenu/LogoMenuContext';
 
 interface IFolderDashboardProps {
   match: IMatch<{folderSlug: string}>;
@@ -32,10 +29,6 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
   const history = useHistory();
 
   const setTutorialContentName = useContext(TutorialContext);
-  const [
-    logoMenuDeployed,
-    setLogoMenuDeployed,
-  ] = useContext(LogoMenuContext) as ILogoMenuStateContext;
 
   const [search, setSearch] = useState<boolean | undefined>(undefined);
   const [song, setSong] = useState<IUnfetched<ISong> | undefined>(undefined);
@@ -74,10 +67,6 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
     }
   };
 
-  const handleFocus = (focus?: boolean): () => void => (): void => {
-    setLogoMenuDeployed(!focus);
-  };
-
   const handleSongsAdding = (): void => {
     setSearch(true);
     if (setTutorialContentName) {
@@ -102,7 +91,6 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
       <Editor
         edit={song.userId === Meteor.userId() && !song.lyrics}
         goBack={goBackToFolders(setSong)}
-        logoMenuDeployed={logoMenuDeployed}
         song={song}
       />
     );
@@ -117,9 +105,6 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
       <AddRemoveSearchList
         goBack={goBackToFolders(setSearch)}
         handleAddRemoveSong={handleAddRemoveSong}
-        handleFocus={handleFocus}
-        shortFirstItem={logoMenuDeployed}
-        shortSearchField={logoMenuDeployed}
         songIds={folderSongs.map((folderSong) => folderSong._id)}
       />
     );
@@ -131,7 +116,6 @@ export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
       handleSelectSong={handleSelectSong}
       handleSongsAdding={handleSongsAdding}
       loading={loading}
-      logoMenuDeployed={logoMenuDeployed}
     />
   );
 };

@@ -8,7 +8,6 @@ import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 
 import FullCardLayout from '../Common/FullCardLayout';
 import SearchList from './SearchList';
-import { LogoMenuContext } from '../LogoMenu';
 import { TutorialContext } from '../Tutorial';
 
 import { ISong, IUnfetched } from '../../types';
@@ -24,24 +23,17 @@ export type SongARHandler = (
 interface IAddRemoveSearchListProps {
   goBack: () => void;
   handleAddRemoveSong: SongARHandler;
-  handleFocus: (focus?: boolean) => () => void;
   secondaryActions?: IArrayIconButtonProps<IUnfetched<ISong>>[];
-  shortFirstItem?: boolean;
-  shortSearchField?: boolean;
   songIds: Mongo.ObjectID[];
 }
 
 export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
   goBack,
   handleAddRemoveSong,
-  handleFocus,
   secondaryActions,
-  shortFirstItem,
-  shortSearchField,
   songIds,
 }) => {
   const { t } = useTranslation();
-  const [logoMenuDeployed] = useContext(LogoMenuContext);
   const setTutorialContentName = useContext(TutorialContext);
 
   const [song, setSong] = useState<IUnfetched<ISong> | undefined>();
@@ -103,7 +95,6 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
         fab={addRemoveButton}
         edit={song.userId === Meteor.userId() && !song.lyrics}
         goBack={handleCloseEditor}
-        logoMenuDeployed={logoMenuDeployed}
         song={song}
       />
     );
@@ -114,10 +105,7 @@ export const AddRemoveSearchList: React.FC<IAddRemoveSearchListProps> = ({
       handleReturn={goBack}
     >
       <SearchList
-        handleFocus={handleFocus}
         handleSelectSong={handleSelectSong}
-        shortFirstItem={shortFirstItem}
-        shortSearchField={shortSearchField}
         secondaryActions={[
           addRemoveButton,
           ...secondaryActions || [],

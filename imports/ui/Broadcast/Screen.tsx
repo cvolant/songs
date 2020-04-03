@@ -1,9 +1,8 @@
-import React, { useState, ReactChildren, ReactChild } from 'react';
-import clsx from 'clsx';
+import React, { ReactChildren, ReactChild } from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 
-import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 import FullCardLayout, { IFullCardLayoutProps } from '../Common/FullCardLayout';
 import PrintSong from './PrintSong';
 
@@ -61,7 +60,6 @@ interface IStationProps {
   actions?: IFullCardLayoutProps<ISong>['actions'];
   blackScreen?: boolean;
   children?: ReactChildren | ReactChild;
-  disableLogoMenu?: boolean;
   fabs?: IFullCardLayoutProps<ISong>['fabs'];
   handleReturn?: () => void;
   headerAction?: IFullCardLayoutProps<ISong>['headerAction'];
@@ -75,7 +73,6 @@ export const Station: React.FC<IStationProps> = ({
   actions,
   blackScreen = false,
   children,
-  disableLogoMenu = false,
   fabs,
   handleReturn,
   headerAction,
@@ -85,43 +82,11 @@ export const Station: React.FC<IStationProps> = ({
   title,
 }) => {
   const smallDevice = useDeviceSize('sm', 'down');
-
-  const [logoMenuDeployed, setLogoMenuDeployed] = useState(false);
-  const [logoMenuTimeout, setLogoMenuTimeout] = useState<NodeJS.Timeout | undefined>();
-
   const classes = useStyles({ blackScreen, smallDevice });
-
-  const handleToggleLogoMenu = (deploy?: boolean | undefined) => (): void => {
-    const newLogoMenuDeployed = typeof deploy === 'boolean' ? deploy : !logoMenuDeployed;
-    setLogoMenuDeployed(newLogoMenuDeployed);
-    if (newLogoMenuDeployed === false && logoMenuTimeout) {
-      clearTimeout(logoMenuTimeout);
-      setLogoMenuTimeout(undefined);
-    }
-  };
-
-  const handleLogoMenuMouseLeave = (): void => {
-    if (logoMenuDeployed) {
-      if (logoMenuTimeout) {
-        clearTimeout(logoMenuTimeout);
-      }
-      setLogoMenuTimeout(setTimeout(handleToggleLogoMenu(false), 4000));
-    }
-  };
 
   return (
     <PageLayout
       className={classes.root}
-      disableLogoMenu={disableLogoMenu}
-      menuProps={{
-        classes: {
-          logoMenu: clsx(classes.logoMenu, classes.menus),
-          topMenu: classes.menus,
-        },
-        handleToggleLogoMenu,
-        logoMenuDeployed,
-        onMouseLeave: handleLogoMenuMouseLeave,
-      }}
       title={title}
       tutorialContentName="Station"
     >
