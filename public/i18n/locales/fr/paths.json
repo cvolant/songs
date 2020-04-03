@@ -1,0 +1,19 @@
+{
+  "": "",
+  "about": "a-propos",
+  "createdSongs": "chants-crees",
+  "dashboard": "espace-personnel",
+  "favoriteSongs": "chants-favoris",
+  "folder": "dossier",
+  "folders": "dossiers",
+  "folderSlug": ":folderSlug",
+  "home": "",
+  "notFound": "introuvable",
+  "reception": "r",
+  "signin": "connexion",
+  "signup": "inscription",
+  "song": "chant",
+  "songs": "chants",
+  "songSlug": ":songSlug",
+  ":testSlug": ":testSluggggFr"
+}

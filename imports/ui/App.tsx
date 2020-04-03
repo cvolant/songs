@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Routes from '../routes';
+import RoutesConfig from '../routes';
 import { UserProvider } from '../hooks/contexts/app-user-context';
 
 import 'normalize.css';
@@ -29,7 +29,7 @@ export const App: React.FC = () => {
         <UserProvider>
           <DeviceSizeProvider>
             <Router>
-              <Route path="/:lng?" component={Routes} />
+              <Route path="/:lng?" component={RoutesConfig} />
             </Router>
           </DeviceSizeProvider>
         </UserProvider>

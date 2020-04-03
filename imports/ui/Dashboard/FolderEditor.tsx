@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import shortid from 'shortid';
 
@@ -13,6 +13,7 @@ import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 import Settings from '@material-ui/icons/Settings';
 import Sort from '@material-ui/icons/Sort';
 
+import usePath from '../../hooks/usePath';
 import { useUser } from '../../hooks/contexts/app-user-context';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import FullCardLayout from '../Common/FullCardLayout';
@@ -23,7 +24,6 @@ import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconButtonCallback } from '../../types/iconButtonTypes';
 
 import { foldersUpdateSongsRemove, foldersUpdateBroadcastsInsert } from '../../api/folders/methods';
-import { getPath } from '../../routes/utils';
 import { IBroadcastRights } from '../../types/broadcastTypes';
 import FolderDialogs from '../Folders/FolderDialogs';
 import CalendarDate from '../Common/CalendarDate';
@@ -57,11 +57,15 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
   loading,
   logoMenuDeployed,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+  const { path } = usePath();
   const classes = useStyles({ logoMenuDeployed });
   const user = useUser();
   const smallDevice = useDeviceSize('sm', 'down');
+
+  console.log('From FolderEditor. location:', location);
 
   const [displaySort, setDisplaySort] = useState(false);
   const [displaySettings, setDisplaySettings] = useState(false);
@@ -105,7 +109,7 @@ export const FolderEditor: React.FC<IFolderEditorProps> = ({
       ); */
       broadcastOwnerId = foldersUpdateBroadcastsInsert.call({ folderId: folder._id, addresses });
     }
-    history.push(getPath(i18n.language, 'dashboard', 'broadcast', broadcastOwnerId));
+    history.push(path(['dashboard', 'broadcast', ':broadcastId'], { ':broadcastId': broadcastOwnerId }));
   };
 
   return (

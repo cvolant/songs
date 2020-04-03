@@ -1,4 +1,5 @@
 import React, {
+  useMemo,
   EventHandler,
   KeyboardEvent,
   MouseEvent,
@@ -23,12 +24,12 @@ import Power from '@material-ui/icons/Power';
 import PowerOff from '@material-ui/icons/PowerOff';
 import RssFeed from '@material-ui/icons/RssFeed';
 
+import usePath from '../../hooks/usePath';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import LanguagePicker from './LanguagePicker';
 
 import { IBroadcastRights } from '../../types/broadcastTypes';
 
-import { getPath } from '../../routes/utils';
 import { broadcastInsert } from '../../api/broadcasts/methods';
 
 const useStyles = makeStyles((theme) => ({
@@ -82,10 +83,11 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
   handleToggleTopMenu,
   isAuthenticated,
 }) => {
-  const { t, i18n: { language: lng } } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
+  const { path } = usePath();
   const smallDevice = useDeviceSize('sm', 'down');
 
   // console.log('From TopMenuContent. lng:', lng, 'routesPaths:', routesPaths);
@@ -96,55 +98,56 @@ export const TopMenuContent: React.FC<ITopMenuContentProps> = ({
     if (!targetClasses || targetClasses.contains('languagePicker')) handleToggleTopMenu(false)(event);
   };
 
-  const handleFreeBroadcast = (): void => {
-    const addresses = ([
-      'owner',
-      'control',
-      'navigate',
-      'readOnly',
-    ] as IBroadcastRights[]).map((rights) => ({
-      id: shortid.generate(),
-      rights,
-    }));
-    broadcastInsert.call({ addresses }, (_err, res) => {
-      if (res) {
-        history.push(getPath(lng, 'dashboard', 'broadcast', addresses[0].id));
-      }
-    });
-  };
-
-  const navLinks = [
-    { name: t('Home'), path: `/${lng}`, Icon: Home },
-    {
-      name: t('About'),
-      path: getPath(lng, 'about'),
-      Icon: Loupe,
-    },
-    {
-      name: t('Dashboard'),
-      path: getPath(lng, 'dashboard'),
-      hide: !isAuthenticated,
-      Icon: Person,
-    },
-    {
-      name: t('Free broadcast'),
-      onClick: handleFreeBroadcast,
-      hide: !isAuthenticated,
-      Icon: RssFeed,
-    },
-    {
-      name: t('Logout'),
-      onClick: (): void => handleLogout(),
-      hide: !isAuthenticated,
-      Icon: PowerOff,
-    },
-    {
-      name: t('Login'),
-      path: getPath(lng, 'signin'),
-      hide: isAuthenticated,
-      Icon: Power,
-    },
-  ];
+  const navLinks = useMemo(() => {
+    const handleFreeBroadcast = (): void => {
+      const addresses = ([
+        'owner',
+        'control',
+        'navigate',
+        'readOnly',
+      ] as IBroadcastRights[]).map((rights) => ({
+        id: shortid.generate(),
+        rights,
+      }));
+      broadcastInsert.call({ addresses }, (_err, res) => {
+        if (res) {
+          history.push(path(['dashboard', 'broadcast', ':broadcastId'], { ':broadcastId': addresses[0].id }));
+        }
+      });
+    };
+    return [
+      { name: t('Home'), path: path('home'), Icon: Home },
+      {
+        name: t('About'),
+        path: path('about'),
+        Icon: Loupe,
+      },
+      {
+        name: t('Dashboard'),
+        path: path('dashboard'),
+        hide: !isAuthenticated,
+        Icon: Person,
+      },
+      {
+        name: t('Free broadcast'),
+        onClick: handleFreeBroadcast,
+        hide: !isAuthenticated,
+        Icon: RssFeed,
+      },
+      {
+        name: t('Logout'),
+        onClick: (): void => handleLogout(),
+        hide: !isAuthenticated,
+        Icon: PowerOff,
+      },
+      {
+        name: t('Login'),
+        path: path('signin'),
+        hide: isAuthenticated,
+        Icon: Power,
+      },
+    ];
+  }, [handleLogout, history, isAuthenticated, path, t]);
 
   return (
     <div

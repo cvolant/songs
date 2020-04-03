@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, match as IMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Clear from '@material-ui/icons/Clear';
@@ -11,11 +11,11 @@ import Screen from '../Broadcast/Screen';
 import { IEditedSong } from '../../types/songTypes';
 
 interface ISongPageProps {
-  slug: string;
+  match: IMatch<{ authorSlug?: string; titleSlug: string }>;
 }
 
 export const SongPage: React.FC<ISongPageProps> = ({
-  slug,
+  match: { params: { authorSlug, titleSlug } },
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -67,7 +67,7 @@ export const SongPage: React.FC<ISongPageProps> = ({
           goBack={handleGoBackFromEditor}
           handleOpenScreen={handleOpenScreen}
           logoMenuDeployed={logoMenuDeployed}
-          song={{ slug }}
+          song={{ slug: (authorSlug ? `${authorSlug}/` : '') + titleSlug }}
         />
       </PageLayout>
     )

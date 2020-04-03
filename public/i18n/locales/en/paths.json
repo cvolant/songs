@@ -1,0 +1,19 @@
+{
+  "": "",
+  "about": "about",
+  "createdSongs": "created-songs",
+  "dashboard": "dashboard",
+  "favoriteSongs": "favorite-songs",
+  "folder": "folder",
+  "folders": "folders",
+  "folderSlug": ":folderSlug",
+  "home": "",
+  "notFound": "not-found",
+  "reception": "r",
+  "signin": "signin",
+  "signup": "signup",
+  "song": "song",
+  "songs": "songs",
+  "songSlug": ":songSlug",
+  ":testSlug": ":testSluggggEn"
+}

@@ -1,26 +1,10 @@
-import { FC } from 'react';
-import { RouteComponentProps, RouteProps } from 'react-router-dom';
-import { Locale } from '../i18n';
-
-type IRouteComponent = FC<Partial<RouteComponentProps>>;
-
-export interface IPageComponents {
-  AboutPage: IRouteComponent;
-  BroadcastPage: IRouteComponent;
-  DashboardPage: IRouteComponent;
-  FolderDashboard: IRouteComponent;
-  NotFoundPage: IRouteComponent;
-  SearchPage: IRouteComponent;
-  SignInPage: IRouteComponent;
-  SignUpPage: IRouteComponent;
-}
-export type IPageComponentName = keyof IPageComponents;
+import { RouteProps } from 'react-router-dom';
 
 export type IRouteBranchName =
 | 'about'
-| 'authorAndTitleSlug'
+| ':authorSlug'
 | 'broadcast'
-| 'broadcastId'
+| ':broadcastId'
 | 'createdSong'
 | 'createdSongs'
 | 'dashboard'
@@ -28,29 +12,20 @@ export type IRouteBranchName =
 | 'favoriteSongs'
 | 'folder'
 | 'folders'
+| ':folderSlug'
 | 'home'
 | 'lang'
 | 'notFound'
 | 'signin'
 | 'signup'
 | 'song'
+| ':songSlug'
 | 'reception'
 | 'receptionId'
-| 'titleSlug';
+| ':titleSlug';
 
-export interface IRouteBranch {
-  name: IRouteBranchName;
-  any?: string;
+export interface IRouteProps extends RouteProps {
+  name?: IRouteBranchName;
   auth?: boolean;
-  componentName?: IPageComponentName;
-  exact?: boolean;
-  pathPartValues?: {
-    [Locale.en]: string;
-    [Locale.fr]: string;
-  };
-  optional?: boolean;
   redirection?: IRouteBranchName;
-  subbranches?: IRouteBranch[];
 }
-
-export interface IRouteProps extends Partial<IRouteBranch>, RouteProps {}

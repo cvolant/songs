@@ -15,14 +15,14 @@ import Home from '@material-ui/icons/Home';
 import Menu from '@material-ui/icons/Menu';
 import Person from '@material-ui/icons/Person';
 
+import usePath from '../../hooks/usePath';
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
 import Logo from './Logo';
 import TopMenuLarge from './TopMenuLarge';
 import TopMenuSmall from './TopMenuSmall';
 import TopMenuContent from './TopMenuContent';
 import { IIcon } from '../../types/iconButtonTypes';
-
-import { getPath, translatePath } from '../../routes/utils';
+import { IRouteBranchName } from '../../types/routeTypes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
 interface IMiddleButton {
   ariaLabel: string;
   Icon: IIcon;
-  to: string;
+  to: IRouteBranchName | IRouteBranchName[];
 }
 type IKnownMiddleButtonNames = 'home' | 'dashboard' | 'signup' | 'signin';
 export type ILogoMenuMiddleButtonProp = IMiddleButton | IKnownMiddleButtonNames;
@@ -180,9 +180,10 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
   showTutorial,
   tutorialAvailable,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
   const location = useLocation();
+  const { path } = usePath();
   const smallDevice = useDeviceSize('sm', 'down');
   const [topMenuIsOpen, setTopMenuIsOpen] = useState(false);
   const [logoMenuDeployed, setLogoMenuDeployed] = typeof propsLogoMenuDeployed === 'undefined'
@@ -200,22 +201,22 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
       home: {
         ariaLabel: t('Home'),
         Icon: Home,
-        to: `/${i18n.language}`,
+        to: 'home',
       },
       dashboard: {
         ariaLabel: t('Dashboard'),
         Icon: Person,
-        to: '/en/dashboard',
+        to: 'dashboard',
       },
       signup: {
         ariaLabel: t('Sign up'),
         Icon: Person,
-        to: '/en/signup',
+        to: 'signup',
       },
       signin: {
         ariaLabel: t('Sign in'),
         Icon: Person,
-        to: '/en/signin',
+        to: 'signin',
       },
     };
 
@@ -230,8 +231,8 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
 
     const currentlyAt = (pathname: 'dashboard' | 'signin' | 'signup' | 'home'): boolean => (
       pathname === 'home'
-        ? location.pathname.replace(/\/$/, '') === getPath(i18n.language, pathname).replace(/\/$/, '')
-        : location.pathname.indexOf(getPath(i18n.language, pathname)) >= 0
+        ? location.pathname.replace(/\/$/, '') === path(pathname).replace(/\/$/, '')
+        : location.pathname.indexOf(path(pathname)) >= 0
     );
 
     /* console.log(
@@ -336,7 +337,7 @@ export const WrappedLogoMenu: React.FC<IWrappedLogoMenuProps> = ({
           className={clsx(classes.tabShape, classes.tab, classes.tab2)}
           component={Link}
           to={{
-            pathname: translatePath(middleButton.to, i18n.language),
+            pathname: path(middleButton.to),
             state: {
               from: location,
             },

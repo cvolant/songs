@@ -26,6 +26,8 @@ Enlever l'icône supprimer dans la liste de dossiers, et la mettre dans les para
 Tranformer toutes les interfaces en types
 Améliorer ListLayoutItemLoading
 Introduire des transition group
+Optimiser Editor : trop de render
+Calquer FolderEditor sur Editor ?
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

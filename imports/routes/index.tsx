@@ -1,7 +1,6 @@
-import { Routes } from './Routes';
+import { RoutesConfig } from './RoutesConfig';
 
 export { Route } from './Route';
-export { routesTree } from './routesTree';
-export { Routes };
+export { RoutesConfig as Routes };
 
-export default Routes;
+export default RoutesConfig;

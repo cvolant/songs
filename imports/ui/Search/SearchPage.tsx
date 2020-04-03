@@ -9,14 +9,14 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { useDeviceSize } from '../../hooks/contexts/app-device-size-context';
+import usePath from '../../hooks/usePath';
 import InfosSongBySong from './InfosSongBySong';
 import PageLayout from '../Common/PageLayout';
+import Route from '../../routes/Route';
 import SearchList from './SearchList';
 import SongPage from '../Editor';
 
 import { ISong } from '../../types/songTypes';
-
-import { getPath } from '../../routes/utils';
 
 const useStyles = makeStyles((theme) => ({
   continueFabIcon: {
@@ -60,31 +60,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ISlugParams {
-  authorSlug: string;
-  titleSlug: string;
-}
-
 export const SearchPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  const matchWithAuthor = useRouteMatch<ISlugParams>(getPath(i18n.language, 'song', ':authorSlug', ':titleSlug'));
-  const matchWithoutAuthor = useRouteMatch<ISlugParams>(getPath(i18n.language, 'song', ':titleSlug'));
-  const {
-    params: {
-      authorSlug,
-      titleSlug,
-    },
-  } = matchWithAuthor || matchWithoutAuthor || { params: {} };
-  const slug = `${authorSlug ? `${authorSlug}/` : ''}${titleSlug}`;
+  const { path } = usePath('SearchPage');
+  const displaySongPage = !!useRouteMatch(path('song'));
 
-  console.log(
-    'From SearchPage.',
-    '\nuseRouteMatch:', useRouteMatch,
-    '\nauthorSlug:', authorSlug,
-    '\ntitleSlug:', titleSlug,
-  );
   const [logoMenuDeployed, setLogoMenuDeployed] = useState(true);
   const [showInfos, setShowInfos] = useState(true);
   const smallDevice = useDeviceSize('sm', 'down');
@@ -96,7 +78,7 @@ export const SearchPage: React.FC = () => {
   };
 
   const handleSelectSong = (song: ISong): void => {
-    history.push(getPath(i18n.language, 'song', song.slug) + location.search);
+    history.push(path(['song', ':songSlug'], { ':songSlug': song.slug }) + location.search);
     /* console.log(
       'From SearchPage, handleSelectSong.',
       'history:', history,
@@ -126,9 +108,10 @@ export const SearchPage: React.FC = () => {
 
   return (
     <>
-      {titleSlug ? <SongPage slug={slug} /> : null}
+      <Route exact path={path(['song', ':titleSlug'])} component={SongPage} />
+      <Route exact path={path(['song', ':authorSlug', ':titleSlug'])} component={SongPage} />
       <PageLayout
-        className={titleSlug ? classes.hidden : undefined}
+        className={displaySongPage ? classes.hidden : undefined}
         menuProps={{ handleToggleLogoMenu, logoMenuDeployed }}
         sidePanel={showInfos && !Meteor.userId()
           ? (

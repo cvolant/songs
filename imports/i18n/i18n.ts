@@ -31,7 +31,7 @@ i18n
     },
     load: 'languageOnly',
     lowerCaseLng: true,
-    ns: ['translation', 'texts'],
+    ns: ['translation', 'texts', 'paths'],
     whitelist: ['en', 'fr'],
   });
 

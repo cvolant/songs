@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import React, { useContext, useMemo, useState } from 'react';
+import {
+  Switch,
+  Redirect,
+  useHistory,
+  useRouteMatch,
+} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +20,7 @@ import Sort from '@material-ui/icons/Sort';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 import { useUser } from '../../hooks/contexts/app-user-context';
+import usePath from '../../hooks/usePath';
 import FolderSettingsDialog from '../Folders/FolderSettingsDialog';
 import FullCardLayout from '../Common/FullCardLayout';
 import Route from '../../routes/Route';
@@ -23,9 +29,10 @@ import UserFolderList from './UserFolderList';
 import UserSongList from './UserSongList';
 import UserCollectionName from './UserCollectionName';
 
-import { getPath, getRoute } from '../../routes/utils';
 import { IFolder, ISong, IUnfetched } from '../../types';
 import { IIconColor } from '../../types/iconButtonTypes';
+import { LogoMenuContext } from '../LogoMenu';
+import { ILogoMenuStateContext } from '../LogoMenu/LogoMenuContext';
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -37,26 +44,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface IMainDashboardProps {
-  display: UserCollectionName;
-  handleChangeDisplay: (newDisplay?: UserCollectionName) => () => void;
-  logoMenuDeployed: boolean;
-  handleSelectFolder: (folder: IUnfetched<IFolder>) => void;
-  handleSelectSong: (song: IUnfetched<ISong>) => void;
-}
-
 type IDialog = 'folder' | 'song' | '';
 
-export const MainDashboard: React.FC<IMainDashboardProps> = ({
-  display,
-  handleChangeDisplay,
-  handleSelectSong,
-  logoMenuDeployed,
-  handleSelectFolder,
-}) => {
-  const { t, i18n } = useTranslation();
+export const MainDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const user = useUser();
   const classes = useStyles();
+  const { path } = usePath('MainDashboard');
+  const history = useHistory();
+  const [logoMenuDeployed] = useContext(LogoMenuContext) as ILogoMenuStateContext;
+  const isCreatedSongs = !!useRouteMatch(path(['dashboard', 'createdSongs']));
+  const isFolders = !!useRouteMatch(path(['dashboard', 'folders']));
+
+  const display: UserCollectionName = (isCreatedSongs && UserCollectionName.CreatedSongs)
+    || (isFolders && UserCollectionName.Folders)
+    || UserCollectionName.FavoriteSongs;
 
   // console.log('From MainDashboard, render. user:', user);
 
@@ -71,11 +73,22 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
     setDialog(newDialog);
   };
 
+  const handleChangeDisplay = (newDisplay: UserCollectionName) => (): void => {
+    history.push(path(['dashboard', newDisplay]));
+  };
+
+  const handleSelectFolder = (folder: IUnfetched<IFolder>): void => {
+    history.push(path(['dashboard', UserCollectionName.Folders, ':folderSlug'], { ':folderSlug': folder._id.toHexString() }));
+  };
+  const handleSelectSong = (song: IUnfetched<ISong>): void => {
+    history.push(path(['song', ':songSlug'], { ':songSlug': song.slug }));
+  };
+
   const userSongLists: Record<UserCollectionName, {
     title: string;
     notFound: string;
     Icon: React.FunctionComponent<SvgIconProps>;
-  }> = {
+  }> = useMemo(() => ({
     favoriteSongs: {
       title: t('dashboard.Favorite songs', 'Favorite songs'),
       notFound: t('dashboard.No favorite songs found', 'No favorite songs found...'),
@@ -91,18 +104,18 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
       notFound: t('dashboard.No folders found', 'No folders found...'),
       Icon: Folder,
     },
-  };
+  }), [t]);
 
   return (
     <>
-      <FullCardLayout<typeof display extends 'folders' ? IFolder : ISong>
+      <FullCardLayout<typeof isFolders extends true ? IFolder : ISong>
         fabs={{
           color: 'primary' as IIconColor,
           Icon: Add,
-          label: display === 'folders'
+          label: isFolders
             ? t('dashboard.New folder', 'New folder')
             : t('dashboard.New song', 'New song'),
-          onClick: handleDialog(display === 'folders' ? 'folder' : 'song'),
+          onClick: handleDialog(isFolders ? 'folder' : 'song'),
         }}
         headerAction={(
           <div className={classes.menuActions}>
@@ -138,7 +151,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
       >
         <Switch>
           {/* eslint-disable react/jsx-props-no-spreading */}
-          <Route {...getRoute(i18n.language, 'folders')}>
+          <Route path={path(['dashboard', UserCollectionName.Folders])}>
             <UserFolderList
               displaySort={displaySort}
               emptyListPlaceholder={(
@@ -151,7 +164,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
               handleSelectFolder={handleSelectFolder}
             />
           </Route>
-          <Route {...getRoute(i18n.language, display)}>
+          <Route path={path(['dashboard', display])}>
             <UserSongList
               displaySort={displaySort}
               emptyListPlaceholder={
@@ -165,7 +178,7 @@ export const MainDashboard: React.FC<IMainDashboardProps> = ({
             />
           </Route>
           <Route>
-            <Redirect to={getPath(i18n.language, 'dashboard', 'favoriteSongs')} />
+            <Redirect to={path(['dashboard', UserCollectionName.FavoriteSongs])} />
           </Route>
           {/* eslint-enable react/jsx-props-no-spreading */}
         </Switch>

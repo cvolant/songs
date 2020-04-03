@@ -22,11 +22,11 @@ import {
 import { ILogoMenuStateContext } from '../LogoMenu/LogoMenuContext';
 
 interface IFolderDashboardProps {
-  match: IMatch<{folder: string}>;
+  match: IMatch<{folderSlug: string}>;
 }
 
 export const FolderDashboard: React.FC<IFolderDashboardProps> = ({
-  match: { params: { folder: folderStringId } },
+  match: { params: { folderSlug: folderStringId } },
 }) => {
   console.log('From FolderDashboard. render. folderStringId:', folderStringId);
   const history = useHistory();

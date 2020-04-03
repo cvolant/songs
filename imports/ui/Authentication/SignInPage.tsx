@@ -2,14 +2,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Door from './Door';
 
-import { getPath } from '../../routes/utils';
+import usePath from '../../hooks/usePath';
 
 export const SignInPage: React.FC = () => {
-  const { t, i18n: { language } } = useTranslation();
+  const { t } = useTranslation();
+  const { path } = usePath();
+
   return (
     <Door
       link={{
-        path: getPath(language, 'signup'),
+        path: path('signup'),
         text: t('register.Need an account', 'Need an account?'),
       }}
       title={t('Sign in')}

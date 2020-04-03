@@ -9,7 +9,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 import Translate from '@material-ui/icons/Translate';
-import { translatePath } from '../../routes/utils';
+
+import usePath from '../../hooks/usePath';
 
 const useStyles = makeStyles((theme) => ({
   adornment: {
@@ -58,6 +59,7 @@ ILanguagePickerProps
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
+  const { translatePath } = usePath();
   const [open, setOpen] = useState(false);
   const [openable, setOpenable] = useState(true);
   const [language, setLanguage] = useState(location.pathname.substr(1, 2));

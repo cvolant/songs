@@ -3,38 +3,30 @@ import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import React, { useEffect, useMemo } from 'react';
 import {
-  Switch,
   useHistory,
   useLocation,
   match as IMatch,
+  Redirect,
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 
-import Route from './Route';
-import {
-  getAllRoutes,
-  getPath,
-  getRoute,
-  translatePath,
-} from './utils';
+import usePath from '../hooks/usePath';
+import MainRoutes from './MainRoutes';
 import { Locale } from '../i18n';
 import { TITLE, DEFAULT_LNG } from '../config';
 
-interface IRoutesProps {
+interface IRoutesConfigProps {
   match: IMatch<{ lng?: Locale }>;
 }
 
-export const Routes: React.FC<IRoutesProps> = ({
+export const RoutesConfig: React.FC<IRoutesConfigProps> = ({
   match: { params: { lng } },
 }) => {
-  console.log(
-    'From Routes. render. lng:', lng,
-    'getRoute:', getRoute, 'getAllRoutes:', getAllRoutes, 'translatePath:', translatePath, 'getPath:', getPath,
-  );
   const { i18n } = useTranslation();
   const history = useHistory();
   const { pathname, search } = useLocation();
+  const { path, translatePath } = usePath('Routes');
 
   useEffect(() => {
     const i18nLng = i18n.language.toLocaleLowerCase().slice(0, 2) as Locale;
@@ -60,21 +52,26 @@ export const Routes: React.FC<IRoutesProps> = ({
         if (isUnauthenticatedPage && isAuthenticated) {
           const { state } = history.location as { state?: { from?: string } };
           if (state && state.from) {
-            history.replace(history.location.pathname.indexOf(getPath(lng, 'signin')) >= 0 ? state.from : getPath(lng, 'dashboard'));
+            history.replace(history.location.pathname.indexOf(path('signin')) >= 0 ? state.from : path('dashboard'));
           } else {
-            history.replace(getPath(lng, 'dashboard'));
+            history.replace(path('dashboard'));
           }
         } else if (isAuthenticatedPage && !isAuthenticated) {
           history.replace(`/${lng}`);
         }
       });
     }
-  }, [lng, history]);
+  }, [lng, history, path]);
 
-  const mainRoutes = useMemo(
-    () => getAllRoutes(lng as Locale, { depth: 1, withComponent: true }),
-    [lng],
-  );
+  const pathTranslation = useMemo(() => {
+    const translatedPath = translatePath(pathname, lng);
+    if (translatedPath) {
+      return translatedPath !== pathname ? translatedPath : '';
+    }
+    return '';
+  }, [translatePath, pathname, lng]);
+
+  console.log('From Routes. render lng:', lng, 'i18n:', i18n, 'tranlatePath:', translatePath, 'pathname:', pathname, 'pathTranslation:', pathTranslation);
 
   return (
     <>
@@ -82,12 +79,10 @@ export const Routes: React.FC<IRoutesProps> = ({
         <html lang={lng} />
         <title>{TITLE}</title>
       </Helmet>
-      <Switch>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        {mainRoutes.map((route) => <Route key={route.name} {...route} />)}
-      </Switch>
+      {pathTranslation && <Redirect to={pathTranslation + search} />}
+      <MainRoutes />
     </>
   );
 };
 
-export default Routes;
+export default RoutesConfig;
