@@ -27,7 +27,6 @@ Optimiser Editor : trop de render
 Calquer FolderEditor sur Editor ?
 Extraire middleButton du LogoMenu en un composant indépendant avec Switch et Route.
 Reforger le tutoriel en utilisant un composant genre onboarding
-Extraire les contantes du SeachField
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.

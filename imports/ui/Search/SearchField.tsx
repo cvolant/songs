@@ -5,6 +5,7 @@ import React, {
   MouseEventHandler,
   KeyboardEventHandler,
   ChangeEventHandler,
+  useCallback,
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,49 @@ import { useMenu } from '../../hooks/contexts/Menu';
 import { useDeviceSize } from '../../hooks/contexts/DeviceSize';
 
 import { ISearch, ISpecificQuery } from '../../types/searchTypes';
+
+const advancedFields: IAdvancedField[] = [
+  {
+    name: 'titles',
+    localName: 'titles',
+    placeholder: ' ??? ',
+  },
+  {
+    name: 'authors',
+    localName: 'authors',
+    placeholder: ' ??? ',
+  },
+  {
+    name: 'editor',
+    localName: 'editor',
+    placeholder: ' ??? ',
+  },
+  {
+    name: 'classifications',
+    localName: 'classifications',
+    placeholder: ' ??? ',
+  },
+  {
+    name: 'lyrics',
+    localName: 'lyrics',
+    placeholder: ' ??? ',
+  },
+  {
+    name: 'before',
+    localName: 'before',
+    placeholder: ' year ',
+  },
+  {
+    name: 'after',
+    localName: 'after',
+    placeholder: ' year ',
+  },
+  {
+    name: 'favorites',
+    localName: 'favorites',
+    placeholder: 'yes',
+  },
+];
 
 const useStyles = makeStyles((theme) => ({
   adornment: {
@@ -117,49 +161,6 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const advancedFields: IAdvancedField[] = [
-    {
-      name: 'titles',
-      localName: t('song.titles', 'titles'),
-      placeholder: t('search.placeholder. ??? ', ' ??? '),
-    },
-    {
-      name: 'authors',
-      localName: t('song.authors', 'authors'),
-      placeholder: t('search.placeholder. ??? ', ' ??? '),
-    },
-    {
-      name: 'editor',
-      localName: t('song.editor', 'editor'),
-      placeholder: t('search.placeholder. ??? ', ' ??? '),
-    },
-    {
-      name: 'classifications',
-      localName: t('song.classifications', 'classifications'),
-      placeholder: t('search.placeholder. ??? ', ' ??? '),
-    },
-    {
-      name: 'lyrics',
-      localName: t('song.lyrics', 'lyrics'),
-      placeholder: t('search.placeholder. ??? ', ' ??? '),
-    },
-    {
-      name: 'before',
-      localName: t('song.before', 'before'),
-      placeholder: t('search.placeholder. year ', ' year '),
-    },
-    {
-      name: 'after',
-      localName: t('song.after', 'after'),
-      placeholder: t('search.placeholder. year ', ' year '),
-    },
-    {
-      name: 'favorites',
-      localName: t('song.favorites', 'favorites'),
-      placeholder: t('search.placeholder.yes', 'yes'),
-    },
-  ];
-
   const inputRef = createRef<HTMLInputElement>();
   const { logoMenuDeployed, toggleLogoMenu } = useMenu();
   const classes = useStyles({ logoMenuDeployed });
@@ -175,7 +176,55 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [delay, setDelay] = useState<NodeJS.Timeout | undefined>(undefined);
 
-  const handleSearch = (searchEntryToHandle: string): void => {
+  /**
+   * Read url search:
+   * - launch search
+   * - set search entry if not set
+   */
+  useEffect(() => {
+    if (location.search) {
+      const newSearch: ISearch = location.search
+        .substring(1)
+        .replace('global=', '')
+        .split('&')
+        .reduce((result: ISearch, query: string) => {
+          const equal = query.indexOf('=');
+          if (equal === -1) {
+            return {
+              ...result,
+              globalQuery: decodeURI(query),
+            };
+          }
+          const localKey = decodeURI(query.substring(0, equal));
+          const field = advancedFields.find((advancedField) => t(`song.${advancedField.name}`, advancedField.name) === localKey);
+          if (field) {
+            return {
+              ...result,
+              specificQueries: [
+                ...result.specificQueries || [],
+                {
+                  [field.name]: decodeURI(query.substring(equal + 1)),
+                },
+              ],
+            };
+          }
+          return result;
+        }, {});
+      handleNewSearch(newSearch);
+      setSearchEntry((prevSearchEntry) => prevSearchEntry || [
+        ...newSearch.globalQuery ? [newSearch.globalQuery] : [],
+        ...newSearch.specificQueries ? newSearch.specificQueries.map((specificQuery) => {
+          const [key, value] = Object.entries(specificQuery)[0];
+          return `$${t(`song.${key}`, key)}[${value}]`;
+        }) : [],
+      ].join(' '));
+    }
+  }, [handleNewSearch, location.search, t]);
+
+  /**
+   * Parse search entry and change url
+   */
+  const handleSearch = useCallback((searchEntryToHandle: string): void => {
     const newUrlSearchElements = [];
 
     const globalQuery = searchEntryToHandle
@@ -184,11 +233,10 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       .replace(/(\W\w\W)|\W+/g, ' ') // Remove multi spaces and single letters
       .trim();
     const specificQueries: ISpecificQuery[] = [];
-    const newSearch: ISearch = { globalQuery, specificQueries };
 
     if (globalQuery) newUrlSearchElements.push(`global=${encodeURI(globalQuery)}`);
 
-    const specificEntries = searchEntryToHandle.match(/\$\w+\[.*?(\]|\$|$)/g) || [];
+    const specificEntries = searchEntryToHandle.match(/\$[^\s$[\].,()]+\[.*?(\]|\$|$)/g) || [];
     if (specificEntries.length > 0) {
       specificEntries.forEach((specificEntry) => {
         const queryFirstChar = specificEntry.indexOf('[') + 1;
@@ -196,50 +244,28 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         const fieldName = specificEntry.substring(1, queryFirstChar - 1);
         const query = specificEntry.substring(queryFirstChar, queryLastChar);
         const { name: field, placeholder } = advancedFields
-          .find((advancedField) => advancedField.localName === fieldName)
+          .find((advancedField) => t(`song.${advancedField.localName}`, advancedField.localName) === fieldName)
           || {};
-        if (field && placeholder !== query) {
-          const cleanQuery = query.replace(/(\W\w\W)|\W+/g, ' ').trim();
+        if (field && t(`search.placeholder.${placeholder}`, placeholder) !== query) {
+          const cleanQuery = query.replace(/([\s$[\](),.]\w[\s$[\](),.])|\[\s$[\](),.]+/g, ' ').trim();
           const queryWords = cleanQuery.split(' ');
           queryWords.forEach((queryWord) => specificQueries.push({ [field]: queryWord }));
           newUrlSearchElements.push(`${fieldName}=${encodeURI(cleanQuery)}`);
         }
       });
-      // console.log('From SearchField, handleSearch. specificQueries:', specificQueries);
     }
 
-    // console.log('From SearchField, handleSearch. newSearch:', newSearch);
-    handleNewSearch(newSearch);
     const newUrlSearch = `?${newUrlSearchElements.join('&')}`;
-    // console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
+    console.log('From SearchField, handleSearch. newUrlSearch:', newUrlSearch);
     if (location.search !== newUrlSearch) {
-      /* console.log(
-        'From SearchField, handleSearch. REDIRECTION.',
-        'Former url search:', location.search,
-        ', newUrlSearch:', newUrlSearch,
-      ); */
       history.replace({ ...location, search: newUrlSearch });
     }
-  };
+  }, [history, location, t]);
 
-  useEffect(() => {
-    const urlSearchQuery = location.search;
-    if (urlSearchQuery) {
-      /* console.log(
-        'From SearchField, useEffect[]. search on mount.',
-        'location.search:', urlSearchQuery,
-      ); */
-      const query = urlSearchQuery.substring(1).replace('global=', '').split('&').map((q: string) => {
-        const egal = q.indexOf('=');
-        return egal === -1 ? decodeURI(q) : `$${q.substring(0, egal)}[${decodeURI(q.substring(egal + 1))}]`;
-      })
-        .join(' ');
-      setSearchEntry(query);
-      handleSearch(query);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  /**
+   * Focus input and select range specified in selectionRange
+   * (Occurs after a click on an advanced button)
+   */
   useEffect(() => {
     if (selectionRange && inputRef.current) {
       const { selectionStart, selectionEnd } = selectionRange;
@@ -253,7 +279,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         input.focus();
       }
     }
-  }, [searchEntry, inputRef, selectionRange]);
+  }, [inputRef, selectionRange]);
 
 
   const inputFocus = (focus: boolean | undefined) => (): void => {
@@ -263,6 +289,24 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
     if (input) {
       if (focus || typeof focus === 'undefined') input.focus();
       else input.blur();
+    }
+  };
+
+  /**
+   * Blur input onSubmit with enter key stroke
+   */
+  const handleKeyDown: KeyboardEventHandler = (e) => {
+    if (e && e.key === 'Enter') inputFocus(false)();
+  };
+
+  /**
+   * Handle LogoMenu toggle on input focus/blur
+   */
+  const handleFocus = (focus: boolean) => (): void => {
+    if (smallDevice && logoMenuDeployed && focus) {
+      toggleLogoMenu(false);
+    } else if (smallDevice && !logoMenuDeployed && !focus) {
+      toggleLogoMenu(true);
     }
   };
 
@@ -290,6 +334,8 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
       const field = advancedFields.find((advancedField) => advancedField.name === fieldName);
 
       if (field) {
+        const localName = t(`song.${field.localName}`, field.localName);
+        const placeholder = t(`search.placeholder.${field.placeholder}`, field.placeholder);
         let newSelectionEnd = typeof selectionEnd === 'number' ? selectionEnd : inputValue.length;
         let newSelectionStart = typeof selectionStart === 'number' ? selectionStart : newSelectionEnd;
         /* console.log(
@@ -328,15 +374,15 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
         stringParts.push(inputValue.substring(0, newSelectionStart).trim());
         // 2nd part: with placeholder if nothing is selected, otherwise with selection
         if (newSelectionStart === newSelectionEnd) {
-          stringParts.push(`$${field.localName}[${field.placeholder}]`);
+          stringParts.push(`$${localName}[${placeholder}]`);
         } else {
-          stringParts.push(`$${field.localName}[${inputValue.substring(newSelectionStart, newSelectionEnd).trim()}]`);
+          stringParts.push(`$${localName}[${inputValue.substring(newSelectionStart, newSelectionEnd).trim()}]`);
         }
         // 3rd part: from newSelectionEnd to the end
         stringParts.push(inputValue.substring(newSelectionEnd).trim());
 
         // Set new selection
-        newSelectionStart = stringParts[0].length + field.localName.length + 3; // From after the [
+        newSelectionStart = stringParts[0].length + localName.length + 3; // From after the [
         newSelectionEnd = (stringParts[0] + stringParts[1]).length; // To before the ]
         setSelectionRange({
           selectionStart: newSelectionStart,
@@ -358,18 +404,10 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
     }
   };
 
-  const handleKeyDown: KeyboardEventHandler = (e) => {
-    if (e && e.key === 'Enter') inputFocus(false)();
-  };
-
-  const handleFocus = (focus: boolean) => (): void => {
-    if (smallDevice && logoMenuDeployed && focus) {
-      toggleLogoMenu(false);
-    } else if (smallDevice && !logoMenuDeployed && !focus) {
-      toggleLogoMenu(true);
-    }
-  };
-
+  /**
+   * Input ChangeEventHandler:
+   * Set the new search entry when user stops typing for some milliseconds
+   */
   const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const newEntry = e.currentTarget.value;
     setSearchEntry(newEntry);
@@ -433,7 +471,7 @@ export const SearchField: React.FC<ISearchFieldProps> = ({
                 if (name === 'favorites' && !isAuthenticated) return undefined;
                 return (
                   <Button value={name} key={name} onClick={handleAdvancedButtonClick}>
-                    {localName.replace(/(^|\s)\w/g, (l) => l.toUpperCase())}
+                    {t(`song.${localName}`, localName).replace(/(^|\s)\w/g, (l) => l.toUpperCase())}
                   </Button>
                 );
               })}

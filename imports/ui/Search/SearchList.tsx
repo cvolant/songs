@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { useTracker } from 'meteor/react-meteor-data';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -143,7 +143,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
     }
   };
 
-  const handleNewSearch = (newSearch: ISearch): void => {
+  const handleNewSearch = useCallback((newSearch: ISearch): void => {
     if (JSON.stringify(newSearch) !== JSON.stringify(search)) {
       /* console.log(
         'From SearchList, handleNewSearch.',
@@ -152,7 +152,7 @@ export const SearchList: React.FC<ISearchListProps> = ({
       setLoading(true);
       setSearch(newSearch);
     }
-  };
+  }, [search]);
 
   const handleSort = (sortCriterion: ISortCriterion<ISong>) => (): void => {
     let sortValue: ISortSpecifierValue;
