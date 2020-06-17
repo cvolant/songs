@@ -27,6 +27,7 @@ Optimiser Editor : trop de render
 Calquer FolderEditor sur Editor ?
 Extraire middleButton du LogoMenu en un composant indépendant avec Switch et Route.
 Reforger le tutoriel en utilisant un composant genre onboarding
+Essayer pub-sub-lite pour les données qui n'ont pas besoin d'être réactives : https://forums.meteor.com/t/introducing-pub-sub-lite-lighter-method-based-pub-sub-for-meteor/53172
 
 Régler les 2 bugs du language picker : le plantage occasionnel, et l'affichage persistant après un clic sur une langue.
   => Pour le plantage occasionnel, ce sera peut-être réglé avec la prochaine version de material ui.
